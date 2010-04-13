@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="jelly" default="compile" basedir=".">
+
+  <property file="build.properties"/>
+
+  <property name="jelly.basename" value="jelly"/>
+  <property name="jelly.version.major" value="0"/>
+  <property name="jelly.version.minor" value="1"/>
+  <property name="jelly.version"
+            value="${jelly.version.major}.${jelly.version.minor}"/>
+
+  <property name="src.dir" location="src"/>
+  <property name="lib.dir" location="lib"/>
+
+  <property name="build.dir" location="build"/>
+  <property name="build.classes.dir" location="${build.dir}/classes"/>
+  <property name="build.jar"
+            location="${build.dir}/${jelly.basename}-${jelly.version}.jar"/>
+
+  <property name="doc.dir" location="${build.dir}/docs"/>
+
+  <property name="compile.debug" value="true"/>
+  <property name="compile.encoding" value=""/>
+  <property name="compile.deprecation" value="false"/>
+  <property name="compile.optimize" value="true"/>
+  <property name="compile.source" value="1.6"/>
+  <property name="compile.target" value="1.6"/>
+
+  <property name="test.src.dir" location="test"/>
+  <property name="test.build.dir" location="${build.dir}/test"/>
+  <property name="test.classes.dir" location="${test.build.dir}/classes"/>
+  <property name="test.data.dir" location="${test.build.dir}/data"/>
+  <property name="test.reports.dir" location="${test.build.dir}/reports"/>
+
+  <path id="compile.classpath">
+    <fileset dir="${lib.dir}">
+      <include name="*.jar"/>
+    </fileset>
+  </path>
+
+  <path id="test.compile.classpath">
+    <path refid="compile.classpath"/>
+    <pathelement path="${build.classes.dir}"/>
+  </path>
+
+  <path id="test.run.classpath">
+    <path refid="test.compile.classpath"/>
+    <pathelement path="${test.classes.dir}"/>
+  </path>
+
+  <target name="properties" description="Show build properties">
+    <echoproperties/>
+  </target>
+
+  <target name="init">
+    <mkdir dir="${build.classes.dir}"/>
+    <mkdir dir="${doc.dir}"/>
+  </target>
+
+  <target name="compile" depends="init" description="Compile the source">
+    <javac srcdir="${src.dir}"
+           classpathref="compile.classpath"
+           destdir="${build.classes.dir}"
+           debug="${compile.debug}"
+           deprecation="${compile.deprecation}"
+           optimize="${compile.optimize}"
+           source="${compile.source}"
+           target="${compile.target}"
+           includeAntRuntime="false">
+    </javac>
+  </target>
+
+  <target name="build" depends="compile"
+          description="Generate the distribution">
+    <jar jarfile="${pkg}" basedir="${classes}"/>
+  </target>
+
+  <target name="-test-init">
+    <mkdir dir="${test.classes.dir}"/>
+    <delete dir="${test.data.dir}"/>
+    <delete dir="${test.reports.dir}"/>
+    <mkdir dir="${test.data.dir}"/>
+    <mkdir dir="${test.reports.dir}"/>
+  </target>
+
+  <target name="compile-tests" depends="compile,-test-init"
+          description="Compile the test classes">
+    <javac sourcepath="" srcdir="${test.src.dir}"
+           classpathref="test.compile.classpath"
+           destdir="${test.classes.dir}"
+           debug="${compile.debug}"
+           deprecation="${compile.deprecation}"
+           optimize="${compile.optimize}"
+           source="${compile.source}"
+           target="${compile.target}"
+           includeAntRuntime="false">
+    </javac>
+  </target>
+
+  <target name="test" depends="compile-tests" description="Run unit tests">
+    <junit fork="no" haltonerror="yes" printsummary="off"
+           showoutput="yes" logfailedtests="yes">
+      <classpath refid="test.run.classpath"/>
+      <formatter type="plain" usefile="false"/>
+      <formatter type="xml" usefile="true"/>
+      <test name="${testcase}" todir="${test.data.dir}" if="testcase"/>
+      <batchtest todir="${test.data.dir}" unless="testcase">
+        <fileset dir="${test.classes.dir}" includes="**/*Test.class"/>
+      </batchtest>
+    </junit>
+  </target>
+
+  <target name="clean" description="Clean up" >
+    <delete dir="${build.dir}"/>
+  </target>
+
+  <target name="rebuild" depends="clean, build" description="Rebuild">
+  </target>
+
+  <target name="javadoc" depends="init" description="Create java doc">
+    <javadoc destdir="${doc.dir}">
+      <classpath refid="compile.classpath"/>
+    </javadoc>
+  </target>
+
+</project>
+
