@@ -31,6 +31,7 @@
   <property name="test.classes.dir" location="${test.build.dir}/classes"/>
   <property name="test.data.dir" location="${test.build.dir}/data"/>
   <property name="test.reports.dir" location="${test.build.dir}/reports"/>
+  <property name="test.reports.format" value="frames"/>
 
   <fileset id="test.fileset"
            dir="${test.classes.dir}" includes="**/*Test.class"/>
@@ -70,6 +71,7 @@
            source="${compile.source}"
            target="${compile.target}"
            includeAntRuntime="false">
+      <compilerarg value="-Xlint:unchecked"/>
     </javac>
   </target>
 
@@ -97,6 +99,7 @@
            source="${compile.source}"
            target="${compile.target}"
            includeAntRuntime="false">
+      <compilerarg value="-Xlint:unchecked"/>
     </javac>
   </target>
 
@@ -130,7 +133,7 @@
       <fileset dir="${test.data.dir}">
         <include name="TEST-*.xml"/>
       </fileset>
-      <report format="frames" todir="${test.reports.dir}"/>
+      <report format="${test.reports.format}" todir="${test.reports.dir}"/>
     </junitreport>
 
     <fail if="test.failed">
