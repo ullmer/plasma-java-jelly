@@ -48,8 +48,18 @@ abstract class AbstractSlaw implements Slaw {
     @Override public boolean isVectorArray() { return false; }
     @Override public boolean isComplexVectorArray() { return false; }
     @Override public boolean isMultiVectorArray() { return false; }
-    @Override public <E extends NumericSlaw> SlawArray<E> array() {
-        return error("SlawArray");
+
+    @Override public SlawNumberArray numberArray() {
+        return error("SlawNumberArray");
+    }
+    @Override public SlawComplexArray complexArray() {
+        return error("SlawComplexArray");
+    }
+    @Override public SlawNumberVectorArray numberVectorArray() {
+        return error("SlawNumberVectorArray");
+    }
+    @Override public SlawComplexVectorArray complexVectorArray() {
+        return error("SlawComplexVectorArray");
     }
 
     @Override public boolean isNumberVector() { return false; }

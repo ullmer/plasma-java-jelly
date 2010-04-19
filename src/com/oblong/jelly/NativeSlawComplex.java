@@ -56,9 +56,9 @@ final class NativeSlawComplex extends AbstractSlaw implements SlawComplex {
     @Override public SlawComplex complex() { return this; }
 
     private NativeSlawComplex(SlawNumber r, SlawNumber i) {
-        assert r.ilk() == i.ilk();
-        this.re = r;
-        this.im = i;
+        Ilk ilk = Ilk.dominantIlk(r.ilk(), i.ilk());
+        this.re = r.withIlk(ilk);
+        this.im = i.withIlk(ilk);
     }
 
     private final SlawNumber re;

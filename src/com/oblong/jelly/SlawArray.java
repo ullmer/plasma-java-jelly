@@ -8,7 +8,7 @@ package com.oblong.jelly;
  *
  * @author jao
  */
-public interface SlawArray<E extends NumericSlaw> extends Slaw {
+public interface SlawArray<E extends NumericSlaw> extends NumericSlaw {
     int count();
-    E[] arrayValue();
+    E[] getElements();
 }
