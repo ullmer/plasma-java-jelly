@@ -22,7 +22,7 @@ abstract class SlawExternalizer {
     abstract byte[] externalize(SlawComplex c);
     abstract byte[] externalizeNumVector(SlawVector<SlawNumber> v);
     abstract byte[] externalizeComplexVector(SlawVector<SlawComplex> v);
-    // abstract byte[] externalize(SlawMultiVector v);
+    abstract byte[] externalize(SlawMultiVector v);
     // abstract byte[] externalize(SlawArray<SlawNumber> a);
     // abstract byte[] externalize(SlawArray<SlawComplex> a);
     // abstract byte[] externalize(SlawArray<SlawVector<SlawNumber>> a);

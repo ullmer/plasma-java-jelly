@@ -5,10 +5,11 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Arrays;
 import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
 
 import static com.oblong.jelly.NumericSlaw.Ilk;
 import static com.oblong.jelly.NumericSlaw.Ilk.*;
-import java.util.Map;
 
 /**
  * Created: Sun Apr 18 15:07:50 2010
@@ -70,7 +71,16 @@ final class SlawExternalizerV2 extends SlawExternalizer {
         return r.array();
     }
 
-    // byte[] externalize(SlawMultiVector v);
+    byte[] externalize(SlawMultiVector v) {
+        Ilk ilk = v.ilk();
+        List<SlawNumber> ls = v.asList();
+        ByteBuffer r = nativeBuffer(8 + ls.size() * ilk.bytes());
+        r.put(firstOct(v));
+        for (SlawNumber n : ls) putNumVal(r, n);
+        padBuffer(r);
+        return r.array();
+    }
+
     // byte[] externalize(SlawArray<SlawNumber> a);
     // byte[] externalize(SlawArray<SlawComplex> a);
     // byte[] externalize(SlawArray<SlawVector<SlawNumber>> a);
@@ -83,7 +93,11 @@ final class SlawExternalizerV2 extends SlawExternalizer {
     private static boolean isLE() {
         return ByteOrder.LITTLE_ENDIAN == ByteOrder.nativeOrder();
     }
-    private static int pad(int len) { return (len >>> 3) << 3; }
+
+    private static int pad(int len) {
+        return (len & 8) + ((len & 7) == 0 ? 0 : 1);
+    }
+
     private static long octlen(long len) { return len >>> 3; }
 
     private static ByteBuffer nativeBuffer(int c) {
@@ -91,10 +105,12 @@ final class SlawExternalizerV2 extends SlawExternalizer {
         r.order(ByteOrder.nativeOrder());
         return r;
     }
+
     private static void padBuffer(ByteBuffer r) {
         final int end = r.capacity();
         for (int i = r.position(); i < end; i++) r.put(i, (byte)0);
     }
+
     private static byte[] firstOct(int b, long rest) {
         assert rest >= 0 && rest < (1<<56);
         final ByteBuffer r = nativeBuffer(8);
@@ -158,8 +174,10 @@ final class SlawExternalizerV2 extends SlawExternalizer {
                         (v.dimension() - 1) << 56 | (i.bytes() - 1) << 54);
     }
 
-    private static byte leadingNumByte(SlawMultiVector v) {
-        return leadingNumByte(v.ilk(), true, true);
+    private static byte[] firstOct(SlawMultiVector v) {
+        final Ilk i = v.ilk();
+        return firstOct(leadingNumByte(i, false, true),
+                        (v.dimension() - 2) << 56 | (i.bytes() - 1) << 54);
     }
 
     private static byte[] marshallSmallNum(SlawNumber n) {
