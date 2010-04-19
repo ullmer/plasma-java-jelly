@@ -22,20 +22,26 @@ import static com.oblong.jelly.NumericSlaw.Ilk.*;
  */
 public final class Slawx {
 
-    public static Slaw nil() { return null; }
-    public static SlawBool bool(boolean v) { return null; }
-    public static SlawString string(String s) { return null; }
+    public static Slaw nil() {
+        return NativeSlawNil.INSTANCE;
+    }
+    public static SlawBool bool(boolean v) {
+        return NativeSlawBool.valueOf(v);
+    }
+    public static SlawString string(String s) {
+        return NativeSlawString.valueOf(s);
+    }
 
     public static SlawNumber int8(byte n) { return number(INT8, n); }
     public static SlawNumber int16(short n) { return number(INT16, n); }
     public static SlawNumber int32(int n) { return number(INT32, n); }
     public static SlawNumber int64(long n) { return number(INT64, n); }
     public static SlawNumber unt8(short n) { return number(UNT8, n); }
-    public static SlawNumber unt16(int n) { return number(UNT8, n); }
-    public static SlawNumber unt32(long n) { return number(UNT8, n); }
-    public static SlawNumber unt64(BigInteger n) { return number(UNT8, n); }
-    public static SlawNumber float32(float n) { return null; }
-    public static SlawNumber float64(double n) { return null; }
+    public static SlawNumber unt16(int n) { return number(UNT16, n); }
+    public static SlawNumber unt32(long n) { return number(UNT32, n); }
+    public static SlawNumber unt64(BigInteger n) { return number(n); }
+    public static SlawNumber float32(float n) { return number(FLOAT32, n); }
+    public static SlawNumber float64(double n) { return number(FLOAT64, n); }
 
     public static SlawComplex complex(SlawNumber re, SlawNumber im) {
         return complex(dominantIlk(re.ilk(), im.ilk()), re, im);
@@ -45,20 +51,36 @@ public final class Slawx {
         return array(dominantIlk(ns), ns);
     }
 
-    public static <E extends SlawComplex> SlawVector<E> vector(E x, E y) {
-        @SuppressWarnings("unchecked") List<E> els = Arrays.asList(x, y);
+    public static SlawVector<SlawNumber> vector(SlawNumber x, SlawNumber y) {
+        List<SlawNumber> els = Arrays.asList(x, y);
         return vector(dominantIlk(x, y), els);
     }
-    public static <E extends SlawComplex> SlawVector<E> vector(E x, E y, E z)
-    {
-        @SuppressWarnings("unchecked") List<E> els = Arrays.asList(x, y, z);
+    public static SlawVector<SlawNumber> vector(SlawNumber x, SlawNumber y,
+                                                SlawNumber z) {
+        List<SlawNumber> els = Arrays.asList(x, y, z);
         return vector(dominantIlk(x, y, z), els);
     }
-    public static <E extends SlawComplex> SlawVector<E> vector(E x, E y,
-                                                               E z, E w) {
-        @SuppressWarnings("unchecked")
-        List<E> els = Arrays.asList(x, y, z, w);
+    public static SlawVector<SlawNumber> vector(SlawNumber x, SlawNumber y,
+                                                SlawNumber z, SlawNumber w) {
+        List<SlawNumber> els = Arrays.asList(x, y, z, w);
         return vector(dominantIlk(x, y, z, w), els);
+    }
+
+    public static SlawVector<SlawComplex> vector(SlawComplex x,
+                                                 SlawComplex y) {
+        List<SlawComplex> els = Arrays.asList(x, y);
+        return cvector(dominantIlk(x, y), els);
+    }
+    public static SlawVector<SlawComplex> vector(SlawComplex x, SlawComplex y,
+                                                 SlawComplex z) {
+        List<SlawComplex> els = Arrays.asList(x, y, z);
+        return cvector(dominantIlk(x, y, z), els);
+    }
+    public static SlawVector<SlawComplex> vector(SlawComplex x, SlawComplex y,
+                                                 SlawComplex z, SlawComplex w)
+    {
+        List<SlawComplex> els = Arrays.asList(x, y, z, w);
+        return cvector(dominantIlk(x, y, z, w), els);
     }
 
     // m = multivector(v00, v01, v10, v11);
@@ -98,21 +120,32 @@ public final class Slawx {
     public static SlawMap map(Map<Slaw,Slaw> m) { return null; }
 
 
-    static SlawNumber number(Ilk ilk, long n) { return null; }
-    static SlawNumber number(Ilk ilk, BigInteger n) { return null; }
+    static SlawNumber number(Ilk ilk, long n) {
+        return NativeSlawNumber.valueOf(ilk, n);
+    }
+    static SlawNumber number(Ilk ilk, double n) {
+        return NativeSlawNumber.valueOf(ilk, n);
+    }
+    static SlawNumber number(BigInteger n) {
+        return NativeSlawNumber.valueOf(n);
+    }
 
     static SlawComplex complex(Ilk ilk, SlawNumber re, SlawNumber im) {
         SlawNumber r = re.withIlk(ilk);
         SlawNumber i = im.withIlk(ilk);
-        return null;
+        return NativeSlawComplex.valueOf(r, i);
     }
 
     static <E extends NumericSlaw> SlawArray<E> array(Ilk ilk, E... ns) {
         return null;
     }
 
-    static <E extends SlawComplex> SlawVector<E> vector(Ilk ilk, List<E> ns) {
-        return null;
+    static SlawVector<SlawNumber> vector(Ilk ilk, List<SlawNumber> ns) {
+        return NativeNumberSlawVector.valueOf(ilk, ns);
+    }
+
+    static SlawVector<SlawComplex> cvector(Ilk ilk, List<SlawComplex> ns) {
+        return NativeComplexSlawVector.valueOf(ilk, ns);
     }
 
     static SlawMultiVector multivector(Ilk i, SlawNumber v00, SlawNumber v01,

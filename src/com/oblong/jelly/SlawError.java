@@ -24,6 +24,10 @@ public class SlawError extends Error {
         super(msg);
     }
 
+    public SlawError(String msg, Throwable e) {
+        super(msg, e);
+    }
+
     static void maybeThrow(String msg) {
         if (errorsOn) {
             throw new SlawError(msg);

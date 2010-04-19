@@ -2,6 +2,8 @@
 
 package com.oblong.jelly;
 
+import java.util.List;
+
 /**
  *
  * Created: Fri Apr 16 03:27:02 2010
@@ -20,4 +22,6 @@ public interface SlawMultiVector extends NumericSlaw {
                    Component c3, Component c4);
 
     SlawMultiVector curry(Component c);
+
+    List<SlawNumber> asList();
 }

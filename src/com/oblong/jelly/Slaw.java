@@ -7,7 +7,7 @@ package com.oblong.jelly;
  *
  * @author jao
  */
-public interface Slaw {
+public interface Slaw extends ExternalizableSlaw {
 
     boolean equals(Slaw s);
     int hashCode();
@@ -48,8 +48,14 @@ public interface Slaw {
 
     boolean isVector();
     boolean isComplexVector();
-    <E extends SlawComplex> SlawVector<E> vector();
+    SlawVector<SlawNumber> vector();
+    SlawVector<SlawComplex> complexVector();
 
     boolean isMultiVector();
     SlawMultiVector multiVector();
+}
+
+
+interface ExternalizableSlaw {
+    byte[] externalize(SlawExternalizer e);
 }

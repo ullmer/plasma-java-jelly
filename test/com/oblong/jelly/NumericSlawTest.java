@@ -22,5 +22,4 @@ public class NumericSlawTest {
         assertEquals(FLOAT32, Ilk.dominantIlk(is));
         assertEquals(INT16, Ilk.dominantIlk(INT8, INT8, UNT8, INT16));
     }
-
 }

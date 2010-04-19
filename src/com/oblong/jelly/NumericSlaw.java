@@ -21,26 +21,28 @@ public interface NumericSlaw extends Slaw {
         UNT16(false, true, 16), INT16(true, true, 16),
         UNT8(false, true, 8), INT8(true,true, 8);
 
-        public final int width() { return width; }
-        public final boolean isSigned() { return signed; }
-        public final boolean isIntegral() { return integral; }
+        public int width() { return width; }
+        public int bytes() { return bsize; }
+        public boolean isSigned() { return signed; }
+        public boolean isIntegral() { return integral; }
 
-        public static final Ilk dominantIlk(List<Ilk> ilks) {
+        public static Ilk dominantIlk(List<Ilk> ilks) {
+            if (ilks.size() == 0) return INT8;
             Collections.sort(ilks);
             return ilks.get(0);
         }
 
-        public static final Ilk dominantIlk(Ilk... ilks) {
+        public static Ilk dominantIlk(Ilk... ilks) {
             return dominantIlk(Arrays.asList(ilks));
         }
 
-        public static final Ilk dominantIlk(NumericSlaw... nss) {
+        public static Ilk dominantIlk(NumericSlaw... nss) {
             List<Ilk> is = new ArrayList<Ilk>();
             for (NumericSlaw s : nss) is.add(s.ilk());
             return dominantIlk(is);
         }
 
-        public static final <E extends NumericSlaw>
+        public static <E extends NumericSlaw>
         List<E> withDominantIlk(E... nss) {
             Ilk di = dominantIlk(nss);
             List<E> is = new ArrayList<E>();
@@ -55,10 +57,13 @@ public interface NumericSlaw extends Slaw {
             signed = s;
             integral = i;
             width = w;
+            bsize = (byte)(w % 8);
         }
+
         private final boolean signed;
         private final boolean integral;
         private final int width;
+        private final byte bsize;
     }
 
     Ilk ilk();

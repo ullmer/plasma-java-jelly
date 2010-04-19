@@ -2,6 +2,8 @@
 
 package com.oblong.jelly;
 
+import java.util.List;
+
 /**
  *
  * Created: Fri Apr 16 03:23:31 2010
@@ -11,5 +13,5 @@ package com.oblong.jelly;
 public interface SlawVector<E extends SlawComplex> extends NumericSlaw {
     int dimension();
     E get(int n);
-    E[] getElements();
+    List<E> asList();
 }

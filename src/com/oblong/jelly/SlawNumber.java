@@ -20,5 +20,5 @@ public interface SlawNumber extends SlawComplex {
     long longValue();
     float floatValue();
     double doubleValue();
-    BigInteger bigIntegervalue();
+    BigInteger bigIntegerValue();
 }
