@@ -5,7 +5,6 @@ package com.oblong.jelly;
 import java.util.Map;
 
 /**
- *
  * Created: Sat Apr 17 00:36:15 2010
  *
  * @author jao

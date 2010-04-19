@@ -52,13 +52,13 @@ abstract class AbstractSlaw implements Slaw {
         return error("SlawArray");
     }
 
-    @Override public boolean isVector() { return false; }
+    @Override public boolean isNumberVector() { return false; }
     @Override public boolean isComplexVector() { return false; }
-    @Override public SlawVector<SlawNumber> vector() {
-        return error("SlawVector<SlawNumber>");
+    @Override public SlawNumberVector numberVector() {
+        return error("SlawNumberVector");
     }
-    @Override public SlawVector<SlawComplex> complexVector() {
-        return error("SlawVector<SlawComplex>");
+    @Override public SlawComplexVector complexVector() {
+        return error("SlawComplexVector");
     }
 
     @Override public boolean isMultiVector() { return false; }

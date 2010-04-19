@@ -51,36 +51,34 @@ public final class Slawx {
         return array(dominantIlk(ns), ns);
     }
 
-    public static SlawVector<SlawNumber> vector(SlawNumber x, SlawNumber y) {
+    public static SlawNumberVector vector(SlawNumber x, SlawNumber y) {
         List<SlawNumber> els = Arrays.asList(x, y);
         return vector(dominantIlk(x, y), els);
     }
-    public static SlawVector<SlawNumber> vector(SlawNumber x, SlawNumber y,
-                                                SlawNumber z) {
+    public static SlawNumberVector vector(SlawNumber x, SlawNumber y,
+                                          SlawNumber z) {
         List<SlawNumber> els = Arrays.asList(x, y, z);
         return vector(dominantIlk(x, y, z), els);
     }
-    public static SlawVector<SlawNumber> vector(SlawNumber x, SlawNumber y,
-                                                SlawNumber z, SlawNumber w) {
+    public static SlawNumberVector vector(SlawNumber x, SlawNumber y,
+                                          SlawNumber z, SlawNumber w) {
         List<SlawNumber> els = Arrays.asList(x, y, z, w);
         return vector(dominantIlk(x, y, z, w), els);
     }
 
-    public static SlawVector<SlawComplex> vector(SlawComplex x,
-                                                 SlawComplex y) {
+    public static SlawComplexVector vector(SlawComplex x, SlawComplex y) {
         List<SlawComplex> els = Arrays.asList(x, y);
-        return cvector(dominantIlk(x, y), els);
+        return vector(dominantIlk(x, y), els);
     }
-    public static SlawVector<SlawComplex> vector(SlawComplex x, SlawComplex y,
-                                                 SlawComplex z) {
+    public static SlawComplexVector vector(SlawComplex x, SlawComplex y,
+                                           SlawComplex z) {
         List<SlawComplex> els = Arrays.asList(x, y, z);
-        return cvector(dominantIlk(x, y, z), els);
+        return vector(dominantIlk(x, y, z), els);
     }
-    public static SlawVector<SlawComplex> vector(SlawComplex x, SlawComplex y,
-                                                 SlawComplex z, SlawComplex w)
-    {
+    public static SlawComplexVector vector(SlawComplex x, SlawComplex y,
+                                           SlawComplex z, SlawComplex w) {
         List<SlawComplex> els = Arrays.asList(x, y, z, w);
-        return cvector(dominantIlk(x, y, z, w), els);
+        return vector(dominantIlk(x, y, z, w), els);
     }
 
     // m = multivector(v00, v01, v10, v11);
@@ -140,11 +138,11 @@ public final class Slawx {
         return null;
     }
 
-    static SlawVector<SlawNumber> vector(Ilk ilk, List<SlawNumber> ns) {
+    static SlawNumberVector vector(Ilk ilk, List<SlawNumber> ns) {
         return NativeNumberSlawVector.valueOf(ilk, ns);
     }
 
-    static SlawVector<SlawComplex> cvector(Ilk ilk, List<SlawComplex> ns) {
+    static SlawComplexVector vector(Ilk ilk, List<SlawComplex> ns) {
         return NativeComplexSlawVector.valueOf(ilk, ns);
     }
 

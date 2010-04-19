@@ -11,15 +11,12 @@ import com.oblong.jelly.NumericSlaw.Ilk;
 
 
 /**
- * Describe class NativeSlawVector here.
- *
  *
  * Created: Mon Apr 19 02:26:18 2010
  *
  * @author jao
  */
-abstract class BaseSlawVector<E extends SlawComplex> extends AbstractSlaw
-    implements SlawVector<E> {
+abstract class BaseSlawVector<E extends SlawComplex> extends AbstractSlaw {
 
     BaseSlawVector(Ilk ilk, List<E> elems) {
         assert elems != null;
@@ -34,68 +31,67 @@ abstract class BaseSlawVector<E extends SlawComplex> extends AbstractSlaw
 
     // Implementation of com.oblong.jelly.NumericSlaw
 
-    @Override public final Ilk ilk() { return get(0).ilk(); }
+    public final Ilk ilk() { return get(0).ilk(); }
 
     // Implementation of com.oblong.jelly.SlawVector
 
-    @Override public final E get(int n) { return this.elements.get(n); }
-
-    @Override public final List<E> asList() { return this.elements; }
-
-    @Override public final int dimension() { return this.elements.size(); }
+    public final E get(int n) { return this.elements.get(n); }
+    public final List<E> asList() { return this.elements; }
+    public final int dimension() { return this.elements.size(); }
 
     // Implementation of com.oblong.jelly.Slaw
 
-    @Override public final int hashCode() { return this.elements.hashCode(); }
-
-    @Override public final  boolean isNumeric() { return true; }
+    public final int hashCode() { return this.elements.hashCode(); }
+    public final  boolean isNumeric() { return true; }
 
     private final List<E> elements;
 }
 
-final class NativeNumberSlawVector extends BaseSlawVector<SlawNumber> {
+final class NativeNumberSlawVector extends BaseSlawVector<SlawNumber>
+    implements SlawNumberVector {
 
-    static SlawVector<SlawNumber> valueOf(Ilk ilk, List<SlawNumber> l) {
+    static SlawNumberVector valueOf(Ilk ilk, List<SlawNumber> l) {
         return new NativeNumberSlawVector(ilk, l);
     }
 
     @Override public boolean equals(Slaw slaw) {
-        if (!(slaw instanceof SlawVector<?>)) return false;
-        SlawVector<?> sv = (SlawVector<?>) slaw;
-        return sv.isVector () && asList().equals(sv.asList());
+        if (!(slaw instanceof SlawNumberVector)) return false;
+        SlawNumberVector sv = (SlawNumberVector) slaw;
+        return asList().equals(sv.asList());
     }
 
     @Override public final byte[] externalize(SlawExternalizer e) {
-        return e.externalizeNumVector(this);
+        return e.externalize(this);
     }
 
-    @Override public boolean isVector() { return true; }
+    @Override public boolean isNumberVector() { return true; }
 
     @Override public NumericSlaw withIlk(Ilk ilk) {
         return new NativeNumberSlawVector(ilk, asList());
     }
 
-    @Override public SlawVector<SlawNumber> vector() { return this; }
+    @Override public SlawNumberVector numberVector() { return this; }
 
     private NativeNumberSlawVector(Ilk ilk, List<SlawNumber> l) {
         super(ilk, l);
     }
 }
 
-final class NativeComplexSlawVector extends BaseSlawVector<SlawComplex> {
+final class NativeComplexSlawVector extends BaseSlawVector<SlawComplex>
+    implements SlawComplexVector {
 
-    static SlawVector<SlawComplex> valueOf(Ilk ilk, List<SlawComplex> l) {
+    static SlawComplexVector valueOf(Ilk ilk, List<SlawComplex> l) {
         return new NativeComplexSlawVector(ilk, l);
     }
 
     @Override public boolean equals(Slaw slaw) {
-        if (!(slaw instanceof SlawVector<?>)) return false;
-        SlawVector<?> sv = (SlawVector<?>) slaw;
-        return sv.isComplexVector() && asList().equals(sv.asList());
+        if (!(slaw instanceof SlawComplexVector)) return false;
+        SlawComplexVector sv = (SlawComplexVector) slaw;
+        return asList().equals(sv.asList());
     }
 
     @Override public final byte[] externalize(SlawExternalizer e) {
-        return e.externalizeComplexVector(this);
+        return e.externalize(this);
     }
 
     @Override public boolean isComplexVector() { return true; }
@@ -104,7 +100,7 @@ final class NativeComplexSlawVector extends BaseSlawVector<SlawComplex> {
         return new NativeComplexSlawVector(ilk, asList());
     }
 
-    @Override public SlawVector<SlawComplex> complexVector() { return this; }
+    @Override public SlawComplexVector complexVector() { return this; }
 
     private NativeComplexSlawVector(Ilk ilk, List<SlawComplex> l) {
         super(ilk, l);

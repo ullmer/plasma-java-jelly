@@ -46,10 +46,10 @@ public interface Slaw extends ExternalizableSlaw {
     boolean isMultiVectorArray();
     <E extends NumericSlaw> SlawArray<E> array();
 
-    boolean isVector();
+    boolean isNumberVector();
     boolean isComplexVector();
-    SlawVector<SlawNumber> vector();
-    SlawVector<SlawComplex> complexVector();
+    SlawNumberVector numberVector();
+    SlawComplexVector complexVector();
 
     boolean isMultiVector();
     SlawMultiVector multiVector();
