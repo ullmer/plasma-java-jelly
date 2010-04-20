@@ -84,18 +84,25 @@ final class SlawExternalizerV2 extends SlawExternalizer {
 
     private static byte[] marshallWeeStr(byte[] bs) {
         assert bs.length < 7;
-        SlawBuffer b = new SlawBuffer(8);
-        long h = 0;
-        for (int i = 0; i < bs.length; i++) h = (h << 1) | bs[i];
-        return b.putFirstOct((WEE_STR_TB | bs.length), h << 1).bytes();
+        final SlawBuffer b = new SlawBuffer(8);
+        final int fb = (WEE_STR_TB | bs.length + 1);
+        if (LE) {
+            b.put(bs);
+            for (int i = bs.length; i < 7; ++i) b.put(NUL);
+            b.put((byte)fb);
+        } else {
+            b.put((byte)fb);
+            for (int i = bs.length; i < 6; ++i) b.put(NUL);
+            b.put(bs);
+        }
+        return b.bytes();
     }
 
     private static byte[] marshallStr(byte[] bs) {
         final int len = 8 + bs.length + 1;
         final SlawBuffer r = new SlawBuffer(len);
         final int p = r.capacity() - len;
-        r.putFirstOct((STR_TB | p), SlawBuffer.octlen(r.capacity())).put(bs);
-        return r.bytes();
+        return r.putFirstOct((STR_TB | p), r.octs()).put(bs).bytes();
     }
 
     private static byte leadingNumByte(Ilk ilk, boolean cpx, boolean mv) {
@@ -113,45 +120,48 @@ final class SlawExternalizerV2 extends SlawExternalizer {
         return leadingNumByte(n.ilk(), true, false);
     }
 
-    private static long vectTrail(Ilk i, int d, boolean mv) {
-        return (d - (mv ? 2 : 1)) << 56 | (i.bytes() - 1) << 54;
+    private static long numTrail(Ilk i, int d, boolean mv) {
+        return (d - (mv ? 2 : 1)) << 54 | (i.bytes() - 1) << 46;
     }
+
+    private static long numTrail(Ilk i) { return numTrail(i, 1, false); }
 
     private static SlawBuffer firstOct(SlawBuffer b, SlawNumberVector v) {
         return b.putFirstOct(leadingNumByte(v.ilk(), false, false),
-                             vectTrail(v.ilk(), v.dimension(), false));
+                             numTrail(v.ilk(), v.dimension(), false));
     }
 
     private static SlawBuffer firstOct(SlawBuffer b, SlawComplexVector v) {
         return b.putFirstOct(leadingNumByte(v.ilk(), true, false),
-                             vectTrail(v.ilk(), v.dimension(), false));
+                             numTrail(v.ilk(), v.dimension(), false));
     }
 
     private static SlawBuffer firstOct(SlawBuffer b, SlawMultiVector v) {
         return b.putFirstOct(leadingNumByte(v.ilk(), false, true),
-                             vectTrail(v.ilk(), v.dimension(), true));
+                             numTrail(v.ilk(), v.dimension(), true));
     }
 
     private static byte[] marshallSmallNum(SlawNumber n) {
-        final byte fb = leadingNumByte(n);
-        final long bs = n.ilk().bytes() - 1;
+        final Ilk i = n.ilk();
+        assert i.bytes() < 5;
+        final int fb = leadingNumByte(n);
+        final int h = (int) ((fb << 24) | (numTrail(i) >> 32));
         final SlawBuffer r = new SlawBuffer(8);
-        if (n.ilk().isIntegral()) {
-            r.putFirstOct(fb, bs << 54 | n.longValue());
-        } else {
-            final int h = (int) ((fb << 24) + (bs << 14));
-            if (SlawBuffer.isLE())
-                r.putNumVal(n).putInt(h);
-            else
-                r.putInt(h).putNumVal(n);
-        }
+        if (LE)
+            r.putNumVal(n).pad(4 - i.bytes()).putInt(h);
+        else
+            r.putInt(h).putNumVal(n);
         return r.bytes();
     }
 
     private static byte[] marshallNum(SlawNumber n) {
         final SlawBuffer r = new SlawBuffer(16);
-        return r.putFirstOct(leadingNumByte(n), 7<<54).putNumVal(n).bytes();
+        return r.putFirstOct(leadingNumByte(n), numTrail(n.ilk()))
+                .putNumVal(n).bytes();
     }
+
+    static final boolean LE =
+        ByteOrder.LITTLE_ENDIAN == ByteOrder.nativeOrder();
 
     private static final byte NUL = 0;
 
@@ -168,40 +178,29 @@ final class SlawExternalizerV2 extends SlawExternalizer {
     private static final byte STR_TB = 0x70;
     private static final byte WEE_STR_TB = 0x30;
 
-    private static final Map<Ilk, Byte> NUM_TB;
+    private static final Map<Ilk, Integer> NUM_TB;
     static {
-        NUM_TB = new EnumMap<Ilk, Byte>(Ilk.class);
-        NUM_TB.put(INT8, (byte)02000);
-        NUM_TB.put(INT16, (byte)02010);
-        NUM_TB.put(INT32, (byte)02020);
-        NUM_TB.put(INT64, (byte)02030);
-        NUM_TB.put(UNT8, (byte)02100);
-        NUM_TB.put(UNT16, (byte)02110);
-        NUM_TB.put(UNT32, (byte)02120);
-        NUM_TB.put(UNT64, (byte)02130);
-        NUM_TB.put(FLOAT32, (byte)02220);
-        NUM_TB.put(FLOAT64, (byte)02230);
+        NUM_TB = new EnumMap<Ilk, Integer>(Ilk.class);
+        for (Ilk i : Ilk.values())
+            NUM_TB.put(i,
+                       0x80 + (i.bytes() - 1)
+                       + (i.isSigned() ? 0 : 0x10)
+                       + (i.isIntegral() ? 0 : 0x20));
     }
 
     private static class SlawBuffer {
-        private ByteBuffer buffer;
 
         SlawBuffer(int len) {
-            this.buffer = ByteBuffer.allocate(pad(len));
+            assert len > 0;
+            this.buffer = ByteBuffer.allocate(roundUp(len));
             this.buffer.order(ByteOrder.nativeOrder());
         }
 
-        static int pad(int len) {
-            return (len & 8) + ((len & 7) == 0 ? 0 : 1);
-        }
-
-        static long octlen(long len) { return len >>> 3; }
-
-        static boolean isLE() {
-            return ByteOrder.LITTLE_ENDIAN == ByteOrder.nativeOrder();
-        }
+        static int roundUp(int len) { return (len + 7) & -8; }
 
         int capacity () { return this.buffer.capacity(); }
+
+        int octs() { return capacity() >>> 3; }
 
         byte[] bytes() {
             padBuffer();
@@ -209,9 +208,12 @@ final class SlawExternalizerV2 extends SlawExternalizer {
         }
 
         void padBuffer() {
-            final int end = this.buffer.capacity();
-            for (int i = this.buffer.position(); i < end; i++)
-                this.buffer.put(i, (byte)0);
+            pad(this.buffer.capacity() - this.buffer.position());
+        }
+
+        SlawBuffer pad(int len) {
+            while (len-- > 0) this.buffer.put((byte)0);
+            return this;
         }
 
         SlawBuffer put(byte b) { this.buffer.put(b); return this; }
@@ -219,8 +221,8 @@ final class SlawExternalizerV2 extends SlawExternalizer {
         SlawBuffer putInt(int i) { this.buffer.putInt(i); return this; }
 
         SlawBuffer putFirstOct(int b, long rest) {
-            assert rest >= 0 && rest < (1<<56);
-            this.buffer.putLong(rest).put(isLE() ? 7 : 0, (byte)b);
+            assert rest >= 0 && rest < (1<<56) : "<rest> was " + rest;
+            this.buffer.putLong(rest).put(LE ? 7 : 0, (byte)b);
             return this;
         }
 
@@ -241,5 +243,14 @@ final class SlawExternalizerV2 extends SlawExternalizer {
             }
             return this;
         }
+
+        public String toString() {
+            StringBuilder buf = new StringBuilder ("{ ");
+            for (byte b : this.buffer.array()) buf.append(b + " ");
+            buf.append("}");
+            return buf.toString();
+        }
+
+        private ByteBuffer buffer;
     } // SlawBuffer
 }

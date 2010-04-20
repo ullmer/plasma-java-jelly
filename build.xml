@@ -106,6 +106,7 @@
   <target name="test" depends="compile-tests" description="Run unit tests">
     <junit fork="yes" forkMode="once" haltonerror="yes"
            printsummary="off" showoutput="yes" logfailedtests="yes">
+      <jvmarg value="-ea"/>
       <classpath refid="test.run.classpath"/>
       <formatter type="plain" usefile="false"/>
       <formatter type="plain" usefile="true"/>

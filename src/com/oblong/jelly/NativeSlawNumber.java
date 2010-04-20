@@ -93,10 +93,10 @@ final class NativeSlawInt8 extends NativeSlawNumber {
         this.value = v;
     }
 
-    @Override public final Ilk ilk() { return Ilk.INT8; }
-    @Override public final byte byteValue() { return this.value; }
-    @Override public final long longValue() { return this.value; }
-    @Override public final double doubleValue() { return (double)this.value; }
+    @Override public Ilk ilk() { return Ilk.INT8; }
+    @Override public byte byteValue() { return this.value; }
+    @Override public long longValue() { return this.value; }
+    @Override public double doubleValue() { return (double)this.value; }
 
     private byte value;
 }
@@ -106,10 +106,10 @@ final class NativeSlawInt16 extends NativeSlawNumber {
         this.value = v;
     }
 
-    @Override public final Ilk ilk() { return Ilk.INT16; }
-    @Override public final short shortValue() { return this.value; }
-    @Override public final long longValue() { return this.value; }
-    @Override public final double doubleValue() { return (double)this.value; }
+    @Override public Ilk ilk() { return Ilk.INT16; }
+    @Override public short shortValue() { return this.value; }
+    @Override public long longValue() { return this.value; }
+    @Override public double doubleValue() { return (double)this.value; }
 
     private short value;
 }
@@ -119,8 +119,8 @@ final class NativeSlawInt32 extends NativeSlawNumber {
         this.value = v;
     }
 
-    @Override public final Ilk ilk() { return Ilk.INT32; }
-    @Override public final int intValue() { return this.value; }
+    @Override public Ilk ilk() { return Ilk.INT32; }
+    @Override public int intValue() { return this.value; }
     @Override public long longValue() { return this.value; }
     @Override public double doubleValue() { return (double)this.value; }
 
@@ -132,7 +132,7 @@ final class NativeSlawInt64 extends NativeSlawNumber {
         this.value = v;
     }
 
-    @Override public final Ilk ilk() { return Ilk.INT64; }
+    @Override public Ilk ilk() { return Ilk.INT64; }
     @Override public long longValue() { return this.value; }
     @Override public double doubleValue() { return (double)this.value; }
 
@@ -142,14 +142,14 @@ final class NativeSlawInt64 extends NativeSlawNumber {
 final class NativeSlawUnt8 extends NativeSlawNumber {
     NativeSlawUnt8(short v) {
         if (v < 0) v = (short)-v;
-        v = (short)(v & 0x11);
+        v = (short)(v & 0x00FF);
         this.value = v;
     }
 
-    @Override public final Ilk ilk() { return Ilk.UNT8; }
-    @Override public final short shortValue() { return this.value; }
-    @Override public final long longValue() { return this.value; }
-    @Override public final double doubleValue() { return (double)this.value; }
+    @Override public Ilk ilk() { return Ilk.UNT8; }
+    @Override public short shortValue() { return this.value; }
+    @Override public long longValue() { return this.value; }
+    @Override public double doubleValue() { return (double)this.value; }
 
     private short value;
 }
@@ -157,14 +157,14 @@ final class NativeSlawUnt8 extends NativeSlawNumber {
 final class NativeSlawUnt16 extends NativeSlawNumber {
     NativeSlawUnt16(int v) {
         if (v < 0) v = -v;
-        v = v & 0x1111;
+        v = v & 0x0000FFFF;
         this.value = v;
     }
 
-    @Override public final Ilk ilk() { return Ilk.UNT16; }
-    @Override public final int intValue() { return this.value; }
-    @Override public final long longValue() { return this.value; }
-    @Override public final double doubleValue() { return (double)this.value; }
+    @Override public Ilk ilk() { return Ilk.UNT16; }
+    @Override public int intValue() { return this.value; }
+    @Override public long longValue() { return this.value; }
+    @Override public double doubleValue() { return (double)this.value; }
 
     private int value;
 }
@@ -172,13 +172,13 @@ final class NativeSlawUnt16 extends NativeSlawNumber {
 final class NativeSlawUnt32 extends NativeSlawNumber {
     NativeSlawUnt32(long v) {
         if (v < 0) v = -v;
-        v = v & 0x11111111;
+        v = v & 0xFFFFFFFF;
         this.value = v;
     }
 
-    @Override public final Ilk ilk() { return Ilk.UNT32; }
-    @Override public final long longValue() { return this.value; }
-    @Override public final double doubleValue() { return (double)this.value; }
+    @Override public Ilk ilk() { return Ilk.UNT32; }
+    @Override public long longValue() { return this.value; }
+    @Override public double doubleValue() { return (double)this.value; }
 
     private long value;
 }
@@ -190,9 +190,9 @@ final class NativeSlawUnt64 extends NativeSlawNumber {
         this.value = v;
     }
 
-    @Override public final Ilk ilk() { return Ilk.UNT64; }
-    @Override public final long longValue() { return this.value.longValue(); }
-    @Override public final double doubleValue() {
+    @Override public Ilk ilk() { return Ilk.UNT64; }
+    @Override public long longValue() { return this.value.longValue(); }
+    @Override public double doubleValue() {
         return this.value.doubleValue();
     }
 
@@ -207,7 +207,7 @@ final class NativeSlawFloat32 extends NativeSlawNumber {
         this.value = v;
     }
 
-    @Override public final Ilk ilk() { return Ilk.FLOAT32; }
+    @Override public Ilk ilk() { return Ilk.FLOAT32; }
     @Override public long longValue() { return (long)this.value; }
     @Override public float floatValue() { return this.value; }
     @Override public double doubleValue() { return this.value; }
@@ -220,7 +220,7 @@ final class NativeSlawFloat64 extends NativeSlawNumber {
         this.value = v;
     }
 
-    @Override public final Ilk ilk() { return Ilk.FLOAT64; }
+    @Override public Ilk ilk() { return Ilk.FLOAT64; }
     @Override public long longValue() { return (long)this.value; }
     @Override public double doubleValue() { return this.value; }
 

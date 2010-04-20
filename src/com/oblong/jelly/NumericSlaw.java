@@ -57,7 +57,7 @@ public interface NumericSlaw extends Slaw {
             signed = s;
             integral = i;
             width = w;
-            bsize = (byte)(w % 8);
+            bsize = (byte)(w >>> 3);
         }
 
         private final boolean signed;

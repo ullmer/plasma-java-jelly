@@ -32,10 +32,10 @@ public final class Slawx {
         return NativeSlawString.valueOf(s);
     }
 
-    public static SlawNumber int8(byte n) {
+    public static SlawNumber int8(int n) {
         return NativeSlawNumber.valueOf(INT8, n);
     }
-    public static SlawNumber int16(short n) {
+    public static SlawNumber int16(int n) {
         return NativeSlawNumber.valueOf(INT16, n);
     }
     public static SlawNumber int32(int n) {
@@ -44,7 +44,7 @@ public final class Slawx {
     public static SlawNumber int64(long n) {
         return NativeSlawNumber.valueOf(INT64, n);
     }
-    public static SlawNumber unt8(short n) {
+    public static SlawNumber unt8(int n) {
         return NativeSlawNumber.valueOf(UNT8, n);
     }
     public static SlawNumber unt16(int n) {
