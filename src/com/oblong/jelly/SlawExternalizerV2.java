@@ -106,20 +106,20 @@ final class SlawExternalizerV2 extends SlawExternalizer {
         return r.putFirstOct((STR_TB | p), r.octs()).put(bs).bytes();
     }
 
-    private static long firstOct(Ilk i, long d, boolean mv) {
-        return ((d - (mv ? 2 : 1)) << 54)|NUM_OCTS.get(i);
+    private static long firstOct(Ilk i, long d) {
+        return (d << 54) | NUM_OCTS.get(i);
     }
 
     private static long firstOct(SlawNumberVector v) {
-        return firstOct(v.ilk(), v.dimension(), false);
+        return firstOct(v.ilk(), v.dimension() - 1);
     }
 
     private static long firstOct(SlawComplexVector v) {
-        return firstOct(v.ilk(), v.dimension(), false)|COMPLEX_OCT_MASK;
+        return COMPLEX_OCT_MASK | firstOct(v.ilk(), v.dimension() - 1);
     }
 
     private static long firstOct(SlawMultiVector v) {
-        return firstOct(v.ilk(), v.dimension(), true);
+        return firstOct(v.ilk(), v.dimension() - 2);
     }
 
     private static byte[] marshallSmallNum(SlawNumber n) {
