@@ -10,57 +10,68 @@ package com.oblong.jelly;
  *
  * @author jao
  */
-final class NativeSlawComplex extends AbstractSlaw implements SlawComplex {
+final class NativeSlawComplex extends Slaw {
 
-    static SlawComplex valueOf(SlawNumber r, SlawNumber i) {
-        return new NativeSlawComplex(r, i);
+    static Slaw valueOf(Slaw r, Slaw i) {
+        if (r.is(SlawIlk.NUMBER) && i.is(SlawIlk.NUMBER)) {
+            NumericIlk ilk =
+                NumericIlk.dominantIlk(r.numericIlk(), i.numericIlk());
+            return new NativeComplexSlaw(ilk, r, i);
+        }
+        return ZERO;
     }
 
-    // Implementation of com.oblong.jelly.NumericSlaw
+    public SlawIlk ilk() { return SlawIlk.COMPLEX; }
+    public NumericIlk numericIlk() { return im.ilk(); }
 
-    @Override public NumericSlaw withIlk(Ilk ilk) {
-        return valueOf(this.re.withIlk(ilk), this.im.withIlk(ilk));
+    public boolean asBoolean() { return true; }
+    public String asString() { return ""; }
+
+    public long asLong() { return re.asLong(); }
+    public double asDouble() { return re.asDouble(); }
+    public BigInteger asBigInteger() { return re.asBigInteger(); }
+
+    public int dimension() { return 0; }
+    public int count() { return 2; }
+
+    public Slaw asPair() { return Pair.create(re, im); }
+    public List<Slaw> asList() {
+        List<Slaw> result = new ArrayList<Slaw>(2);
+        result.add(re);
+        result.add(im);
+        return result;
+    }
+    public Map<Slaw,Slaw> asMap() {
+        Map<Slaw,Slaw> result = new HashMap<Slaw,Slaw>();
+        result.put(re, im);
+        return result;
     }
 
-    @Override public Ilk ilk() {
-        return this.im.ilk();
+    Slaw withNumericIlk(NumericIlk ilk) {
+        if (numericIlk() == ilk) return this;
+        return new NativeComplexSlaw(ilk, re, im);
     }
 
-    // Implementation of com.oblong.jelly.ExternalizableSlaw
-
-    @Override public byte[] externalize(SlawExternalizer e) {
-        return e.externalize(this);
-    }
-
-    // Implementation of com.oblong.jelly.SlawComplex
-
-    @Override public SlawNumber re() { return this.re; }
-    @Override public SlawNumber im() { return this.im; }
-
-    // Implementation of com.oblong.jelly.Slaw
-
-    @Override public boolean equals(Slaw slaw) {
-        if (!(slaw instanceof SlawComplex)) return false;
-        SlawComplex o = (SlawComplex)slaw;
-        return this.re.equals(o.re()) && this.im.equals(o.im());
+    boolean equals(Slaw slaw) {
+        Pair<Slaw,Slaw> p = slaw.asPair();
+        return re.equals(p.first) && im.equals(p.second);
     }
 
     @Override public int hashCode() {
-        int reh = this.re.hashCode();
-        int imh = this.im.hashCode();
+        int reh = re.hashCode();
+        int imh = im.hashCode();
         return 27 + (reh + 31 * imh);
     }
 
-    @Override public boolean isNumeric() { return true; }
-    @Override public boolean isComplex() { return true; }
-    @Override public SlawComplex complex() { return this; }
-
-    private NativeSlawComplex(SlawNumber r, SlawNumber i) {
-        Ilk ilk = Ilk.dominantIlk(r.ilk(), i.ilk());
-        this.re = r.withIlk(ilk);
-        this.im = i.withIlk(ilk);
+    private NativeSlawComplex(NumericIlk ilk, Slaw r, Slaw i) {
+        re = r.withNumericIlk(ilk);
+        im = i.withNumericIlk(ilk);
     }
 
-    private final SlawNumber re;
-    private final SlawNumber im;
+    private final Slaw re;
+    private final Slaw im;
+
+    private static final Slaw ZERO =
+        valueOf(NativeSlawNumber.valueOf(NumericIlk.INT8, 0),
+                NativeSlawNumber.valueOf(NumericIlk.INT8, 0));
 }

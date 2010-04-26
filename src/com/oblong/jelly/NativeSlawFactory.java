@@ -1,0 +1,71 @@
+// Copyright (c) 2010 Oblong Industries
+
+package com.oblong.jelly;
+
+import java.math.BigInteger;
+
+/**
+ *
+ * Created: Fri Apr  2 01:39:55 2010
+ *
+ * @author jao
+ */
+final class NativeSlawFactory implements SlawFactory {
+
+    @Override public Slaw nil() {
+        return NativeSlawNil.INSTANCE;
+    }
+
+    @Override public Slaw bool(boolean v) {
+        return NativeSlawBool.valueOf(v); }
+
+    @Override public Slaw string(String s) {
+        return NativeSlawString.valueOf(s);
+    }
+
+    @Override public Slaw number(NumericIlk ilk, long n) {
+        return NativeSlawNumber.valueOf(ilk, n);
+    }
+
+    @Override public Slaw number(NumericIlk ilk, double n) {
+        return NativeSlawNumber.valueOf(ilk, n);
+    }
+
+    @Override public Slaw number(NumericIlk ilk, BigInteger n) {
+        return NativeSlawNumber.valueOf(ilk, n);
+    }
+
+    @Override public Slaw complex(Slaw re, Slaw im) {
+        return NativeSlawComplex.valueOf(re, im);
+    }
+
+    @Override public Slaw vector(Slaw x, Slaw y) {
+        return NativeSlawVector.valueOf(x, y);
+    }
+
+    @Override public Slaw vector(Slaw x, Slaw y, Slaw z) {
+        return NativeSlawVector.valueOf(x, y, z);
+    }
+
+    @Override public Slaw vector(Slaw x, Slaw y, Slaw z, Slaw w) {
+        return NativeSlawVector.valueOf(x, y, z, w);
+    }
+
+    @Override public Slaw multivector(Slaw v00, Slaw v01, Slaw v10, Slaw v11)
+    {
+        return NativeSlawMultiVector.valueOf(v00, v01, v10, v11);
+    }
+
+    @Override public Slaw multivector(Slaw v0, Slaw v1) {
+        return NativeSlawMultiVector.valueOf(v0, v1);
+    }
+
+    @Override public Slaw array(Slaw... ns) {
+        return NativeSlawArray.valueOf(ns);
+    }
+
+    @Override public Slaw cons(Slaw car, Slaw cdr) { return null; }
+    @Override public Slaw list(Slaw... s) { return null; }
+    @Override public Slaw map(Map<Slaw,Slaw> m) { return null; }
+
+}

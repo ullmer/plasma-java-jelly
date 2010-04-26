@@ -2,63 +2,98 @@
 
 package com.oblong.jelly;
 
+import java.math.BigInteger;
+import java.util.List;
+import java.util.Map;
+
+import com.oblong.util.Pair;
+
 /**
  * Created: Mon Apr 12 16:46:30 2010
  *
  * @author jao
  */
-public interface Slaw extends ExternalizableSlaw {
+public abstract class Slaw {
 
-    boolean equals(Slaw s);
-    int hashCode();
+    public abstract SlawIlk ilk();
+    public abstract NumericIlk numericIlk();
+    public final boolean is(SlawIlk ilk) { return ilk == this.ilk(); }
 
-    boolean isAtomic();
+    public abstract boolean asBoolean();
+    public abstract String asString();
 
-    boolean isNil();
+    public abstract long asLong();
+    public abstract double asDouble();
+    public abstract BigInteger asBigInteger();
 
-    boolean isBool();
-    SlawBool bool();
+    public abstract int dimension();
+    public abstract int count();
 
-    boolean isString();
-    SlawString string();
+    public abstract Pair<Slaw,Slaw> asPair();
+    public abstract List<Slaw> asList();
+    public abstract Map<Slaw,Slaw> asMap();
+    // public abstract Protein asProtein();
 
-    boolean isNumeric();
+    public final boolean equals(Object o) {
+        if (!o instanceof Slaw) return false;
+        Slaw s = (Slaw)o;
+        return s.ilk() == ilk() && s.numericIlk() == numericIlk && equals(s);
+    }
 
-    boolean isNumber();
-    SlawNumber number();
+    public static Slaw cons(Slaw car, Slaw cdr) {
+        return factory.cons(car, cdr);
+    }
+    public static Slaw list(Slaw... s) { return factory.list(s); }
+    public static Slaw map(Map<Slaw,Slaw> m) { return factory.map(m); }
 
-    boolean isComplex();
-    SlawComplex complex();
+    public static Slaw nil() { return factory.nil(); }
+    public static Slaw bool(boolean v) { return factory.bool(v); }
+    public static Slaw string(String s) { return factory.string(s); }
 
-    boolean isCons();
-    SlawCons cons();
+    public static Slaw int8(int n) { return factory.number(INT8, n); }
+    public static Slaw int16(int n) { return factory.number(INT16, n); }
+    public static Slaw int32(int n) { return factory.number(INT32, n); }
+    public static Slaw int64(long n) { return factory.number(INT64, n); }
+    public static Slaw unt8(int n) { return factory.number(UNT8, n); }
+    public static Slaw unt16(int n) { return factory.number(UNT16, n); }
+    public static Slaw unt32(long n) { return factory.number(UNT32, n); }
+    public static Slaw unt64(long n) { return factory.number(UNT64, n); }
+    public static Slaw unt64(BigInteger n) { return factory.number(UNT64, n);}
+    public static Slaw float32(float n) { return factory.number(FLOAT32, n); }
+    public static Slaw float64(double n) { return factory.number(FLOAT64, n);}
 
-    boolean isList();
-    SlawList list();
+    public static Slaw complex(Slaw re, Slaw im) {
+        return factory.complex(re, im);
+    }
 
-    boolean isMap();
-    SlawMap map();
+    public static Slaw vector(Slaw x, Slaw y) {
+        return factory.vector(x, y);
+    }
+    public static Slaw vector(Slaw x, Slaw y, Slaw z) {
+        return factory.vector(x, y, z);
+    }
+    public static Slaw vector(Slaw x, Slaw y, Slaw z, Slaw w) {
+        return factory.vector(x, y, z, w);
+    }
 
-    boolean isNumberArray();
-    boolean isComplexArray();
-    boolean isVectorArray();
-    boolean isComplexVectorArray();
-    boolean isMultiVectorArray();
-    SlawNumberArray numberArray();
-    SlawComplexArray complexArray();
-    SlawNumberVectorArray numberVectorArray();
-    SlawComplexVectorArray complexVectorArray();
+    public static Slaw multivector(Slaw v00, Slaw v01, Slaw v10, Slaw v11) {
+        return factory.multivector(v00, v01, v10, v11);
+    }
+    public static Slaw multivector(Slaw v0, Slaw v1) {
+        return factory.multivector(v0, v1);
+    }
 
-    boolean isNumberVector();
-    boolean isComplexVector();
-    SlawNumberVector numberVector();
-    SlawComplexVector complexVector();
+    public static Slaw array(Slaw... ns) {
+        return factory.array(ns);
+    }
 
-    boolean isMultiVector();
-    SlawMultiVector multiVector();
-}
+    // we don't really want clients to extend this class
+    Slaw() {}
 
-
-interface ExternalizableSlaw {
-    byte[] externalize(SlawExternalizer e);
+    abstract boolean equals(Slaw s);
+    abstract Slaw withNumericIlk(NumericIlk ilk);
+
+    static void setFactory (SlawFactory f) { factory = f; }
+
+    private static SlawFactory factory = new NativeSlawx();
 }

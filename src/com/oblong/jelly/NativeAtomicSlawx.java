@@ -1,70 +1,78 @@
+// Copyright (c) 2010 Oblong Industries
+
 package com.oblong.jelly;
 
-abstract class NativeAtomicSlaw extends AbstractSlaw {
-    @Override public boolean isAtomic() { return true; }
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
+abstract class NativeAtomicSlaw extends Slaw {
+
+    public NumericIlk numericIlk() { return NumericIlk.NAN; }
+    public Slaw withNumericIlk(NumericIlk ilk) { return this; }
+
+    public boolean asBoolean() { return true; }
+    public String asString() { return ""; }
+
+    public long asLong() { return 0; }
+    public double asDouble() { return 0; }
+    public BigInteger asBigInteger() { return BigInteger.ZERO; }
+
+    public final int dimension() { return 0; }
+    public final int count() { return 1; }
+
+    public final Pair<Slaw,Slaw> asPair() { return Pair.create(this, null); }
+                                // ^ NativeSlawList.EMPTY_LIST as cdr
+    public final List<Slaw> asList() {
+        List<Slaw> result = new ArrayList<Slaw>(1);
+        result.add(this);
+        return result;
+    }
+    public Map<Slaw, Slaw> asMap() { return Collections.EMPTY_MAP; }
 }
 
 final class NativeSlawNil extends NativeAtomicSlaw {
+
     static final NativeSlawNil INSTANCE = new NativeSlawNil();
 
-    @Override public boolean isNil() { return true; }
+    public SlawIlk ilk() { return SlawIlk.NIL; }
+    @Override public boolean asBoolean() { return false; }
 
-    @Override public boolean equals(Slaw other) { return other.isNil(); }
-
-    @Override public int hashCode() {return 17; }
-
-    @Override public byte[] externalize(SlawExternalizer e) {
-        return e.externalize(this);
-    }
+    boolean equals(Slaw o) { return true; }
 
     private NativeSlawNil () {}
 }
 
-final class NativeSlawBool extends NativeAtomicSlaw implements SlawBool {
-    static SlawBool valueOf(boolean b) { return b ? TRUE : FALSE; }
+final class NativeSlawBool extends NativeAtomicSlaw {
 
-    @Override public boolean isBool() { return true; }
-    @Override public SlawBool bool() { return this; }
+    static Slaw valueOf(boolean b) { return b ? TRUE : FALSE; }
 
-    @Override public boolean value() { return this == TRUE; }
+    public SlawIlk ilk() { return SlawIlk.BOOL; }
+    @Override public boolean asBoolean() { return this == TRUE; }
 
-    @Override public boolean equals(Slaw other) {
-        if (!(other instanceof SlawBool)) return false;
-        return !(value() ^ ((SlawBool)other).value());
-    }
-
-    @Override public int hashCode() { return this == TRUE ? 18 : 19; }
-
-    @Override public byte[] externalize(SlawExternalizer e) {
-        return e.externalize(this);
-    }
+    boolean equals(Slaw o) { return o.asBoolean() == asBoolean(); }
 
     private NativeSlawBool () {}
+
     private static final NativeSlawBool TRUE = new NativeSlawBool();
     private static final NativeSlawBool FALSE = new NativeSlawBool();
 }
 
-final class NativeSlawString extends NativeAtomicSlaw implements SlawString {
+final class NativeSlawString extends NativeAtomicSlaw {
+
     static SlawString valueOf(String s) {
         return new NativeSlawString(s);
     }
 
-    @Override public boolean isString() { return true; }
-    @Override public SlawString string() { return this; }
+    public SlawIlk ilk() { return SlawIlk.STRING; }
+    @Override public boolean asString() { return val; }
 
-    @Override public String value() { return this.val; }
+    public boolean equals(Slaw o) { return o.asString() == val; }
 
-    @Override public boolean equals(Slaw other) {
-        if (!(other instanceof SlawString)) return false;
-        return this.val.equals(((SlawString)other).value());
-    }
+    @Override public int hashCode() { return val.hashCode(); }
 
-    @Override public int hashCode() { return this.val.hashCode(); }
-
-    @Override public byte[] externalize(SlawExternalizer e) {
-        return e.externalize(this);
-    }
-
-    private NativeSlawString(String s) { this.val = s; }
+    private NativeSlawString(String s) { val = s; }
     private final String val;
 }

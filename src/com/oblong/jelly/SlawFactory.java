@@ -1,0 +1,33 @@
+// Copyright (c) 2010 Oblong Industries
+
+package com.oblong.jelly;
+
+/**
+ * Created: Mon Apr 26 01:28:28 2010
+ *
+ * @author jao
+ */
+interface SlawFactory {
+
+    Slaw nil();
+    Slaw bool(boolean v);
+    Slaw string(String s);
+
+    Slaw number(NumericIlk ilk, long n);
+    Slaw number(NumericIlk ilk, double n);
+    Slaw number(NumericIlk ilk, BigInteger n);
+    Slaw complex(Slaw re, Slaw im);
+
+    Slaw vector(Slaw x, Slaw y);
+    Slaw vector(Slaw x, Slaw y, Slaw z);
+    Slaw vector(Slaw x, Slaw y, Slaw z, Slaw w);
+
+    Slaw multivector(Slaw v00, Slaw v01, Slaw v10, Slaw v11);
+    Slaw multivector(Slaw up, Slaw down);
+
+    Slaw array(Slaw... sx);
+
+    Slaw cons(Slaw car, Slaw cdr);
+    Slaw list(Slaw... s);
+    Slaw map(Map<Slaw,Slaw> m);
+}

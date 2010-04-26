@@ -7,18 +7,15 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import com.oblong.jelly.NumericSlaw.Ilk;
-
-
 /**
  *
  * Created: Mon Apr 19 02:26:18 2010
  *
  * @author jao
  */
-abstract class BaseSlawVector<E extends SlawComplex> extends AbstractSlaw {
+abstract class NativeSlawVector extends Slaw {
 
-    BaseSlawVector(Ilk ilk, E[] elems) {
+    BaseSlawVector(NumericIlk ilk, E[] elems) {
         assert elems != null;
         assert elems.length > 1 && elems.length < 5;
         List<E> es = new ArrayList<E>(elems.length);
@@ -31,7 +28,9 @@ abstract class BaseSlawVector<E extends SlawComplex> extends AbstractSlaw {
 
     // Implementation of com.oblong.jelly.NumericSlaw
 
-    public final Ilk ilk() { return get(0).ilk(); }
+    public final NumericIlk numericIlk() {
+        return elements.get(0).numericIlk();
+    }
 
     // Implementation of com.oblong.jelly.SlawVector
 
@@ -54,7 +53,7 @@ final class NativeNumberSlawVector extends BaseSlawVector<SlawNumber>
     implements SlawNumberVector {
 
     static SlawNumberVector valueOf(SlawNumber... l) {
-        return new NativeNumberSlawVector(Ilk.dominantIlk(l), l);
+        return new NativeNumberSlawVector(NumericIlk.dominantIlk(l), l);
     }
 
     @Override public boolean equals(Slaw slaw) {
@@ -69,13 +68,13 @@ final class NativeNumberSlawVector extends BaseSlawVector<SlawNumber>
 
     @Override public boolean isNumberVector() { return true; }
 
-    @Override public NumericSlaw withIlk(Ilk ilk) {
+    @Override public NumericSlaw withIlk(NumericIlk ilk) {
         return new NativeNumberSlawVector(ilk, toArray());
     }
 
     @Override public SlawNumberVector numberVector() { return this; }
 
-    private NativeNumberSlawVector(Ilk i, SlawNumber... l) {
+    private NativeNumberSlawVector(NumericIlk i, SlawNumber... l) {
         super(i, l);
     }
 }
@@ -84,7 +83,7 @@ final class NativeComplexSlawVector extends BaseSlawVector<SlawComplex>
     implements SlawComplexVector {
 
     static SlawComplexVector valueOf(SlawComplex... l) {
-        return new NativeComplexSlawVector(Ilk.dominantIlk(l), l);
+        return new NativeComplexSlawVector(NumericIlk.dominantIlk(l), l);
     }
 
     @Override public boolean equals(Slaw slaw) {
@@ -99,13 +98,13 @@ final class NativeComplexSlawVector extends BaseSlawVector<SlawComplex>
 
     @Override public boolean isComplexVector() { return true; }
 
-    @Override public NumericSlaw withIlk(Ilk ilk) {
+    @Override public NumericSlaw withIlk(NumericIlk ilk) {
         return new NativeComplexSlawVector(ilk, toArray());
     }
 
     @Override public SlawComplexVector complexVector() { return this; }
 
-    private NativeComplexSlawVector(Ilk i, SlawComplex... l) {
+    private NativeComplexSlawVector(NumericIlk i, SlawComplex... l) {
         super(i, l);
     }
 }

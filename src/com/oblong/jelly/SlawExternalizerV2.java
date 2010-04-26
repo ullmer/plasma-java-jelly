@@ -61,7 +61,8 @@ final class SlawExternalizerV2 extends SlawExternalizer {
         Ilk ilk = v.ilk();
         SlawBuffer r = new SlawBuffer(8 + 2 * v.dimension() * ilk.bytes());
         r.putLong(firstOct(v));
-        for (SlawComplex n : v.asList()) r.putNumVal(n.re()).putNumVal(n.im());
+        for (SlawComplex n : v.asList())
+            r.putNumVal(n.re()).putNumVal(n.im());
         return r.bytes();
     }
 
