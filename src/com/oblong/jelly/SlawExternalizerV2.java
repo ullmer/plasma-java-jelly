@@ -18,9 +18,11 @@ import com.oblong.util.Pair;
 final class SlawExternalizerV2 extends SlawExternalizer {
 
     int nilExternSize(Slaw s) { return NIL_OCT.length; }
+
     byte[] externNil(Slaw s) { return Arrays.copyOf(NIL_OCT, 8); }
 
     int boolExternSize(Slaw b) { return TRUE_OCT.length; }
+
     byte[] externBool(Slaw b) {
         return Arrays.copyOf(b.asBoolean() ? TRUE_OCT : FALSE_OCT, 8);
     }
@@ -29,6 +31,7 @@ final class SlawExternalizerV2 extends SlawExternalizer {
         final int bn = stringBytes(s).length;
         return (bn > 6) ? roundUp(bn + 8 + 1) : 8;
     }
+
     byte[] externString(Slaw s) {
         final byte[] bs = stringBytes(s);
         return (bs.length > 6) ? marshallStr(bs) : marshallWeeStr(bs);
@@ -37,6 +40,7 @@ final class SlawExternalizerV2 extends SlawExternalizer {
     int numberExternSize(Slaw n) {
         return roundUp(5 + n.numericIlk().bytes());
     }
+
     byte[] externNumber(Slaw n) {
         return (n.numericIlk().bytes() < 5)
             ? marshallSmallNum(n) : marshallNum(n);
@@ -46,6 +50,7 @@ final class SlawExternalizerV2 extends SlawExternalizer {
     int complexExternSize(Slaw c) {
         return 8 + 2 * c.numericIlk().bytes();
     }
+
     byte[] externComplex(Slaw c) {
         final SlawBuffer r = new SlawBuffer(complexExternSize(c));
         final Pair<Slaw,Slaw> cc = c.asPair();
@@ -58,9 +63,10 @@ final class SlawExternalizerV2 extends SlawExternalizer {
     int vectorExternSize(Slaw v) {
         return roundUp(8 + v.dimension() * v.numericIlk().bytes());
     }
+
     byte[] externVector(Slaw v) {
         SlawBuffer r = new SlawBuffer(vectorExternSize(v));
-        r.putLong(firstVectorOct(v));
+        r.putLong(firstOct(v.numericIlk(), v.dimension() - 1));
         for (Slaw n : v.asList()) r.putNumVal(n);
         return r.bytes();
     }
@@ -68,9 +74,11 @@ final class SlawExternalizerV2 extends SlawExternalizer {
     int complexVectorExternSize(Slaw v) {
         return roundUp(8 + 2 * v.dimension() * v.numericIlk().bytes());
     }
+
     byte[] externComplexVector(Slaw v) {
         final SlawBuffer r = new SlawBuffer(complexVectorExternSize(v));
-        r.putLong(firstCVectorOct(v));
+        r.putLong(COMPLEX_OCT_MASK |
+                  firstOct(v.numericIlk(), v.dimension() - 1));
         for (Slaw n : v.asList()) {
             final Pair<Slaw,Slaw> cs = n.asPair();
             r.putNumVal(cs.first).putNumVal(cs.second);
@@ -81,9 +89,10 @@ final class SlawExternalizerV2 extends SlawExternalizer {
     int multiVectorExternSize(Slaw v) {
         return roundUp(8 + v.count() * v.numericIlk().bytes());
     }
+
     byte[] externMultiVector(Slaw v) {
         final SlawBuffer r = new SlawBuffer(multiVectorExternSize(v));
-        r.putLong(firstMVectorOct(v));
+        r.putLong(firstOct(v.numericIlk(), v.dimension() - 2));
         for (Slaw n : v.asList()) r.putNumVal(n);
         return r.bytes();
     }
@@ -124,18 +133,6 @@ final class SlawExternalizerV2 extends SlawExternalizer {
 
     private static long firstOct(NumericIlk i, long d) {
         return (d << 54) | NUM_OCTS.get(i);
-    }
-
-    private static long firstVectorOct(Slaw v) {
-        return firstOct(v.numericIlk(), v.dimension() - 1);
-    }
-
-    private static long firstCVectorOct(Slaw v) {
-        return COMPLEX_OCT_MASK | firstOct(v.numericIlk(), v.dimension() - 1);
-    }
-
-    private static long firstMVectorOct(Slaw v) {
-        return firstOct(v.numericIlk(), v.dimension() - 2);
     }
 
     private static byte[] marshallSmallNum(Slaw n) {
