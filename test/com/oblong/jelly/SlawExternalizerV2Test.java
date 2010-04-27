@@ -8,8 +8,7 @@ import org.junit.Assert;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
-import static com.oblong.jelly.Slawx.*;
-import java.util.Arrays;
+import static com.oblong.jelly.Slaw.*;
 
 /**
  *  Unit Test for class SlawExternalizerV2
@@ -20,7 +19,7 @@ import java.util.Arrays;
  * @author jao
  */
 public class SlawExternalizerV2Test {
-    static final SlawExternalizer externalizer = SlawExternalizerV2.get();
+    static final SlawExternalizer externalizer = new SlawExternalizerV2();
     static final boolean LE =
         ByteOrder.LITTLE_ENDIAN == ByteOrder.nativeOrder();
 
@@ -32,9 +31,10 @@ public class SlawExternalizerV2Test {
     }
 
     static void check(Slaw s, byte[] leb, byte[] beb, String msg) {
-        final byte[] sb = s.externalize(externalizer);
+        final byte[] sb = externalizer.extern(s);
         final byte[] tb = LE ? leb : beb;
         String m = msg + ": " + arrayStr(sb) + " vs. " + arrayStr(tb);
+        assertEquals(sb.length, externalizer.externSize(s));
         assertArrayEquals(m, tb , sb);
     }
 

@@ -35,13 +35,13 @@ public enum SlawIlk {
     }
 
     private static EnumSet<SlawIlk> atoms =
-        EnumSet<SlawIlk>.of(NIL, BOOL, STRING, NUMBER);
+        EnumSet.of(NIL, BOOL, STRING, NUMBER);
     private static EnumSet<SlawIlk> numeric =
-        EnumSet<SlawIlk>.of(NUMBER, COMPLEX,
-                            VECTOR, COMPLEX_VECTOR, MULTI_VECTOR,
-                            ARRAY, COMPLEX_ARRAY, VECTOR_ARRAY,
-                            COMPLEX_VECTOR_ARRAY, MULTI_VECTOR_ARRAY);
+        EnumSet.of(NUMBER, COMPLEX,
+                   VECTOR, COMPLEX_VECTOR, MULTI_VECTOR,
+                   ARRAY, COMPLEX_ARRAY, VECTOR_ARRAY,
+                   COMPLEX_VECTOR_ARRAY, MULTI_VECTOR_ARRAY);
     private static EnumSet<SlawIlk> arrays =
-        EnumSet<SlawIlk>.of(ARRAY, COMPLEX_ARRAY, VECTOR_ARRAY,
-                            COMPLEX_VECTOR_ARRAY, MULTI_VECTOR_ARRAY);
+        EnumSet.of(ARRAY, COMPLEX_ARRAY, VECTOR_ARRAY,
+                   COMPLEX_VECTOR_ARRAY, MULTI_VECTOR_ARRAY);
 }

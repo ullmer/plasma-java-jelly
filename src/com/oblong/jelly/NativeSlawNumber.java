@@ -40,17 +40,16 @@ abstract class NativeSlawNumber extends NativeAtomicSlaw {
         return new NativeSlawUnt64(value);
     }
 
-    @Override public final String toString() {
-        return numericIlk() + ":" +
-            (numericIlk().isIntegral() ? asLong() : asDouble());
-    }
+    @Override public final SlawIlk ilk() { return SlawIlk.NUMBER; }
 
-    public BigInteger asDouble() { return (double)asLong(); }
-    public BigInteger asBigInteger() { return BigInteger.valueOf(asLong()); }
+    @Override public double asDouble() { return (double)asLong(); }
+    @Override public BigInteger asBigInteger() {
+        return BigInteger.valueOf(asLong());
+    }
 
     @Override public final Slaw withNumericIlk(NumericIlk i) {
         if (i == numericIlk()) return this;
-        if (i == NumericIlk.UNT64) return valueOf(bigIntegerValue());
+        if (i == NumericIlk.UNT64) return valueOf(asBigInteger());
         if (i.isIntegral()) return valueOf(i, asLong());
         return valueOf(i, asDouble());
     }
@@ -58,8 +57,8 @@ abstract class NativeSlawNumber extends NativeAtomicSlaw {
     @Override public final int hashCode() { return (int)asLong(); }
 
     final boolean equals(Slaw s) {
-        if (numericIlk().isIntegral()) return longValue() == s.longValue();
-        return doubleValue() == s.doubleValue();
+        if (numericIlk().isIntegral()) return asLong() == s.asLong();
+        return asDouble() == s.asDouble();
     }
 
     static final long normalize(long v, long mask) {
@@ -84,7 +83,7 @@ final class NativeSlawInt8 extends NativeSlawNumber {
 
     NativeSlawInt8(byte v) { value = v; }
 
-    @Override public NumericIlk ilk() { return NumericIlk.INT8; }
+    @Override public NumericIlk numericIlk() { return NumericIlk.INT8; }
     @Override public long asLong() { return value; }
 
     private byte value;
@@ -94,7 +93,7 @@ final class NativeSlawInt16 extends NativeSlawNumber {
 
     NativeSlawInt16(short v) { value = v; }
 
-    @Override public NumericIlk ilk() { return NumericIlk.INT16; }
+    @Override public NumericIlk numericIlk() { return NumericIlk.INT16; }
     @Override public long asLong() { return value; }
 
     private short value;
@@ -104,8 +103,8 @@ final class NativeSlawInt32 extends NativeSlawNumber {
 
     NativeSlawInt32(int v) { value = v; }
 
-    @Override public NumericIlk ilk() { return NumericIlk.INT32; }
-    @Override public int asLong() { return value; }
+    @Override public NumericIlk numericIlk() { return NumericIlk.INT32; }
+    @Override public long asLong() { return value; }
 
     private int value;
 }
@@ -114,7 +113,7 @@ final class NativeSlawInt64 extends NativeSlawNumber {
 
     NativeSlawInt64(long v) { value = v; }
 
-    @Override public NumericIlk ilk() { return NumericIlk.INT64; }
+    @Override public NumericIlk numericIlk() { return NumericIlk.INT64; }
     @Override public long asLong() { return value; }
 
     private long value;
@@ -124,7 +123,7 @@ final class NativeSlawUnt8 extends NativeSlawNumber {
 
     NativeSlawUnt8(short v) { value = (short)normalize(v,0xFF); }
 
-    @Override public NumericIlk ilk() { return NumericIlk.UNT8; }
+    @Override public NumericIlk numericIlk() { return NumericIlk.UNT8; }
     @Override public long asLong() { return value; }
 
     private short value;
@@ -133,7 +132,7 @@ final class NativeSlawUnt8 extends NativeSlawNumber {
 final class NativeSlawUnt16 extends NativeSlawNumber {
     NativeSlawUnt16(int v) { value = (int)normalize(v, 0xFFFF); }
 
-    @Override public NumericIlk ilk() { return NumericIlk.UNT16; }
+    @Override public NumericIlk numericIlk() { return NumericIlk.UNT16; }
     @Override public long asLong() { return value; }
 
     private int value;
@@ -143,7 +142,7 @@ final class NativeSlawUnt32 extends NativeSlawNumber {
 
     NativeSlawUnt32(long v) { value = normalize(v, 0xFFFFFFFF); }
 
-    @Override public NumericIlk ilk() { return NumericIlk.UNT32; }
+    @Override public NumericIlk numericIlk() { return NumericIlk.UNT32; }
     @Override public long asLong() { return value; }
 
     private long value;
@@ -155,7 +154,7 @@ final class NativeSlawUnt64 extends NativeSlawNumber {
 
     NativeSlawUnt64(BigInteger v) { value = v.longValue(); }
 
-    @Override public NumericIlk ilk() { return NumericIlk.UNT64; }
+    @Override public NumericIlk numericIlk() { return NumericIlk.UNT64; }
     @Override public long asLong() { return value; }
 
     @Override public BigInteger asBigInteger() {
@@ -170,9 +169,8 @@ final class NativeSlawFloat32 extends NativeSlawNumber {
         value = v;
     }
 
-    @Override public NumericIlk ilk() { return NumericIlk.FLOAT32; }
+    @Override public NumericIlk numericIlk() { return NumericIlk.FLOAT32; }
     @Override public long asLong() { return (long)value; }
-    @Override public float floatValue() { return value; }
     @Override public double asDouble() { return value; }
 
     private float value;
@@ -183,7 +181,7 @@ final class NativeSlawFloat64 extends NativeSlawNumber {
         value = v;
     }
 
-    @Override public NumericIlk ilk() { return NumericIlk.FLOAT64; }
+    @Override public NumericIlk numericIlk() { return NumericIlk.FLOAT64; }
     @Override public long asLong() { return (long)value; }
     @Override public double asDouble() { return value; }
 

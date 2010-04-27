@@ -8,6 +8,9 @@ import java.util.Map;
 
 import com.oblong.util.Pair;
 
+import static com.oblong.jelly.NumericIlk.*;
+import static com.oblong.jelly.SlawIlk.*;
+
 /**
  * Created: Mon Apr 12 16:46:30 2010
  *
@@ -35,9 +38,10 @@ public abstract class Slaw {
     // public abstract Protein asProtein();
 
     public final boolean equals(Object o) {
-        if (!o instanceof Slaw) return false;
+        if (!(o instanceof Slaw)) return false;
         Slaw s = (Slaw)o;
-        return s.ilk() == ilk() && s.numericIlk() == numericIlk && equals(s);
+        return s.ilk() == ilk() && s.numericIlk() == numericIlk() &&
+            equals(s);
     }
 
     public static Slaw cons(Slaw car, Slaw cdr) {
@@ -95,5 +99,5 @@ public abstract class Slaw {
 
     static void setFactory (SlawFactory f) { factory = f; }
 
-    private static SlawFactory factory = new NativeSlawx();
+    private static SlawFactory factory = new NativeSlawFactory();
 }

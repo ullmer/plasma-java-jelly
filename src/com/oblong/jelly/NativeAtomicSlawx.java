@@ -5,8 +5,11 @@ package com.oblong.jelly;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.oblong.util.Pair;
 
 abstract class NativeAtomicSlaw extends Slaw {
 
@@ -23,14 +26,19 @@ abstract class NativeAtomicSlaw extends Slaw {
     public final int dimension() { return 0; }
     public final int count() { return 1; }
 
-    public final Pair<Slaw,Slaw> asPair() { return Pair.create(this, null); }
+    public final Pair<Slaw,Slaw> asPair() { return null; }
                                 // ^ NativeSlawList.EMPTY_LIST as cdr
     public final List<Slaw> asList() {
         List<Slaw> result = new ArrayList<Slaw>(1);
         result.add(this);
         return result;
     }
-    public Map<Slaw, Slaw> asMap() { return Collections.EMPTY_MAP; }
+
+    public Map<Slaw,Slaw> asMap() { return EMPTY_MAP; }
+
+    private static final Map<Slaw,Slaw> EMPTY_MAP =
+        Collections.unmodifiableMap(new HashMap<Slaw,Slaw>());
+
 }
 
 final class NativeSlawNil extends NativeAtomicSlaw {
@@ -62,12 +70,12 @@ final class NativeSlawBool extends NativeAtomicSlaw {
 
 final class NativeSlawString extends NativeAtomicSlaw {
 
-    static SlawString valueOf(String s) {
+    static Slaw valueOf(String s) {
         return new NativeSlawString(s);
     }
 
     public SlawIlk ilk() { return SlawIlk.STRING; }
-    @Override public boolean asString() { return val; }
+    @Override public String asString() { return val; }
 
     public boolean equals(Slaw o) { return o.asString() == val; }
 

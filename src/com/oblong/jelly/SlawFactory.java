@@ -2,6 +2,9 @@
 
 package com.oblong.jelly;
 
+import java.math.BigInteger;
+import java.util.Map;
+
 /**
  * Created: Mon Apr 26 01:28:28 2010
  *
@@ -15,7 +18,7 @@ interface SlawFactory {
 
     Slaw number(NumericIlk ilk, long n);
     Slaw number(NumericIlk ilk, double n);
-    Slaw number(NumericIlk ilk, BigInteger n);
+    Slaw number(BigInteger n);
     Slaw complex(Slaw re, Slaw im);
 
     Slaw vector(Slaw x, Slaw y);

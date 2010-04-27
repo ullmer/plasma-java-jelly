@@ -3,6 +3,9 @@
 package com.oblong.jelly;
 
 import java.util.EnumMap;
+import java.util.Map;
+
+import static com.oblong.jelly.SlawIlk.*;
 
 /**
  * Created: Sun Apr 18 01:46:42 2010
@@ -65,7 +68,7 @@ abstract class SlawExternalizer {
     private static final Map<SlawIlk,Externalizer> externalizers;
     static {
         externalizers = new EnumMap<SlawIlk,Externalizer>(SlawIlk.class);
-        externalizers.put(NIL, new Externalizer {
+        externalizers.put(NIL, new Externalizer() {
                 public byte[] extern(SlawExternalizer ext, Slaw s) {
                     return ext.externNil(s);
                 }
@@ -73,7 +76,7 @@ abstract class SlawExternalizer {
                     return ext.nilExternSize(s);
                 }
             });
-        externalizers.put(BOOL, new Externalizer {
+        externalizers.put(BOOL, new Externalizer() {
                 public byte[] extern(SlawExternalizer ext, Slaw s) {
                     return ext.externBool(s);
                 }
@@ -81,7 +84,7 @@ abstract class SlawExternalizer {
                     return ext.boolExternSize(s);
                 }
             });
-        externalizers.put(STRING, new Externalizer {
+        externalizers.put(STRING, new Externalizer() {
                 public byte[] extern(SlawExternalizer ext, Slaw s) {
                     return ext.externString(s);
                 }
@@ -89,7 +92,7 @@ abstract class SlawExternalizer {
                     return ext.stringExternSize(s);
                 }
             });
-        externalizers.put(NUMBER, new Externalizer {
+        externalizers.put(NUMBER, new Externalizer() {
                 public byte[] extern(SlawExternalizer ext, Slaw s) {
                     return ext.externNumber(s);
                 }
@@ -97,7 +100,7 @@ abstract class SlawExternalizer {
                     return ext.numberExternSize(s);
                 }
             });
-        externalizers.put(COMPLEX, new Externalizer {
+        externalizers.put(COMPLEX, new Externalizer() {
                 public byte[] extern(SlawExternalizer ext, Slaw s) {
                     return ext.externComplex(s);
                 }
@@ -105,7 +108,7 @@ abstract class SlawExternalizer {
                     return ext.complexExternSize(s);
                 }
             });
-        externalizers.put(VECTOR, new Externalizer {
+        externalizers.put(VECTOR, new Externalizer() {
                 public byte[] extern(SlawExternalizer ext, Slaw s) {
                     return ext.externVector(s);
                 }
@@ -113,7 +116,7 @@ abstract class SlawExternalizer {
                     return ext.vectorExternSize(s);
                 }
             });
-        externalizers.put(COMPLEX_VECTOR, new Externalizer {
+        externalizers.put(COMPLEX_VECTOR, new Externalizer() {
                 public byte[] extern(SlawExternalizer ext, Slaw s) {
                     return ext.externComplexVector(s);
                 }
@@ -121,7 +124,7 @@ abstract class SlawExternalizer {
                     return ext.complexVectorExternSize(s);
                 }
             });
-        externalizers.put(MULTI_VECTOR, new Externalizer {
+        externalizers.put(MULTI_VECTOR, new Externalizer() {
                 public byte[] extern(SlawExternalizer ext, Slaw s) {
                     return ext.externMultiVector(s);
                 }
@@ -131,5 +134,5 @@ abstract class SlawExternalizer {
             });
     }
 
-    private static SlawExternalizer current = new SlawExternalizerV2();
+    private static SlawExternalizer current = null; // new SlawExternalizerV2();
 }

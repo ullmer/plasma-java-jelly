@@ -3,6 +3,7 @@
 package com.oblong.jelly;
 
 import java.math.BigInteger;
+import java.util.Map;
 
 /**
  *
@@ -31,8 +32,8 @@ final class NativeSlawFactory implements SlawFactory {
         return NativeSlawNumber.valueOf(ilk, n);
     }
 
-    @Override public Slaw number(NumericIlk ilk, BigInteger n) {
-        return NativeSlawNumber.valueOf(ilk, n);
+    @Override public Slaw number(BigInteger n) {
+        return NativeSlawNumber.valueOf(n);
     }
 
     @Override public Slaw complex(Slaw re, Slaw im) {
@@ -53,15 +54,18 @@ final class NativeSlawFactory implements SlawFactory {
 
     @Override public Slaw multivector(Slaw v00, Slaw v01, Slaw v10, Slaw v11)
     {
-        return NativeSlawMultiVector.valueOf(v00, v01, v10, v11);
+        return null;
+        // return NativeSlawMultiVector.valueOf(v00, v01, v10, v11);
     }
 
     @Override public Slaw multivector(Slaw v0, Slaw v1) {
-        return NativeSlawMultiVector.valueOf(v0, v1);
+        return null;
+        // return NativeSlawMultiVector.valueOf(v0, v1);
     }
 
     @Override public Slaw array(Slaw... ns) {
-        return NativeSlawArray.valueOf(ns);
+        return null;
+        // return NativeSlawArray.valueOf(ns);
     }
 
     @Override public Slaw cons(Slaw car, Slaw cdr) { return null; }

@@ -1,5 +1,11 @@
 package com.oblong.jelly;
 
+import java.util.Arrays;
+import java.util.NoSuchElementException;
+import java.util.Collections;
+import java.util.List;
+import java.util.ArrayList;
+
 /**
  * Created: Fri Apr 23 13:34:13 2010
  *
@@ -7,12 +13,12 @@ package com.oblong.jelly;
  */
 public enum NumericIlk {
 
-    FLOAT64(true, false, 64), FLOAT32(true, false, 32),
-    UNT64(false, true, 64), INT64(true, true, 64),
-    UNT32(false, true, 32), INT32(true, true, 32),
-    UNT16(false, true, 16), INT16(true, true, 16),
-    UNT8(false, true, 8), INT8(true,true, 8),
-    NAN(false, false, 0);
+    NAN(false, false, 0),
+        FLOAT64(true, false, 64), FLOAT32(true, false, 32),
+        UNT64(false, true, 64), INT64(true, true, 64),
+        UNT32(false, true, 32), INT32(true, true, 32),
+        UNT16(false, true, 16), INT16(true, true, 16),
+        UNT8(false, true, 8), INT8(true,true, 8);
 
     public int width() { return width; }
     public int bytes() { return bsize; }
@@ -21,7 +27,7 @@ public enum NumericIlk {
 
     public static NumericIlk dominantIlk(List<NumericIlk> ilks) {
         try {
-            return Collections.max(ilks);
+            return Collections.min(ilks);
         } catch (NoSuchElementException e) {
             return INT8;
         }
@@ -33,7 +39,7 @@ public enum NumericIlk {
 
     public static NumericIlk dominantIlk(Slaw... nss) {
         List<NumericIlk> is = new ArrayList<NumericIlk>();
-        for (Slaw s : nss) is.add(s.ilk());
+        for (Slaw s : nss) is.add(s.numericIlk());
         return dominantIlk(is);
     }
 

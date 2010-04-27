@@ -2,6 +2,14 @@
 
 package com.oblong.jelly;
 
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.oblong.util.Pair;
+
 /**
  * Describe class NativeSlawComplex here.
  *
@@ -16,13 +24,13 @@ final class NativeSlawComplex extends Slaw {
         if (r.is(SlawIlk.NUMBER) && i.is(SlawIlk.NUMBER)) {
             NumericIlk ilk =
                 NumericIlk.dominantIlk(r.numericIlk(), i.numericIlk());
-            return new NativeComplexSlaw(ilk, r, i);
+            return new NativeSlawComplex(ilk, r, i);
         }
         return ZERO;
     }
 
     public SlawIlk ilk() { return SlawIlk.COMPLEX; }
-    public NumericIlk numericIlk() { return im.ilk(); }
+    public NumericIlk numericIlk() { return im.numericIlk(); }
 
     public boolean asBoolean() { return true; }
     public String asString() { return ""; }
@@ -34,7 +42,7 @@ final class NativeSlawComplex extends Slaw {
     public int dimension() { return 0; }
     public int count() { return 2; }
 
-    public Slaw asPair() { return Pair.create(re, im); }
+    public Pair<Slaw,Slaw> asPair() { return Pair.create(re, im); }
     public List<Slaw> asList() {
         List<Slaw> result = new ArrayList<Slaw>(2);
         result.add(re);
@@ -49,7 +57,7 @@ final class NativeSlawComplex extends Slaw {
 
     Slaw withNumericIlk(NumericIlk ilk) {
         if (numericIlk() == ilk) return this;
-        return new NativeComplexSlaw(ilk, re, im);
+        return new NativeSlawComplex(ilk, re, im);
     }
 
     boolean equals(Slaw slaw) {

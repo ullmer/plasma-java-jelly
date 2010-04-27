@@ -13,98 +13,51 @@ import java.util.List;
  *
  * @author jao
  */
-abstract class NativeSlawVector extends Slaw {
+abstract class NativeSlawVector extends NativeCompositeNumericSlaw {
 
-    BaseSlawVector(NumericIlk ilk, E[] elems) {
-        assert elems != null;
-        assert elems.length > 1 && elems.length < 5;
-        List<E> es = new ArrayList<E>(elems.length);
-        for (E e : elems) {
-            @SuppressWarnings("unchecked") E ne = (E)e.withIlk(ilk);
-            es.add(ne);
-        }
-        this.elements = Collections.unmodifiableList(es);
+    static Slaw valueOf(Slaw... cmps) {
+        NumericIlk ni = commonIlk(cmps);
+        if (ni == NumericIlk.NAN) return zero(cmps.length);
+        if (cmps[0].is(SlawIlk.NUMBER))
+            return new NativeNumberSlawVector(ni, cmps);
+        if (cmps[0].is(SlawIlk.COMPLEX))
+            return new NativeComplexSlawVector(ni, cmps);
+        return zero(cmps.length);
     }
 
-    // Implementation of com.oblong.jelly.NumericSlaw
-
-    public final NumericIlk numericIlk() {
-        return elements.get(0).numericIlk();
+    NativeSlawVector(NumericIlk ilk, Slaw[] elems) {
+        super(ilk, elems);
     }
 
-    // Implementation of com.oblong.jelly.SlawVector
+    @Override public final int dimension() { return count(); }
 
-    public final E get(int n) { return this.elements.get(n); }
-    public final List<E> asList() { return this.elements; }
-    public final int dimension() { return this.elements.size(); }
-
-    // Implementation of com.oblong.jelly.Slaw
-
-    public final int hashCode() { return this.elements.hashCode(); }
-    public final  boolean isNumeric() { return true; }
-
-    @SuppressWarnings("unchecked")
-    E[] toArray () { return (E[])this.elements.toArray(); }
-
-    private final List<E> elements;
+    private static final Slaw zero(int len) { return null; }
 }
 
-final class NativeNumberSlawVector extends BaseSlawVector<SlawNumber>
-    implements SlawNumberVector {
+final class NativeNumberSlawVector extends NativeSlawVector {
 
-    static SlawNumberVector valueOf(SlawNumber... l) {
-        return new NativeNumberSlawVector(NumericIlk.dominantIlk(l), l);
+    @Override public SlawIlk ilk() { return SlawIlk.VECTOR; }
+
+    @Override public Slaw withNumericIlk(NumericIlk ilk) {
+        if (ilk == numericIlk()) return this;
+        return new NativeNumberSlawVector(ilk, (Slaw[])asList().toArray());
     }
 
-    @Override public boolean equals(Slaw slaw) {
-        if (!(slaw instanceof SlawNumberVector)) return false;
-        SlawNumberVector sv = (SlawNumberVector) slaw;
-        return asList().equals(sv.asList());
-    }
-
-    @Override public final byte[] externalize(SlawExternalizer e) {
-        return e.externalize(this);
-    }
-
-    @Override public boolean isNumberVector() { return true; }
-
-    @Override public NumericSlaw withIlk(NumericIlk ilk) {
-        return new NativeNumberSlawVector(ilk, toArray());
-    }
-
-    @Override public SlawNumberVector numberVector() { return this; }
-
-    private NativeNumberSlawVector(NumericIlk i, SlawNumber... l) {
+    NativeNumberSlawVector(NumericIlk i, Slaw[] l) {
         super(i, l);
     }
 }
 
-final class NativeComplexSlawVector extends BaseSlawVector<SlawComplex>
-    implements SlawComplexVector {
+final class NativeComplexSlawVector extends NativeSlawVector {
 
-    static SlawComplexVector valueOf(SlawComplex... l) {
-        return new NativeComplexSlawVector(NumericIlk.dominantIlk(l), l);
+    @Override public SlawIlk ilk() { return SlawIlk.COMPLEX_VECTOR; }
+
+    @Override public Slaw withNumericIlk(NumericIlk ilk) {
+        if (ilk == numericIlk()) return this;
+        return new NativeComplexSlawVector(ilk, (Slaw[])asList().toArray());
     }
 
-    @Override public boolean equals(Slaw slaw) {
-        if (!(slaw instanceof SlawComplexVector)) return false;
-        SlawComplexVector sv = (SlawComplexVector) slaw;
-        return asList().equals(sv.asList());
-    }
-
-    @Override public final byte[] externalize(SlawExternalizer e) {
-        return e.externalize(this);
-    }
-
-    @Override public boolean isComplexVector() { return true; }
-
-    @Override public NumericSlaw withIlk(NumericIlk ilk) {
-        return new NativeComplexSlawVector(ilk, toArray());
-    }
-
-    @Override public SlawComplexVector complexVector() { return this; }
-
-    private NativeComplexSlawVector(NumericIlk i, SlawComplex... l) {
+    NativeComplexSlawVector(NumericIlk i, Slaw[] l) {
         super(i, l);
     }
 }
