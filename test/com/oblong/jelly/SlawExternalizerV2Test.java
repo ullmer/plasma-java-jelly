@@ -31,7 +31,7 @@ public class SlawExternalizerV2Test {
     }
 
     static void check(Slaw s, byte[] leb, byte[] beb, String msg) {
-        final byte[] sb = externalizer.extern(s);
+        final byte[] sb = externalizer.extern(s).array();
         final byte[] tb = LE ? leb : beb;
         String m = msg + ": " + arrayStr(sb) + " vs. " + arrayStr(tb);
         assertEquals(sb.length, externalizer.externSize(s));

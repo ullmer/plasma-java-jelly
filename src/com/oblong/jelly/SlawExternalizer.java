@@ -2,6 +2,7 @@
 
 package com.oblong.jelly;
 
+import java.nio.ByteBuffer;
 import java.util.EnumMap;
 import java.util.Map;
 
@@ -14,52 +15,68 @@ import static com.oblong.jelly.SlawIlk.*;
  */
 abstract class SlawExternalizer {
 
-    final byte[] extern(Slaw s) {
-        return externalizers.get(s.ilk()).extern(this, s);
+    final ByteBuffer extern(Slaw s) {
+        final ByteBuffer b = ByteBuffer.allocate(externSize(s));
+        extern(s, b);
+        return b;
+    }
+
+    final int extern(Slaw s, ByteBuffer b) {
+        prepareBuffer(b, s);
+        final int begin = b.position();
+        externalizers.get(s.ilk()).extern(this, s, b);
+        finishBuffer(b, s, begin);
+        return b.position() - begin;
     }
 
     final int externSize(Slaw s) {
         return externalizers.get(s.ilk()).externSize(this, s);
     }
 
-    abstract byte[] externNil(Slaw s);
+    abstract void externNil(Slaw s, ByteBuffer b);
     abstract int nilExternSize(Slaw s);
 
-    abstract byte[] externBool(Slaw b);
+    abstract void externBool(Slaw b, ByteBuffer bf);
     abstract int boolExternSize(Slaw b);
 
-    abstract byte[] externString(Slaw s);
+    abstract void externString(Slaw s, ByteBuffer b);
     abstract int stringExternSize(Slaw s);
 
-    abstract byte[] externNumber(Slaw n);
+    abstract void externNumber(Slaw n, ByteBuffer b);
     abstract int numberExternSize(Slaw n);
 
-    abstract byte[] externComplex(Slaw c);
+    abstract void externComplex(Slaw c, ByteBuffer b);
     abstract int complexExternSize(Slaw c);
 
-    abstract byte[] externVector(Slaw v);
+    abstract void externVector(Slaw v, ByteBuffer b);
     abstract int vectorExternSize(Slaw v);
 
-    abstract byte[] externComplexVector(Slaw v);
+    abstract void externComplexVector(Slaw v, ByteBuffer b);
     abstract int complexVectorExternSize(Slaw v);
 
-    abstract byte[] externMultiVector(Slaw v);
+    abstract void externMultiVector(Slaw v, ByteBuffer b);
     abstract int multiVectorExternSize(Slaw v);
 
-    // abstract byte[] externalize(SlawArray<SlawNumber> a);
-    // abstract byte[] externalize(SlawArray<SlawComplex> a);
-    // abstract byte[] externalize(SlawArray<SlawVector<SlawNumber>> a);
-    // abstract byte[] externalize(SlawArray<SlawVector<SlawComplex>> a);
-    // abstract byte[] externalize(SlawArray<SlawMultiVector> a);
+    // abstract void externalize(SlawArray<SlawNumber> a);
+    // abstract void externalize(SlawArray<SlawComplex> a);
+    // abstract void externalize(SlawArray<SlawVector<SlawNumber>> a);
+    // abstract void externalize(SlawArray<SlawVector<SlawComplex>> a);
+    // abstract void externalize(SlawArray<SlawMultiVector> a);
 
-    abstract byte[] externCons(Slaw c);
+    abstract void externCons(Slaw c, ByteBuffer b);
     abstract int consExternSize(Slaw c);
 
-    // abstract byte[] externalize(SlawList l);
-    // abstract byte[] externalize(SlawMap m);
+    abstract void externList(Slaw c, ByteBuffer b);
+    abstract int listExternSize(Slaw c);
+
+    abstract void externMap(Slaw c, ByteBuffer b);
+    abstract int mapExternSize(Slaw c);
+
+    abstract void prepareBuffer(ByteBuffer b, Slaw s);
+    abstract void finishBuffer(ByteBuffer b, Slaw s, int begin);
 
     private interface Externalizer {
-        byte[] extern(SlawExternalizer ext, Slaw s);
+        void extern(SlawExternalizer ext, Slaw s, ByteBuffer b);
         int externSize(SlawExternalizer ext, Slaw s);
     }
 
@@ -67,75 +84,91 @@ abstract class SlawExternalizer {
     static {
         externalizers = new EnumMap<SlawIlk,Externalizer>(SlawIlk.class);
         externalizers.put(NIL, new Externalizer() {
-                public byte[] extern(SlawExternalizer ext, Slaw s) {
-                    return ext.externNil(s);
+                public void extern(SlawExternalizer e, Slaw s, ByteBuffer b) {
+                    e.externNil(s, b);
                 }
-                public int externSize(SlawExternalizer ext, Slaw s) {
-                    return ext.nilExternSize(s);
+                public int externSize(SlawExternalizer e, Slaw s) {
+                    return e.nilExternSize(s);
                 }
             });
         externalizers.put(BOOL, new Externalizer() {
-                public byte[] extern(SlawExternalizer ext, Slaw s) {
-                    return ext.externBool(s);
+                public void extern(SlawExternalizer e, Slaw s, ByteBuffer b) {
+                    e.externBool(s, b);
                 }
-                public int externSize(SlawExternalizer ext, Slaw s) {
-                    return ext.boolExternSize(s);
+                public int externSize(SlawExternalizer e, Slaw s) {
+                    return e.boolExternSize(s);
                 }
             });
         externalizers.put(STRING, new Externalizer() {
-                public byte[] extern(SlawExternalizer ext, Slaw s) {
-                    return ext.externString(s);
+                public void extern(SlawExternalizer e, Slaw s, ByteBuffer b) {
+                    e.externString(s, b);
                 }
-                public int externSize(SlawExternalizer ext, Slaw s) {
-                    return ext.stringExternSize(s);
+                public int externSize(SlawExternalizer e, Slaw s) {
+                    return e.stringExternSize(s);
                 }
             });
         externalizers.put(NUMBER, new Externalizer() {
-                public byte[] extern(SlawExternalizer ext, Slaw s) {
-                    return ext.externNumber(s);
+                public void extern(SlawExternalizer e, Slaw s, ByteBuffer b) {
+                    e.externNumber(s, b);
                 }
-                public int externSize(SlawExternalizer ext, Slaw s) {
-                    return ext.numberExternSize(s);
+                public int externSize(SlawExternalizer e, Slaw s) {
+                    return e.numberExternSize(s);
                 }
             });
         externalizers.put(COMPLEX, new Externalizer() {
-                public byte[] extern(SlawExternalizer ext, Slaw s) {
-                    return ext.externComplex(s);
+                public void extern(SlawExternalizer e, Slaw s, ByteBuffer b) {
+                    e.externComplex(s, b);
                 }
-                public int externSize(SlawExternalizer ext, Slaw s) {
-                    return ext.complexExternSize(s);
+                public int externSize(SlawExternalizer e, Slaw s) {
+                    return e.complexExternSize(s);
                 }
             });
         externalizers.put(VECTOR, new Externalizer() {
-                public byte[] extern(SlawExternalizer ext, Slaw s) {
-                    return ext.externVector(s);
+                public void extern(SlawExternalizer e, Slaw s, ByteBuffer b) {
+                    e.externVector(s, b);
                 }
-                public int externSize(SlawExternalizer ext, Slaw s) {
-                    return ext.vectorExternSize(s);
+                public int externSize(SlawExternalizer e, Slaw s) {
+                    return e.vectorExternSize(s);
                 }
             });
         externalizers.put(COMPLEX_VECTOR, new Externalizer() {
-                public byte[] extern(SlawExternalizer ext, Slaw s) {
-                    return ext.externComplexVector(s);
+                public void extern(SlawExternalizer e, Slaw s, ByteBuffer b) {
+                    e.externComplexVector(s, b);
                 }
-                public int externSize(SlawExternalizer ext, Slaw s) {
-                    return ext.complexVectorExternSize(s);
+                public int externSize(SlawExternalizer e, Slaw s) {
+                    return e.complexVectorExternSize(s);
                 }
             });
         externalizers.put(MULTI_VECTOR, new Externalizer() {
-                public byte[] extern(SlawExternalizer ext, Slaw s) {
-                    return ext.externMultiVector(s);
+                public void extern(SlawExternalizer e, Slaw s, ByteBuffer b) {
+                    e.externMultiVector(s, b);
                 }
-                public int externSize(SlawExternalizer ext, Slaw s) {
-                    return ext.multiVectorExternSize(s);
+                public int externSize(SlawExternalizer e, Slaw s) {
+                    return e.multiVectorExternSize(s);
                 }
             });
         externalizers.put(CONS, new Externalizer() {
-                public byte[] extern(SlawExternalizer ext, Slaw s) {
-                    return ext.externCons(s);
+                public void extern(SlawExternalizer e, Slaw s, ByteBuffer b) {
+                    e.externCons(s, b);
                 }
-                public int externSize(SlawExternalizer ext, Slaw s) {
-                    return ext.consExternSize(s);
+                public int externSize(SlawExternalizer e, Slaw s) {
+                    return e.consExternSize(s);
+                }
+            });
+        externalizers.put(LIST, new Externalizer() {
+                public void extern(SlawExternalizer e, Slaw s, ByteBuffer b) {
+                    e.externList(s, b);
+                }
+                public int externSize(SlawExternalizer e, Slaw s) {
+                    return e.listExternSize(s);
+                }
+            });
+        externalizers.put(MAP, new Externalizer() {
+                public void extern(SlawExternalizer e, Slaw s, ByteBuffer b) {
+                    e.externMap(s, b);
+                }
+                public int externSize(SlawExternalizer e, Slaw s) {
+                    return e.mapExternSize(s);
                 }
             });
     }

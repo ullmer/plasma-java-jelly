@@ -3,12 +3,11 @@ package com.oblong.jelly;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.Map;
 
 import static com.oblong.jelly.NumericIlk.*;
-import com.oblong.util.Pair;
+import static com.oblong.jelly.SlawIlk.*;
 
 /**
  * Created: Sun Apr 18 15:07:50 2010
@@ -19,12 +18,12 @@ final class SlawExternalizerV2 extends SlawExternalizer {
 
     int nilExternSize(Slaw s) { return NIL_OCT.length; }
 
-    byte[] externNil(Slaw s) { return Arrays.copyOf(NIL_OCT, 8); }
+    void externNil(Slaw s, ByteBuffer b) { b.put(NIL_OCT); }
 
     int boolExternSize(Slaw b) { return TRUE_OCT.length; }
 
-    byte[] externBool(Slaw b) {
-        return Arrays.copyOf(b.asBoolean() ? TRUE_OCT : FALSE_OCT, 8);
+    void externBool(Slaw b, ByteBuffer r) {
+        r.put(b.asBoolean() ? TRUE_OCT : FALSE_OCT);
     }
 
     int stringExternSize(Slaw s) {
@@ -32,79 +31,94 @@ final class SlawExternalizerV2 extends SlawExternalizer {
         return (bn > 6) ? roundUp(bn + 8 + 1) : 8;
     }
 
-    byte[] externString(Slaw s) {
+    void externString(Slaw s, ByteBuffer b) {
         final byte[] bs = stringBytes(s);
-        return (bs.length > 6) ? marshallStr(bs) : marshallWeeStr(bs);
+        if (bs.length > 6) marshallStr(bs, b); else marshallWeeStr(bs, b);
     }
 
     int numberExternSize(Slaw n) {
         return roundUp(5 + n.numericIlk().bytes());
     }
 
-    byte[] externNumber(Slaw n) {
-        return (n.numericIlk().bytes() < 5)
-            ? marshallSmallNum(n) : marshallNum(n);
+    void externNumber(Slaw n, ByteBuffer b) {
+        if (n.numericIlk().bytes() < 5) marshallSmallNum(n, b);
+        else marshallNum(n, b);
     }
 
+    int complexExternSize(Slaw c) { return 8 + 2 * c.numericIlk().bytes(); }
 
-    int complexExternSize(Slaw c) {
-        return 8 + 2 * c.numericIlk().bytes();
-    }
-
-    byte[] externComplex(Slaw c) {
-        final SlawBuffer r = new SlawBuffer(complexExternSize(c));
-        return r.putLong(NUM_OCTS.get(c.numericIlk())|COMPLEX_OCT_MASK)
-                .putNumVal(c.head())
-                .putNumVal(c.tail())
-                .bytes();
+    void externComplex(Slaw c, ByteBuffer b) {
+        b.putLong(NUM_OCTS.get(c.numericIlk())|COMPLEX_OCT_MASK);
+        putNumVal(putNumVal(b, c.head()), c.tail());
     }
 
     int vectorExternSize(Slaw v) {
         return roundUp(8 + v.dimension() * v.numericIlk().bytes());
     }
 
-    byte[] externVector(Slaw v) {
-        SlawBuffer r = new SlawBuffer(vectorExternSize(v));
-        r.putLong(firstOct(v.numericIlk(), v.dimension() - 1));
-        for (Slaw n : v.asList()) r.putNumVal(n);
-        return r.bytes();
+    void externVector(Slaw v, ByteBuffer b) {
+        b.putLong(heading(v.numericIlk(), v.dimension() - 1));
+        for (Slaw n : v.asList()) putNumVal(b, n);
     }
 
     int complexVectorExternSize(Slaw v) {
         return roundUp(8 + 2 * v.dimension() * v.numericIlk().bytes());
     }
 
-    byte[] externComplexVector(Slaw v) {
-        final SlawBuffer r = new SlawBuffer(complexVectorExternSize(v));
-        r.putLong(COMPLEX_OCT_MASK |
-                  firstOct(v.numericIlk(), v.dimension() - 1));
-        for (Slaw n : v.asList()) r.putNumVal(n.head()).putNumVal(n.tail());
-        return r.bytes();
+    void externComplexVector(Slaw v, ByteBuffer b) {
+        b.putLong(COMPLEX_OCT_MASK |
+                  heading(v.numericIlk(), v.dimension() - 1));
+        for (Slaw n : v.asList()) putNumVal(putNumVal(b, n.head()), n.tail());
     }
 
     int multiVectorExternSize(Slaw v) {
         return roundUp(8 + v.count() * v.numericIlk().bytes());
     }
 
-    byte[] externMultiVector(Slaw v) {
-        final SlawBuffer r = new SlawBuffer(multiVectorExternSize(v));
-        r.putLong(firstOct(v.numericIlk(), v.dimension() - 2));
-        for (Slaw n : v.asList()) r.putNumVal(n);
-        return r.bytes();
+    void externMultiVector(Slaw v, ByteBuffer b) {
+        b.putLong(heading(v.numericIlk(), v.dimension() - 2));
+        for (Slaw n : v.asList()) putNumVal(b, n);
     }
-
 
     int consExternSize(Slaw c) {
-        return roundUp(8 + externSize(c.head()) + externSize(c.tail()));
+        return listSize(c);
     }
 
-    byte[] externCons(Slaw c) {
-        final byte[] car = extern(c.head());
-        final byte[] cdr = extern(c.tail());
-        final int len = roundUp(8 + car.length + cdr.length);
-        final SlawBuffer r = new SlawBuffer(len);
-        return r.putFirstOct(CONS_TB, r.octs()).put(car).put(cdr).bytes();
+    void externCons(Slaw c, ByteBuffer b) {
+        marshallAsList(c, b);
     }
+
+    int listExternSize(Slaw c) {
+        return listSize(c);
+    }
+
+    void externList(Slaw c, ByteBuffer b) {
+        marshallAsList(c, b);
+    }
+
+    int mapExternSize(Slaw c) {
+        return listSize(c);
+    }
+
+    void externMap(Slaw c, ByteBuffer b) {
+        marshallAsList(c, b);
+    }
+
+    void prepareBuffer(ByteBuffer b, Slaw s) {
+        b.order(ByteOrder.nativeOrder());
+    }
+
+    void finishBuffer(ByteBuffer b, Slaw s, int begin) {
+        int len = b.capacity() - b.position();
+        while (len-- > 0) b.put((byte)0);
+        Integer tb = COMPOSITE_TBS.get(s.ilk());
+        if (tb != null) {
+            b.mark().position(begin);
+            putHeading(b, tb | (s.count() & 0x0F), octs(len)).reset();
+        }
+    }
+
+    private static int octs(int len) { return len >>> 3; }
 
     private static int roundUp(int len) { return (len + 7) & -8; }
 
@@ -116,9 +130,34 @@ final class SlawExternalizerV2 extends SlawExternalizer {
         }
     }
 
-    private static byte[] marshallWeeStr(byte[] bs) {
+    private static ByteBuffer putHeading(
+        ByteBuffer buffer, long b, long rest) {
+        assert rest >= 0 && rest < (1<<56) : "<rest> was " + rest;
+        buffer.putLong(rest).put(LE ? 7 : 0, (byte)b);
+        return buffer;
+    }
+
+    private static ByteBuffer putNumVal(ByteBuffer buffer, Slaw n) {
+        assert n.is(SlawIlk.NUMBER);
+        NumericIlk i = n.numericIlk();
+        if (i == FLOAT32) {
+            buffer.putFloat((float)n.asDouble());
+        } else if (i == FLOAT64) {
+            buffer.putDouble(n.asDouble());
+        } else if (i == INT8 || i == UNT8) {
+            buffer.put((byte)n.asLong());
+        } else if (i == INT16 || i == UNT16) {
+            buffer.putShort((short)n.asLong());
+        } else if (i == INT32 || i == UNT32) {
+            buffer.putInt((int)n.asLong());
+        } else if (i == INT64 || i == UNT64) {
+            buffer.putLong(n.asLong());
+        }
+        return buffer;
+    }
+
+    private static void marshallWeeStr(byte[] bs, ByteBuffer b) {
         assert bs.length < 7;
-        final SlawBuffer b = new SlawBuffer(8);
         final int fb = (WEE_STR_TB | bs.length + 1);
         if (LE) {
             b.put(bs);
@@ -129,34 +168,42 @@ final class SlawExternalizerV2 extends SlawExternalizer {
             for (int i = bs.length; i < 6; ++i) b.put(NUL);
             b.put(bs);
         }
-        return b.bytes();
     }
 
-    private static byte[] marshallStr(byte[] bs) {
+    private static void marshallStr(byte[] bs, ByteBuffer b) {
         final int len = 8 + bs.length + 1;
-        final SlawBuffer r = new SlawBuffer(roundUp(len));
-        final int p = r.capacity() - len;
-        return r.putFirstOct((STR_TB | p), r.octs()).put(bs).bytes();
+        final int p = roundUp(len) - len;
+        putHeading(b, (STR_TB | p), octs(len + p)).put(bs);
     }
 
-    private static long firstOct(NumericIlk i, long d) {
+    private static long heading(NumericIlk i, long d) {
         return (d << 54) | NUM_OCTS.get(i);
     }
 
-    private static byte[] marshallSmallNum(Slaw n) {
+    private static void marshallSmallNum(Slaw n, ByteBuffer b) {
         final NumericIlk i = n.numericIlk();
         final int h = (int) (NUM_OCTS.get(i)>>32);
-        final SlawBuffer r = new SlawBuffer(8);
-        if (LE)
-            r.putNumVal(n).pad(4 - i.bytes()).putInt(h);
-        else
-            r.putInt(h).putNumVal(n);
-        return r.bytes();
+        if (LE) {
+            putNumVal(b, n);
+            for (int k = 0; k < 4 - i.bytes(); k++) b.put((byte)0);
+            b.putInt(h);
+        }
+        else putNumVal(b.putInt(h), n);
     }
 
-    private static byte[] marshallNum(Slaw n) {
-        final SlawBuffer r = new SlawBuffer(16);
-        return r.putLong(NUM_OCTS.get(n.numericIlk())).putNumVal(n).bytes();
+    private static void marshallNum(Slaw n, ByteBuffer b) {
+        putNumVal(b.putLong(NUM_OCTS.get(n.numericIlk())), n);
+    }
+
+    private int listSize(Slaw l) {
+        int len = 8;
+        for (Slaw s : l.asList()) len = len + externSize(s);
+        return roundUp(len);
+    }
+
+    private void marshallAsList(Slaw l, ByteBuffer b) {
+        b.position(b.position() + 8);
+        for (Slaw s : l.asList()) extern(s, b);
     }
 
     static final boolean LE =
@@ -164,19 +211,19 @@ final class SlawExternalizerV2 extends SlawExternalizer {
 
     private static final byte NUL = 0;
 
-    private static final byte[] FALSE_OCT;
-    private static final byte[] TRUE_OCT;
-    private static final byte[] NIL_OCT;
+    private static final byte[] FALSE_OCT = makeOct(0x20, 0x00);
+    private static final byte[] TRUE_OCT = makeOct(0x20, 0x01);
+    private static final byte[] NIL_OCT = makeOct(0x20, 0x02);
 
-    static {
-        FALSE_OCT = new SlawBuffer(8).putFirstOct(0x20, 0x00).bytes();
-        TRUE_OCT = new SlawBuffer(8).putFirstOct(0x20, 0x01).bytes();
-        NIL_OCT = new SlawBuffer(8).putFirstOct(0x20, 0x02).bytes();
+    private static byte[] makeOct(int fst, int rest) {
+        ByteBuffer b = ByteBuffer.allocate(8);
+        b.order(ByteOrder.nativeOrder());
+        return putHeading(b, fst, rest).array();
     }
 
     private static final byte STR_TB = 0x70;
     private static final byte WEE_STR_TB = 0x30;
-    private static final byte CONS_TB = 0x62;
+    private static final long COMPLEX_OCT_MASK = 0x2L<<56;
 
     private static final Map<NumericIlk, Long> NUM_OCTS;
     static {
@@ -192,73 +239,12 @@ final class SlawExternalizerV2 extends SlawExternalizer {
         NUM_OCTS.put(FLOAT32, 0xA800C0L<<40);
         NUM_OCTS.put(FLOAT64, 0xAC01C0L<<40);
     }
-    private static final long COMPLEX_OCT_MASK = 0x2L<<56;
 
-    private static class SlawBuffer {
-
-        SlawBuffer(int len) {
-            assert len > 0;
-            this.buffer = ByteBuffer.allocate(len);
-            this.buffer.order(ByteOrder.nativeOrder());
-        }
-
-        int capacity () { return this.buffer.capacity(); }
-
-        int octs() { return capacity() >>> 3; }
-
-        byte[] bytes() {
-            padBuffer();
-            return this.buffer.array();
-        }
-
-        void padBuffer() {
-            pad(this.buffer.capacity() - this.buffer.position());
-        }
-
-        SlawBuffer pad(int len) {
-            while (len-- > 0) this.buffer.put((byte)0);
-            return this;
-        }
-
-        SlawBuffer put(byte b) { this.buffer.put(b); return this; }
-        SlawBuffer put(byte b[]) { this.buffer.put(b); return this; }
-        SlawBuffer putInt(int i) { this.buffer.putInt(i); return this; }
-        SlawBuffer putLong(long l) { this.buffer.putLong(l); return this; }
-
-        SlawBuffer putFirstOct(long b, long rest) {
-            assert rest >= 0 && rest < (1<<56) : "<rest> was " + rest;
-            this.buffer.putLong(rest).put(LE ? 7 : 0, (byte)b);
-            return this;
-        }
-
-        SlawBuffer putNumVal(Slaw n) {
-            assert n.is(SlawIlk.NUMBER);
-            NumericIlk i = n.numericIlk();
-            if (i == FLOAT32) {
-                this.buffer.putFloat((float)n.asDouble());
-            } else if (i == FLOAT64) {
-                this.buffer.putDouble(n.asDouble());
-            } else if (i == INT8 || i == UNT8) {
-                this.buffer.put((byte)n.asLong());
-            } else if (i == INT16 || i == UNT16) {
-                this.buffer.putShort((short)n.asLong());
-            } else if (i == INT32 || i == UNT32) {
-                this.buffer.putInt((int)n.asLong());
-            } else if (i == INT64 || i == UNT64) {
-                this.buffer.putLong(n.asLong());
-            }
-            return this;
-        }
-
-        public String toString() {
-            StringBuilder buf = new StringBuilder ("{ ");
-            for (byte b : this.buffer.array()) buf.append(b + " ");
-            buf.append("}");
-            return buf.toString();
-        }
-
-        private ByteBuffer buffer;
-
-    }  // SlawBuffer
-
-}  // SlawExternalizerV2
+    private static final Map<SlawIlk, Integer> COMPOSITE_TBS;
+    static {
+        COMPOSITE_TBS = new EnumMap<SlawIlk, Integer>(SlawIlk.class);
+        COMPOSITE_TBS.put(CONS, 0x60);
+        COMPOSITE_TBS.put(LIST, 0x40);
+        COMPOSITE_TBS.put(MAP, 0x50);
+    }
+}
