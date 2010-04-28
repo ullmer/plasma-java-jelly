@@ -13,12 +13,6 @@ import static com.oblong.jelly.SlawIlk.*;
  * @author jao
  */
 abstract class SlawExternalizer {
-    static final SlawExternalizer get() { return current; }
-    static final SlawExternalizer set(SlawExternalizer ext) {
-        SlawExternalizer r = current;
-        current = ext;
-        return r;
-    }
 
     final byte[] extern(Slaw s) {
         return externalizers.get(s.ilk()).extern(this, s);
@@ -51,12 +45,16 @@ abstract class SlawExternalizer {
 
     abstract byte[] externMultiVector(Slaw v);
     abstract int multiVectorExternSize(Slaw v);
+
     // abstract byte[] externalize(SlawArray<SlawNumber> a);
     // abstract byte[] externalize(SlawArray<SlawComplex> a);
     // abstract byte[] externalize(SlawArray<SlawVector<SlawNumber>> a);
     // abstract byte[] externalize(SlawArray<SlawVector<SlawComplex>> a);
     // abstract byte[] externalize(SlawArray<SlawMultiVector> a);
-    // abstract byte[] externalize(SlawCons m);
+
+    abstract byte[] externCons(Slaw c);
+    abstract int consExternSize(Slaw c);
+
     // abstract byte[] externalize(SlawList l);
     // abstract byte[] externalize(SlawMap m);
 
@@ -132,7 +130,14 @@ abstract class SlawExternalizer {
                     return ext.multiVectorExternSize(s);
                 }
             });
+        externalizers.put(CONS, new Externalizer() {
+                public byte[] extern(SlawExternalizer ext, Slaw s) {
+                    return ext.externCons(s);
+                }
+                public int externSize(SlawExternalizer ext, Slaw s) {
+                    return ext.consExternSize(s);
+                }
+            });
     }
 
-    private static SlawExternalizer current = null; // new SlawExternalizerV2();
 }

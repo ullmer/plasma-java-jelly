@@ -53,10 +53,9 @@ final class SlawExternalizerV2 extends SlawExternalizer {
 
     byte[] externComplex(Slaw c) {
         final SlawBuffer r = new SlawBuffer(complexExternSize(c));
-        final Pair<Slaw,Slaw> cc = c.asPair();
         return r.putLong(NUM_OCTS.get(c.numericIlk())|COMPLEX_OCT_MASK)
-                .putNumVal(cc.first)
-                .putNumVal(cc.second)
+                .putNumVal(c.head())
+                .putNumVal(c.tail())
                 .bytes();
     }
 
@@ -79,10 +78,7 @@ final class SlawExternalizerV2 extends SlawExternalizer {
         final SlawBuffer r = new SlawBuffer(complexVectorExternSize(v));
         r.putLong(COMPLEX_OCT_MASK |
                   firstOct(v.numericIlk(), v.dimension() - 1));
-        for (Slaw n : v.asList()) {
-            final Pair<Slaw,Slaw> cs = n.asPair();
-            r.putNumVal(cs.first).putNumVal(cs.second);
-        }
+        for (Slaw n : v.asList()) r.putNumVal(n.head()).putNumVal(n.tail());
         return r.bytes();
     }
 
@@ -97,6 +93,18 @@ final class SlawExternalizerV2 extends SlawExternalizer {
         return r.bytes();
     }
 
+
+    int consExternSize(Slaw c) {
+        return roundUp(8 + externSize(c.head()) + externSize(c.tail()));
+    }
+
+    byte[] externCons(Slaw c) {
+        final byte[] car = extern(c.head());
+        final byte[] cdr = extern(c.tail());
+        final int len = roundUp(8 + car.length + cdr.length);
+        final SlawBuffer r = new SlawBuffer(len);
+        return r.putFirstOct(CONS_TB, r.octs()).put(car).put(cdr).bytes();
+    }
 
     private static int roundUp(int len) { return (len + 7) & -8; }
 
@@ -168,6 +176,7 @@ final class SlawExternalizerV2 extends SlawExternalizer {
 
     private static final byte STR_TB = 0x70;
     private static final byte WEE_STR_TB = 0x30;
+    private static final byte CONS_TB = 0x62;
 
     private static final Map<NumericIlk, Long> NUM_OCTS;
     static {

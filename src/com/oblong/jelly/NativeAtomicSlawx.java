@@ -13,20 +13,21 @@ import com.oblong.util.Pair;
 
 abstract class NativeAtomicSlaw extends Slaw {
 
-    public NumericIlk numericIlk() { return NumericIlk.NAN; }
-    public Slaw withNumericIlk(NumericIlk ilk) { return this; }
+    @Override public NumericIlk numericIlk() { return NumericIlk.NAN; }
+    @Override public Slaw withNumericIlk(NumericIlk ilk) { return this; }
 
-    public boolean asBoolean() { return true; }
-    public String asString() { return ""; }
+    @Override public boolean asBoolean() { return true; }
+    @Override public String asString() { return ""; }
 
-    public long asLong() { return 0; }
-    public double asDouble() { return 0; }
-    public BigInteger asBigInteger() { return BigInteger.ZERO; }
+    @Override public long asLong() { return 0; }
+    @Override public double asDouble() { return 0; }
+    @Override public BigInteger asBigInteger() { return BigInteger.ZERO; }
 
-    public final int dimension() { return 0; }
-    public final int count() { return 1; }
+    @Override public final int dimension() { return 0; }
+    @Override public final int count() { return 1; }
 
-    public final Pair<Slaw,Slaw> asPair() { return null; }
+    @Override public final Slaw head() { return this; }
+    @Override public final Slaw tail() { return null; }
                                 // ^ NativeSlawList.EMPTY_LIST as cdr
     public final List<Slaw> asList() {
         List<Slaw> result = new ArrayList<Slaw>(1);

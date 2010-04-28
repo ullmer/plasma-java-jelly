@@ -31,7 +31,17 @@ abstract class NativeSlawVector extends NativeCompositeNumericSlaw {
 
     @Override public final int dimension() { return count(); }
 
-    private static final Slaw zero(int len) { return null; }
+    private static final Slaw zero(int len) {
+        return zeroes[Math.min(2, Math.max(0, len - 2))];
+    }
+
+    private static final Slaw[] zeroes = new Slaw[3];
+    static {
+        Slaw z = NativeSlawInt32.ZERO;
+        zeroes[0] = new NativeNumberSlawVector(NumericIlk.INT32, z, z);
+        zeroes[1] = new NativeNumberSlawVector(NumericIlk.INT32, z, z, z);
+        zeroes[2] = new NativeNumberSlawVector(NumericIlk.INT32, z, z, z, z);
+    }
 }
 
 final class NativeNumberSlawVector extends NativeSlawVector {
@@ -43,7 +53,7 @@ final class NativeNumberSlawVector extends NativeSlawVector {
         return new NativeNumberSlawVector(ilk, (Slaw[])asList().toArray());
     }
 
-    NativeNumberSlawVector(NumericIlk i, Slaw[] l) {
+    NativeNumberSlawVector(NumericIlk i, Slaw... l) {
         super(i, l);
     }
 }
@@ -57,7 +67,7 @@ final class NativeComplexSlawVector extends NativeSlawVector {
         return new NativeComplexSlawVector(ilk, (Slaw[])asList().toArray());
     }
 
-    NativeComplexSlawVector(NumericIlk i, Slaw[] l) {
+    NativeComplexSlawVector(NumericIlk i, Slaw... l) {
         super(i, l);
     }
 }

@@ -68,8 +68,10 @@ final class NativeSlawFactory implements SlawFactory {
         // return NativeSlawArray.valueOf(ns);
     }
 
-    @Override public Slaw cons(Slaw car, Slaw cdr) { return null; }
+    @Override public Slaw cons(Slaw car, Slaw cdr) {
+        return NativeSlawCons.valueOf(car, cdr);
+    }
+
     @Override public Slaw list(Slaw... s) { return null; }
     @Override public Slaw map(Map<Slaw,Slaw> m) { return null; }
-
 }

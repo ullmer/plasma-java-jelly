@@ -32,7 +32,8 @@ public abstract class Slaw {
     public abstract int dimension();
     public abstract int count();
 
-    public abstract Pair<Slaw,Slaw> asPair();
+    public abstract Slaw head();
+    public abstract Slaw tail();
     public abstract List<Slaw> asList();
     public abstract Map<Slaw,Slaw> asMap();
     // public abstract Protein asProtein();
@@ -62,7 +63,7 @@ public abstract class Slaw {
     public static Slaw unt16(int n) { return factory.number(UNT16, n); }
     public static Slaw unt32(long n) { return factory.number(UNT32, n); }
     public static Slaw unt64(long n) { return factory.number(UNT64, n); }
-    public static Slaw unt64(BigInteger n) { return factory.number(UNT64, n);}
+    public static Slaw unt64(BigInteger n) { return factory.number(n);}
     public static Slaw float32(float n) { return factory.number(FLOAT32, n); }
     public static Slaw float64(double n) { return factory.number(FLOAT64, n);}
 

@@ -106,6 +106,8 @@ final class NativeSlawInt32 extends NativeSlawNumber {
     @Override public NumericIlk numericIlk() { return NumericIlk.INT32; }
     @Override public long asLong() { return value; }
 
+    static final NativeSlawInt32 ZERO = new NativeSlawInt32(0);
+
     private int value;
 }
 
