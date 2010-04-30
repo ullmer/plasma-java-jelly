@@ -27,8 +27,7 @@ abstract class NativeAtomicSlaw extends Slaw {
     @Override public final int count() { return 1; }
 
     @Override public final Slaw head() { return this; }
-    @Override public final Slaw tail() { return null; }
-                                // ^ NativeSlawList.EMPTY_LIST as cdr
+    @Override public final Slaw tail() { return NativeSlawList.EMPTY_LIST; }
     public final List<Slaw> asList() {
         List<Slaw> result = new ArrayList<Slaw>(1);
         result.add(this);

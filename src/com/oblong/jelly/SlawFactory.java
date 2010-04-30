@@ -33,4 +33,5 @@ interface SlawFactory {
     Slaw cons(Slaw car, Slaw cdr);
     Slaw list(Slaw... s);
     Slaw map(Map<Slaw,Slaw> m);
+    Slaw map(Slaw... kvs);
 }

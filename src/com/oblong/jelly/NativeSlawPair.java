@@ -26,6 +26,7 @@ abstract class NativeSlawPair extends Slaw {
         result.add(second);
         return result;
     }
+
     @Override public final Map<Slaw,Slaw> asMap() {
         Map<Slaw,Slaw> result = new HashMap<Slaw,Slaw>();
         result.put(first, second);

@@ -41,8 +41,9 @@ abstract class NativeCompositeNumericSlaw extends Slaw {
 
 
     @Override public final Slaw head() { return elements.get(0); }
-    @Override public final Slaw tail() { return null; }
-                               // ^ NativeSlawList.rest as cdr
+    @Override public final Slaw tail() {
+        return NativeSlawList.valueOf(elements.subList(1, count()));
+    }
 
     @Override public final List<Slaw> asList() { return elements; }
 
