@@ -4,13 +4,13 @@ package com.oblong.jelly;
 
 import java.math.BigInteger;
 
-final class NativeSlawComplex extends NativeSlawPair {
+final class SlawComplex extends SlawPair {
 
     static Slaw valueOf(Slaw r, Slaw i) {
         if (r.is(SlawIlk.NUMBER) && i.is(SlawIlk.NUMBER)) {
             NumericIlk ilk =
                 NumericIlk.dominantIlk(r.numericIlk(), i.numericIlk());
-            return new NativeSlawComplex(ilk, r, i);
+            return new SlawComplex(ilk, r, i);
         }
         return ZERO;
     }
@@ -26,13 +26,13 @@ final class NativeSlawComplex extends NativeSlawPair {
 
     @Override Slaw withNumericIlk(NumericIlk ilk) {
         if (numericIlk() == ilk) return this;
-        return new NativeSlawComplex(ilk, first, second);
+        return new SlawComplex(ilk, first, second);
     }
 
-    private NativeSlawComplex(NumericIlk ilk, Slaw r, Slaw i) {
+    private SlawComplex(NumericIlk ilk, Slaw r, Slaw i) {
         super(r.withNumericIlk(ilk), i.withNumericIlk(ilk));
     }
 
     private static final Slaw ZERO =
-        valueOf(NativeSlawInt32.ZERO, NativeSlawInt32.ZERO);
+        valueOf(SlawInt32.ZERO, SlawInt32.ZERO);
 }

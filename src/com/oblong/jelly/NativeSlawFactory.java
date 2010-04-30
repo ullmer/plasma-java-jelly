@@ -15,73 +15,73 @@ import java.util.Map;
 final class NativeSlawFactory implements SlawFactory {
 
     @Override public Slaw nil() {
-        return NativeSlawNil.INSTANCE;
+        return SlawNil.INSTANCE;
     }
 
     @Override public Slaw bool(boolean v) {
-        return NativeSlawBool.valueOf(v); }
+        return SlawBool.valueOf(v); }
 
     @Override public Slaw string(String s) {
-        return NativeSlawString.valueOf(s);
+        return SlawString.valueOf(s);
     }
 
     @Override public Slaw number(NumericIlk ilk, long n) {
-        return NativeSlawNumber.valueOf(ilk, n);
+        return SlawNumber.valueOf(ilk, n);
     }
 
     @Override public Slaw number(NumericIlk ilk, double n) {
-        return NativeSlawNumber.valueOf(ilk, n);
+        return SlawNumber.valueOf(ilk, n);
     }
 
     @Override public Slaw number(BigInteger n) {
-        return NativeSlawNumber.valueOf(n);
+        return SlawNumber.valueOf(n);
     }
 
     @Override public Slaw complex(Slaw re, Slaw im) {
-        return NativeSlawComplex.valueOf(re, im);
+        return SlawComplex.valueOf(re, im);
     }
 
     @Override public Slaw vector(Slaw x, Slaw y) {
-        return NativeSlawVector.valueOf(x, y);
+        return SlawVector.valueOf(x, y);
     }
 
     @Override public Slaw vector(Slaw x, Slaw y, Slaw z) {
-        return NativeSlawVector.valueOf(x, y, z);
+        return SlawVector.valueOf(x, y, z);
     }
 
     @Override public Slaw vector(Slaw x, Slaw y, Slaw z, Slaw w) {
-        return NativeSlawVector.valueOf(x, y, z, w);
+        return SlawVector.valueOf(x, y, z, w);
     }
 
     @Override public Slaw multivector(Slaw v00, Slaw v01, Slaw v10, Slaw v11)
     {
         return null;
-        // return NativeSlawMultiVector.valueOf(v00, v01, v10, v11);
+        // return SlawMultiVector.valueOf(v00, v01, v10, v11);
     }
 
     @Override public Slaw multivector(Slaw v0, Slaw v1) {
         return null;
-        // return NativeSlawMultiVector.valueOf(v0, v1);
+        // return SlawMultiVector.valueOf(v0, v1);
     }
 
     @Override public Slaw array(Slaw... ns) {
         return null;
-        // return NativeSlawArray.valueOf(ns);
+        // return SlawArray.valueOf(ns);
     }
 
     @Override public Slaw cons(Slaw car, Slaw cdr) {
-        return NativeSlawCons.valueOf(car, cdr);
+        return SlawCons.valueOf(car, cdr);
     }
 
     @Override public Slaw list(Slaw... sx) {
-        return NativeSlawList.valueOf(sx);
+        return SlawList.valueOf(sx);
     }
 
     @Override public Slaw map(Map<Slaw,Slaw> m) {
-        return NativeSlawMap.valueOf(m);
+        return SlawMap.valueOf(m);
     }
 
     @Override public Slaw map(Slaw... kvs) {
-        return NativeSlawMap.valueOf(Arrays.asList(kvs));
+        return SlawMap.valueOf(Arrays.asList(kvs));
     }
 }

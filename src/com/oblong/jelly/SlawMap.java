@@ -13,26 +13,33 @@ import java.util.Map;
  *
  * @author jao
  */
-final class NativeSlawMap extends NativeSlawList {
+final class SlawMap extends SlawList {
     static Slaw valueOf(Map<Slaw,Slaw> map) {
         List<Slaw> ls = new ArrayList<Slaw>(map.size());
         for (Map.Entry<Slaw,Slaw> e : map.entrySet()) {
-            ls.add(NativeSlawCons.valueOf(e.getKey(), e.getValue()));
+            Slaw key = e.getKey();
+            Slaw value = e.getValue();
+            if (key != null && value != null)
+                ls.add(SlawCons.valueOf(key, value));
         }
-        return new NativeSlawMap(ls);
+        return new SlawMap(ls);
     }
 
     static Slaw valueOf(List<Slaw> e) {
-        if (listOfConses(e)) return new NativeSlawMap(e);
+        if (listOfConses(e)) return new SlawMap(e);
         List<Slaw> ls = new ArrayList<Slaw>(e.size() / 2);
-        for (int i = 0; i < e.size() - 1; i ++)
-            ls.add(NativeSlawCons.valueOf(e.get(i), e.get(i + 1)));
-        return new NativeSlawMap(ls);
+        for (int i = 0; i < e.size() - 1; i ++) {
+            Slaw key = e.get(i);
+            Slaw value = e.get(i+1);
+            if (key != null && value != null)
+                ls.add(SlawCons.valueOf(key, value));
+        }
+        return new SlawMap(ls);
     }
 
     @Override public SlawIlk ilk() { return SlawIlk.MAP; }
 
-    private NativeSlawMap(List<Slaw> elems) {
+    private SlawMap(List<Slaw> elems) {
         super(elems);
     }
 }

@@ -13,19 +13,19 @@ import java.util.List;
  *
  * @author jao
  */
-abstract class NativeSlawVector extends NativeCompositeNumericSlaw {
+abstract class SlawVector extends CompositeNumericSlaw {
 
     static Slaw valueOf(Slaw... cmps) {
         NumericIlk ni = commonIlk(cmps);
         if (ni == NumericIlk.NAN) return zero(cmps.length);
         if (cmps[0].is(SlawIlk.NUMBER))
-            return new NativeNumberSlawVector(ni, cmps);
+            return new NumberSlawVector(ni, cmps);
         if (cmps[0].is(SlawIlk.COMPLEX))
-            return new NativeComplexSlawVector(ni, cmps);
+            return new ComplexSlawVector(ni, cmps);
         return zero(cmps.length);
     }
 
-    NativeSlawVector(NumericIlk ilk, Slaw[] elems) {
+    SlawVector(NumericIlk ilk, Slaw[] elems) {
         super(ilk, elems);
     }
 
@@ -37,37 +37,37 @@ abstract class NativeSlawVector extends NativeCompositeNumericSlaw {
 
     private static final Slaw[] zeroes = new Slaw[3];
     static {
-        Slaw z = NativeSlawInt32.ZERO;
-        zeroes[0] = new NativeNumberSlawVector(NumericIlk.INT32, z, z);
-        zeroes[1] = new NativeNumberSlawVector(NumericIlk.INT32, z, z, z);
-        zeroes[2] = new NativeNumberSlawVector(NumericIlk.INT32, z, z, z, z);
+        Slaw z = SlawInt32.ZERO;
+        zeroes[0] = new NumberSlawVector(NumericIlk.INT32, z, z);
+        zeroes[1] = new NumberSlawVector(NumericIlk.INT32, z, z, z);
+        zeroes[2] = new NumberSlawVector(NumericIlk.INT32, z, z, z, z);
     }
 }
 
-final class NativeNumberSlawVector extends NativeSlawVector {
+final class NumberSlawVector extends SlawVector {
 
     @Override public SlawIlk ilk() { return SlawIlk.VECTOR; }
 
     @Override public Slaw withNumericIlk(NumericIlk ilk) {
         if (ilk == numericIlk()) return this;
-        return new NativeNumberSlawVector(ilk, (Slaw[])asList().toArray());
+        return new NumberSlawVector(ilk, (Slaw[])asList().toArray());
     }
 
-    NativeNumberSlawVector(NumericIlk i, Slaw... l) {
+    NumberSlawVector(NumericIlk i, Slaw... l) {
         super(i, l);
     }
 }
 
-final class NativeComplexSlawVector extends NativeSlawVector {
+final class ComplexSlawVector extends SlawVector {
 
     @Override public SlawIlk ilk() { return SlawIlk.COMPLEX_VECTOR; }
 
     @Override public Slaw withNumericIlk(NumericIlk ilk) {
         if (ilk == numericIlk()) return this;
-        return new NativeComplexSlawVector(ilk, (Slaw[])asList().toArray());
+        return new ComplexSlawVector(ilk, (Slaw[])asList().toArray());
     }
 
-    NativeComplexSlawVector(NumericIlk i, Slaw... l) {
+    ComplexSlawVector(NumericIlk i, Slaw... l) {
         super(i, l);
     }
 }

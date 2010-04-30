@@ -9,7 +9,7 @@ import java.util.Map;
 
 import com.oblong.util.Pair;
 
-abstract class NativeSlawPair extends Slaw {
+abstract class SlawPair extends Slaw {
 
     @Override public final boolean asBoolean() { return true; }
     @Override public final String asString() { return ""; }
@@ -43,7 +43,7 @@ abstract class NativeSlawPair extends Slaw {
         return 27 + (reh + 31 * imh);
     }
 
-    NativeSlawPair(Slaw f, Slaw s) {
+    SlawPair(Slaw f, Slaw s) {
         first = f;
         second = s;
     }

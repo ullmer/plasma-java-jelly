@@ -4,9 +4,9 @@ package com.oblong.jelly;
 
 import java.math.BigInteger;
 
-final class NativeSlawCons extends NativeSlawPair {
+final class SlawCons extends SlawPair {
 
-    static Slaw valueOf(Slaw f, Slaw s) { return new NativeSlawCons(f, s); }
+    static Slaw valueOf(Slaw f, Slaw s) { return new SlawCons(f, s); }
 
     @Override public SlawIlk ilk() { return SlawIlk.CONS; }
     @Override public NumericIlk numericIlk() { return NumericIlk.NAN; }
@@ -17,5 +17,5 @@ final class NativeSlawCons extends NativeSlawPair {
 
     @Override Slaw withNumericIlk(NumericIlk ilk) { return this; }
 
-    private NativeSlawCons(Slaw f, Slaw s) { super(f, s); }
+    private SlawCons(Slaw f, Slaw s) { super(f, s); }
 }

@@ -36,7 +36,18 @@ public abstract class Slaw {
     public abstract Slaw tail();
     public abstract List<Slaw> asList();
     public abstract Map<Slaw,Slaw> asMap();
-    // public abstract Protein asProtein();
+
+    public SlawNil toNil() { return null; }
+    public SlawNumber toNumber() { return null; }
+    public SlawComplex toComplex() { return null; }
+    public SlawString toStringSlaw() { return null; }
+    public NumberSlawVector toNumberVector() { return null; }
+    public ComplexSlawVector toComplexVector() { return null; }
+    // public SlawMultivector toMultivector() { return null; }
+    // public SlawArray toArray() { return null; }
+    public SlawCons toCons() { return null; }
+    public SlawList toList() { return null; }
+    public SlawMap toMap() { return null; }
 
     public final boolean equals(Object o) {
         if (!(o instanceof Slaw)) return false;
@@ -92,7 +103,7 @@ public abstract class Slaw {
         return factory.array(ns);
     }
 
-    // we don't really want clients to extend this class
+    // we don't really want external clients to extend this class
     Slaw() {}
 
     abstract boolean equals(Slaw s);

@@ -16,9 +16,9 @@ import com.oblong.util.Pair;
  *
  * @author jao
  */
-abstract class NativeCompositeNumericSlaw extends Slaw {
+abstract class CompositeNumericSlaw extends Slaw {
 
-    NativeCompositeNumericSlaw (NumericIlk ilk, Slaw[] elems) {
+    CompositeNumericSlaw (NumericIlk ilk, Slaw[] elems) {
         final List<Slaw> es = new ArrayList<Slaw>(elems.length);
         for (Slaw e : elems) es.add(e.withNumericIlk (ilk));
         elements = Collections.unmodifiableList(es);
@@ -42,7 +42,7 @@ abstract class NativeCompositeNumericSlaw extends Slaw {
 
     @Override public final Slaw head() { return elements.get(0); }
     @Override public final Slaw tail() {
-        return NativeSlawList.valueOf(elements.subList(1, count()));
+        return SlawList.valueOf(elements.subList(1, count()));
     }
 
     @Override public final List<Slaw> asList() { return elements; }
@@ -73,7 +73,7 @@ abstract class NativeCompositeNumericSlaw extends Slaw {
     }
 
     private static final Slaw makeKey(int i) {
-        return NativeSlawNumber.valueOf(NumericIlk.INT32, i);
+        return SlawNumber.valueOf(NumericIlk.INT32, i);
     }
 
     private final List<Slaw> elements;

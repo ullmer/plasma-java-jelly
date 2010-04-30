@@ -16,18 +16,18 @@ import java.util.Map;
  *
  * @author jao
  */
-class NativeSlawList extends Slaw {
-    static final NativeSlawList EMPTY_LIST =
-        new NativeSlawList(new ArrayList<Slaw>());
+class SlawList extends Slaw {
+    static final SlawList EMPTY_LIST =
+        new SlawList(new ArrayList<Slaw>());
 
     static Slaw valueOf(Slaw... sx) {
         if (sx.length == 0) return EMPTY_LIST;
-        return new NativeSlawList((List<Slaw>)Arrays.asList(sx));
+        return new SlawList((List<Slaw>)Arrays.asList(sx));
     }
 
     static Slaw valueOf(List<Slaw> sx) {
         if (sx.size() == 0) return EMPTY_LIST;
-        return new NativeSlawList(sx);
+        return new SlawList(sx);
     }
 
     @Override public SlawIlk ilk() { return SlawIlk.LIST; }
@@ -44,10 +44,12 @@ class NativeSlawList extends Slaw {
     @Override public final int dimension() { return 0; }
     @Override public final int count() { return elements.size(); }
 
-    @Override public final Slaw head() { return elements.get(0); }
+    @Override public final Slaw head() {
+        return elements.isEmpty() ? EMPTY_LIST : elements.get(0);
+    }
     @Override public final Slaw tail() {
-        return count() > 1
-            ? new NativeSlawList(elements.subList(1, count())) : EMPTY_LIST;
+        return elements.size() > 1
+            ? new SlawList(elements.subList(1, count())) : EMPTY_LIST;
     }
 
     @Override public final List<Slaw> asList() { return elements; }
@@ -70,8 +72,10 @@ class NativeSlawList extends Slaw {
 
     @Override final Slaw withNumericIlk(NumericIlk ilk) { return this; }
 
-    NativeSlawList(List<Slaw> elems) {
-        elements = Collections.unmodifiableList(elems);
+    SlawList(List<Slaw> elems) {
+        List<Slaw> e = new ArrayList<Slaw>(elems);
+        while (e.remove(null));
+        elements = Collections.unmodifiableList(e);
     }
 
     static final boolean listOfConses(List<Slaw> ls) {

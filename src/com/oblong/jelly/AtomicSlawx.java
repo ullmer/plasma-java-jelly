@@ -11,7 +11,7 @@ import java.util.Map;
 
 import com.oblong.util.Pair;
 
-abstract class NativeAtomicSlaw extends Slaw {
+abstract class AtomicSlaw extends Slaw {
 
     @Override public NumericIlk numericIlk() { return NumericIlk.NAN; }
     @Override public Slaw withNumericIlk(NumericIlk ilk) { return this; }
@@ -27,7 +27,7 @@ abstract class NativeAtomicSlaw extends Slaw {
     @Override public final int count() { return 1; }
 
     @Override public final Slaw head() { return this; }
-    @Override public final Slaw tail() { return NativeSlawList.EMPTY_LIST; }
+    @Override public final Slaw tail() { return SlawList.EMPTY_LIST; }
     public final List<Slaw> asList() {
         List<Slaw> result = new ArrayList<Slaw>(1);
         result.add(this);
@@ -41,19 +41,19 @@ abstract class NativeAtomicSlaw extends Slaw {
 
 }
 
-final class NativeSlawNil extends NativeAtomicSlaw {
+final class SlawNil extends AtomicSlaw {
 
-    static final NativeSlawNil INSTANCE = new NativeSlawNil();
+    static final SlawNil INSTANCE = new SlawNil();
 
     public SlawIlk ilk() { return SlawIlk.NIL; }
     @Override public boolean asBoolean() { return false; }
 
     boolean equals(Slaw o) { return true; }
 
-    private NativeSlawNil () {}
+    private SlawNil () {}
 }
 
-final class NativeSlawBool extends NativeAtomicSlaw {
+final class SlawBool extends AtomicSlaw {
 
     static Slaw valueOf(boolean b) { return b ? TRUE : FALSE; }
 
@@ -62,16 +62,16 @@ final class NativeSlawBool extends NativeAtomicSlaw {
 
     boolean equals(Slaw o) { return o.asBoolean() == asBoolean(); }
 
-    private NativeSlawBool () {}
+    private SlawBool () {}
 
-    private static final NativeSlawBool TRUE = new NativeSlawBool();
-    private static final NativeSlawBool FALSE = new NativeSlawBool();
+    private static final SlawBool TRUE = new SlawBool();
+    private static final SlawBool FALSE = new SlawBool();
 }
 
-final class NativeSlawString extends NativeAtomicSlaw {
+final class SlawString extends AtomicSlaw {
 
     static Slaw valueOf(String s) {
-        return new NativeSlawString(s);
+        return new SlawString(s);
     }
 
     public SlawIlk ilk() { return SlawIlk.STRING; }
@@ -81,6 +81,6 @@ final class NativeSlawString extends NativeAtomicSlaw {
 
     @Override public int hashCode() { return val.hashCode(); }
 
-    private NativeSlawString(String s) { val = s; }
+    private SlawString(String s) { val = s; }
     private final String val;
 }

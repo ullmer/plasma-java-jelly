@@ -11,18 +11,18 @@ import java.nio.ByteOrder;
  *
  * @author jao
  */
-abstract class NativeSlawNumber extends NativeAtomicSlaw {
+abstract class SlawNumber extends AtomicSlaw {
 
     static Slaw valueOf(NumericIlk i, long value) {
         if (!i.isIntegral()) return valueOf(i, (double)value);
-        if (i == NumericIlk.INT8) return new NativeSlawInt8((byte)value);
-        if (i == NumericIlk.INT16) return new NativeSlawInt16((short)value);
-        if (i == NumericIlk.INT32) return new NativeSlawInt32((int)value);
-        if (i == NumericIlk.INT64) return new NativeSlawInt64(value);
-        if (i == NumericIlk.UNT8) return new NativeSlawUnt8((short)value);
-        if (i == NumericIlk.UNT16) return new NativeSlawUnt16((int)value);
-        if (i == NumericIlk.UNT32) return new NativeSlawUnt32(value);
-        if (i == NumericIlk.UNT64) return new NativeSlawUnt64(value);
+        if (i == NumericIlk.INT8) return new SlawInt8((byte)value);
+        if (i == NumericIlk.INT16) return new SlawInt16((short)value);
+        if (i == NumericIlk.INT32) return new SlawInt32((int)value);
+        if (i == NumericIlk.INT64) return new SlawInt64(value);
+        if (i == NumericIlk.UNT8) return new SlawUnt8((short)value);
+        if (i == NumericIlk.UNT16) return new SlawUnt16((int)value);
+        if (i == NumericIlk.UNT32) return new SlawUnt32(value);
+        if (i == NumericIlk.UNT64) return new SlawUnt64(value);
         assert false : "Unknown ilk: " + i;
         return null;
     }
@@ -30,14 +30,14 @@ abstract class NativeSlawNumber extends NativeAtomicSlaw {
     static Slaw valueOf(NumericIlk i, double value) {
         if (i.isIntegral()) return valueOf(i, (long)value);
         if (i == NumericIlk.FLOAT32)
-            return new NativeSlawFloat32((float)value);
-        if (i == NumericIlk.FLOAT64) return new NativeSlawFloat64(value);
+            return new SlawFloat32((float)value);
+        if (i == NumericIlk.FLOAT64) return new SlawFloat64(value);
         assert false : "Unknown ilk: " + i;
         return null;
     }
 
     static Slaw valueOf(BigInteger value) {
-        return new NativeSlawUnt64(value);
+        return new SlawUnt64(value);
     }
 
     @Override public final SlawIlk ilk() { return SlawIlk.NUMBER; }
@@ -79,9 +79,9 @@ abstract class NativeSlawNumber extends NativeAtomicSlaw {
         ByteOrder.nativeOrder() == ByteOrder.LITTLE_ENDIAN;
 }
 
-final class NativeSlawInt8 extends NativeSlawNumber {
+final class SlawInt8 extends SlawNumber {
 
-    NativeSlawInt8(byte v) { value = v; }
+    SlawInt8(byte v) { value = v; }
 
     @Override public NumericIlk numericIlk() { return NumericIlk.INT8; }
     @Override public long asLong() { return value; }
@@ -89,9 +89,9 @@ final class NativeSlawInt8 extends NativeSlawNumber {
     private byte value;
 }
 
-final class NativeSlawInt16 extends NativeSlawNumber {
+final class SlawInt16 extends SlawNumber {
 
-    NativeSlawInt16(short v) { value = v; }
+    SlawInt16(short v) { value = v; }
 
     @Override public NumericIlk numericIlk() { return NumericIlk.INT16; }
     @Override public long asLong() { return value; }
@@ -99,21 +99,21 @@ final class NativeSlawInt16 extends NativeSlawNumber {
     private short value;
 }
 
-final class NativeSlawInt32 extends NativeSlawNumber {
+final class SlawInt32 extends SlawNumber {
 
-    NativeSlawInt32(int v) { value = v; }
+    SlawInt32(int v) { value = v; }
 
     @Override public NumericIlk numericIlk() { return NumericIlk.INT32; }
     @Override public long asLong() { return value; }
 
-    static final NativeSlawInt32 ZERO = new NativeSlawInt32(0);
+    static final SlawInt32 ZERO = new SlawInt32(0);
 
     private int value;
 }
 
-final class NativeSlawInt64 extends NativeSlawNumber {
+final class SlawInt64 extends SlawNumber {
 
-    NativeSlawInt64(long v) { value = v; }
+    SlawInt64(long v) { value = v; }
 
     @Override public NumericIlk numericIlk() { return NumericIlk.INT64; }
     @Override public long asLong() { return value; }
@@ -121,9 +121,9 @@ final class NativeSlawInt64 extends NativeSlawNumber {
     private long value;
 }
 
-final class NativeSlawUnt8 extends NativeSlawNumber {
+final class SlawUnt8 extends SlawNumber {
 
-    NativeSlawUnt8(short v) { value = (short)normalize(v,0xFF); }
+    SlawUnt8(short v) { value = (short)normalize(v,0xFF); }
 
     @Override public NumericIlk numericIlk() { return NumericIlk.UNT8; }
     @Override public long asLong() { return value; }
@@ -131,8 +131,8 @@ final class NativeSlawUnt8 extends NativeSlawNumber {
     private short value;
 }
 
-final class NativeSlawUnt16 extends NativeSlawNumber {
-    NativeSlawUnt16(int v) { value = (int)normalize(v, 0xFFFF); }
+final class SlawUnt16 extends SlawNumber {
+    SlawUnt16(int v) { value = (int)normalize(v, 0xFFFF); }
 
     @Override public NumericIlk numericIlk() { return NumericIlk.UNT16; }
     @Override public long asLong() { return value; }
@@ -140,9 +140,9 @@ final class NativeSlawUnt16 extends NativeSlawNumber {
     private int value;
 }
 
-final class NativeSlawUnt32 extends NativeSlawNumber {
+final class SlawUnt32 extends SlawNumber {
 
-    NativeSlawUnt32(long v) { value = normalize(v, 0xFFFFFFFF); }
+    SlawUnt32(long v) { value = normalize(v, 0xFFFFFFFF); }
 
     @Override public NumericIlk numericIlk() { return NumericIlk.UNT32; }
     @Override public long asLong() { return value; }
@@ -150,11 +150,11 @@ final class NativeSlawUnt32 extends NativeSlawNumber {
     private long value;
 }
 
-final class NativeSlawUnt64 extends NativeSlawNumber {
+final class SlawUnt64 extends SlawNumber {
 
-    NativeSlawUnt64(long v) { value = v; }
+    SlawUnt64(long v) { value = v; }
 
-    NativeSlawUnt64(BigInteger v) { value = v.longValue(); }
+    SlawUnt64(BigInteger v) { value = v.longValue(); }
 
     @Override public NumericIlk numericIlk() { return NumericIlk.UNT64; }
     @Override public long asLong() { return value; }
@@ -166,8 +166,8 @@ final class NativeSlawUnt64 extends NativeSlawNumber {
     private long value;
 }
 
-final class NativeSlawFloat32 extends NativeSlawNumber {
-    NativeSlawFloat32(float v) {
+final class SlawFloat32 extends SlawNumber {
+    SlawFloat32(float v) {
         value = v;
     }
 
@@ -178,8 +178,8 @@ final class NativeSlawFloat32 extends NativeSlawNumber {
     private float value;
 }
 
-final class NativeSlawFloat64 extends NativeSlawNumber {
-    NativeSlawFloat64(double v) {
+final class SlawFloat64 extends SlawNumber {
+    SlawFloat64(double v) {
         value = v;
     }
 
