@@ -2,14 +2,15 @@
 
 package com.oblong.jelly;
 
+
 import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
 
 import com.oblong.util.Pair;
 
-import static com.oblong.jelly.NumericIlk.*;
 import static com.oblong.jelly.SlawIlk.*;
+import static com.oblong.jelly.NumericIlk.*;
 
 /**
  * Created: Mon Apr 12 16:46:30 2010
@@ -20,22 +21,97 @@ public abstract class Slaw {
 
     public abstract SlawIlk ilk();
     public abstract NumericIlk numericIlk();
+
     public final boolean is(SlawIlk ilk) { return ilk == this.ilk(); }
 
-    public abstract boolean asBoolean();
-    public abstract String asString();
+    public final boolean isAtomic() { return ilk().isAtomic(); }
+    public final boolean isComposite() { return !isAtomic(); }
+    public final boolean isNil() { return is(NIL); }
+    public final boolean isBoolean() { return is(BOOL); }
+    public final boolean isString() { return is(STRING); }
+    public final boolean isNumeric() { return ilk().isNumeric(); }
+    public final boolean isNumber() { return is(NUMBER); }
+    public final boolean isComplex() { return is(COMPLEX); }
+    public final boolean isVector() { return ilk().isVector(); }
+    public final boolean isNumberVector() { return is(VECTOR); }
+    public final boolean isComplexVector() { return is(COMPLEX_VECTOR); }
+    public final boolean isMultivector() { return is(MULTI_VECTOR); }
+    public final boolean isArray() { return ilk().isArray(); }
+    public final boolean isNumberArray() { return is(ARRAY); }
+    public final boolean isComplexArray() { return is(COMPLEX_ARRAY); }
+    public final boolean isNumberVectorArray() { return is(VECTOR_ARRAY); }
+    public final boolean isComplexVectorArray() { return is(COMPLEX_ARRAY); }
+    public final boolean isMultivectorArray() {
+        return is(MULTI_VECTOR_ARRAY);
+    }
+    public final boolean isCons() { return is(CONS); }
+    public final boolean isList() { return is(LIST); }
+    public final boolean isMap() { return is(MAP); }
+    public final boolean isProtein() { return is(PROTEIN); }
 
-    public abstract long asLong();
-    public abstract double asDouble();
-    public abstract BigInteger asBigInteger();
+    public boolean emitBoolean() {
+        throw new UnsupportedOperationException(ilk() + " as boolean");
+    }
 
-    public abstract int dimension();
+    public String emitString() {
+        throw new UnsupportedOperationException(ilk() + " as string");
+    }
+
+    public long emitLong() {
+        throw new UnsupportedOperationException(ilk() + " as long");
+    }
+
+    public double emitDouble() {
+        throw new UnsupportedOperationException(ilk() + " as double");
+    }
+
+    public BigInteger emitBigInteger() {
+        throw new UnsupportedOperationException(ilk() + " as big integer");
+    }
+
+    public final Pair<Slaw,Slaw> emitPair() {
+        return Pair.create(first(), second());
+    }
+
+    public Slaw first() {
+        throw new UnsupportedOperationException(ilk() + " as pair");
+    }
+
+    public Slaw second() {
+        throw new UnsupportedOperationException(ilk() + " as pair");
+    }
+
     public abstract int count();
 
-    public abstract Slaw head();
-    public abstract Slaw tail();
-    public abstract List<Slaw> asList();
-    public abstract Map<Slaw,Slaw> asMap();
+    public List<Slaw> emitList() {
+        throw new UnsupportedOperationException(ilk() + " as list");
+    }
+
+    public Slaw get(int n) { return emitList().get(n); }
+
+    public int indexOf(Slaw elem) { return emitList().indexOf(elem); }
+
+    public final boolean contains(Slaw elem) { return indexOf(elem) >= 0; }
+
+    public Slaw slice(int begin, int end)  {
+        return list(emitList().subList(begin, end));
+    }
+
+    public Map<Slaw,Slaw> emitMap() {
+        throw new UnsupportedOperationException(ilk() + " as map");
+    }
+
+    public Slaw get(Slaw key) { return emitMap().get(key); }
+
+    public final Slaw descrips() {
+        if (!isProtein()) throw new UnsupportedOperationException();
+        return first();
+    }
+
+    public final Slaw ingests() {
+        if (!isProtein()) throw new UnsupportedOperationException();
+        return second();
+    }
 
     public final boolean equals(Object o) {
         if (!(o instanceof Slaw)) return false;
@@ -48,6 +124,9 @@ public abstract class Slaw {
         return factory.cons(car, cdr);
     }
     public static Slaw list(Slaw... s) { return factory.list(s); }
+    public static Slaw list(List<Slaw> s) {
+        return factory.list((Slaw[])s.toArray());
+    }
     public static Slaw map(Map<Slaw,Slaw> m) { return factory.map(m); }
 
     public static Slaw nil() { return factory.nil(); }
@@ -95,9 +174,12 @@ public abstract class Slaw {
     Slaw() {}
 
     abstract boolean equals(Slaw s);
-    abstract Slaw withNumericIlk(NumericIlk ilk);
+
+    Slaw withNumericIlk(NumericIlk ilk) {
+        throw new UnsupportedOperationException(ilk() + " not numeric");
+    }
 
     static void setFactory (SlawFactory f) { factory = f; }
 
-    private static SlawFactory factory = new NativeSlawFactory();
+    private static SlawFactory factory = new JavaSlawFactory();
 }

@@ -3,7 +3,7 @@
 package com.oblong.util;
 
 /**
- * A generic object pair, without encapsulation or further
+ * A generic, immutable object pair, without encapsulation or further
  * pretensions: just a convenient placeholder for two objects.
  *
  * Created: Thu Apr 15 12:20:14 2010
@@ -11,20 +11,6 @@ package com.oblong.util;
  * @author jao
  */
 public final class Pair<F, S> {
-
-    /**
-     * First element in the pair. Since this a generic class, @a F
-     * and @a S will be reference types, so it buys us nothing to make
-     * these members private and provide an accessor (unless we were
-     * willing to restrict the class to clonable types and pay the
-     * price of defensive copying, which we're not).
-     */
-    public final F first;
-    /**
-     * Second element in the pair: see first for a rationale on
-     * second's public character.
-     */
-    public final S second;
 
     /**
      *  Standard constructor doing exactly what you would expect.
@@ -43,6 +29,19 @@ public final class Pair<F, S> {
         return new Pair<T, U>(first, second);
     }
 
+    /**
+     * First element in the pair. Although a Pair is immutable in the
+     * sense that you cannot reasign its two components, this accessor
+     * returns a direct reference to the first one, without defensive
+     * copying.
+     */
+    public F first() { return first; }
+
+    /**
+     * Raw reference to second element in the pair.
+     */
+    public S second() { return second; }
+
     @Override public boolean equals(Object o) {
         if (!(o instanceof Pair<?,?>)) return false;
         final Pair<?, ?> other = (Pair<?, ?>) o;
@@ -52,7 +51,6 @@ public final class Pair<F, S> {
     @Override public int hashCode() {
         int hFirst = this.first == null ? 0 : this.first.hashCode();
         int hSecond = this.second == null ? 0 : this.second.hashCode();
-
         return hFirst + (17 * hSecond);
     }
 
@@ -69,4 +67,7 @@ public final class Pair<F, S> {
         return (o1 == null) ? o2 == null : o1.equals(o2);
     }
 
-} // end class
+    private final S second;
+    private final F first;
+
+}

@@ -1,11 +1,10 @@
+// Copyright (c) 2010 Oblong Industries
+
 package com.oblong.jelly;
 
 import java.util.EnumSet;
 
 /**
- * Describe class SlawIlk here.
- *
- *
  * Created: Fri Apr 23 14:14:56 2010
  *
  * @author jao

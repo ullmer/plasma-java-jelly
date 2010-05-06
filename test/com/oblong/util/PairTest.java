@@ -19,9 +19,9 @@ public class PairTest {
     @Test public void equality() {
         Pair<Integer,BigDecimal> p0 =
             Pair.create(new Integer(3), new BigDecimal(3.14));
-        Pair<BigDecimal,Integer> p1 = Pair.create(p0.second, p0.first);
-        Pair<BigDecimal,Integer> p2 = Pair.create(p1.first, p1.second);
-        Pair<BigDecimal,Integer> p3 = Pair.create(p2.first, p2.second);
+        Pair<BigDecimal,Integer> p1 = Pair.create(p0.second(), p0.first());
+        Pair<BigDecimal,Integer> p2 = Pair.create(p1.first(), p1.second());
+        Pair<BigDecimal,Integer> p3 = Pair.create(p2.first(), p2.second());
 
         assertEquals(p0, p0);
         assertNotEquals(p0, p1);
