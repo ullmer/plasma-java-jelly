@@ -16,6 +16,11 @@ import java.math.BigDecimal;
  */
 public class PairTest {
 
+    void assertNotEquals(Object o1, Object o2) {
+        assertFalse(o1.equals(o2));
+        assertFalse(o2.equals(o1));
+    }
+
     @Test public void equality() {
         Pair<Integer,BigDecimal> p0 =
             Pair.create(new Integer(3), new BigDecimal(3.14));
@@ -33,10 +38,5 @@ public class PairTest {
         assertTrue(p2.equals(p1));
         assertTrue(p2.equals(p3));
         assertTrue(p1.equals(p3));
-    }
-
-    void assertNotEquals(Object o1, Object o2) {
-        assertFalse(o1.equals(o2));
-        assertFalse(o2.equals(o1));
     }
 }
