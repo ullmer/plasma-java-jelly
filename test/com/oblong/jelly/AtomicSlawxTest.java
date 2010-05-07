@@ -25,9 +25,6 @@ public class AtomicSlawxTest {
         Slaw nil = Slaw.nil();
         testIlk(nil, SlawIlk.NIL, NumericIlk.NAN);
         assertEquals(Slaw.nil(), nil);
-        assertEquals(0, nil.count());
-        assertEquals(new HashMap<Slaw,Slaw>(), nil.emitMap());
-        assertEquals(new ArrayList<Slaw>(), nil.emitList());
         testAtomicEmissions(nil);
         testPairiness(nil);
         testListGet(nil);
@@ -37,7 +34,6 @@ public class AtomicSlawxTest {
         Slaw s = Slaw.bool(v);
         testIlk(s, SlawIlk.BOOL, NumericIlk.NAN);
         assertEquals(Slaw.bool(v), s);
-        assertEquals(1, s.count());
         assertEquals(v, s.emitBoolean());
         assertEquals(s, s.get(0));
         testAtomicEmissions(s);

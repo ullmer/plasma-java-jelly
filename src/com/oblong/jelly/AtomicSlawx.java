@@ -8,24 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 
-final class SlawNil extends Slaw {
-
-    static final SlawNil INSTANCE = new SlawNil();
-
-    @Override public SlawIlk ilk() { return SlawIlk.NIL; }
-    @Override public NumericIlk numericIlk() { return NumericIlk.NAN; }
-
-    @Override public int count() { return 0; }
-    @Override public List<Slaw> emitList() { return new ArrayList<Slaw>(); }
-    @Override public Map<Slaw,Slaw> emitMap() {
-        return new HashMap<Slaw,Slaw>();
-    }
-
-    @Override boolean equals(Slaw o) { return true; }
-
-    private SlawNil () {}
-}
-
 abstract class AtomicSlaw extends Slaw {
 
     @Override public final int count() { return 1; }
@@ -45,6 +27,18 @@ abstract class AtomicSlaw extends Slaw {
     @Override public int indexOf(Slaw elem) {
         return equals(elem) ? 0 : -1;
     }
+}
+
+final class SlawNil extends AtomicSlaw {
+
+    static final SlawNil INSTANCE = new SlawNil();
+
+    @Override public SlawIlk ilk() { return SlawIlk.NIL; }
+    @Override public NumericIlk numericIlk() { return NumericIlk.NAN; }
+
+    @Override boolean equals(Slaw o) { return true; }
+
+    private SlawNil () {}
 }
 
 final class SlawBool extends AtomicSlaw {

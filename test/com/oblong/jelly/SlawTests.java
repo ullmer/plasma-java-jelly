@@ -23,6 +23,8 @@ class SlawTests {
     static final void testListGet(Slaw s) {
         int count = s.count();
 
+        assertTrue(count == 1 || !s.isAtomic());
+
         for (int i = 0; i < count; i++) {
             assertNotNull(s.get(i));
         }
