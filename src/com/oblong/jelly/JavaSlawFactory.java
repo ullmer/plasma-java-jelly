@@ -26,15 +26,15 @@ final class JavaSlawFactory implements SlawFactory {
     }
 
     @Override public Slaw number(NumericIlk ilk, long n) {
-        return null; // SlawNumber.valueOf(ilk, n);
+        return SlawNumber.valueOf(ilk, n);
     }
 
     @Override public Slaw number(NumericIlk ilk, double n) {
-        return null; // SlawNumber.valueOf(ilk, n);
+        return SlawNumber.valueOf(ilk, n);
     }
 
     @Override public Slaw number(BigInteger n) {
-        return null; // SlawNumber.valueOf(n);
+        return SlawNumber.valueOf(n);
     }
 
     @Override public Slaw complex(Slaw re, Slaw im) {
