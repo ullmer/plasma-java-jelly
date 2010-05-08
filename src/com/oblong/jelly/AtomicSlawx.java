@@ -12,7 +12,7 @@ abstract class AtomicSlaw extends Slaw {
 
     @Override public final int count() { return 1; }
 
-    @Override public final Slaw first() { return this; }
+    @Override public final Slaw car() { return this; }
 
     @Override public final List<Slaw> emitList() {
         List<Slaw> result = new ArrayList<Slaw>(1);

@@ -69,15 +69,15 @@ public abstract class Slaw {
         throw new UnsupportedOperationException(ilk() + " as big integer");
     }
 
-    public final Pair<Slaw,Slaw> emitPair() {
-        return Pair.create(first(), second());
+    public Pair<Slaw,Slaw> emitPair() {
+        return Pair.create(car(), cdr());
     }
 
-    public Slaw first() {
+    public Slaw car() {
         throw new UnsupportedOperationException(ilk() + " as pair");
     }
 
-    public Slaw second() {
+    public Slaw cdr() {
         throw new UnsupportedOperationException(ilk() + " as pair");
     }
 
@@ -105,12 +105,12 @@ public abstract class Slaw {
 
     public final Slaw descrips() {
         if (!isProtein()) throw new UnsupportedOperationException();
-        return first();
+        return car();
     }
 
     public final Slaw ingests() {
         if (!isProtein()) throw new UnsupportedOperationException();
-        return second();
+        return cdr();
     }
 
     public final boolean equals(Object o) {

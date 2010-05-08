@@ -74,12 +74,12 @@ class SlawTests {
     static final void testPairiness(Slaw s) {
         Slaw first = null;
         try {
-            first = s.first();
+            first = s.car();
         } catch (UnsupportedOperationException e) {
             assertTrue(s.count() < 1);
         }
         try {
-            Slaw second = s.second();
+            Slaw second = s.cdr();
             assertEquals(s.emitPair().first(), first);
             assertEquals(s.emitPair().second(), second);
         } catch (UnsupportedOperationException e) {

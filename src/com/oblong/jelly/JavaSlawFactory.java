@@ -38,7 +38,7 @@ final class JavaSlawFactory implements SlawFactory {
     }
 
     @Override public Slaw complex(Slaw re, Slaw im) {
-        return null; // SlawComplex.valueOf(re, im);
+        return SlawComplex.valueOf(re, im);
     }
 
     @Override public Slaw vector(Slaw x, Slaw y) {
