@@ -1,10 +1,10 @@
 package com.oblong.jelly;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.NoSuchElementException;
 import java.util.Collections;
 import java.util.List;
-import java.util.ArrayList;
+import java.util.NoSuchElementException;
 
 /**
  * Created: Fri Apr 23 13:34:13 2010
@@ -24,6 +24,20 @@ public enum NumericIlk {
     public int bytes() { return bsize; }
     public boolean isSigned() { return signed; }
     public boolean isIntegral() { return integral; }
+    public long max() {
+        return (1L << (width - (signed ? 1 : 0))) - 1;
+    }
+    public long min() { return signed ? 1 - max() : 0; }
+    public double fmax() {
+        if (integral) return (double)max();
+        if (this == FLOAT32) return (double)Float.MAX_VALUE;
+        return Double.MAX_VALUE;
+    }
+    public double fmin() {
+        if (integral) return (double)min();
+        if (this == FLOAT32) return (double)Float.MIN_VALUE;
+        return Double.MIN_VALUE;
+    }
 
     public static NumericIlk dominantIlk(List<NumericIlk> ilks) {
         try {

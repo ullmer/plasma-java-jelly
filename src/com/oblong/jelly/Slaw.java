@@ -133,17 +133,23 @@ public abstract class Slaw {
     public static Slaw bool(boolean v) { return factory.bool(v); }
     public static Slaw string(String s) { return factory.string(s); }
 
-    public static Slaw int8(int n) { return factory.number(INT8, n); }
-    public static Slaw int16(int n) { return factory.number(INT16, n); }
-    public static Slaw int32(int n) { return factory.number(INT32, n); }
-    public static Slaw int64(long n) { return factory.number(INT64, n); }
-    public static Slaw unt8(int n) { return factory.number(UNT8, n); }
-    public static Slaw unt16(int n) { return factory.number(UNT16, n); }
-    public static Slaw unt32(long n) { return factory.number(UNT32, n); }
-    public static Slaw unt64(long n) { return factory.number(UNT64, n); }
+    public static Slaw int8(int n) { return number(INT8, n); }
+    public static Slaw int16(int n) { return number(INT16, n); }
+    public static Slaw int32(int n) { return number(INT32, n); }
+    public static Slaw int64(long n) { return number(INT64, n); }
+    public static Slaw unt8(int n) { return number(UNT8, n); }
+    public static Slaw unt16(int n) { return number(UNT16, n); }
+    public static Slaw unt32(long n) { return number(UNT32, n); }
+    public static Slaw unt64(long n) { return number(UNT64, n); }
     public static Slaw unt64(BigInteger n) { return factory.number(n);}
-    public static Slaw float32(float n) { return factory.number(FLOAT32, n); }
-    public static Slaw float64(double n) { return factory.number(FLOAT64, n);}
+    public static Slaw float32(float n) { return number(FLOAT32, n); }
+    public static Slaw float64(double n) { return number(FLOAT64, n);}
+    public static Slaw number(NumericIlk ilk, long value) {
+        return factory.number(ilk, value);
+    }
+    public static Slaw number(NumericIlk ilk, double value) {
+        return factory.number(ilk, value);
+    }
 
     public static Slaw complex(Slaw re, Slaw im) {
         return factory.complex(re, im);
