@@ -25,7 +25,7 @@ public class SlawComplexTest {
         try {
             Slaw c = Slaw.complex(r, i);
             fail();
-        } catch (UnsupportedOperationException e) {
+        } catch (IllegalArgumentException e) {
             // expected
         }
     }

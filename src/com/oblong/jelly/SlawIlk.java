@@ -25,11 +25,10 @@ public enum SlawIlk {
     public boolean isArray() { return arrays.contains(this); }
 
     public static boolean haveSameIlk(Slaw... sx) {
-        if (sx.length > 0) {
-            SlawIlk ilk = sx[0].ilk();
-            for (int i = 1; i < sx.length; i++)
-                if (sx[i].ilk () != ilk) return false;
-        }
+        if (sx.length == 0) return true;
+        if (sx[0] == null) return false;
+        final SlawIlk ilk = sx[0].ilk();
+        for (Slaw s : sx) if (s == null || s.ilk() != ilk) return false;
         return true;
     }
 
