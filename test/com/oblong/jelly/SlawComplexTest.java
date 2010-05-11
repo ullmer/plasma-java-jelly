@@ -53,7 +53,7 @@ public class SlawComplexTest {
         testListGet(c);
         Map<Slaw,Slaw> m = c.emitMap();
         assertEquals(c.cdr(), m.get(c.car()));
-        assertEquals(c.cdr(), c.get(c.car()));
+        assertEquals(c.cdr(), c.find(c.car()));
     }
 
     @Test public void complexes() {

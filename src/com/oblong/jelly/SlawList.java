@@ -34,20 +34,20 @@ final class SlawList extends Slaw {
     @Override public NumericIlk numericIlk() { return NumericIlk.NAN; }
 
     @Override public boolean emitBoolean() {
-        return count() == 1 ? get(0).emitBoolean() : super.emitBoolean();
+        return count() == 1 ? nth(0).emitBoolean() : super.emitBoolean();
     }
     @Override public String emitString() {
-        return count() == 1 ? get(0).emitString() : super.emitString();
+        return count() == 1 ? nth(0).emitString() : super.emitString();
     }
     @Override public long emitLong() {
-        return count() == 1 ? get(0).emitLong() : super.emitLong();
+        return count() == 1 ? nth(0).emitLong() : super.emitLong();
     }
     @Override public double emitDouble() {
-        return count() == 1 ? get(0).emitDouble() : super.emitDouble();
+        return count() == 1 ? nth(0).emitDouble() : super.emitDouble();
     }
     @Override public BigInteger emitBigInteger() {
         return count() == 1 ?
-            get(0).emitBigInteger() : super.emitBigInteger();
+            nth(0).emitBigInteger() : super.emitBigInteger();
     }
 
     @Override public Slaw car() {
@@ -64,9 +64,9 @@ final class SlawList extends Slaw {
 
     @Override public int count() { return elements.size(); }
 
-    @Override public Slaw get(int n) { return elements.get(n); }
+    @Override public Slaw nth(int n) { return elements.get(n); }
 
-    @Override public Slaw get(Slaw k) {
+    @Override public Slaw find(Slaw k) {
         if (listOfConses(elements))
             for (Slaw e : elements) if (k.equals(e.car())) return e.cdr();
         else
@@ -92,14 +92,14 @@ final class SlawList extends Slaw {
         final int c = count();
         if (o.count() != c) return false;
         for (int i = 0; i < c; i++)
-            if (!get(i).equals(o.get(i))) return false;
+            if (!nth(i).equals(o.nth(i))) return false;
         return true;
     }
 
     @Override String debugString() {
         final StringBuilder buff = new StringBuilder("[");
         for (int i = 0, c = count(); i < c; i++) {
-            buff.append(get(i).toString());
+            buff.append(nth(i).toString());
             if (i + 1 < c) buff.append(" ");
         }
         buff.append("]");

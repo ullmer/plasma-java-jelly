@@ -12,12 +12,12 @@ abstract class AtomicSlaw extends Slaw {
 
     @Override public final int count() { return 1; }
 
-    @Override public final Slaw get(int n) {
+    @Override public final Slaw nth(int n) {
         if (n != 0) throw new IndexOutOfBoundsException();
         return this;
     }
 
-    @Override public final Slaw get(Slaw elem) { return null; }
+    @Override public final Slaw find(Slaw elem) { return null; }
 
     @Override public final Slaw car() { return this; }
 

@@ -51,24 +51,15 @@ final class JavaSlawFactory implements SlawFactory {
     }
 
     @Override public Slaw vector(Slaw x, Slaw y) {
-        if (x == null || !x.isNumeric() || !SlawIlk.haveSameIlk(x, y))
-            throw new IllegalArgumentException
-                ("Args must have same numeric ilk");
-        return null; // SlawVector.valueOf(x, y);
+        return makeVector(x, y);
     }
 
     @Override public Slaw vector(Slaw x, Slaw y, Slaw z) {
-        if (x == null || !x.isNumeric() || !SlawIlk.haveSameIlk(x, y, z))
-            throw new IllegalArgumentException
-                ("Args must have same numeric ilk");
-        return null; // SlawVector.valueOf(x, y, z);
+        return makeVector(x, y, z);
     }
 
     @Override public Slaw vector(Slaw x, Slaw y, Slaw z, Slaw w) {
-        if (x == null || !x.isNumeric() || !SlawIlk.haveSameIlk(x, y, z, w))
-            throw new IllegalArgumentException
-                ("Args must have same numeric ilk");
-        return null; // SlawVector.valueOf(x, y, z, w);
+        return makeVector(x, y, z, w);
     }
 
     @Override public Slaw multivector(Slaw v00, Slaw v01, Slaw v10, Slaw v11)
@@ -90,27 +81,26 @@ final class JavaSlawFactory implements SlawFactory {
         // return SlawMultiVector.valueOf(v0, v1);
     }
 
-    @Override public Slaw array(SlawIlk ilk, NumericIlk ni, Slaw... sx) {
-        Slaw[] fs = filterNulls(sx);
-        if (fs.length > 0 && (!fs[0].isNumeric() || !SlawIlk.haveSameIlk(fs)))
-            throw new IllegalArgumentException
-                ("Args must have the same ilk and be numeric");
-        return null; // SlawArray.valueOf(nfs);
+    @Override public Slaw array(SlawIlk ilk, NumericIlk ni) {
+        if (ilk == null || ni == null || !ilk.isNumeric() || ilk.isArray()
+            || ni == NumericIlk.NAN)
+            throw new IllegalArgumentException ("Invalid ilks");
+        return EmptyArray.valueOf(ilk, ni);
     }
 
     @Override public Slaw array(Slaw... ns) {
         Slaw[] fn = filterNulls(ns);
         if (fn.length == 0)
             throw new IllegalArgumentException("All args were null");
-        if (!fn[0].isNumeric() || !SlawIlk.haveSameIlk(fn))
+        if (!fn[0].isNumeric() || fn[0].isArray() || !SlawIlk.haveSameIlk(fn))
             throw new IllegalArgumentException
-                ("Args must have the same ilk and be numeric");
-        return null; // SlawArray.valueOf(fn);
+                ("Args must have the same ilk and be numeric non-arrays");
+        return SlawArray.valueOf(fn);
     }
 
     @Override public Slaw cons(Slaw car, Slaw cdr) {
         if (car == null || cdr == null) throw new IllegalArgumentException();
-        return null; // SlawCons.valueOf(car, cdr);
+        return SlawCons.valueOf(car, cdr);
     }
 
     @Override public Slaw list(Slaw... sx) { return SlawList.valueOf(sx); }
@@ -132,5 +122,13 @@ final class JavaSlawFactory implements SlawFactory {
         List<Slaw> fs = new ArrayList<Slaw>(sx.length);
         for (Slaw s : sx) if (s != null) fs.add(s);
         return (Slaw[])fs.toArray();
+    }
+
+    private static Slaw makeVector(Slaw... cmps) {
+        if (cmps[0] == null
+            || (!cmps[0].isNumber() && !cmps[0].isComplex())
+            || !SlawIlk.haveSameIlk(cmps))
+            throw new IllegalArgumentException ("Args must have same ilk");
+        return SlawVector.valueOf(cmps);
     }
 }

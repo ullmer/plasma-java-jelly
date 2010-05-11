@@ -35,7 +35,7 @@ public class AtomicSlawxTest {
         testIlk(s, SlawIlk.BOOL, NumericIlk.NAN);
         assertEquals(Slaw.bool(v), s);
         assertEquals(v, s.emitBoolean());
-        assertEquals(s, s.get(0));
+        assertEquals(s, s.nth(0));
         testAtomicEmissions(s);
         testPairiness(s);
         testListGet(s);

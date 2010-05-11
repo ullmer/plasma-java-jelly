@@ -2,11 +2,9 @@
 
 package com.oblong.jelly;
 
-
-
-
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -80,12 +78,12 @@ public abstract class Slaw {
     }
 
     public abstract int count();
-    public abstract Slaw get(int n);
-    public abstract Slaw get(Slaw key);
+    public abstract Slaw nth(int n);
+    public abstract Slaw find(Slaw key);
 
     public final int indexOf(Slaw elem) {
         for (int i = 0, c = count(); i < c; i++)
-            if (elem.equals(get(i))) return i;
+            if (elem.equals(nth(i))) return i;
         return -1;
     }
 
@@ -102,12 +100,12 @@ public abstract class Slaw {
         final List<Slaw> ls = new ArrayList<Slaw>();
         if (begin >= 0 && end > begin)
             for (int i = begin, t = Math.min(c, end); i < t; i++)
-                ls.add(get(i));
+                ls.add(nth(i));
         return ls;
     }
 
     public Map<Slaw,Slaw> emitMap() {
-        throw new UnsupportedOperationException(ilk() + " as map");
+        return new HashMap<Slaw,Slaw>();
     }
 
     @Override public final boolean equals(Object o) {
@@ -178,8 +176,15 @@ public abstract class Slaw {
         return factory.multivector(v0, v1);
     }
 
-    public static Slaw array(Slaw... ns) {
-        return factory.array(ns);
+    public static Slaw array(Slaw n, Slaw... ns) {
+        final Slaw[] sx = new Slaw[1 + ns.length];
+        sx[0] = n;
+        for (int i = 0; i < ns.length; i++) sx[i+1] = ns[i];
+        return factory.array(sx);
+    }
+
+    public static Slaw array(SlawIlk i, NumericIlk n) {
+        return factory.array(i, n);
     }
 
     // we don't really want external clients to extend this class

@@ -26,12 +26,12 @@ class SlawTests {
         assertTrue(count == 1 || !s.isAtomic());
 
         for (int i = 0; i < count; i++) {
-            assertNotNull(s.get(i));
+            assertNotNull(s.nth(i));
         }
 
         for (int i = count; i < count + 3; i++) {
             try {
-                s.get(i);
+                s.nth(i);
                 fail();
             } catch (IndexOutOfBoundsException e) {
                 // good
@@ -39,7 +39,7 @@ class SlawTests {
         }
 
         try {
-            s.get(-1);
+            s.nth(-1);
             fail();
         } catch (IndexOutOfBoundsException e) {
             // good
@@ -80,23 +80,15 @@ class SlawTests {
         }
         try {
             Slaw second = s.cdr();
-            assertEquals(s.get(0), first);
-            if (s.count() > 1)
-                assertEquals(s.get(1), second);
-            else
-                assertEquals(0, second.count());
+            assertEquals(s.nth(0), first);
+            if (s.count() > 1) assertEquals(s.nth(1), second);
+            else assertEquals(0, second.count());
         } catch (UnsupportedOperationException e) {
             assertTrue(s.count() < 2);
         }
     }
 
     static final void testNotMap(Slaw s) {
-        try {
-            s.emitMap();
-            s.get(s);
-            fail();
-        } catch (UnsupportedOperationException e) {
-            // good
-        }
+        assertEquals(0, s.emitMap().size());
     }
 }

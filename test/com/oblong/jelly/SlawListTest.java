@@ -47,13 +47,13 @@ public class SlawListTest {
         assertTrue(ls.isList());
         assertEquals(Slaw.list(Slaw.int8(23)), ls);
         assertEquals(Slaw.list(Slaw.int8(23), null), ls);
-        assertEquals(n, ls.get(0));
+        assertEquals(n, ls.nth(0));
         assertEquals(n.emitLong(), ls.emitLong());
         assertEquals(n.emitDouble(), ls.emitDouble(), 0.0);
         assertEquals(n.emitBigInteger(), ls.emitBigInteger());
         assertEquals(n, ls.car());
         assertEquals(Slaw.list(), ls.cdr());
-        assertEquals(null, ls.get(n));
+        assertEquals(null, ls.find(n));
         assertEquals(0, ls.emitMap().size());
     }
 
@@ -80,7 +80,7 @@ public class SlawListTest {
                          ls.emitList(0, cmps.length + i));
         }
         for (int i = 0; i < cmps.length; i++)
-            assertEquals(ls.get(i), ls.emitList(i, i+1).get(0));
+            assertEquals(ls.nth(i), ls.emitList(i, i+1).get(0));
     }
 
     private void testList(Slaw... sx) {
@@ -93,18 +93,18 @@ public class SlawListTest {
         Slaw lc = Slaw.list(sl);
         assertEquals(ls, lc);
         for (int i = 0, c = ls.count(); i < c; ++i) {
-            assertEquals(sl.get(i), ls.get(i));
-            assertEquals(i, ls.indexOf(ls.get(i)));
+            assertEquals(sl.get(i), ls.nth(i));
+            assertEquals(i, ls.indexOf(ls.nth(i)));
         }
         Map<Slaw,Slaw> m = ls.emitMap();
         assertEquals(ls.count()/2, m.size());
         for (int i = 0, c = ls.count() - 1; i < c; i += 2) {
-            assertEquals(ls.get(i+1), m.get(ls.get(i)));
+            assertEquals(ls.nth(i+1), m.get(ls.nth(i)));
         }
         if (ls.count() > 0) {
-            assertEquals(ls.get(0), ls.car());
+            assertEquals(ls.nth(0), ls.car());
             Slaw[] csx = new Slaw[ls.count() - 1];
-            for (int i = 0; i < csx.length; i++) csx[i] = ls.get(i+1);
+            for (int i = 0; i < csx.length; i++) csx[i] = ls.nth(i+1);
             assertEquals(Slaw.list(csx), ls.cdr());
         }
     }

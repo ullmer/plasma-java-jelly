@@ -14,13 +14,13 @@ abstract class SlawPair extends Slaw {
 
     @Override public final int count() { return 2; }
 
-    @Override public final Slaw get(int n) {
+    @Override public final Slaw nth(int n) {
         if (n == 0) return first;
         if (n == 1) return second;
         throw new IndexOutOfBoundsException();
     }
 
-    @Override public final Slaw get(Slaw k) {
+    @Override public final Slaw find(Slaw k) {
         return k.equals(first) ? second : null;
     }
 
