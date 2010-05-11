@@ -97,12 +97,12 @@ final class SlawList extends Slaw {
     }
 
     @Override String debugString() {
-        final StringBuilder buff = new StringBuilder("(");
+        final StringBuilder buff = new StringBuilder("[");
         for (int i = 0, c = count(); i < c; i++) {
-            buff.append("\n\t");
             buff.append(get(i).toString());
+            if (i + 1 < c) buff.append(" ");
         }
-        buff.append("\n)");
+        buff.append("]");
         return buff.toString();
     }
 

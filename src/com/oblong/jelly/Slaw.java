@@ -99,10 +99,10 @@ public abstract class Slaw {
         final int c = count();
         if (begin < 0) begin += c;
         if (end < 0) end += c;
-        if (begin < 0 || begin >= c || end <= begin)
-            return new ArrayList<Slaw>();
-        final List<Slaw> ls = new ArrayList<Slaw>(end - begin);
-        for (int i = begin; i < end; i++) ls.add(get(i));
+        final List<Slaw> ls = new ArrayList<Slaw>();
+        if (begin >= 0 && end > begin)
+            for (int i = begin, t = Math.min(c, end); i < t; i++)
+                ls.add(get(i));
         return ls;
     }
 

@@ -64,6 +64,25 @@ public class SlawListTest {
                  Slaw.unt64(-1), Slaw.cons(Slaw.int8(2), Slaw.string("bar")));
     }
 
+
+    @Test public void slices() {
+        Slaw[] cmps = {Slaw.int32(2), Slaw.string("foo"), Slaw.bool(true),
+                       Slaw.complex(Slaw.int32(1), Slaw.float64(1.0))};
+        Slaw ls = Slaw.list(cmps);
+        assertEquals(ls.emitList(), ls.emitList(0, ls.count()));
+        assertEquals(ls.emitList(), ls.emitList(0, ls.count() + 1));
+        assertEquals(ls.emitList(), ls.emitList(0, ls.count() + 10));
+        assertEquals(0, ls.emitList(2, 2).size());
+        assertEquals(0, ls.emitList(-1, -1).size());
+        for (int i = -cmps.length; i < 0; i++) {
+            assertEquals(i + "th iteration",
+                         ls.emitList(0, i),
+                         ls.emitList(0, cmps.length + i));
+        }
+        for (int i = 0; i < cmps.length; i++)
+            assertEquals(ls.get(i), ls.emitList(i, i+1).get(0));
+    }
+
     private void testList(Slaw... sx) {
         listTests(Slaw.list(sx));
     }
