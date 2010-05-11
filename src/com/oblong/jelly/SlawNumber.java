@@ -53,7 +53,9 @@ abstract class SlawNumber extends AtomicSlaw {
 
     @Override public final int hashCode() { return (int)emitLong(); }
 
-    final boolean equals(Slaw s) {
+    @Override String debugString() { return "" + emitLong(); }
+
+    final boolean slawEquals(Slaw s) {
         if (numericIlk().isIntegral()) return emitLong() == s.emitLong();
         return emitDouble() == s.emitDouble();
     }
@@ -166,6 +168,8 @@ final class SlawUnt64 extends SlawNumber {
         return new BigInteger(1, toBytes(numericIlk(), value));
     }
 
+    @Override String debugString() { return emitBigInteger().toString(); }
+
     private long value;
 }
 
@@ -177,6 +181,7 @@ final class SlawFloat32 extends SlawNumber {
     @Override public NumericIlk numericIlk() { return NumericIlk.FLOAT32; }
     @Override public long emitLong() { return (long)value; }
     @Override public double emitDouble() { return value; }
+    @Override public String debugString() { return "" + emitDouble(); }
 
     private float value;
 }
@@ -189,6 +194,7 @@ final class SlawFloat64 extends SlawNumber {
     @Override public NumericIlk numericIlk() { return NumericIlk.FLOAT64; }
     @Override public long emitLong() { return (long)value; }
     @Override public double emitDouble() { return value; }
+    @Override public String debugString() { return "" + emitDouble(); }
 
     private double value;
 }

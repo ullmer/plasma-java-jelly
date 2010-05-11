@@ -80,8 +80,11 @@ class SlawTests {
         }
         try {
             Slaw second = s.cdr();
-            assertEquals(s.emitPair().first(), first);
-            assertEquals(s.emitPair().second(), second);
+            assertEquals(s.get(0), first);
+            if (s.count() > 1)
+                assertEquals(s.get(1), second);
+            else
+                assertEquals(0, second.count());
         } catch (UnsupportedOperationException e) {
             assertTrue(s.count() < 2);
         }

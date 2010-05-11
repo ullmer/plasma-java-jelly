@@ -7,22 +7,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.oblong.util.Pair;
-
 abstract class SlawPair extends Slaw {
+
+    @Override public final Slaw car() { return first; }
+    @Override public final Slaw cdr() { return second; }
 
     @Override public final int count() { return 2; }
 
-    @Override public final Slaw car() { return pair.first(); }
-    @Override public final Slaw cdr() { return pair.second(); }
+    @Override public final Slaw get(int n) {
+        if (n == 0) return first;
+        if (n == 1) return second;
+        throw new IndexOutOfBoundsException();
+    }
 
-    @Override public final Pair<Slaw,Slaw> emitPair() { return pair; }
-
-    @Override public final List<Slaw> emitList() {
-        List<Slaw> result = new ArrayList<Slaw>(2);
-        result.add(pair.first());
-        result.add(pair.second());
-        return result;
+    @Override public final Slaw get(Slaw k) {
+        return k.equals(first) ? second : null;
     }
 
     @Override public final Map<Slaw,Slaw> emitMap() {
@@ -31,7 +30,7 @@ abstract class SlawPair extends Slaw {
         return result;
     }
 
-    @Override final boolean equals(Slaw s) {
+    @Override final boolean slawEquals(Slaw s) {
         return car().equals(s.car()) && cdr().equals(s.cdr());
     }
 
@@ -41,7 +40,11 @@ abstract class SlawPair extends Slaw {
         return 7 + (reh + 31 * imh);
     }
 
-    SlawPair(Slaw f, Slaw s) { pair = Pair.create(f, s); }
+    SlawPair(Slaw f, Slaw s) {
+        first = f;
+        second = s;
+    }
 
-    Pair<Slaw,Slaw> pair;
+    private final Slaw first;
+    private final Slaw second;
 }

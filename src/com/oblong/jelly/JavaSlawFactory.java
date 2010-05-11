@@ -113,12 +113,14 @@ final class JavaSlawFactory implements SlawFactory {
         return null; // SlawCons.valueOf(car, cdr);
     }
 
-    @Override public Slaw list(Slaw... sx) {
-        return null; // SlawList.valueOf(sx);
+    @Override public Slaw list(Slaw... sx) { return SlawList.valueOf(sx); }
+
+    @Override public Slaw list(List<Slaw> sx) {
+        return SlawList.valueOf(sx);
     }
 
     @Override public Slaw map(Map<Slaw,Slaw> m) {
-        return null; // SlawMap.valueOf(m);
+        return null; // SlawMap.valueOf(m, own);
     }
 
     @Override public Slaw map(Slaw... kvs) {

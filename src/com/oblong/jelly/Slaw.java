@@ -3,14 +3,16 @@
 package com.oblong.jelly;
 
 
+
+
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.oblong.util.Pair;
-
-import static com.oblong.jelly.SlawIlk.*;
 import static com.oblong.jelly.NumericIlk.*;
+import static com.oblong.jelly.SlawIlk.*;
+import com.oblong.util.Pair;
 
 /**
  * Created: Mon Apr 12 16:46:30 2010
@@ -69,64 +71,68 @@ public abstract class Slaw {
         throw new UnsupportedOperationException(ilk() + " as big integer");
     }
 
-    public Pair<Slaw,Slaw> emitPair() {
-        return Pair.create(car(), cdr());
-    }
-
     public Slaw car() {
-        throw new UnsupportedOperationException(ilk() + " as pair");
+        throw new UnsupportedOperationException(ilk() + "as pair");
     }
 
     public Slaw cdr() {
-        throw new UnsupportedOperationException(ilk() + " as pair");
+        throw new UnsupportedOperationException(ilk() + "as pair");
     }
 
     public abstract int count();
+    public abstract Slaw get(int n);
+    public abstract Slaw get(Slaw key);
 
-    public List<Slaw> emitList() {
-        throw new UnsupportedOperationException(ilk() + " as list");
+    public final int indexOf(Slaw elem) {
+        for (int i = 0, c = count(); i < c; i++)
+            if (elem.equals(get(i))) return i;
+        return -1;
     }
-
-    public Slaw get(int n) { return emitList().get(n); }
-
-    public int indexOf(Slaw elem) { return emitList().indexOf(elem); }
 
     public final boolean contains(Slaw elem) { return indexOf(elem) >= 0; }
 
-    public Slaw slice(int begin, int end)  {
-        return list(emitList().subList(begin, end));
+    public final List<Slaw> emitList() {
+        return emitList(0, count());
+    }
+
+    public final List<Slaw> emitList(int begin, int end) {
+        final int c = count();
+        if (begin < 0) begin += c;
+        if (end < 0) end += c;
+        if (begin < 0 || begin >= c || end <= begin)
+            return new ArrayList<Slaw>();
+        final List<Slaw> ls = new ArrayList<Slaw>(end - begin);
+        for (int i = begin; i < end; i++) ls.add(get(i));
+        return ls;
     }
 
     public Map<Slaw,Slaw> emitMap() {
         throw new UnsupportedOperationException(ilk() + " as map");
     }
 
-    public Slaw get(Slaw key) { return emitMap().get(key); }
-
-    public final Slaw descrips() {
-        if (!isProtein()) throw new UnsupportedOperationException();
-        return car();
-    }
-
-    public final Slaw ingests() {
-        if (!isProtein()) throw new UnsupportedOperationException();
-        return cdr();
-    }
-
-    public final boolean equals(Object o) {
+    @Override public final boolean equals(Object o) {
         if (!(o instanceof Slaw)) return false;
         Slaw s = (Slaw)o;
         return s.ilk() == ilk() && s.numericIlk() == numericIlk() &&
-            equals(s);
+            slawEquals(s);
+    }
+
+    @Override public final String toString() {
+        StringBuilder buff = new StringBuilder("Slaw<");
+        buff.append(ilk());
+        if (isNumeric()) buff.append("/" + numericIlk());
+        buff.append(" = ");
+        buff.append(debugString());
+        buff.append(">");
+        return buff.toString();
     }
 
     public static Slaw cons(Slaw car, Slaw cdr) {
         return factory.cons(car, cdr);
     }
     public static Slaw list(Slaw... s) { return factory.list(s); }
-    public static Slaw list(List<Slaw> s) {
-        return factory.list((Slaw[])s.toArray());
-    }
+    public static Slaw list(List<Slaw> s) { return factory.list(s); }
+    public static Slaw map(Slaw... kvs) { return factory.map(kvs); }
     public static Slaw map(Map<Slaw,Slaw> m) { return factory.map(m); }
 
     public static Slaw nil() { return factory.nil(); }
@@ -179,7 +185,8 @@ public abstract class Slaw {
     // we don't really want external clients to extend this class
     Slaw() {}
 
-    abstract boolean equals(Slaw s);
+    abstract boolean slawEquals(Slaw s);
+    abstract String debugString();
 
     Slaw withNumericIlk(NumericIlk ilk) {
         throw new UnsupportedOperationException(ilk() + " not numeric");

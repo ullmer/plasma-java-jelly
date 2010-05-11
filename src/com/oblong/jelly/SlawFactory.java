@@ -3,6 +3,7 @@
 package com.oblong.jelly;
 
 import java.math.BigInteger;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -32,7 +33,10 @@ interface SlawFactory {
     Slaw array(SlawIlk ilk, NumericIlk ni, Slaw... sx);
 
     Slaw cons(Slaw car, Slaw cdr);
+
+    Slaw list(List<Slaw> s);
     Slaw list(Slaw... s);
+
     Slaw map(Map<Slaw,Slaw> m);
     Slaw map(Slaw... kvs);
 }

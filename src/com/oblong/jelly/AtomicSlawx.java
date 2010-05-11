@@ -12,21 +12,17 @@ abstract class AtomicSlaw extends Slaw {
 
     @Override public final int count() { return 1; }
 
+    @Override public final Slaw get(int n) {
+        if (n != 0) throw new IndexOutOfBoundsException();
+        return this;
+    }
+
+    @Override public final Slaw get(Slaw elem) { return null; }
+
     @Override public final Slaw car() { return this; }
 
-    @Override public final List<Slaw> emitList() {
-        List<Slaw> result = new ArrayList<Slaw>(1);
-        result.add(this);
-        return result;
-    }
+    @Override public final Slaw cdr() { return SlawList.EMPTY_LIST; }
 
-    @Override public Slaw get(int n) {
-        return n == 0 ? this : super.get(n);
-    }
-
-    @Override public int indexOf(Slaw elem) {
-        return equals(elem) ? 0 : -1;
-    }
 }
 
 final class SlawNil extends AtomicSlaw {
@@ -36,7 +32,9 @@ final class SlawNil extends AtomicSlaw {
     @Override public SlawIlk ilk() { return SlawIlk.NIL; }
     @Override public NumericIlk numericIlk() { return NumericIlk.NAN; }
 
-    @Override boolean equals(Slaw o) { return true; }
+    @Override boolean slawEquals(Slaw o) { return true; }
+
+    @Override public String debugString() { return "nil"; }
 
     private SlawNil () {}
 }
@@ -50,8 +48,12 @@ final class SlawBool extends AtomicSlaw {
 
     @Override public boolean emitBoolean() { return this == TRUE; }
 
-    @Override boolean equals(Slaw o) {
+    @Override boolean slawEquals(Slaw o) {
         return o.emitBoolean() == emitBoolean();
+    }
+
+    @Override public String debugString() {
+        return (this == TRUE) ? "true" : "false";
     }
 
     private SlawBool () {}
@@ -69,11 +71,13 @@ final class SlawString extends AtomicSlaw {
 
     @Override public String emitString() { return val; }
 
-    @Override public boolean equals(Slaw o) {
+    @Override public boolean slawEquals(Slaw o) {
         return o.emitString() == val;
     }
 
     @Override public int hashCode() { return val.hashCode(); }
+
+    @Override public String debugString() { return val; }
 
     private SlawString(String s) { val = s; }
     private final String val;
