@@ -48,7 +48,7 @@ public class SlawVectorTest {
         assertEquals(v.count() - 1, cdr.count());
         for (int i = 1, c = v.count(); i < c; i++)
             assertEquals(v.nth(i), cdr.nth(i - 1));
-        testListGet(v);
+        testListness(v);
         testAtomicEmissions(v);
         testNotMap(v);
     }

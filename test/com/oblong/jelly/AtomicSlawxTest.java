@@ -27,7 +27,7 @@ public class AtomicSlawxTest {
         assertEquals(Slaw.nil(), nil);
         testAtomicEmissions(nil);
         testPairiness(nil);
-        testListGet(nil);
+        testListness(nil);
     }
 
     void testBool(boolean v) {
@@ -38,7 +38,7 @@ public class AtomicSlawxTest {
         assertEquals(s, s.nth(0));
         testAtomicEmissions(s);
         testPairiness(s);
-        testListGet(s);
+        testListness(s);
         testNotMap(s);
     }
 
@@ -56,7 +56,7 @@ public class AtomicSlawxTest {
         assertEquals(s, Slaw.string(str));
         testAtomicEmissions(s);
         testPairiness(s);
-        testListGet(s);
+        testListness(s);
         testNotMap(s);
     }
 

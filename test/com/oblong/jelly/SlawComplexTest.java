@@ -53,7 +53,7 @@ public class SlawComplexTest {
         assertEquals(c.numericIlk(), c.cdr().numericIlk());
         testAtomicEmissions(c);
         testPairiness(c);
-        testListGet(c);
+        testListness(c);
         Map<Slaw,Slaw> m = c.emitMap();
         assertEquals(c.cdr(), m.get(c.car()));
         assertEquals(c.cdr(), c.find(c.car()));

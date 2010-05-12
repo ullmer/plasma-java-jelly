@@ -24,7 +24,7 @@ public class SlawNumberTest {
         assertTrue(s.isNumeric());
         assertTrue(s.isNumber());
         testIlk(s, SlawIlk.NUMBER, i);
-        testListGet(s);
+        testListness(s);
         testAtomicEmissions(s);
         testPairiness(s);
         testNotMap(s);

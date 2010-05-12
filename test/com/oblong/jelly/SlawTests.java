@@ -14,7 +14,7 @@ class SlawTests {
         assertEquals(nilk, s.numericIlk());
     }
 
-    static final void testListGet(Slaw s) {
+    static final void testListness(Slaw s) {
         int count = s.count();
 
         assertTrue(count == 1 || !s.isAtomic());
