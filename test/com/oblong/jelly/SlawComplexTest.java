@@ -21,15 +21,6 @@ import static com.oblong.jelly.SlawTests.*;
  */
 public class SlawComplexTest {
 
-    void testNonNumber(Slaw r, Slaw i) {
-        try {
-            Slaw c = Slaw.complex(r, i);
-            fail();
-        } catch (IllegalArgumentException e) {
-            // expected
-        }
-    }
-
     @Test public void nonNumbers() {
         Slaw[] sx = {
             nil(), bool(true), bool(false),
@@ -42,7 +33,19 @@ public class SlawComplexTest {
         }
     }
 
-    void testComplex(Slaw c) {
+    @Test public void complexes() {
+        Slaw[] sx = {
+            int8(1), unt8(23), int16(-23), unt16(2034),
+            int64(-232343245), unt64(32), float32(3.141592F), float64(1)
+        };
+        for (Slaw r : sx) {
+            for (Slaw i : sx) {
+                testComplex(complex(r, i));
+            }
+        }
+    }
+
+    private void testComplex(Slaw c) {
         assertEquals(c, c);
         assertEquals(2, c.count());
         assertEquals(c, complex(c.car(), c.cdr()));
@@ -56,15 +59,12 @@ public class SlawComplexTest {
         assertEquals(c.cdr(), c.find(c.car()));
     }
 
-    @Test public void complexes() {
-        Slaw[] sx = {
-            int8(1), unt8(23), int16(-23), unt16(2034),
-            int64(-232343245), unt64(32), float32(3.141592F), float64(1)
-        };
-        for (Slaw r : sx) {
-            for (Slaw i : sx) {
-                testComplex(complex(r, i));
-            }
+    private void testNonNumber(Slaw r, Slaw i) {
+        try {
+            Slaw c = Slaw.complex(r, i);
+            fail();
+        } catch (IllegalArgumentException e) {
+            // expected
         }
     }
 }

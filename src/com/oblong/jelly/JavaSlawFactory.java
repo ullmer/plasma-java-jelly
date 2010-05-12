@@ -4,15 +4,10 @@ package com.oblong.jelly;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-/**
- *
- * Created: Fri Apr  2 01:39:55 2010
- *
- * @author jao
- */
 final class JavaSlawFactory implements SlawFactory {
 
     @Override public Slaw nil() {
@@ -82,7 +77,7 @@ final class JavaSlawFactory implements SlawFactory {
     }
 
     @Override public Slaw array(SlawIlk ilk, NumericIlk ni) {
-        if (ilk == null || ni == null || !ilk.isNumeric() || ilk.isArray()
+        if (ilk == null || ni == null || !ilk.isArray()
             || ni == NumericIlk.NAN)
             throw new IllegalArgumentException ("Invalid ilks");
         return EmptyArray.valueOf(ilk, ni);
@@ -110,11 +105,11 @@ final class JavaSlawFactory implements SlawFactory {
     }
 
     @Override public Slaw map(Map<Slaw,Slaw> m) {
-        return null; // SlawMap.valueOf(m, own);
+        return SlawMap.valueOf(m);
     }
 
     @Override public Slaw map(Slaw... kvs) {
-        return null; // SlawMap.valueOf(Arrays.asList(kvs));
+        return SlawMap.valueOf(Arrays.asList(kvs));
     }
 
     private static Slaw[] filterNulls(Slaw[] sx) {

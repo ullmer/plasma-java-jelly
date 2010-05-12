@@ -10,6 +10,7 @@ import java.util.Map.Entry;
 final class SlawMap extends Slaw {
 
     static Slaw valueOf(Map<Slaw,Slaw> map) {
+        if (map == null) return EMPTY_MAP;
         List<Slaw> ls = new ArrayList<Slaw>(map.size());
         for (Map.Entry<Slaw,Slaw> e : map.entrySet()) {
             Slaw key = e.getKey();
@@ -59,10 +60,6 @@ final class SlawMap extends Slaw {
 
     @Override public int hashCode() { return 3 + 11 * conses.hashCode(); }
 
-    private SlawMap(List<Slaw> elems) {
-        conses = new SlawList(elems, false);
-    }
-
     private static List<Slaw> filterConses(List<Slaw> e) {
         List<Slaw> conses = new ArrayList<Slaw>(e.size());
         List<Slaw> keys = new ArrayList<Slaw>(e.size());
@@ -88,6 +85,13 @@ final class SlawMap extends Slaw {
             }
         }
         return conses;
+    }
+
+    private static final SlawMap EMPTY_MAP =
+        new SlawMap(new ArrayList<Slaw>());
+
+    private SlawMap(List<Slaw> elems) {
+        conses = new SlawList(elems, false);
     }
 
     private final SlawList conses;

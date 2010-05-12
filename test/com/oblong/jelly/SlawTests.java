@@ -5,12 +5,6 @@ package com.oblong.jelly;
 import org.junit.Assert;
 import static org.junit.Assert.*;
 
-/**
- *
- * Created: Fri May  7 00:46:00 2010
- *
- * @author jao
- */
 class SlawTests {
 
     static final void testIlk(Slaw s, SlawIlk ilk, NumericIlk nilk) {

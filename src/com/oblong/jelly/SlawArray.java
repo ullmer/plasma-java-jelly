@@ -2,7 +2,6 @@
 
 package com.oblong.jelly;
 
-
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -21,12 +20,11 @@ final class SlawArray extends CompositeNumericSlaw {
     @Override public SlawIlk ilk() { return ilks.get(nth(0).ilk()); }
 
     @Override Slaw withNumericIlk(NumericIlk ilk) {
-        if (ilk == numericIlk()) return this;
-        return new SlawArray(ilk, elements);
+        return (ilk == numericIlk()) ? this : new SlawArray(ilk, elements);
     }
 
-    SlawArray(NumericIlk i, Slaw... l) { super(i, l); }
-    SlawArray(NumericIlk i, List<Slaw> l) { super(i, l); }
+    private SlawArray(NumericIlk i, Slaw... l) { super(i, l); }
+    private SlawArray(NumericIlk i, List<Slaw> l) { super(i, l); }
 
     static private final Map<SlawIlk,SlawIlk> ilks;
     static {
@@ -43,11 +41,6 @@ final class EmptyArray extends Slaw {
 
     static Slaw valueOf(SlawIlk ilk, NumericIlk ni) {
         return new EmptyArray(ilk, ni);
-    }
-
-    private EmptyArray(SlawIlk i, NumericIlk ni) {
-        ilk = i;
-        numericIlk = ni;
     }
 
     @Override public SlawIlk ilk() { return ilk; }
@@ -76,6 +69,10 @@ final class EmptyArray extends Slaw {
         return ilk.hashCode() + 11 * numericIlk.hashCode();
     }
 
+    private EmptyArray(SlawIlk i, NumericIlk ni) {
+        ilk = i;
+        numericIlk = ni;
+    }
 
     private final SlawIlk ilk;
     private final NumericIlk numericIlk;
