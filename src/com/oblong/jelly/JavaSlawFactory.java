@@ -112,6 +112,10 @@ final class JavaSlawFactory implements SlawFactory {
         return SlawMap.valueOf(Arrays.asList(kvs));
     }
 
+    @Override public Slaw map(List<Slaw> l) {
+        return SlawMap.valueOf(l);
+    }
+
     private static Slaw[] filterNulls(Slaw[] sx) {
         if (sx.length == 0) return sx;
         List<Slaw> fs = new ArrayList<Slaw>(sx.length);

@@ -61,11 +61,16 @@ final class SlawList extends Slaw {
     @Override public Slaw nth(int n) { return elements.get(n); }
 
     @Override public Slaw find(Slaw k) {
-        if (listOfConses(elements))
-            for (Slaw e : elements) if (k.equals(e.car())) return e.cdr();
-        else
-            for (int i = 0, c = count() - 1; i < c; i += 2)
-                if (k.equals(elements.get(i))) return elements.get(i+1);
+        if (listOfConses(elements)) {
+            for (int i = count() - 1; i >= 0; i--) {
+                if (k.equals(elements.get(i).car()))
+                    return elements.get(i).cdr();
+            }
+        } else {
+            for (int i = count() / 2; i > 0; i--)
+                if (k.equals(elements.get(2*i - 2)))
+                    return elements.get(2*i - 1);
+        }
         return null;
     }
 

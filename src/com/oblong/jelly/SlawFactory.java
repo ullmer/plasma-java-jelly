@@ -39,4 +39,5 @@ interface SlawFactory {
 
     Slaw map(Map<Slaw,Slaw> m);
     Slaw map(Slaw... kvs);
+    Slaw map(List<Slaw> s);
 }

@@ -63,7 +63,8 @@ final class SlawMap extends Slaw {
     private static List<Slaw> filterConses(List<Slaw> e) {
         List<Slaw> conses = new ArrayList<Slaw>(e.size());
         List<Slaw> keys = new ArrayList<Slaw>(e.size());
-        for (Slaw s : e) {
+        for (int i = e.size() - 1; i >= 0; i--) {
+            Slaw s = e.get(i);
             if (s.car() != null && s.cdr() != null
                 && !keys.contains(s.car())) {
                 keys.add(s.car());
@@ -76,9 +77,9 @@ final class SlawMap extends Slaw {
     private static List<Slaw> listToConses(List<Slaw> e) {
         List<Slaw> conses = new ArrayList<Slaw>(e.size() / 2);
         List<Slaw> keys = new ArrayList<Slaw>(e.size() / 2);
-        for (int i = 0; i < e.size() - 1; i ++) {
-            Slaw key = e.get(i);
-            Slaw value = e.get(i+1);
+        for (int i = e.size() / 2; i > 0; i--) {
+            Slaw key = e.get(2*i - 2);
+            Slaw value = e.get(2*i - 1);
             if (key != null && value != null && !keys.contains(key)) {
                 keys.add(key);
                 conses.add(SlawCons.valueOf(key, value));

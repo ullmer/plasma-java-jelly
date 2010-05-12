@@ -131,6 +131,7 @@ public abstract class Slaw {
     public static Slaw list(Slaw... s) { return factory.list(s); }
     public static Slaw list(List<Slaw> s) { return factory.list(s); }
     public static Slaw map(Slaw... kvs) { return factory.map(kvs); }
+    public static Slaw map(List<Slaw> s) { return factory.map(s); }
     public static Slaw map(Map<Slaw,Slaw> m) { return factory.map(m); }
 
     public static Slaw nil() { return factory.nil(); }
