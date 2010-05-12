@@ -10,12 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- *
- * Created: Wed Apr 28 02:53:36 2010
- *
- * @author jao
- */
 final class SlawList extends Slaw {
     static final SlawList EMPTY_LIST =
         new SlawList(new ArrayList<Slaw>(), false);
@@ -106,7 +100,7 @@ final class SlawList extends Slaw {
         return buff.toString();
     }
 
-    private SlawList(List<Slaw> elems, boolean copy) {
+    SlawList(List<Slaw> elems, boolean copy) {
         elements = copy ? new ArrayList<Slaw>(elems) : elems;
         while (elements.remove(null));
     }
