@@ -62,8 +62,7 @@ final class JavaSlawFactory implements SlawFactory {
         if (v00 == null || !v00.isNumber()
             || !SlawIlk.haveSameIlk(v00, v01, v10, v11))
             throw new IllegalArgumentException("Args must be number slawx");
-        return null;
-        // return SlawMultiVector.valueOf(v00, v01, v10, v11);
+        return SlawMultivector.valueOf(v00, v01, v10, v11);
     }
 
     @Override public Slaw multivector(Slaw v0, Slaw v1) {
@@ -72,8 +71,7 @@ final class JavaSlawFactory implements SlawFactory {
             || v0.count() != v1.count())
             throw new IllegalArgumentException
                 ("Args must be multivectors of the same dimension");
-        return null;
-        // return SlawMultiVector.valueOf(v0, v1);
+        return SlawMultivector.valueOf(v0, v1);
     }
 
     @Override public Slaw array(SlawIlk ilk, NumericIlk ni) {
