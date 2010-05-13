@@ -57,6 +57,12 @@ public enum NumericIlk {
         return dominantIlk(is);
     }
 
+    public static NumericIlk dominantIlkForList(List<Slaw> nss) {
+        List<NumericIlk> is = new ArrayList<NumericIlk>();
+        for (Slaw s : nss) is.add(s.numericIlk());
+        return dominantIlk(is);
+    }
+
     private NumericIlk(boolean s, boolean i, int w) {
         signed = s;
         integral = i;

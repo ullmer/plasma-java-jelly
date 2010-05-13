@@ -81,14 +81,17 @@ final class JavaSlawFactory implements SlawFactory {
         return EmptyArray.valueOf(ilk, ni);
     }
 
-    @Override public Slaw array(Slaw... ns) {
-        Slaw[] fn = filterNulls(ns);
-        if (fn.length == 0)
+    @Override public Slaw array(Slaw n, Slaw... ns) {
+        if (!SlawIlk.haveSameIlk(ns)
+            || (n != null && ns.length > 0 && n.ilk() != ns[0].ilk()))
+            throw new IllegalArgumentException(
+                "All args must have the same ilk");
+        List<Slaw> cmps = new ArrayList<Slaw>(1 + ns.length);
+        addArrayComponent(n, cmps);
+        for (Slaw s : ns) addArrayComponent(s, cmps);
+        if (cmps.size() == 0)
             throw new IllegalArgumentException("All args were null");
-        if (!fn[0].isNumeric() || fn[0].isArray() || !SlawIlk.haveSameIlk(fn))
-            throw new IllegalArgumentException
-                ("Args must have the same ilk and be numeric non-arrays");
-        return SlawArray.valueOf(fn);
+        return SlawArray.valueOf(cmps);
     }
 
     @Override public Slaw cons(Slaw car, Slaw cdr) {
@@ -114,18 +117,19 @@ final class JavaSlawFactory implements SlawFactory {
         return SlawMap.valueOf(l);
     }
 
-    private static Slaw[] filterNulls(Slaw[] sx) {
-        if (sx.length == 0) return sx;
-        List<Slaw> fs = new ArrayList<Slaw>(sx.length);
-        for (Slaw s : sx) if (s != null) fs.add(s);
-        return (Slaw[])fs.toArray();
-    }
-
     private static Slaw makeVector(Slaw... cmps) {
         if (cmps[0] == null
             || (!cmps[0].isNumber() && !cmps[0].isComplex())
             || !SlawIlk.haveSameIlk(cmps))
             throw new IllegalArgumentException ("Args must have same ilk");
         return SlawVector.valueOf(cmps);
+    }
+
+    private void addArrayComponent(Slaw s, List<Slaw> l) {
+        if (s != null) {
+            if (!s.isNumeric() || s.isArray())
+                throw new IllegalArgumentException(s.toString());
+            l.add(s);
+        }
     }
 }

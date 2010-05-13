@@ -104,7 +104,7 @@
   </target>
 
   <target name="test" depends="compile-tests" description="Run unit tests">
-    <junit fork="yes" forkMode="once" haltonerror="no" haltonfailure="no"
+    <junit fork="yes" forkMode="once" haltonerror="yes" haltonfailure="yes"
            printsummary="off" showoutput="no" logfailedtests="no">
       <assertions><enable/></assertions>
       <classpath refid="test.run.classpath"/>

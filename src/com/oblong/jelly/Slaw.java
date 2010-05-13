@@ -178,10 +178,7 @@ public abstract class Slaw {
     }
 
     public static Slaw array(Slaw n, Slaw... ns) {
-        final Slaw[] sx = new Slaw[1 + ns.length];
-        sx[0] = n;
-        for (int i = 0; i < ns.length; i++) sx[i+1] = ns[i];
-        return factory.array(sx);
+        return factory.array(n, ns);
     }
 
     public static Slaw array(SlawIlk i, NumericIlk n) {

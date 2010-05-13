@@ -10,9 +10,9 @@ import static com.oblong.jelly.SlawIlk.*;
 
 final class SlawArray extends CompositeNumericSlaw {
 
-    static Slaw valueOf(Slaw... cmps) {
-        assert cmps.length > 0 && cmps[0].isNumeric() && !cmps[0].isArray();
-        NumericIlk ni = NumericIlk.dominantIlk(cmps);
+    static Slaw valueOf(List<Slaw> cmps) {
+        assert cmps.size() > 0;
+        NumericIlk ni = NumericIlk.dominantIlkForList(cmps);
         assert ni != NumericIlk.NAN;
         return new SlawArray(ni, cmps);
     }
@@ -23,7 +23,6 @@ final class SlawArray extends CompositeNumericSlaw {
         return (ilk == numericIlk()) ? this : new SlawArray(ilk, elements);
     }
 
-    private SlawArray(NumericIlk i, Slaw... l) { super(i, l); }
     private SlawArray(NumericIlk i, List<Slaw> l) { super(i, l); }
 
     static private final Map<SlawIlk,SlawIlk> ilks;
