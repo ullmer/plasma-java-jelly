@@ -10,6 +10,7 @@ import java.util.Map;
 
 abstract class AtomicSlaw extends Slaw {
 
+    @Override public int dimension() { return 1; }
     @Override public final int count() { return 1; }
 
     @Override public final Slaw nth(int n) {
@@ -28,6 +29,8 @@ abstract class AtomicSlaw extends Slaw {
 final class SlawNil extends AtomicSlaw {
 
     static final SlawNil INSTANCE = new SlawNil();
+
+    @Override public int dimension() { return 0; }
 
     @Override public SlawIlk ilk() { return SlawIlk.NIL; }
     @Override public NumericIlk numericIlk() { return NumericIlk.NAN; }

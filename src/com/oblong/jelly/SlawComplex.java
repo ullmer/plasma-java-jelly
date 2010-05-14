@@ -13,6 +13,8 @@ final class SlawComplex extends SlawPair {
         return new SlawComplex(ilk, r, i);
     }
 
+    @Override public int dimension() { return 1; }
+
     @Override public SlawIlk ilk() { return SlawIlk.COMPLEX; }
     @Override public NumericIlk numericIlk() { return car().numericIlk(); }
 

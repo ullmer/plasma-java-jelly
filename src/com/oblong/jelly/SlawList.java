@@ -56,6 +56,7 @@ final class SlawList extends Slaw {
         return new SlawList(elements.subList(1, count()), false);
     }
 
+    @Override public int dimension() { return 0; }
     @Override public int count() { return elements.size(); }
 
     @Override public Slaw nth(int n) { return elements.get(n); }

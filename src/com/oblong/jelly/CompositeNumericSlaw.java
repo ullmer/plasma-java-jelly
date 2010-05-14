@@ -26,6 +26,7 @@ abstract class CompositeNumericSlaw extends Slaw {
         return SlawList.valueOf(elements.subList(1, count()));
     }
 
+    @Override public int dimension() { return elements.get(0).dimension(); }
     @Override public final int count() { return elements.size(); }
     @Override public final Slaw nth(int n) { return elements.get(n); }
     @Override public final Slaw find(Slaw k) { return null; }

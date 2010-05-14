@@ -38,13 +38,15 @@ final class SlawArray extends CompositeNumericSlaw {
 
 final class EmptyArray extends Slaw {
 
-    static Slaw valueOf(SlawIlk ilk, NumericIlk ni) {
-        return new EmptyArray(ilk, ni);
+    static Slaw valueOf(SlawIlk ilk, NumericIlk ni, int dimension) {
+        assert ilk.isNumeric();
+        return new EmptyArray(ilk, ni, dimension);
     }
 
     @Override public SlawIlk ilk() { return ilk; }
     @Override public NumericIlk numericIlk() { return numericIlk; }
 
+    @Override public int dimension() { return dimension; }
     @Override public int count() { return 0; }
 
     @Override public Slaw nth(int n) {
@@ -56,7 +58,7 @@ final class EmptyArray extends Slaw {
     @Override String debugString() { return "{}"; }
 
     @Override Slaw withNumericIlk(NumericIlk ni) {
-        return (ni == numericIlk) ? this : new EmptyArray(ilk, ni);
+        return (ni == numericIlk) ? this : new EmptyArray(ilk, ni, dimension);
     }
 
     @Override boolean slawEquals(Slaw o) {
@@ -68,11 +70,13 @@ final class EmptyArray extends Slaw {
         return ilk.hashCode() + 11 * numericIlk.hashCode();
     }
 
-    private EmptyArray(SlawIlk i, NumericIlk ni) {
+    private EmptyArray(SlawIlk i, NumericIlk ni, int dim) {
         ilk = i;
         numericIlk = ni;
+        dimension = dim;
     }
 
     private final SlawIlk ilk;
     private final NumericIlk numericIlk;
+    private final int dimension;
 }

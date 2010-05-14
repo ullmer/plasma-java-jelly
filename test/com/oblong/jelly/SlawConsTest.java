@@ -12,8 +12,7 @@ import static com.oblong.jelly.Slaw.*;
 import static com.oblong.jelly.SlawTests.*;
 
 /**
- *  Unit Test for class SlawCons
- *
+ * Unit Test for class Slaw: conses.
  *
  * Created: Wed May 12 04:23:10 2010
  *
@@ -24,7 +23,7 @@ public class SlawConsTest {
     @Test public void conses() {
         testCons(cons(vector(int8(2), float64(-23421341.234)),
                       string("foo")));
-        testCons(cons(array(SlawIlk.COMPLEX_VECTOR_ARRAY, NumericIlk.INT32),
+        testCons(cons(array(SlawIlk.VECTOR_ARRAY, NumericIlk.INT32, 2),
                       cons(int8(2), map())));
         testCons(cons(int16(0), int16(0)));
     }

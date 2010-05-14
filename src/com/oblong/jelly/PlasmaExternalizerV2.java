@@ -61,17 +61,17 @@ final class PlasmaExternalizerV2 extends SlawExternalizer {
     }
 
     @Override void externVector(Slaw v, ByteBuffer b) {
-        b.putLong(vectorHeading(v.numericIlk(), v.count()));
+        b.putLong(vectorHeading(v.numericIlk(), v.dimension()));
         for (Slaw n : v.emitList()) putNumVal(b, n);
     }
 
     @Override int complexVectorExternSize(Slaw v) {
-        return roundUp(8 + 2 * v.count() * v.numericIlk().bytes());
+        return roundUp(8 + 2 * v.dimension() * v.numericIlk().bytes());
     }
 
     @Override void externComplexVector(Slaw v, ByteBuffer b) {
         // TODO: wee complexes
-        b.putLong(complexVectorHeading(v.numericIlk(), v.count()));
+        b.putLong(complexVectorHeading(v.numericIlk(), v.dimension()));
         for (Slaw n : v.emitList()) putNumVal(putNumVal(b, n.car()), n.cdr());
     }
 
@@ -80,24 +80,52 @@ final class PlasmaExternalizerV2 extends SlawExternalizer {
     }
 
     @Override void externMultivector(Slaw v, ByteBuffer b) {
-        b.putLong(multivectorHeading(v.numericIlk(), v.count()));
+        b.putLong(multivectorHeading(v.numericIlk(), v.dimension()));
         for (Slaw n : v.emitList()) putNumVal(b, n);
     }
 
-    @Override void externArray(Slaw a, ByteBuffer b) {}
-    @Override int arrayExternSize(Slaw a) { return -1; }
+    @Override int arrayExternSize(Slaw a) {
+        return arraySize(a);
+    }
 
-    @Override void externComplexArray(Slaw a, ByteBuffer b) {}
-    @Override int complexArrayExternSize(Slaw a) { return -1; }
+    @Override void externArray(Slaw a, ByteBuffer b) {
+        putArray(arrayHeading(a.numericIlk()), b, a);
+    }
 
-    @Override void externVectorArray(Slaw a, ByteBuffer b) {}
-    @Override int vectorArrayExternSize(Slaw a) { return -1; }
+    @Override int complexArrayExternSize(Slaw a) {
+        return complexArraySize(a);
+    }
 
-    @Override void externComplexVectorArray(Slaw a, ByteBuffer b) {}
-    @Override int complexVectorArrayExternSize(Slaw a) { return -1; }
+    @Override void externComplexArray(Slaw a, ByteBuffer b) {
+        putArray(complexArrayHeading(a.numericIlk()), b, a);
+    }
 
-    @Override void externMultivectorArray(Slaw v, ByteBuffer b) {}
-    @Override int multivectorArrayExternSize(Slaw v) { return -1; }
+    @Override int vectorArrayExternSize(Slaw a) {
+        return arraySize(a);
+    }
+
+    @Override void externVectorArray(Slaw a, ByteBuffer b) {
+        putArray(vectorArrayHeading(a.numericIlk(), a.dimension()), b, a);
+    }
+
+    @Override int complexVectorArrayExternSize(Slaw a) {
+        return complexArraySize(a);
+    }
+
+    @Override void externComplexVectorArray(Slaw a, ByteBuffer b) {
+        putArray(complexVectorArrayHeading(a.numericIlk(), a.dimension()),
+                 b, a);
+    }
+
+    @Override int multivectorArrayExternSize(Slaw a) {
+        final int cno = 1 << a.dimension();
+        return 8 + roundUp(a.count() * cno * a.numericIlk().bytes());
+    }
+
+    @Override void externMultivectorArray(Slaw a, ByteBuffer b) {
+        putArray(multivectorArrayHeading(a.numericIlk(), a.dimension()),
+                 b, a);
+    }
 
     @Override int consExternSize(Slaw c) {
         return listSize(c);
@@ -128,11 +156,6 @@ final class PlasmaExternalizerV2 extends SlawExternalizer {
     @Override void finishBuffer(ByteBuffer b, Slaw s, int begin) {
         int len = b.capacity() - b.position();
         while (len-- > 0) b.put((byte)0);
-        Integer tb = COMPOSITE_TBS.get(s.ilk());
-        if (tb != null) {
-            b.mark().position(begin);
-            b.putLong(octs(len)).put((byte)(tb | (s.count() & 0x0F))).reset();
-        }
     }
 
     private static byte[] stringBytes(Slaw s) {
@@ -144,20 +167,25 @@ final class PlasmaExternalizerV2 extends SlawExternalizer {
     }
 
     private static ByteBuffer putNumVal(ByteBuffer buffer, Slaw n) {
-        assert n.is(SlawIlk.NUMBER);
-        NumericIlk i = n.numericIlk();
-        if (i == FLOAT32) {
-            buffer.putFloat((float)n.emitDouble());
-        } else if (i == FLOAT64) {
-            buffer.putDouble(n.emitDouble());
-        } else if (i == INT8 || i == UNT8) {
-            buffer.put((byte)n.emitLong());
-        } else if (i == INT16 || i == UNT16) {
-            buffer.putShort((short)n.emitLong());
-        } else if (i == INT32 || i == UNT32) {
-            buffer.putInt((int)n.emitLong());
-        } else if (i == INT64 || i == UNT64) {
-            buffer.putLong(n.emitLong());
+        assert n.isNumber() || n.isComplex();
+        if (n.isComplex()) {
+            putNumVal(buffer, n.car());
+            putNumVal(buffer, n.cdr());
+        } else {
+            NumericIlk i = n.numericIlk();
+            if (i == FLOAT32) {
+                buffer.putFloat((float)n.emitDouble());
+            } else if (i == FLOAT64) {
+                buffer.putDouble(n.emitDouble());
+            } else if (i == INT8 || i == UNT8) {
+                buffer.put((byte)n.emitLong());
+            } else if (i == INT16 || i == UNT16) {
+                buffer.putShort((short)n.emitLong());
+            } else if (i == INT32 || i == UNT32) {
+                buffer.putInt((int)n.emitLong());
+            } else if (i == INT64 || i == UNT64) {
+                buffer.putLong(n.emitLong());
+            }
         }
         return buffer;
     }
@@ -177,24 +205,45 @@ final class PlasmaExternalizerV2 extends SlawExternalizer {
          .put(bs);
     }
 
+    private static int arraySize(Slaw a) {
+        return
+            8 + roundUp(a.count() * a.dimension() * a.numericIlk().bytes());
+    }
+
+    private static int complexArraySize(Slaw a) {
+        return 8
+            + roundUp(2 * a.count() * a.dimension() * a.numericIlk().bytes());
+    }
+
+    private static void putArray(long h, ByteBuffer b, Slaw a) {
+        final int c = a.count();
+        b.putLong(h|c);
+        for (int i = 0; i < c; i++) {
+            final Slaw n = a.nth(i);
+            for (int j = 0, d = n.count(); j < d; j++) putNumVal(b, n.nth(j));
+        }
+    }
+
     private int listSize(Slaw l) {
+        final int count = l.count();
         int len = 8;
-        for (Slaw s : l.emitList()) len = len + externSize(s);
+        if (count > 14) len += 8;
+        for (int i = 0; i < count; i++) len += externSize(l.nth(i));
         return roundUp(len);
     }
 
     private void marshallAsList(Slaw l, ByteBuffer b) {
+        final int begin = b.position();
+        final int count = l.count();
         b.position(b.position() + 8);
-        for (Slaw s : l.emitList()) extern(s, b);
+        if (count > 14) b.putLong(count);
+        for (int i = 0; i < count; i++) extern(l.nth(i), b);
+        final long h =
+            (long)(compositeHeadingByte(l.ilk()))|Math.min(15, count);
+        final long octs = octs(b.position() - begin);
+        b.mark().position(begin);
+        b.putLong((h<<56)|octs).reset();
     }
 
     private static final byte NUL = 0;
-
-    private static final Map<SlawIlk, Integer> COMPOSITE_TBS;
-    static {
-        COMPOSITE_TBS = new EnumMap<SlawIlk, Integer>(SlawIlk.class);
-        COMPOSITE_TBS.put(CONS, 0x60);
-        COMPOSITE_TBS.put(LIST, 0x40);
-        COMPOSITE_TBS.put(MAP, 0x50);
-    }
 }

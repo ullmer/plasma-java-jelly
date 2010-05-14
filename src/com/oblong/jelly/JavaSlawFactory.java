@@ -74,11 +74,14 @@ final class JavaSlawFactory implements SlawFactory {
         return SlawMultivector.valueOf(v0, v1);
     }
 
-    @Override public Slaw array(SlawIlk ilk, NumericIlk ni) {
-        if (ilk == null || ni == null || !ilk.isArray()
-            || ni == NumericIlk.NAN)
+    @Override public Slaw array(SlawIlk ilk, NumericIlk ni, int d) {
+        if (ilk == null || ni == null || !ilk.isArray() || d <= 0 || d > 5
+            || ni == NumericIlk.NAN
+            || ((ilk == SlawIlk.NUMBER || ilk == SlawIlk.COMPLEX) && d > 1)
+            || (ilk.isVector() && (d < 2 || d > 4))
+            || (ilk == SlawIlk.MULTI_VECTOR && (d < 2 || d > 5)))
             throw new IllegalArgumentException ("Invalid ilks");
-        return EmptyArray.valueOf(ilk, ni);
+        return EmptyArray.valueOf(ilk, ni, d);
     }
 
     @Override public Slaw array(Slaw n, Slaw... ns) {

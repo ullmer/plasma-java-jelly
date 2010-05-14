@@ -9,6 +9,7 @@ final class SlawCons extends SlawPair {
     @Override public SlawIlk ilk() { return SlawIlk.CONS; }
     @Override public NumericIlk numericIlk() { return NumericIlk.NAN; }
 
+    @Override public int dimension() { return 0; }
 
     @Override String debugString() {
         return "(" + car().toString() + ", " + cdr().toString() + ")";

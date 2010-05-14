@@ -22,6 +22,16 @@ final class SlawMultivector extends CompositeNumericSlaw {
 
     @Override public SlawIlk ilk() { return SlawIlk.MULTI_VECTOR; }
 
+    @Override public int dimension() {
+        int n = count();
+        int d = 0;
+        while (n > 0) {
+            ++d;
+            n = n>>1;
+        }
+        return d;
+    }
+
     @Override public Slaw withNumericIlk(NumericIlk ilk) {
         return (ilk == numericIlk()) ?
             this : new SlawMultivector(ilk, elements);

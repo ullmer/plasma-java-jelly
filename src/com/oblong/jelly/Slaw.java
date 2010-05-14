@@ -77,6 +77,8 @@ public abstract class Slaw {
         throw new UnsupportedOperationException(ilk() + "as pair");
     }
 
+    public abstract int dimension();
+
     public abstract int count();
     public abstract Slaw nth(int n);
     public abstract Slaw find(Slaw key);
@@ -181,8 +183,8 @@ public abstract class Slaw {
         return factory.array(n, ns);
     }
 
-    public static Slaw array(SlawIlk i, NumericIlk n) {
-        return factory.array(i, n);
+    public static Slaw array(SlawIlk i, NumericIlk n, int d) {
+        return factory.array(i, n, d);
     }
 
     // we don't really want external clients to extend this class

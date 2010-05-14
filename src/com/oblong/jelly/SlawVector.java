@@ -17,6 +17,9 @@ final class SlawVector extends CompositeNumericSlaw {
         return nth(0).isNumber() ? SlawIlk.VECTOR : SlawIlk.COMPLEX_VECTOR;
     }
 
+
+    @Override public int dimension() { return count(); }
+
     @Override public Slaw withNumericIlk(NumericIlk ilk) {
         return (ilk == numericIlk()) ? this : new SlawVector(ilk, elements);
     }
