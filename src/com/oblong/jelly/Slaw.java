@@ -69,9 +69,7 @@ public abstract class Slaw {
         throw new UnsupportedOperationException(ilk() + " as big integer");
     }
 
-    public Slaw car() {
-        throw new UnsupportedOperationException(ilk() + "as pair");
-    }
+    public final Slaw car() { return nth(0); }
 
     public Slaw cdr() {
         throw new UnsupportedOperationException(ilk() + "as pair");
@@ -100,9 +98,10 @@ public abstract class Slaw {
         if (begin < 0) begin += c;
         if (end < 0) end += c;
         final List<Slaw> ls = new ArrayList<Slaw>();
-        if (begin >= 0 && end > begin)
-            for (int i = begin, t = Math.min(c, end); i < t; i++)
-                ls.add(nth(i));
+        if (begin >= 0 && end > begin) {
+            final int t = Math.min(c, end);
+            for (int i = begin; i < t; i++) ls.add(nth(i));
+        }
         return ls;
     }
 
@@ -113,8 +112,8 @@ public abstract class Slaw {
     @Override public final boolean equals(Object o) {
         if (!(o instanceof Slaw)) return false;
         Slaw s = (Slaw)o;
-        return s.ilk() == ilk() && s.numericIlk() == numericIlk() &&
-            slawEquals(s);
+        return s.ilk() == ilk() && s.numericIlk() == numericIlk()
+            && slawEquals(s);
     }
 
     @Override public final String toString() {

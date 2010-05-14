@@ -14,8 +14,7 @@ import static com.oblong.jelly.Slaw.*;
 import static com.oblong.jelly.SlawTests.*;
 
 /**
- *  Unit Test for class Slaw: maps.
- *
+ * Unit Test for class Slaw: maps.
  *
  * Created: Wed May 12 19:18:42 2010
  *

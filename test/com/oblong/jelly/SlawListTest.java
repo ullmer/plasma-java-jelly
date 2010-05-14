@@ -30,7 +30,7 @@ public class SlawListTest {
         try {
             ls.car();
             fail();
-        } catch (UnsupportedOperationException e) {
+        } catch (IndexOutOfBoundsException e) {
             // expected
         }
         try {

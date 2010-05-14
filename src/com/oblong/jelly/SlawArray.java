@@ -62,8 +62,7 @@ final class EmptyArray extends Slaw {
     }
 
     @Override boolean slawEquals(Slaw o) {
-        return o.isArray() && o.count() == 0
-            && o.ilk() == ilk && o.numericIlk() == numericIlk;
+        return o.count() == 0 && o.dimension() == dimension;
     }
 
     @Override public int hashCode() {

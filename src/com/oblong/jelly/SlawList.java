@@ -44,12 +44,6 @@ final class SlawList extends Slaw {
             nth(0).emitBigInteger() : super.emitBigInteger();
     }
 
-    @Override public Slaw car() {
-        if (elements.isEmpty())
-            throw new UnsupportedOperationException("Empty list");
-        return elements.get(0);
-    }
-
     @Override public Slaw cdr() {
         if (elements.isEmpty())
             throw new UnsupportedOperationException("Empty list");
