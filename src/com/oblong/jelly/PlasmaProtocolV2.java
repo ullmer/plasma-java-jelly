@@ -67,11 +67,26 @@ final class PlasmaProtocolV2 {
         return multivectorHeading(ni, d) | NUM_ARRAY_MASK;
     }
 
+    static byte proteinHeadingByte() { return PROTEIN_BYTE; }
+    static byte proteinSecondHeadingByte(boolean descrips,
+                                         boolean ingests,
+                                         int data_len) {
+        int res = PROTEIN_SECOND_BYTE;
+        if (descrips) res |= PROTEIN_DESC_MASK;
+        if (ingests) res |= PROTEIN_ING_MASK;
+        res |= Math.min(8, data_len);
+        return (byte)res;
+    }
+
     private static final long FALSE_OCT = 0x20L<<56;
     private static final long TRUE_OCT = FALSE_OCT | 0x01L;
     private static final long NIL_OCT = FALSE_OCT | 0x02L;
     private static final byte STR_BYTE = 0x70;
     private static final byte WEE_STR_BYTE = 0x30;
+    private static final byte PROTEIN_BYTE = 0x10;
+    private static final byte PROTEIN_SECOND_BYTE = 0x00;
+    private static final byte PROTEIN_DESC_MASK = 0x40;
+    private static final byte PROTEIN_ING_MASK = 0x20;
 
     private static final long makeNumHeading(NumericIlk i, long d,
                                              boolean c, boolean mv) {

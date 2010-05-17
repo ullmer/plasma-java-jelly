@@ -152,6 +152,40 @@ final class PlasmaExternalizerV2 extends SlawExternalizer {
         marshallAsList(c, b);
     }
 
+    @Override void externProtein(Protein p, ByteBuffer b) {
+        final int begin = b.position();
+        b.putLong(0).putLong(0);
+        final Slaw descrips = p.descrips();
+        final Slaw ingests = p.ingests();
+        final byte[] data = p.data();
+        if (descrips != null) extern(descrips, b);
+        if (ingests != null) extern(ingests, b);
+        final int dataLen = (data == null) ? 0 : data.length;
+        if (data != null && dataLen <8) b.put(data);
+        final int octs = octs(roundUp(begin - b.position()));
+        b.mark().position(begin);
+        b.putLong(proteinHeadingByte() << 56 | octs);
+        b.put(proteinSecondHeadingByte(descrips != null,
+                                       ingests != null,
+                                       dataLen));
+        if (dataLen <8) {
+            for (int i = 0; i < 7 - dataLen; i++) b.put(NUL);
+            b.put(data);
+        }
+        b.reset();
+    }
+
+    @Override int proteinExternSize(Protein p) {
+        int len = 16;
+        final Slaw ingests = p.ingests();
+        if (ingests != null) len += externSize(ingests);
+        final Slaw descrips = p.descrips();
+        if (descrips != null) len += externSize(descrips);
+        final byte[] data = p.data();
+        if (data != null && data.length <8) len += data.length;
+        return roundUp(len);
+    }
+
     @Override void prepareBuffer(ByteBuffer b, Slaw s) {}
 
     @Override void finishBuffer(ByteBuffer b, Slaw s, int begin) {

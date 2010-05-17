@@ -81,6 +81,9 @@ abstract class SlawExternalizer {
     abstract void externMap(Slaw c, ByteBuffer b);
     abstract int mapExternSize(Slaw c);
 
+    abstract void externProtein(Protein p, ByteBuffer b);
+    abstract int proteinExternSize(Protein p);
+
     abstract void prepareBuffer(ByteBuffer b, Slaw s);
     abstract void finishBuffer(ByteBuffer b, Slaw s, int begin);
 
@@ -220,6 +223,13 @@ abstract class SlawExternalizer {
                     return e.mapExternSize(s);
                 }
             });
+        externalizers.put(PROTEIN, new Externalizer() {
+                public void extern(SlawExternalizer e, Slaw s, ByteBuffer b) {
+                    e.externProtein(s.toProtein(), b);
+                }
+                public int externSize(SlawExternalizer e, Slaw s) {
+                    return e.proteinExternSize(s.toProtein());
+                }
+            });
     }
-
 }
