@@ -21,6 +21,7 @@ abstract class CompositeNumericSlaw extends Slaw {
         return elements.get(0).numericIlk();
     }
 
+    @Override public Slaw car() { return elements.get(0); }
     @Override public final Slaw cdr() {
         return SlawList.valueOf(elements.subList(1, count()));
     }

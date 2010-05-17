@@ -120,6 +120,11 @@ final class JavaSlawFactory implements SlawFactory {
         return SlawMap.valueOf(l);
     }
 
+    @Override public Protein protein(Slaw descrips, Slaw ingests,
+                                     byte[] data) {
+        return SlawProtein.valueOf(descrips, ingests, data);
+    }
+
     private static Slaw makeVector(Slaw... cmps) {
         if (cmps[0] == null
             || (!cmps[0].isNumber() && !cmps[0].isComplex())

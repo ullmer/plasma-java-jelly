@@ -40,6 +40,7 @@ final class SlawMap extends Slaw {
         return null;
     }
 
+    @Override public Slaw car() { return conses.car(); }
     @Override public Slaw cdr() { return conses.cdr(); }
     @Override public Map<Slaw,Slaw> emitMap() { return conses.emitMap(); }
 

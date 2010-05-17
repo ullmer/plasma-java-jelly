@@ -9,6 +9,8 @@ import java.util.Map;
 
 abstract class SlawPair extends Slaw {
 
+    @Override public Slaw car() { return first; }
+
     @Override public final Slaw cdr() { return second; }
 
     @Override public final int count() { return 2; }

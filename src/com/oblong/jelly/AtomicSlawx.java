@@ -20,6 +20,7 @@ abstract class AtomicSlaw extends Slaw {
 
     @Override public final Slaw find(Slaw elem) { return null; }
 
+    @Override public final Slaw car() { return this; }
     @Override public final Slaw cdr() { return SlawList.EMPTY_LIST; }
 
 }

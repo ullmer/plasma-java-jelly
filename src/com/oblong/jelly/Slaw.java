@@ -69,7 +69,9 @@ public abstract class Slaw {
         throw new UnsupportedOperationException(ilk() + " as big integer");
     }
 
-    public final Slaw car() { return nth(0); }
+    public Slaw car() {
+        throw new UnsupportedOperationException(ilk() + "as pair");
+    }
 
     public Slaw cdr() {
         throw new UnsupportedOperationException(ilk() + "as pair");
@@ -105,6 +107,12 @@ public abstract class Slaw {
 
     public Map<Slaw,Slaw> emitMap() { return new HashMap<Slaw,Slaw>(); }
 
+    public final Protein toProtein() {
+        if (!isProtein())
+            throw new UnsupportedOperationException(ilk() + " as protein");
+        return (Protein)this;
+    }
+
     @Override public final boolean equals(Object o) {
         if (!(o instanceof Slaw)) return false;
         Slaw s = (Slaw)o;
@@ -127,6 +135,13 @@ public abstract class Slaw {
     public static Slaw map(Slaw... kvs) { return factory.map(kvs); }
     public static Slaw map(List<Slaw> s) { return factory.map(s); }
     public static Slaw map(Map<Slaw,Slaw> m) { return factory.map(m); }
+
+    public static Protein protein(Slaw descrips, Slaw ingests) {
+        return factory.protein(descrips, ingests, null);
+    }
+    public static Protein protein(Slaw descrips, Slaw ingests, byte[] data) {
+        return factory.protein(descrips, ingests, data);
+    }
 
     public static Slaw nil() { return factory.nil(); }
     public static Slaw bool(boolean v) { return factory.bool(v); }
