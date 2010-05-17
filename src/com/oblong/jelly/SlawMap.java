@@ -3,9 +3,11 @@
 package com.oblong.jelly;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 final class SlawMap extends Slaw {
 
@@ -47,8 +49,7 @@ final class SlawMap extends Slaw {
             buff.append(nth(i).debugString());
             if (i + 1 < c) buff.append(" ");
         }
-        buff.append("}");
-        return buff.toString();
+        return buff.append("}").toString();
     }
 
     @Override boolean slawEquals(Slaw o) {
@@ -62,28 +63,23 @@ final class SlawMap extends Slaw {
 
     private static List<Slaw> filterConses(List<Slaw> e) {
         List<Slaw> conses = new ArrayList<Slaw>(e.size());
-        List<Slaw> keys = new ArrayList<Slaw>(e.size());
+        Set<Slaw> keys = new HashSet<Slaw>(e.size());
         for (int i = e.size() - 1; i >= 0; i--) {
             Slaw s = e.get(i);
-            if (s.car() != null && s.cdr() != null
-                && !keys.contains(s.car())) {
-                keys.add(s.car());
-                conses.add(s);
-            }
+            Slaw k = s.car();
+            if (k != null && s.cdr() != null && keys.add(k)) conses.add(s);
         }
         return conses;
     }
 
     private static List<Slaw> listToConses(List<Slaw> e) {
         List<Slaw> conses = new ArrayList<Slaw>(e.size() / 2);
-        List<Slaw> keys = new ArrayList<Slaw>(e.size() / 2);
+        Set<Slaw> keys = new HashSet<Slaw>(e.size() / 2);
         for (int i = e.size() / 2; i > 0; i--) {
-            Slaw key = e.get(2*i - 2);
-            Slaw value = e.get(2*i - 1);
-            if (key != null && value != null && !keys.contains(key)) {
-                keys.add(key);
-                conses.add(SlawCons.valueOf(key, value));
-            }
+            Slaw k = e.get(2 * i - 2);
+            Slaw v = e.get(2 * i - 1);
+            if (k != null && v != null && keys.add(k))
+                conses.add(SlawCons.valueOf(k, v));
         }
         return conses;
     }

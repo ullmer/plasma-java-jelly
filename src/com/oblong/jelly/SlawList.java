@@ -96,8 +96,7 @@ final class SlawList extends Slaw {
             buff.append(nth(i).toString());
             if (i + 1 < c) buff.append(" ");
         }
-        buff.append("]");
-        return buff.toString();
+        return buff.append("]").toString();
     }
 
     SlawList(List<Slaw> elems, boolean copy) {

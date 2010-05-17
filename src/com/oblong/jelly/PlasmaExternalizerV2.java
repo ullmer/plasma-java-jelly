@@ -35,52 +35,53 @@ final class PlasmaExternalizerV2 extends SlawExternalizer {
     }
 
     @Override int numberExternSize(Slaw n) {
-        return roundUp(5 + n.numericIlk().bytes());
+        return numericSize(n, false);
     }
 
     @Override void externNumber(Slaw n, ByteBuffer b) {
         final NumericIlk i = n.numericIlk();
-        if (i.bytes() < 5)
-            b.putLong(numberHeading(i)
-                      | (n.emitLong() & ((1L<<i.width()) - 1L)));
-        else
-            putNumVal(b.putLong(numberHeading(i)), n);
+        b.putLong(numberHeading(i));
+        adjustBufferForNumeric(b, n, false);
+        putNumVal(b, n);
     }
 
     @Override int complexExternSize(Slaw c) {
-        return 8 + 2 * c.numericIlk().bytes();
+        return numericSize(c, true);
     }
 
     @Override void externComplex(Slaw c, ByteBuffer b) {
         b.putLong(complexHeading(c.numericIlk()));
-        putNumVal(putNumVal(b, c.car()), c.cdr());
+        adjustBufferForNumeric(b, c, true);
+        putNumVal(b, c);
     }
 
     @Override int vectorExternSize(Slaw v) {
-        return roundUp(8 + v.count() * v.numericIlk().bytes());
+        return numericSize(v, false);
     }
 
     @Override void externVector(Slaw v, ByteBuffer b) {
         b.putLong(vectorHeading(v.numericIlk(), v.dimension()));
+        adjustBufferForNumeric(b, v, false);
         for (Slaw n : v.emitList()) putNumVal(b, n);
     }
 
     @Override int complexVectorExternSize(Slaw v) {
-        return roundUp(8 + 2 * v.dimension() * v.numericIlk().bytes());
+        return numericSize(v, true);
     }
 
     @Override void externComplexVector(Slaw v, ByteBuffer b) {
-        // TODO: wee complexes
         b.putLong(complexVectorHeading(v.numericIlk(), v.dimension()));
+        adjustBufferForNumeric(b, v, false);
         for (Slaw n : v.emitList()) putNumVal(putNumVal(b, n.car()), n.cdr());
     }
 
     @Override int multivectorExternSize(Slaw v) {
-        return roundUp(8 + v.count() * v.numericIlk().bytes());
+        return numericSize(v, false);
     }
 
     @Override void externMultivector(Slaw v, ByteBuffer b) {
         b.putLong(multivectorHeading(v.numericIlk(), v.dimension()));
+        adjustBufferForNumeric(b, v, false);
         for (Slaw n : v.emitList()) putNumVal(b, n);
     }
 
@@ -203,6 +204,19 @@ final class PlasmaExternalizerV2 extends SlawExternalizer {
         final int p = roundUp(len) - len;
         b.putLong(octs(len + p)).put(0, (byte)(stringHeadingByte()|p))
          .put(bs);
+    }
+
+    private static void adjustBufferForNumeric(ByteBuffer b,
+                                               Slaw s,
+                                               boolean complex) {
+        int w = s.numericIlk().bytes() * s.count();
+        if (complex) w = w << 1;
+        if (w < 5) b.position(b.position() - w);
+    }
+
+    private static int numericSize(Slaw s, boolean complex) {
+        return roundUp(
+            5 + (complex ? 2 : 1) * s.count() * s.numericIlk().bytes());
     }
 
     private static int arraySize(Slaw a) {

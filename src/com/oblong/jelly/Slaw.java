@@ -89,9 +89,7 @@ public abstract class Slaw {
 
     public final boolean contains(Slaw elem) { return indexOf(elem) >= 0; }
 
-    public final List<Slaw> emitList() {
-        return emitList(0, count());
-    }
+    public final List<Slaw> emitList() { return emitList(0, count()); }
 
     public final List<Slaw> emitList(int begin, int end) {
         final int c = count();
@@ -105,9 +103,7 @@ public abstract class Slaw {
         return ls;
     }
 
-    public Map<Slaw,Slaw> emitMap() {
-        return new HashMap<Slaw,Slaw>();
-    }
+    public Map<Slaw,Slaw> emitMap() { return new HashMap<Slaw,Slaw>(); }
 
     @Override public final boolean equals(Object o) {
         if (!(o instanceof Slaw)) return false;
@@ -117,12 +113,9 @@ public abstract class Slaw {
     }
 
     @Override public final String toString() {
-        StringBuilder buff = new StringBuilder("Slaw<");
-        buff.append(ilk());
-        if (isNumeric()) buff.append("/" + numericIlk());
-        buff.append(" = ");
-        buff.append(debugString());
-        buff.append(">");
+        StringBuilder buff = new StringBuilder("Slaw<").append(ilk());
+        if (isNumeric()) buff.append("/").append(numericIlk());
+        buff.append(" = ").append(debugString()).append(">");
         return buff.toString();
     }
 
