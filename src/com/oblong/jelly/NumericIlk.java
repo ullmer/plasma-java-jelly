@@ -67,11 +67,11 @@ public enum NumericIlk {
         signed = s;
         integral = i;
         width = w;
-        bsize = (byte)(w >>> 3);
+        bsize = w >> 3;
     }
 
     private final boolean signed;
     private final boolean integral;
     private final int width;
-    private final byte bsize;
+    private final int bsize;
 }

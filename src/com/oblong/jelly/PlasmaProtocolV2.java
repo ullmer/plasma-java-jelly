@@ -71,9 +71,7 @@ final class PlasmaProtocolV2 {
     static byte proteinSecondHeadingByte(boolean descrips,
                                          boolean ingests,
                                          int data_len) {
-        int res = PROTEIN_SECOND_BYTE;
-        if (descrips) res |= PROTEIN_DESC_MASK;
-        if (ingests) res |= PROTEIN_ING_MASK;
+        int res = PROTEIN_SBYTE[descrips ? 1 : 0][ingests ? 1 : 0];
         res |= Math.min(8, data_len);
         return (byte)res;
     }
@@ -84,9 +82,7 @@ final class PlasmaProtocolV2 {
     private static final byte STR_BYTE = 0x70;
     private static final byte WEE_STR_BYTE = 0x30;
     private static final byte PROTEIN_BYTE = 0x10;
-    private static final byte PROTEIN_SECOND_BYTE = 0x00;
-    private static final byte PROTEIN_DESC_MASK = 0x40;
-    private static final byte PROTEIN_ING_MASK = 0x20;
+    private static final byte[][] PROTEIN_SBYTE = {{0x00, 0x20},{0x40, 0x60}};
 
     private static final long makeNumHeading(NumericIlk i, long d,
                                              boolean c, boolean mv) {

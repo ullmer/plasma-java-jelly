@@ -250,7 +250,7 @@ final class PlasmaExternalizerV2 extends SlawExternalizer {
 
     private static int numericSize(Slaw s, boolean complex) {
         return roundUp(
-            5 + (complex ? 2 : 1) * s.count() * s.numericIlk().bytes());
+            4 + (complex ? 2 : 1) * s.count() * s.numericIlk().bytes());
     }
 
     private static int arraySize(Slaw a) {
@@ -288,7 +288,7 @@ final class PlasmaExternalizerV2 extends SlawExternalizer {
         for (int i = 0; i < count; i++) extern(l.nth(i), b);
         final long h =
             (long)(compositeHeadingByte(l.ilk()))|Math.min(15, count);
-        final long octs = octs(b.position() - begin);
+        final long octs = octs(roundUp(b.position() - begin));
         b.mark().position(begin);
         b.putLong((h<<56)|octs).reset();
     }
