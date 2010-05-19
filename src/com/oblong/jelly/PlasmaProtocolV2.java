@@ -10,19 +10,19 @@ import static com.oblong.jelly.SlawIlk.*;
 
 final class PlasmaProtocolV2 {
 
+    static final byte NUL = 0;
+
     static int octs(int len) { return len >>> 3; }
     static int roundUp(int len) { return (len + 7) & -8; }
 
-    static long nilHeading() { return NIL_OCT; }
+    static final long FALSE_HEADING = 0x20L<<56;
+    static final long TRUE_HEADING = FALSE_HEADING | 0x01L;
+    static final long NIL_HEADING = FALSE_HEADING | 0x02L;
 
-    static long boolHeading(boolean b) { return b ? TRUE_OCT : FALSE_OCT; }
-
-    static byte stringHeadingByte() { return STR_BYTE; }
-    static byte weeStringHeadingByte() { return WEE_STR_BYTE; }
-
-    static byte compositeHeadingByte(SlawIlk i) {
-        return (byte)((int)COMPOSITE_BYTE.get(i));
-    }
+    static final byte STR_HEADING_BYTE = 0x70;
+    static final byte WEE_STR_HEADING_BYTE = 0x30;
+    static final int STR_WEE_LEN = 6;
+    static final int NUM_WEE_LEN = 4;
 
     static long numberHeading(NumericIlk ni) {
         return (Long)NUM_HEADING[0].get(ni);
@@ -67,7 +67,12 @@ final class PlasmaProtocolV2 {
         return multivectorHeading(ni, d) | NUM_ARRAY_MASK;
     }
 
-    static byte proteinHeadingByte() { return PROTEIN_BYTE; }
+    static byte compositeHeadingByte(SlawIlk i) {
+        return (byte)((int)COMPOSITE_BYTE.get(i));
+    }
+
+    static final byte PROTEIN_HEADING_BYTE = 0x10;
+
     static byte proteinSecondHeadingByte(boolean descrips,
                                          boolean ingests,
                                          int data_len) {
@@ -76,12 +81,6 @@ final class PlasmaProtocolV2 {
         return (byte)res;
     }
 
-    private static final long FALSE_OCT = 0x20L<<56;
-    private static final long TRUE_OCT = FALSE_OCT | 0x01L;
-    private static final long NIL_OCT = FALSE_OCT | 0x02L;
-    private static final byte STR_BYTE = 0x70;
-    private static final byte WEE_STR_BYTE = 0x30;
-    private static final byte PROTEIN_BYTE = 0x10;
     private static final byte[][] PROTEIN_SBYTE = {{0x00, 0x20},{0x40, 0x60}};
 
     private static final long makeNumHeading(NumericIlk i, long d,

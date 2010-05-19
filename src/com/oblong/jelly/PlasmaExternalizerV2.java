@@ -11,24 +11,23 @@ final class PlasmaExternalizerV2 extends SlawExternalizer {
 
     @Override int nilExternSize(Slaw s) { return 8; }
 
-    @Override void externNil(Slaw s, ByteBuffer b) {
-        b.putLong(nilHeading());
-    }
+    @Override void externNil(Slaw s, ByteBuffer b) { b.putLong(NIL_HEADING); }
 
     @Override int boolExternSize(Slaw b) { return 8; }
 
     @Override void externBool(Slaw b, ByteBuffer r) {
-        r.putLong(boolHeading(b.emitBoolean()));
+        r.putLong(b.emitBoolean() ? TRUE_HEADING : FALSE_HEADING);
     }
 
     @Override int stringExternSize(Slaw s) {
         final int bn = stringBytes(s).length;
-        return (bn > 6) ? roundUp(bn + 8 + 1) : 8;
+        return (bn > STR_WEE_LEN) ? roundUp(bn + 8 + 1) : 8;
     }
 
     @Override void externString(Slaw s, ByteBuffer b) {
         final byte[] bs = stringBytes(s);
-        if (bs.length > 6) marshallStr(bs, b); else marshallWeeStr(bs, b);
+        if (bs.length > STR_WEE_LEN) marshallStr(bs, b);
+        else marshallWeeStr(bs, b);
     }
 
     @Override int numberExternSize(Slaw n) { return numericSize(n); }
@@ -134,7 +133,7 @@ final class PlasmaExternalizerV2 extends SlawExternalizer {
         if (data != null && dataLen <8) b.put(data);
         final int octs = octs(roundUp(begin - b.position()));
         b.mark().position(begin);
-        b.putLong(proteinHeadingByte() << 56 | octs);
+        b.putLong(PROTEIN_HEADING_BYTE << 56 | octs);
         b.put(proteinSecondHeadingByte(descrips != null,
                                        ingests != null,
                                        dataLen));
@@ -197,16 +196,16 @@ final class PlasmaExternalizerV2 extends SlawExternalizer {
 
     private static void marshallWeeStr(byte[] bs, ByteBuffer b) {
         assert bs.length < 7;
-        final int fb = weeStringHeadingByte() | (bs.length + 1);
+        final int fb = WEE_STR_HEADING_BYTE | (bs.length + 1);
         b.put((byte)fb);
-        for (int i = bs.length; i < 6; ++i) b.put(NUL);
+        for (int i = bs.length; i < STR_WEE_LEN; ++i) b.put(NUL);
         b.put(bs);
     }
 
     private static void marshallStr(byte[] bs, ByteBuffer b) {
         final int len = 8 + bs.length + 1;
         final int p = roundUp(len) - len;
-        b.putLong(octs(len + p)).put(0, (byte)(stringHeadingByte()|p))
+        b.putLong(octs(len + p)).put(0, (byte)(STR_HEADING_BYTE|p))
          .put(bs);
     }
 
@@ -218,11 +217,12 @@ final class PlasmaExternalizerV2 extends SlawExternalizer {
 
     private static void adjustBufferForNumeric(ByteBuffer b, Slaw s) {
         final int w = numericWidth(s);
-        if (w < 5) b.position(b.position() - w);
+        if (w <= NUM_WEE_LEN) b.position(b.position() - w);
     }
 
     private static int numericSize(Slaw s) {
-        return roundUp(4 + numericWidth(s));
+        final int w = numericWidth(s);
+        return w > NUM_WEE_LEN ? 8 + roundUp(w) : 8;
     }
 
     private static int arraySize(Slaw a) {
@@ -264,6 +264,4 @@ final class PlasmaExternalizerV2 extends SlawExternalizer {
         b.mark().position(begin);
         b.putLong((h<<56)|octs).reset();
     }
-
-    private static final byte NUL = 0;
 }

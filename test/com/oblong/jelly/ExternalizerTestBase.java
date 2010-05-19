@@ -21,7 +21,7 @@ class ExternalizerTestBase {
         final byte[] sb = externalizer.extern(s).array();
         String m = msg + ": " + arrayStr(sb) + " vs. expected " + arrayStr(b);
         assertEquals(sb.length, externalizer.externSize(s));
-        assertArrayEquals(m, b, sb);
+        assertArrayEquals(m + " for " + s, b, sb);
     }
 
     void check(Slaw[] s, short[][] b) {
