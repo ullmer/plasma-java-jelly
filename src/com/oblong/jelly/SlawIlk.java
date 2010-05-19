@@ -19,6 +19,7 @@ public enum SlawIlk {
 
     public boolean isAtomic() { return atoms.contains(this); }
     public boolean isNumeric() { return numeric.contains(this); }
+    public boolean isComplexNumeric() { return complex.contains(this); }
     public boolean isVector() {
         return this == VECTOR || this == COMPLEX_VECTOR;
     }
@@ -39,6 +40,9 @@ public enum SlawIlk {
                    VECTOR, COMPLEX_VECTOR, MULTI_VECTOR,
                    ARRAY, COMPLEX_ARRAY, VECTOR_ARRAY,
                    COMPLEX_VECTOR_ARRAY, MULTI_VECTOR_ARRAY);
+    private static EnumSet<SlawIlk> complex =
+        EnumSet.of(COMPLEX, COMPLEX_VECTOR,
+                   COMPLEX_ARRAY, COMPLEX_VECTOR_ARRAY);
     private static EnumSet<SlawIlk> arrays =
         EnumSet.of(ARRAY, COMPLEX_ARRAY, VECTOR_ARRAY,
                    COMPLEX_VECTOR_ARRAY, MULTI_VECTOR_ARRAY);

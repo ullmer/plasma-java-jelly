@@ -2,9 +2,6 @@ package com.oblong.jelly;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.util.EnumMap;
-import java.util.Map;
 
 import static com.oblong.jelly.NumericIlk.*;
 import static com.oblong.jelly.SlawIlk.*;
@@ -34,60 +31,47 @@ final class PlasmaExternalizerV2 extends SlawExternalizer {
         if (bs.length > 6) marshallStr(bs, b); else marshallWeeStr(bs, b);
     }
 
-    @Override int numberExternSize(Slaw n) {
-        return numericSize(n, false);
-    }
+    @Override int numberExternSize(Slaw n) { return numericSize(n); }
 
     @Override void externNumber(Slaw n, ByteBuffer b) {
-        final NumericIlk i = n.numericIlk();
-        b.putLong(numberHeading(i));
-        adjustBufferForNumeric(b, n, false);
+        b.putLong(numberHeading(n.numericIlk()));
+        adjustBufferForNumeric(b, n);
         putNumVal(b, n);
     }
 
-    @Override int complexExternSize(Slaw c) {
-        return numericSize(c, true);
-    }
+    @Override int complexExternSize(Slaw c) { return numericSize(c); }
 
     @Override void externComplex(Slaw c, ByteBuffer b) {
         b.putLong(complexHeading(c.numericIlk()));
-        adjustBufferForNumeric(b, c, true);
+        adjustBufferForNumeric(b, c);
         putNumVal(b, c);
     }
 
-    @Override int vectorExternSize(Slaw v) {
-        return numericSize(v, false);
-    }
+    @Override int vectorExternSize(Slaw v) { return numericSize(v); }
 
     @Override void externVector(Slaw v, ByteBuffer b) {
         b.putLong(vectorHeading(v.numericIlk(), v.dimension()));
-        adjustBufferForNumeric(b, v, false);
+        adjustBufferForNumeric(b, v);
         for (Slaw n : v.emitList()) putNumVal(b, n);
     }
 
-    @Override int complexVectorExternSize(Slaw v) {
-        return numericSize(v, true);
-    }
+    @Override int complexVectorExternSize(Slaw v) { return numericSize(v); }
 
     @Override void externComplexVector(Slaw v, ByteBuffer b) {
         b.putLong(complexVectorHeading(v.numericIlk(), v.dimension()));
-        adjustBufferForNumeric(b, v, false);
+        adjustBufferForNumeric(b, v);
         for (Slaw n : v.emitList()) putNumVal(putNumVal(b, n.car()), n.cdr());
     }
 
-    @Override int multivectorExternSize(Slaw v) {
-        return numericSize(v, false);
-    }
+    @Override int multivectorExternSize(Slaw v) { return numericSize(v); }
 
     @Override void externMultivector(Slaw v, ByteBuffer b) {
         b.putLong(multivectorHeading(v.numericIlk(), v.dimension()));
-        adjustBufferForNumeric(b, v, false);
+        adjustBufferForNumeric(b, v);
         for (Slaw n : v.emitList()) putNumVal(b, n);
     }
 
-    @Override int arrayExternSize(Slaw a) {
-        return arraySize(a);
-    }
+    @Override int arrayExternSize(Slaw a) { return arraySize(a); }
 
     @Override void externArray(Slaw a, ByteBuffer b) {
         putArray(arrayHeading(a.numericIlk()), b, a);
@@ -101,9 +85,7 @@ final class PlasmaExternalizerV2 extends SlawExternalizer {
         putArray(complexArrayHeading(a.numericIlk()), b, a);
     }
 
-    @Override int vectorArrayExternSize(Slaw a) {
-        return arraySize(a);
-    }
+    @Override int vectorArrayExternSize(Slaw a) { return arraySize(a); }
 
     @Override void externVectorArray(Slaw a, ByteBuffer b) {
         putArray(vectorArrayHeading(a.numericIlk(), a.dimension()), b, a);
@@ -128,29 +110,17 @@ final class PlasmaExternalizerV2 extends SlawExternalizer {
                  b, a);
     }
 
-    @Override int consExternSize(Slaw c) {
-        return listSize(c);
-    }
+    @Override int consExternSize(Slaw c) { return listSize(c); }
 
-    @Override void externCons(Slaw c, ByteBuffer b) {
-        marshallAsList(c, b);
-    }
+    @Override void externCons(Slaw c, ByteBuffer b) { marshallAsList(c, b); }
 
-    @Override int listExternSize(Slaw c) {
-        return listSize(c);
-    }
+    @Override int listExternSize(Slaw c) { return listSize(c); }
 
-    @Override void externList(Slaw c, ByteBuffer b) {
-        marshallAsList(c, b);
-    }
+    @Override void externList(Slaw c, ByteBuffer b) { marshallAsList(c, b); }
 
-    @Override int mapExternSize(Slaw c) {
-        return listSize(c);
-    }
+    @Override int mapExternSize(Slaw c) { return listSize(c); }
 
-    @Override void externMap(Slaw c, ByteBuffer b) {
-        marshallAsList(c, b);
-    }
+    @Override void externMap(Slaw c, ByteBuffer b) { marshallAsList(c, b); }
 
     @Override void externProtein(Protein p, ByteBuffer b) {
         final int begin = b.position();
@@ -189,8 +159,8 @@ final class PlasmaExternalizerV2 extends SlawExternalizer {
     @Override void prepareBuffer(ByteBuffer b, Slaw s) {}
 
     @Override void finishBuffer(ByteBuffer b, Slaw s, int begin) {
-        int len = b.capacity() - b.position();
-        while (len-- > 0) b.put((byte)0);
+        int pad = roundUp(b.position()) - b.position();
+        while (pad-- > 0) b.put(NUL);
     }
 
     private static byte[] stringBytes(Slaw s) {
@@ -240,17 +210,19 @@ final class PlasmaExternalizerV2 extends SlawExternalizer {
          .put(bs);
     }
 
-    private static void adjustBufferForNumeric(ByteBuffer b,
-                                               Slaw s,
-                                               boolean complex) {
-        int w = s.numericIlk().bytes() * s.count();
-        if (complex) w = w << 1;
+    private static int numericWidth(Slaw s) {
+        final int nb = s.numericIlk().bytes();
+        final int w = nb * (s.isMultivector() ? s.count() : s.dimension());
+        return s.ilk().isComplexNumeric() ? 2 * w : w;
+    }
+
+    private static void adjustBufferForNumeric(ByteBuffer b, Slaw s) {
+        final int w = numericWidth(s);
         if (w < 5) b.position(b.position() - w);
     }
 
-    private static int numericSize(Slaw s, boolean complex) {
-        return roundUp(
-            4 + (complex ? 2 : 1) * s.count() * s.numericIlk().bytes());
+    private static int numericSize(Slaw s) {
+        return roundUp(4 + numericWidth(s));
     }
 
     private static int arraySize(Slaw a) {

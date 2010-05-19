@@ -4,9 +4,6 @@ package com.oblong.jelly;
 
 import org.junit.Assert;
 import static org.junit.Assert.*;
-import org.junit.Test;
-
-import static com.oblong.jelly.Slaw.*;
 
 class ExternalizerTestBase {
     ExternalizerTestBase(SlawExternalizer e) { externalizer = e; }
