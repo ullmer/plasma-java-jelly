@@ -11,6 +11,7 @@ import static com.oblong.jelly.SlawIlk.*;
 final class PlasmaProtocolV2 {
 
     static final byte NUL = 0;
+    static final int OCT_LEN = 8;
 
     static int octs(int len) { return len >>> 3; }
     static int roundUp(int len) { return (len + 7) & -8; }
@@ -72,6 +73,7 @@ final class PlasmaProtocolV2 {
     }
 
     static final byte PROTEIN_HEADING_BYTE = 0x10;
+    static final int WEE_PROTEIN_DATA_LEN = 14;
 
     static byte proteinSecondHeadingByte(boolean descrips,
                                          boolean ingests,
