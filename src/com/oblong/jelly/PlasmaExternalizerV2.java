@@ -137,10 +137,7 @@ final class PlasmaExternalizerV2 extends SlawExternalizer {
         b.put(proteinSecondHeadingByte(descrips != null,
                                        ingests != null,
                                        dataLen));
-        if (dataLen < OCT_LEN) {
-            for (int i = 0, l = OCT_LEN - 1 - dataLen; i < l; i++) b.put(NUL);
-            b.put(data);
-        }
+        if (dataLen < OCT_LEN) pad(b, OCT_LEN - 1 - dataLen).put(data);
         b.reset();
     }
 
@@ -158,8 +155,12 @@ final class PlasmaExternalizerV2 extends SlawExternalizer {
     @Override void prepareBuffer(ByteBuffer b, Slaw s) {}
 
     @Override void finishBuffer(ByteBuffer b, Slaw s, int begin) {
-        int pad = roundUp(b.position()) - b.position();
-        while (pad-- > 0) b.put(NUL);
+        pad(b, roundUp(b.position()) - b.position());
+    }
+
+    private static ByteBuffer pad(ByteBuffer b, int n) {
+        while (n-- > 0) b.put(NUL);
+        return b;
     }
 
     private static byte[] stringBytes(Slaw s) {
@@ -198,8 +199,7 @@ final class PlasmaExternalizerV2 extends SlawExternalizer {
         assert bs.length <= STR_WEE_LEN;
         final int fb = WEE_STR_HEADING_BYTE | (bs.length + 1);
         b.put((byte)fb);
-        for (int i = bs.length; i < STR_WEE_LEN; ++i) b.put(NUL);
-        b.put(bs);
+        pad(b, STR_WEE_LEN - bs.length).put(bs);
     }
 
     private static void marshallStr(byte[] bs, ByteBuffer b) {
