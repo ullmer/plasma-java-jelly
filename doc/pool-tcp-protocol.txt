@@ -1,3 +1,5 @@
+-*- coding: utf-8; -*-
+
 Overview
 ========
 
@@ -129,7 +131,7 @@ response:
   i: the index of the oldest protein in the pool
   r: retort
 
-POOL_CMD_AWAIT_NEXT_SINGLE - wait for a protein to be deposited, with timeout
+POOL_CMD_AWAIT_NEXT_SINGLE† - wait for a protein to be deposited, with timeout
   t: timeout in seconds (*)
 response:
   r: retort
@@ -142,12 +144,20 @@ indicate POOL_WAIT_FOREVER and a timestamp value of -1 to indicate
 POOL_NO_WAIT.  However, protocol verion 2 and higher use -1 for
 POOL_WAIT_FOREVER and 0 for POOL_NO_WAIT.
 
-POOL_CMD_MULTI_ADD_AWAITER - wait indefinitely for a protein; can be interrupted
+POOL_CMD_MULTI_ADD_AWAITER† - wait indefinitely for a protein; can be interrupted
 response:
   r: retort
   p: the protein you were waiting for
   t: the timestamp of that protein
   i: the index of the protein
+
+† Both POOL_CMD_AWAIT_NEXT_SINGLE and POOL_CMD_MULTI_ADD_AWAITER have
+the property that they depend on the location of the hose as set by a
+previous operation (one of POOL_CMD_NEXT, POOL_CMD_PROBE_FRWD,
+POOL_CMD_PREV, or POOL_CMD_PROBE_BACK).
+This implicit state could be considered a bug, since most other
+network commands explicitly specify the index at which to start
+(e. g. POOL_CMD_NEXT and POOL_CMD_PROBE_FRWD).
 
 POOL_CMD_INFO - get information about the current pool
   i: number of hops (probably 0 or -1 at this point)
@@ -168,7 +178,7 @@ response:
   i: the index closest to the given timestamp
   r: retort
 
-POOL_CMD_PROBE_FRWD - get the previous protein that matches the search pattern
+POOL_CMD_PROBE_BACK - get the previous protein that matches the search pattern
   i: index of the protein where you want to start searching
   x: the pattern to match against the descrips (string or list of strings)
 response:
@@ -184,6 +194,23 @@ response:
   t: the timestamp of that protein
   i: the index of the protein
   r: retort
+
+Endianness
+==========
+
+Most of the pool protocol is protein-based, and proteins self-describe
+their endianness.  Each protein you send can be of an endianness of
+your own choosing, but each protein you receive will be of an
+endianness of the sender's choosing, so you must be prepared to swap.
+Also, proteins contained inside another protein must have the same
+endianness as their encapsulating protein; you can't put a
+little-endian protein inside a big-endian protein.
+
+For the few parts of the pool protocol which exist outside of
+proteins, this document specifies an explicit endianness for any
+multi-byte numbers.  (e. g. big-endian for the lengths in the version
+0 protocol, and little-endian for the bit mask of supported commands
+in the version 1 and higher protocols.)
 
 Versioning policy
 =================

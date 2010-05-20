@@ -90,7 +90,7 @@ numeric singleton:
       101 - 3-multivector
       110 - 4-multivector
       111 - 5-multivector
-"b" is bsize - 1 (bsize is the size in bytes of the numeric type)
+"b" is bsize - 1 (bsize is the size in bytes of the entire numeric type)
 "S" is "special bytes" (see below) containing the number if bsize is 4 or less.
 
 numeric array:
@@ -259,3 +259,83 @@ strings can accomodate up to seven), there is one byte of padding.  It
 is initialized to 0, and occurs in bits 48-55 of the integer.  That
 means the padding byte comes before the string in big-endian format,
 and after the string in little-endian format.
+
+Here's a more detailed example of how to byte-swap a slaw that
+contains special bytes...
+
+Imagine you have a slaw constructed like this:
+
+int16c q = {0x1234, 0x5678};
+slaw qq = slaw_int16c (q);
+
+This slaw fits in a single oct, and in little endian, it is
+represented like this:
+
+34 12 78 56 00 c0 00 86
+
+It's easiest to think about the header oct and the special bytes
+separately, even though they co-exist in the same oct.  So the header
+oct is:
+
+ss ss ss ss 00 c0 00 86
+
+Where "ss" represents the space occupied by the special bytes, which
+we will treat opaquely for now.  Then we just byte-swap the header as
+a 64-bit integer, so in big endian it becomes:
+
+86 00 c0 00 ss ss ss ss
+
+Now let's separately consider the special bytes.  In little-endian,
+the special bytes were:
+
+34 12 78 56
+
+Since these bytes represent two 16-bit integers, we need to byte-swap
+each 16-bit integer individually.  So in big-endian, this becomes:
+
+12 34 56 78
+
+And now we have the big-endian header:
+
+86 00 c0 00 ss ss ss ss
+
+and the big-endian special bytes:
+
+12 34 56 78
+
+and all we have to do is put the special bytes back where they belong,
+in the space denoted by "ss":
+
+86 00 c0 00 12 34 56 78
+
+----------------------------------------------------------------------
+
+Protein endianness
+
+Proteins self-describe their endianness, so if you have a sequence of
+bytes that you know are a protein, you can determine the endianness
+without any out-of-band information.
+
+The first oct of a protein is:
+
+0001oooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo 0000oooo
+"o" is 56 bits of octlen (length of protein in octs, including this oct)
+
+and the interpretation of the most significant four bits is:
+
+0000 - backwards protein (i. e. a protein in the non-native endianness)
+0001 - forwards protein
+
+Because of the strategic way the four 0000 bits are positioned in the
+upper nibble of the least-significant byte, if you byte-swap a
+protein, its most significant four bits will contain "0000",
+indicating it is a byte-swapped protein (opposite of whatever your
+native endianness is).  So that means you have to interpret the
+protein with the opposite endianness.  This is the reason for the
+otherwise annoying way that the bits of the octlen are not contiguous.
+
+However, since this property requires an extra four bits in an
+inconvenient location, proteins are the only slaw which self-describe
+their endianness.  If you have a stream of bytes which represent an
+arbitrary slaw, not necessarily a protein, then you'll need
+out-of-band information to communicate the endianness.
