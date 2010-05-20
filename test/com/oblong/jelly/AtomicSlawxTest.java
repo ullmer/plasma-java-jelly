@@ -23,7 +23,7 @@ public class AtomicSlawxTest {
 
     @Test public void nil() {
         Slaw nil = Slaw.nil();
-        testIlk(nil, SlawIlk.NIL, NumericIlk.NAN);
+        testIlk(nil, SlawIlk.NIL, null);
         assertEquals(Slaw.nil(), nil);
         testAtomicEmissions(nil);
         testPairiness(nil);
@@ -32,7 +32,7 @@ public class AtomicSlawxTest {
 
     void testBool(boolean v) {
         Slaw s = Slaw.bool(v);
-        testIlk(s, SlawIlk.BOOL, NumericIlk.NAN);
+        testIlk(s, SlawIlk.BOOL, null);
         assertEquals(Slaw.bool(v), s);
         assertEquals(v, s.emitBoolean());
         assertEquals(s, s.nth(0));
@@ -51,7 +51,7 @@ public class AtomicSlawxTest {
 
     void testString(String str) {
         Slaw s = Slaw.string(str);
-        testIlk(s, SlawIlk.STRING, NumericIlk.NAN);
+        testIlk(s, SlawIlk.STRING, null);
         assertEquals(str, s.emitString());
         assertEquals(s, Slaw.string(str));
         testAtomicEmissions(s);

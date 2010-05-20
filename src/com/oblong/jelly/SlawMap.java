@@ -29,7 +29,7 @@ final class SlawMap extends Slaw {
     }
 
     @Override public SlawIlk ilk() { return SlawIlk.MAP; }
-    @Override public NumericIlk numericIlk() { return NumericIlk.NAN; }
+    @Override public NumericIlk numericIlk() { return null; }
 
     @Override public int dimension() { return 0; }
     @Override public int count() { return conses.count(); }

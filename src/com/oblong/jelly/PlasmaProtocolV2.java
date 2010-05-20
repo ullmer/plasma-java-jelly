@@ -121,7 +121,6 @@ final class PlasmaProtocolV2 {
         NUM_BYTE.put(UNT64, 0x9CL);
         NUM_BYTE.put(FLOAT32, 0xA8L);
         NUM_BYTE.put(FLOAT64, 0xACL);
-        NUM_BYTE.put(NAN, 0x00L);
 
         for (int d = 0; d < 4; d++) {
             NUM_HEADING[d] = new EnumMap<NumericIlk, Long>(NumericIlk.class);

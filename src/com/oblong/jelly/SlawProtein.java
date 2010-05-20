@@ -9,7 +9,7 @@ final class SlawProtein extends Protein {
     }
 
     @Override public SlawIlk ilk() { return SlawIlk.PROTEIN; }
-    @Override public NumericIlk numericIlk() { return NumericIlk.NAN; }
+    @Override public NumericIlk numericIlk() { return null; }
 
     @Override public Slaw car() { return descrips; }
     @Override public Slaw cdr() { return ingests; }

@@ -25,7 +25,7 @@ final class SlawList extends Slaw {
     }
 
     @Override public SlawIlk ilk() { return SlawIlk.LIST; }
-    @Override public NumericIlk numericIlk() { return NumericIlk.NAN; }
+    @Override public NumericIlk numericIlk() { return null; }
 
     @Override public boolean emitBoolean() {
         return count() == 1 ? nth(0).emitBoolean() : super.emitBoolean();

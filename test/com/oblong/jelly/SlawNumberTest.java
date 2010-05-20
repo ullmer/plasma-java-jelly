@@ -46,17 +46,15 @@ public class SlawNumberTest {
 
     @Test public void integrals() {
         for (NumericIlk i : NumericIlk.values()) {
-            if (NumericIlk.NAN != i) {
-                if (i.isIntegral()) {
-                    testIntegral(i, i.max());
-                    testIntegral(i, i.min());
-                    testIntegral(i, i.min() / 2 + i.max() / 2);
-                } else {
-                    testFloat(i, i.fmax());
-                    testFloat(i, i.fmin());
-                    testFloat(i, i.fmin() / 2 + i.fmax() / 2);
-                    testFloat(i, 0.0);
-                }
+            if (i.isIntegral()) {
+                testIntegral(i, i.max());
+                testIntegral(i, i.min());
+                testIntegral(i, i.min() / 2 + i.max() / 2);
+            } else {
+                testFloat(i, i.fmax());
+                testFloat(i, i.fmin());
+                testFloat(i, i.fmin() / 2 + i.fmax() / 2);
+                testFloat(i, 0.0);
             }
         }
     }

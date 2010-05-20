@@ -7,7 +7,7 @@ final class SlawCons extends SlawPair {
     static Slaw valueOf(Slaw f, Slaw s) { return new SlawCons(f, s); }
 
     @Override public SlawIlk ilk() { return SlawIlk.CONS; }
-    @Override public NumericIlk numericIlk() { return NumericIlk.NAN; }
+    @Override public NumericIlk numericIlk() { return null; }
 
     @Override public int dimension() { return 0; }
 

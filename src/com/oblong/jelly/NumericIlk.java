@@ -13,12 +13,11 @@ import java.util.NoSuchElementException;
  */
 public enum NumericIlk {
 
-    NAN(false, false, 0),
-        FLOAT64(true, false, 64), FLOAT32(true, false, 32),
-        UNT64(false, true, 64), INT64(true, true, 64),
-        UNT32(false, true, 32), INT32(true, true, 32),
-        UNT16(false, true, 16), INT16(true, true, 16),
-        UNT8(false, true, 8), INT8(true,true, 8);
+    FLOAT64(true, false, 64), FLOAT32(true, false, 32),
+    UNT64(false, true, 64), INT64(true, true, 64),
+    UNT32(false, true, 32), INT32(true, true, 32),
+    UNT16(false, true, 16), INT16(true, true, 16),
+    UNT8(false, true, 8), INT8(true,true, 8);
 
     public int width() { return width; }
     public int bytes() { return bsize; }
@@ -44,6 +43,8 @@ public enum NumericIlk {
             return Collections.min(ilks);
         } catch (NoSuchElementException e) {
             return INT8;
+        } catch (NullPointerException e) {
+            return null;
         }
     }
 

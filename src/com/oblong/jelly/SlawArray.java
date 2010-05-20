@@ -13,7 +13,6 @@ final class SlawArray extends CompositeNumericSlaw {
     static Slaw valueOf(List<Slaw> cmps) {
         assert cmps.size() > 0;
         NumericIlk ni = NumericIlk.dominantIlkForList(cmps);
-        assert ni != NumericIlk.NAN;
         return new SlawArray(ni, cmps);
     }
 

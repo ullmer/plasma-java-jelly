@@ -9,7 +9,6 @@ final class SlawVector extends CompositeNumericSlaw {
     static Slaw valueOf(Slaw... cmps) {
         assert cmps.length > 1 && cmps.length < 5;
         NumericIlk ni = NumericIlk.dominantIlk(cmps);
-        assert ni != NumericIlk.NAN;
         return new SlawVector(ni, cmps);
     }
 

@@ -32,7 +32,7 @@ public class SlawConsTest {
         assertEquals(c, c);
         assertEquals(2, c.count());
         assertEquals(c, cons(c.car(), c.cdr()));
-        assertEquals(c.numericIlk(), NumericIlk.NAN);
+        assertEquals(c.numericIlk(), null);
         testAtomicEmissions(c);
         testPairiness(c);
         testListness(c);

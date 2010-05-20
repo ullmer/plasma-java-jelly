@@ -32,7 +32,7 @@ final class SlawNil extends AtomicSlaw {
     @Override public int dimension() { return 0; }
 
     @Override public SlawIlk ilk() { return SlawIlk.NIL; }
-    @Override public NumericIlk numericIlk() { return NumericIlk.NAN; }
+    @Override public NumericIlk numericIlk() { return null; }
 
     @Override boolean slawEquals(Slaw o) { return true; }
 
@@ -46,7 +46,7 @@ final class SlawBool extends AtomicSlaw {
     static Slaw valueOf(boolean b) { return b ? TRUE : FALSE; }
 
     @Override public SlawIlk ilk() { return SlawIlk.BOOL; }
-    @Override public NumericIlk numericIlk() { return NumericIlk.NAN; }
+    @Override public NumericIlk numericIlk() { return null; }
 
     @Override public boolean emitBoolean() { return this == TRUE; }
 
@@ -69,7 +69,7 @@ final class SlawString extends AtomicSlaw {
     static Slaw valueOf(String s) { return new SlawString(s); }
 
     @Override public SlawIlk ilk() { return SlawIlk.STRING; }
-    @Override public NumericIlk numericIlk() { return NumericIlk.NAN; }
+    @Override public NumericIlk numericIlk() { return null; }
 
     @Override public String emitString() { return val; }
 
