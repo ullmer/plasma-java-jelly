@@ -76,7 +76,7 @@ final class JavaSlawFactory implements SlawFactory {
 
     @Override public Slaw array(SlawIlk ilk, NumericIlk ni, int d) {
         if (ilk == null || ni == null || !ilk.isArray() || d <= 0 || d > 5
-            || ((ilk == SlawIlk.NUMBER || ilk == SlawIlk.COMPLEX) && d > 1)
+            || ((ilk == SlawIlk.ARRAY || ilk == SlawIlk.COMPLEX_ARRAY) && d>1)
             || (ilk.isVector() && (d < 2 || d > 4))
             || (ilk == SlawIlk.MULTI_VECTOR && (d < 2 || d > 5)))
             throw new IllegalArgumentException ("Invalid ilks");

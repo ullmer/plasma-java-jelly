@@ -92,7 +92,7 @@ final class PlasmaProtocolV2 {
         if (c) head = head |0x02;
         return (head << 56)
             | ((d - (mv ? 2L : 1L)) << 54)
-            | (d * i.bytes() * (c ? 2 : 1) - 1L) << 46;
+            | ((mv ? 1<<d : d) * i.bytes() * (c ? 2 : 1) - 1L) << 46;
     }
 
     private static final void putNumHeading(Map m, NumericIlk i, long d,
@@ -107,7 +107,7 @@ final class PlasmaProtocolV2 {
     private static final Map[] COMPLEX_HEADING = new EnumMap[4];
     private static final Map[] MVECT_HEADING = new EnumMap[4];
 
-    private static final long NUM_ARRAY_MASK = 0x40<<56;
+    private static final long NUM_ARRAY_MASK = 0x3L<<62;
 
     static {
         NUM_BYTE = new EnumMap<NumericIlk, Long>(NumericIlk.class);

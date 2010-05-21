@@ -3,6 +3,7 @@
 package com.oblong.jelly;
 
 import java.util.EnumSet;
+import java.util.Set;
 
 /**
  * Created: Fri Apr 23 14:14:56 2010
@@ -18,12 +19,24 @@ public enum SlawIlk {
     CONS, LIST, MAP, PROTEIN;
 
     public boolean isAtomic() { return atoms.contains(this); }
+
     public boolean isNumeric() { return numeric.contains(this); }
+
     public boolean isComplexNumeric() { return complex.contains(this); }
+
     public boolean isVector() {
         return this == VECTOR || this == COMPLEX_VECTOR;
     }
+
     public boolean isArray() { return arrays.contains(this); }
+
+    public static Set<SlawIlk> atomicIlks() { return atoms.clone(); }
+
+    public static Set<SlawIlk> numericIlks() { return numeric.clone(); }
+
+    public static Set<SlawIlk> complexIlks() { return complex.clone(); }
+
+    public static Set<SlawIlk> arrayIlks() { return arrays.clone(); }
 
     public static boolean haveSameIlk(Slaw... sx) {
         if (sx.length == 0) return true;

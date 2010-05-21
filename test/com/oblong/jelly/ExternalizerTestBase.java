@@ -12,7 +12,8 @@ class ExternalizerTestBase {
 
     String arrayStr(byte[] bs) {
         StringBuilder buf = new StringBuilder ("{ ");
-        for (byte b : bs) buf.append(b + " ");
+        for (byte b : bs)
+            buf.append(Integer.toBinaryString(((int)b) & 0xff)).append(" ");
         buf.append("}");
         return buf.toString();
     }
