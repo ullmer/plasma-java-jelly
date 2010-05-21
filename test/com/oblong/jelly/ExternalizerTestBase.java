@@ -2,6 +2,7 @@
 
 package com.oblong.jelly;
 
+import java.nio.ByteBuffer;
 import org.junit.Assert;
 import static org.junit.Assert.*;
 
@@ -31,5 +32,14 @@ class ExternalizerTestBase {
             for (int j = 0; j < b[i].length; ++j) bb[j] = (byte)b[i][j];
             check(s[i], bb, i + "th iteration");
         }
+    }
+
+    void checkSubslawx(String msg, ByteBuffer b, Slaw s) {
+        for (int i = 0, c = s.count(); i < c; i++) {
+            byte[] sb = externalizer.extern(s.nth(i)).array();
+            for (int j = 0; j < sb.length; j++)
+                assertEquals(msg + "/" + j + "th slaw", sb[j], b.get());
+        }
+        assertFalse(b.hasRemaining());
     }
 }

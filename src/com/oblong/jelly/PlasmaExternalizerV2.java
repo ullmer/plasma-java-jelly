@@ -131,14 +131,15 @@ final class PlasmaExternalizerV2 extends SlawExternalizer {
         if (ingests != null) extern(ingests, b);
         final int dataLen = (data == null) ? 0 : data.length;
         if (data != null && dataLen < OCT_LEN) b.put(data);
-        final int octs = octs(roundUp(begin - b.position()));
-        b.mark().position(begin);
+        final int end = b.position();
+        final int octs = octs(roundUp(end - begin));
+        b.position(begin);
         b.putLong(PROTEIN_HEADING_BYTE << 56 | octs);
         b.put(proteinSecondHeadingByte(descrips != null,
                                        ingests != null,
                                        dataLen));
         if (dataLen < OCT_LEN) pad(b, OCT_LEN - 1 - dataLen).put(data);
-        b.reset();
+        b.position(end);
     }
 
     @Override int proteinExternSize(Protein p) {
@@ -260,8 +261,9 @@ final class PlasmaExternalizerV2 extends SlawExternalizer {
         for (int i = 0; i < count; i++) extern(l.nth(i), b);
         final long h =
             (long)(compositeHeadingByte(l.ilk()))|Math.min(15, count);
-        final long octs = octs(roundUp(b.position() - begin));
-        b.mark().position(begin);
-        b.putLong((h<<56)|octs).reset();
+        final int end = b.position();
+        final long octs = octs(roundUp(end - begin));
+        b.position(begin);
+        b.putLong((h<<56)|octs).position(end);
     }
 }

@@ -18,7 +18,7 @@ abstract class SlawExternalizer {
     final ByteBuffer extern(Slaw s) {
         final ByteBuffer b = ByteBuffer.allocate(externSize(s));
         extern(s, b);
-        return b;
+        return (ByteBuffer)b.rewind();
     }
 
     final int extern(Slaw s, ByteBuffer b) {
