@@ -96,6 +96,19 @@ final class JavaSlawFactory implements SlawFactory {
         return SlawArray.valueOf(cmps);
     }
 
+    @Override public Slaw array(Slaw[] sx) {
+        if (sx == null || sx.length == 0)
+            throw new IllegalArgumentException("Arg cannot be empty");
+        if (!SlawIlk.haveSameIlk(sx))
+            throw new IllegalArgumentException(
+                "All args must have the same ilk");
+        List<Slaw> cmps = new ArrayList<Slaw>(sx.length);
+        for (Slaw s : sx) addArrayComponent(s, cmps);
+        if (cmps.size() == 0)
+            throw new IllegalArgumentException("All args were null");
+        return SlawArray.valueOf(cmps);
+    }
+
     @Override public Slaw cons(Slaw car, Slaw cdr) {
         if (car == null || cdr == null) throw new IllegalArgumentException();
         return SlawCons.valueOf(car, cdr);

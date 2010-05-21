@@ -29,6 +29,7 @@ interface SlawFactory {
     Slaw multivector(Slaw v00, Slaw v01, Slaw v10, Slaw v11);
     Slaw multivector(Slaw up, Slaw down);
 
+    Slaw array(Slaw[] sx);
     Slaw array(Slaw s, Slaw... sx);
     Slaw array(SlawIlk ilk, NumericIlk ni, int dimension);
 

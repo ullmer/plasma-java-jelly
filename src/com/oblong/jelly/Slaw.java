@@ -186,6 +186,8 @@ public abstract class Slaw {
         return factory.multivector(v0, v1);
     }
 
+    public static Slaw array(Slaw[] sx) { return factory.array(sx); }
+
     public static Slaw array(Slaw n, Slaw... ns) {
         return factory.array(n, ns);
     }
