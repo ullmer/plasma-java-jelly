@@ -42,5 +42,4 @@ public class PlasmaV2ConsesTest extends ExternalizerTestBase {
         assertEquals(msg, 0x62, h>>>56);
         assertEquals(msg, octs, h & (~(0xff<<56)));
     }
-
 }
