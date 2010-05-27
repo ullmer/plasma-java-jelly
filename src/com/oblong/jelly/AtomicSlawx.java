@@ -74,7 +74,7 @@ final class SlawString extends AtomicSlaw {
     @Override public String emitString() { return val; }
 
     @Override public boolean slawEquals(Slaw o) {
-        return o.emitString() == val;
+        return o.emitString().equals(val);
     }
 
     @Override public int hashCode() { return val.hashCode(); }

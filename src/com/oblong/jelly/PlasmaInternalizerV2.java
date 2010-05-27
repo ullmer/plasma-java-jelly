@@ -36,7 +36,8 @@ final class PlasmaInternalizerV2 implements SlawInternalizer {
         final int beg = b.position();
         try {
             checkLength(b, OCT_LEN);
-            switch (peekNibble(b, littleEndian(b) ? 7 : 0)) {
+            final byte nb = peekNibble(b, littleEndian(b) ? 7 : 0);
+            switch (nb) {
             case PROTEIN_NATIVE_NIBBLE: case PROTEIN_NON_NATIVE_NIBBLE:
                 return internProtein(b, f);
             case ATOM_NIBBLE:
@@ -54,7 +55,8 @@ final class PlasmaInternalizerV2 implements SlawInternalizer {
             case MAP_NIBBLE:
                 return internMap(b, f);
             default:
-                throw new SlawParseError(b, "Unrecognized format");
+                throw new SlawParseError
+                    (b, "Unrecognized format (" + nb + ")");
             }
         } catch (BufferUnderflowException e) {
             b.position(beg);
@@ -94,8 +96,7 @@ final class PlasmaInternalizerV2 implements SlawInternalizer {
         throws SlawParseError {
         final int beg = b.position();
         final int len = weeStringLength(b.get());
-        final int offset = weeOffset(b, len);
-        b.position(b.position() + offset);
+        b.position(beg + weeOffset(b, len));
         final String str = readString(b, len - 1);
         b.position(beg + OCT_LEN);
         return f.string(str);
@@ -104,15 +105,15 @@ final class PlasmaInternalizerV2 implements SlawInternalizer {
     private static Slaw internString(ByteBuffer b, SlawFactory f)
         throws SlawParseError {
         final long h = b.getLong();
-        final int len = stringLength(h);
-        final String str = readString(b, stringLength(h));
-        b.position(b.position() + stringPadding(h));
+        final String str = readString(b, stringLength(h) - 1);
+        b.position(b.position() + stringPadding(h) + 1);
         return f.string(str);
     }
 
     private static String readString(ByteBuffer b, int len)
         throws SlawParseError {
         checkLength(b, len);
+        if (len == 0) return "";
         final byte[] bs = new byte[len];
         b.get(bs, 0, len);
         try {
@@ -129,9 +130,10 @@ final class PlasmaInternalizerV2 implements SlawInternalizer {
         final int bs = numericBytes(h);
         final boolean isWee = bs <= NUM_WEE_LEN;
         if (isWee) b.position(beg + weeOffset(b, bs));
+        checkLength(b, bs);
         Slaw res = isNumericScalar(h) ?
             internNum(h, b, f) : internVector(h, b, f);
-        if (isWee) b.position(beg + OCT_LEN);
+        if (!isWee) b.position(beg + roundUp(OCT_LEN + bs));
         return res;
     }
 
@@ -164,10 +166,10 @@ final class PlasmaInternalizerV2 implements SlawInternalizer {
         if (ni.isIntegral()) {
             long v = 0;
             switch (ni.bytes()) {
-            case 1: v = b.get();
-            case 2: v = b.getShort();
-            case 4: v = b.getInt();
-            case 8: v = b.getLong();
+            case 1: v = b.get() & 0xffL; break;
+            case 2: v = b.getShort() & 0xffffL; break;
+            case 4: v = b.getInt() & 0xffffffffL; break;
+            case 8: v = b.getLong(); break;
             default: assert false : "Unexpected width: " + ni.bytes();
             }
             return f.number(ni, v);
@@ -220,7 +222,7 @@ final class PlasmaInternalizerV2 implements SlawInternalizer {
     }
 
     private static byte peekNibble(ByteBuffer b, int offset) {
-        return (byte)(b.get(b.position() + offset)>>>4);
+        return (byte)(0x0f & (b.get(b.position() + offset)>>>4));
     }
 }
 

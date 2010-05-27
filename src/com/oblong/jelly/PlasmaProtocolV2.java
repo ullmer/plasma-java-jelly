@@ -30,8 +30,10 @@ final class PlasmaProtocolV2 {
     static final int STR_WEE_LEN = 6;
 
     static final int weeStringLength(byte hb) { return hb & 0x0f; }
-    static final int stringLength(long hb) { return (int)((hb<<8)>>>8); }
-    static final int stringPadding(long hb) { return (int)((hb>>>56)&0x07); }
+    static final int stringLength(long h) {
+        return (int)((h<<8)>>>5) - 8 - stringPadding(h);
+    }
+    static final int stringPadding(long h) { return (int)((h>>>56) & 0x07); }
 
     static final byte INT_NIBBLE = 0x08;
     static final byte UNT_NIBBLE = 0x09;

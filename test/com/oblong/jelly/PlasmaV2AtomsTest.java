@@ -18,7 +18,7 @@ import static com.oblong.jelly.Slaw.*;
 public class PlasmaV2AtomsTest extends ExternalizerTestBase {
 
     public PlasmaV2AtomsTest() {
-        super(new PlasmaExternalizerV2());
+        super(new PlasmaExternalizerV2(), new PlasmaInternalizerV2());
     }
 
     @Test public void nils() {

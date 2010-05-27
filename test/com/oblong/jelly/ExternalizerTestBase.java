@@ -7,9 +7,19 @@ import org.junit.Assert;
 import static org.junit.Assert.*;
 
 class ExternalizerTestBase {
-    ExternalizerTestBase(SlawExternalizer e) { externalizer = e; }
+    ExternalizerTestBase(SlawExternalizer e) {
+        externalizer = e;
+        internalizer = null;
+    }
 
-    SlawExternalizer externalizer = new PlasmaExternalizerV2();
+    ExternalizerTestBase(SlawExternalizer e, SlawInternalizer i) {
+        externalizer = e;
+        internalizer = i;
+    }
+
+    SlawExternalizer externalizer;
+    SlawInternalizer internalizer;
+    SlawFactory factory = new JavaSlawFactory();
 
     String arrayStr(byte[] bs) {
         StringBuilder buf = new StringBuilder ("{ ");
@@ -24,6 +34,16 @@ class ExternalizerTestBase {
         String m = msg + ": " + arrayStr(sb) + " vs. expected " + arrayStr(b);
         assertEquals(sb.length, externalizer.externSize(s));
         assertArrayEquals(m + " for " + s, b, sb);
+        if (internalizer != null) {
+            try {
+                final ByteBuffer b2 = ByteBuffer.wrap(b);
+                final Slaw s2 = internalizer.internSlaw(b2, factory);
+                assertEquals(s, s2);
+                assertEquals(msg, 0, b2.remaining());
+            } catch (SlawParseError e) {
+                fail(msg + ": " + e);
+            }
+        }
     }
 
     void check(Slaw[] s, short[][] b) {
