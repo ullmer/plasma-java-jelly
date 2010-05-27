@@ -8,7 +8,7 @@ import java.util.Map;
 
 import static com.oblong.jelly.SlawIlk.*;
 
-/**
+/*
  * Created: Sun Apr 18 01:46:42 2010
  *
  * @author jao

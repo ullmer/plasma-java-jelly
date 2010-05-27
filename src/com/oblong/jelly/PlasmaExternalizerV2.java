@@ -134,7 +134,7 @@ final class PlasmaExternalizerV2 extends SlawExternalizer {
         final int end = b.position();
         final int octs = octs(roundUp(end - begin));
         b.position(begin);
-        b.putLong(PROTEIN_HEADING_BYTE << 56 | octs);
+        b.putLong(proteinHeading(octs));
         b.put(proteinSecondHeadingByte(descrips != null,
                                        ingests != null,
                                        dataLen));
@@ -168,7 +168,7 @@ final class PlasmaExternalizerV2 extends SlawExternalizer {
         try {
             return s.emitString().getBytes("UTF-8");
         } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException("externalize: UTF-8 not supported", e);
+            throw new RuntimeException("UTF-8 not supported", e);
         }
     }
 

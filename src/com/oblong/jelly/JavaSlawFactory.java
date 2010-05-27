@@ -57,21 +57,19 @@ final class JavaSlawFactory implements SlawFactory {
         return makeVector(x, y, z, w);
     }
 
-    @Override public Slaw multivector(Slaw v00, Slaw v01, Slaw v10, Slaw v11)
-    {
-        if (v00 == null || !v00.isNumber()
-            || !SlawIlk.haveSameIlk(v00, v01, v10, v11))
-            throw new IllegalArgumentException("Args must be number slawx");
-        return SlawMultivector.valueOf(v00, v01, v10, v11);
+    @Override public Slaw vector(Slaw... cs) {
+        if (cs.length < 2 || cs.length > 4)
+            throw new IllegalArgumentException("Invalid component number");
+        return makeVector(cs);
     }
 
-    @Override public Slaw multivector(Slaw v0, Slaw v1) {
-        if (v0 == null || v1 == null
-            || !v0.isMultivector() || !v1.isMultivector()
-            || v0.count() != v1.count())
-            throw new IllegalArgumentException
-                ("Args must be multivectors of the same dimension");
-        return SlawMultivector.valueOf(v0, v1);
+    @Override public Slaw multivector(Slaw...cs) {
+        if (cs.length != 4 && cs.length != 8 && cs.length != 16
+             && cs.length != 32 && cs.length != 64)
+            throw new IllegalArgumentException("Invalid component number");
+        if (cs[0] == null || !cs[0].isNumber() || !SlawIlk.haveSameIlk(cs))
+            throw new IllegalArgumentException("Args must be number slawx");
+        return SlawMultivector.valueOf(cs);
     }
 
     @Override public Slaw array(SlawIlk ilk, NumericIlk ni, int d) {

@@ -25,9 +25,9 @@ interface SlawFactory {
     Slaw vector(Slaw x, Slaw y);
     Slaw vector(Slaw x, Slaw y, Slaw z);
     Slaw vector(Slaw x, Slaw y, Slaw z, Slaw w);
+    Slaw vector(Slaw... cmps);
 
-    Slaw multivector(Slaw v00, Slaw v01, Slaw v10, Slaw v11);
-    Slaw multivector(Slaw up, Slaw down);
+    Slaw multivector(Slaw... cmps);
 
     Slaw array(Slaw[] sx);
     Slaw array(Slaw s, Slaw... sx);
