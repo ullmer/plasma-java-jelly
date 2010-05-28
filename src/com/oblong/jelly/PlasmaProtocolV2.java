@@ -67,17 +67,11 @@ final class PlasmaProtocolV2 {
     }
 
     static int numericBytes(long h) {
-        final int cn = isMultivector(h) ?
-            1<<numericDimension(h) : numericDimension(h);
-        return numericByteSize(h) * cn;
+        return 1 + (int)((h>>>46) & 0xffL);
     }
 
     private static int numericKind(long h) {
         return (int)((h>>>54) & 7L);
-    }
-
-    private static int numericByteSize(long h) {
-        return 1 + (int)((h>>>46) & 0xffL);
     }
 
     static long numberHeading(NumericIlk ni) {

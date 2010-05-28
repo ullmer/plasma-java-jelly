@@ -17,7 +17,9 @@ import static com.oblong.jelly.Slaw.*;
  */
 public class PlasmaV2VectorsTest extends ExternalizerTestBase {
 
-    public PlasmaV2VectorsTest() { super(new PlasmaExternalizerV2()); }
+    public PlasmaV2VectorsTest() {
+        super(new PlasmaExternalizerV2(), new PlasmaInternalizerV2());
+    }
 
     @Test public void vector8() {
         short[][] bs = {{0x80, 0x40, 0x40, 0x00, 0x00, 0x00, 0x02, 0x2a},
