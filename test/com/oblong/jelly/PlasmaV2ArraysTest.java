@@ -9,7 +9,7 @@ import org.junit.Test;
 import static com.oblong.jelly.Slaw.*;
 
 /**
- *  Unit Test for class PlasmaExternalizerV2: arrays.
+ *  Unit Test for PlasmaV2 serialization: arrays.
  *
  *  Created: Thu May 20 23:47:26 2010
  *
@@ -17,7 +17,9 @@ import static com.oblong.jelly.Slaw.*;
  */
 public class PlasmaV2ArraysTest extends ExternalizerTestBase {
 
-    public PlasmaV2ArraysTest() { super(new PlasmaExternalizerV2()); }
+    public PlasmaV2ArraysTest() {
+        super(new PlasmaExternalizerV2(), new PlasmaInternalizerV2());
+    }
 
     @Test public void empty() {
         for (SlawIlk i : SlawIlk.arrayIlks()) {
@@ -28,7 +30,7 @@ public class PlasmaV2ArraysTest extends ExternalizerTestBase {
                     1 : i == SlawIlk.MULTI_VECTOR ? 5 : 4;
                 for (int d = minDim; d <= maxDim; d++) {
                     String msg = i + "/" + ni + "/" + d;
-                    Slaw a = array(i, ni, d);
+                    final Slaw a = array(i, ni, d);
                     assertEquals(msg, i, a.ilk());
                     assertEquals(msg, ni, a.numericIlk());
                     assertEquals(msg, d, a.dimension());
@@ -38,6 +40,7 @@ public class PlasmaV2ArraysTest extends ExternalizerTestBase {
                     msg = msg + "/" + arrayStr(bs);
                     assertEquals(msg, 8, bs.length);
                     checkHeading(msg, bs, i, ni, d, 0);
+                    checkIntern(msg, a, bs);
                 }
             }
         }
@@ -45,8 +48,8 @@ public class PlasmaV2ArraysTest extends ExternalizerTestBase {
 
     @Test public void numbers() {
         for (NumericIlk ni : NumericIlk.values()) {
-            final byte[] bs =
-                externalizer.extern(array(number(ni, 1L))).array();
+            final Slaw a = array(number(ni, 1L));
+            final byte[] bs = externalizer.extern(a).array();
             final String msg = "Array of " + ni + "/" + arrayStr(bs);
             assertEquals(16, bs.length);
             checkHeading(msg, bs, SlawIlk.ARRAY, ni, 1, 1);
@@ -54,6 +57,7 @@ public class PlasmaV2ArraysTest extends ExternalizerTestBase {
                 for (int i = 8, b = 7 + ni.bytes(); i < 16; i++)
                     assertEquals(msg, i == b ? 1 : 0, bs[i]);
             }
+            checkIntern(msg, a, bs);
         }
     }
 
@@ -65,6 +69,7 @@ public class PlasmaV2ArraysTest extends ExternalizerTestBase {
         checkHeading("Big array", ba, SlawIlk.ARRAY, NumericIlk.UNT8, 1, 100);
         for (int i = 0; i < 100; i++)
             assertEquals(i + "th", i, ba[i + 8]);
+        checkIntern("", a, ba);
     }
 
     @Test public void floats() {
@@ -95,6 +100,7 @@ public class PlasmaV2ArraysTest extends ExternalizerTestBase {
                     assertEquals(msg, j + 1, bs[7 + (j + 1) * ni.bytes()]);
                 }
             }
+            checkIntern(msg, ca, bs);
         }
     }
 
@@ -114,6 +120,7 @@ public class PlasmaV2ArraysTest extends ExternalizerTestBase {
                     assertEquals(msg, j + 1, b22[7 + (j + 1) * ni.bytes()]);
                 }
             }
+            checkIntern(msg, v22, b22);
         }
     }
 

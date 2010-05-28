@@ -41,7 +41,7 @@ final class PlasmaProtocolV2 {
     static final int NUM_WEE_LEN = 4;
 
     static NumericIlk numericIlk(long h) {
-        return NUM_ILK.get((h>>>56) & 0xfcL);
+        return NUM_ILK.get((h>>>56) & 0xbcL);
     }
 
     static boolean isNumericScalar(long h) {
@@ -58,7 +58,7 @@ final class PlasmaProtocolV2 {
     }
 
     static boolean isMultivector(long h) {
-        return numericKind(h) > 4;
+        return numericKind(h) > 3;
     }
 
     static int numericDimension(long h) {
@@ -95,6 +95,14 @@ final class PlasmaProtocolV2 {
     static long multivectorHeading(NumericIlk ni, int d) {
         assert d > 1 && d < 6;
         return (Long)MVECT_HEADING[d - 2].get(ni);
+    }
+
+    static final byte INT_ARRAY_NIBBLE = INT_NIBBLE + 4;
+    static final byte UNT_ARRAY_NIBBLE = UNT_NIBBLE + 4;
+    static final byte FLOAT_ARRAY_NIBBLE = FLOAT_NIBBLE + 4;
+
+    static long arrayBreadth(long h) {
+        return (h<<18)>>>18;
     }
 
     static long arrayHeading(NumericIlk ni) {

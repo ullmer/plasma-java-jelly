@@ -48,6 +48,9 @@ final class PlasmaInternalizerV2 implements SlawInternalizer {
                 return internString(b, f);
             case INT_NIBBLE: case UNT_NIBBLE: case FLOAT_NIBBLE:
                 return internNumeric(b, f);
+            case INT_ARRAY_NIBBLE: case UNT_ARRAY_NIBBLE:
+            case FLOAT_ARRAY_NIBBLE:
+                return internArray(b, f);
             case CONS_NIBBLE:
                 return internCons(b, f);
             case LIST_NIBBLE:
@@ -148,6 +151,52 @@ final class PlasmaInternalizerV2 implements SlawInternalizer {
         final boolean mv = isMultivector(h);
         final boolean c = !mv && isComplexNumeric(h);
         final int d = numericDimension(h);
+        return readVector(ni, d, c, mv, b, f);
+    }
+
+    private static Slaw internArray(ByteBuffer b, SlawFactory f)
+        throws SlawParseError {
+        final long h = b.getLong();
+        final NumericIlk ni = numericIlk(h);
+        final int count = (int)arrayBreadth(h);
+        if (count == 0) return emptyArray(h, ni, b, f);
+
+        final int len = (int) (count * numericBytes(h));
+        checkLength(b, len);
+        final int beg = b.position();
+        final boolean c = isComplexNumeric(h);
+
+        final Slaw[] cmps = new Slaw[(int)count];
+        if (isNumericScalar(h)) {
+            for (int i = 0; i < count; i++)
+                cmps[i] = readNumber(ni, c, b, f);
+        } else {
+            final boolean mv = isMultivector(h);
+            final int d = numericDimension(h);
+            for (int i = 0; i < count; i++)
+                cmps[i] = readVector(ni, d, c, mv, b, f);
+        }
+
+        b.position(beg + roundUp(len));
+        return f.array(cmps);
+    }
+
+    private static Slaw emptyArray(long h, NumericIlk ni,
+                                   ByteBuffer b, SlawFactory f) {
+        final boolean c = isComplexNumeric(h);
+        SlawIlk i;
+        if (isNumericScalar(h)) i = c ? SlawIlk.COMPLEX_ARRAY : SlawIlk.ARRAY;
+        else if (isMultivector(h)) i = SlawIlk.MULTI_VECTOR_ARRAY;
+        else i = c ? SlawIlk.COMPLEX_VECTOR_ARRAY : SlawIlk.VECTOR_ARRAY;
+        return f.array(i, ni, numericDimension(h));
+    }
+
+    private static Slaw readVector(NumericIlk ni,
+                                   int d,
+                                   boolean c,
+                                   boolean mv,
+                                   ByteBuffer b,
+                                   SlawFactory f) throws SlawParseError {
         final int cn = mv ? 1<<d : d;
         final Slaw[] cmps = new Slaw[cn];
         for (int i = 0; i < cn; i++) cmps[i] = readNumber(ni, c, b, f);
