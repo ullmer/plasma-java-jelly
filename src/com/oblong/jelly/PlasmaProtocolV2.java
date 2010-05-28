@@ -67,10 +67,9 @@ final class PlasmaProtocolV2 {
     }
 
     static int numericBytes(long h) {
-        if (isMultivector(h))
-            return numericByteSize(h) * (1<<numericDimension(h));
-        final int b = numericByteSize(h) * numericDimension(h);
-        return isComplexNumeric(h) ? b<<1 : b;
+        final int cn = isMultivector(h) ?
+            1<<numericDimension(h) : numericDimension(h);
+        return numericByteSize(h) * cn;
     }
 
     private static int numericKind(long h) {
