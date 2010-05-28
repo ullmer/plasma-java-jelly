@@ -13,7 +13,7 @@ import org.junit.Test;
 import static com.oblong.jelly.Slaw.*;
 
 /**
- * Unit Test for class PlasmaExternalizerV2: lists.
+ * Unit Test for class PlasmaV2 serialization: lists.
  *
  * Created: Tue May 25 12:16:18 2010
  *
@@ -21,7 +21,9 @@ import static com.oblong.jelly.Slaw.*;
  */
 public class PlasmaV2ListsTest extends ExternalizerTestBase {
 
-    public PlasmaV2ListsTest() { super(new PlasmaExternalizerV2()); }
+    public PlasmaV2ListsTest() {
+        super(new PlasmaExternalizerV2(), new PlasmaInternalizerV2());
+    }
 
     @Test public void lists() {
         Slaw[] ls = {list(),
@@ -44,6 +46,7 @@ public class PlasmaV2ListsTest extends ExternalizerTestBase {
         final ByteBuffer b = externalizer.extern(l);
         checkHeading(msg, b, l.count());
         checkSubslawx(msg, b, l);
+        checkIntern(msg, l, b.array());
     }
 
     private void checkHeading(String msg, ByteBuffer b, long count) {

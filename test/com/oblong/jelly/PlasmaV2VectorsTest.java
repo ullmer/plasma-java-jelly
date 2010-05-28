@@ -9,7 +9,7 @@ import org.junit.Test;
 import static com.oblong.jelly.Slaw.*;
 
 /**
- * Unit Test for class PlasmaExternalizerV2: vectors.
+ * Unit Test for class PlasmaV2 serialization: vectors.
  *
  * Created: Wed May 19 13:27:14 2010
  *

@@ -11,7 +11,7 @@ import static org.junit.Assert.*;
 import static com.oblong.jelly.Slaw.*;
 
 /**
- *  Unit Test for class PlasmaExternalizerV2: conses.
+ *  Unit Test for class PlasmaV2 serialization: conses.
  *
  * Created: Fri May 21 18:59:01 2010
  *
@@ -19,7 +19,9 @@ import static com.oblong.jelly.Slaw.*;
  */
 public class PlasmaV2ConsesTest extends ExternalizerTestBase {
 
-    public PlasmaV2ConsesTest() { super(new PlasmaExternalizerV2()); }
+    public PlasmaV2ConsesTest() {
+        super(new PlasmaExternalizerV2(), new PlasmaInternalizerV2());
+    }
 
     @Test public void conses() {
         Slaw[] cs = {cons(int8(1), string("foo")),
@@ -34,6 +36,7 @@ public class PlasmaV2ConsesTest extends ExternalizerTestBase {
         final ByteBuffer b = externalizer.extern(c);
         checkHeading(msg, b);
         checkSubslawx(msg, b, c);
+        checkIntern(msg, c, b.array());
     }
 
     private void checkHeading(String msg, ByteBuffer b) {

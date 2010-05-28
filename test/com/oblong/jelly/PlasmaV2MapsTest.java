@@ -22,7 +22,9 @@ import static com.oblong.jelly.Slaw.*;
  */
 public class PlasmaV2MapsTest extends ExternalizerTestBase {
 
-    public PlasmaV2MapsTest() { super(new PlasmaExternalizerV2()); }
+    public PlasmaV2MapsTest() {
+        super(new PlasmaExternalizerV2(), new PlasmaInternalizerV2());
+    }
 
     @Test public void maps() {
         Slaw[] ms = {map(),
@@ -41,11 +43,12 @@ public class PlasmaV2MapsTest extends ExternalizerTestBase {
         checkMap(map(slx));
     }
 
-    private void checkMap(Slaw l) {
-        final String msg = "Checking " + l;
-        final ByteBuffer b = externalizer.extern(l);
-        checkHeading(msg, b, l.count());
-        checkSubslawx(msg, b, l);
+    private void checkMap(Slaw m) {
+        final String msg = "Checking " + m;
+        final ByteBuffer b = externalizer.extern(m);
+        checkHeading(msg, b, m.count());
+        checkSubslawx(msg, b, m);
+        checkIntern(msg, m, b.array());
     }
 
     private void checkHeading(String msg, ByteBuffer b, long count) {

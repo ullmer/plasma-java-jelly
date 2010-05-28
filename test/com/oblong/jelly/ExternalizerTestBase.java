@@ -34,6 +34,10 @@ class ExternalizerTestBase {
         String m = msg + ": " + arrayStr(sb) + " vs. expected " + arrayStr(b);
         assertEquals(sb.length, externalizer.externSize(s));
         assertArrayEquals(m + " for " + s, b, sb);
+        checkIntern(msg, s, b);
+    }
+
+    void checkIntern(String msg, Slaw s, byte[] b) {
         if (internalizer != null) {
             try {
                 final ByteBuffer b2 = ByteBuffer.wrap(b);
