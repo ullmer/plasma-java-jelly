@@ -145,64 +145,6 @@ final class PlasmaInternalizerV2 implements SlawInternalizer {
         return readNumber(numericIlk(h), isComplexNumeric(h), b, f);
     }
 
-    private static Slaw internVector(long h, ByteBuffer b, SlawFactory f)
-        throws SlawParseError {
-        final NumericIlk ni = numericIlk(h);
-        final boolean mv = isMultivector(h);
-        final boolean c = !mv && isComplexNumeric(h);
-        final int d = numericDimension(h);
-        return readVector(ni, d, c, mv, b, f);
-    }
-
-    private static Slaw internArray(ByteBuffer b, SlawFactory f)
-        throws SlawParseError {
-        final long h = b.getLong();
-        final NumericIlk ni = numericIlk(h);
-        final int count = (int)arrayBreadth(h);
-        if (count == 0) return emptyArray(h, ni, b, f);
-
-        final int len = (int) (count * numericBytes(h));
-        checkLength(b, len);
-        final int beg = b.position();
-        final boolean c = isComplexNumeric(h);
-
-        final Slaw[] cmps = new Slaw[(int)count];
-        if (isNumericScalar(h)) {
-            for (int i = 0; i < count; i++)
-                cmps[i] = readNumber(ni, c, b, f);
-        } else {
-            final boolean mv = isMultivector(h);
-            final int d = numericDimension(h);
-            for (int i = 0; i < count; i++)
-                cmps[i] = readVector(ni, d, c, mv, b, f);
-        }
-
-        b.position(beg + roundUp(len));
-        return f.array(cmps);
-    }
-
-    private static Slaw emptyArray(long h, NumericIlk ni,
-                                   ByteBuffer b, SlawFactory f) {
-        final boolean c = isComplexNumeric(h);
-        SlawIlk i;
-        if (isNumericScalar(h)) i = c ? SlawIlk.COMPLEX_ARRAY : SlawIlk.ARRAY;
-        else if (isMultivector(h)) i = SlawIlk.MULTI_VECTOR_ARRAY;
-        else i = c ? SlawIlk.COMPLEX_VECTOR_ARRAY : SlawIlk.VECTOR_ARRAY;
-        return f.array(i, ni, numericDimension(h));
-    }
-
-    private static Slaw readVector(NumericIlk ni,
-                                   int d,
-                                   boolean c,
-                                   boolean mv,
-                                   ByteBuffer b,
-                                   SlawFactory f) throws SlawParseError {
-        final int cn = mv ? 1<<d : d;
-        final Slaw[] cmps = new Slaw[cn];
-        for (int i = 0; i < cn; i++) cmps[i] = readNumber(ni, c, b, f);
-        return mv ? f.multivector(cmps) : f.vector(cmps);
-    }
-
     private static Slaw readNumber(NumericIlk ni,
                                    boolean c,
                                    ByteBuffer b,
@@ -225,6 +167,68 @@ final class PlasmaInternalizerV2 implements SlawInternalizer {
         }
         return (ni == NumericIlk.FLOAT32) ?
             f.number(ni, b.getFloat()) : f.number(ni, b.getDouble());
+    }
+
+    private static Slaw internVector(long h, ByteBuffer b, SlawFactory f)
+        throws SlawParseError {
+        final NumericIlk ni = numericIlk(h);
+        final boolean mv = isMultivector(h);
+        final boolean c = !mv && isComplexNumeric(h);
+        final int d = numericDimension(h);
+        return readVector(ni, d, c, mv, b, f);
+    }
+
+    private static Slaw internArray(ByteBuffer b, SlawFactory f)
+        throws SlawParseError {
+        final long h = b.getLong();
+        final int count = (int)arrayBreadth(h);
+        if (count == 0) return emptyArray(h, b, f);
+        final int len = (int) (count * numericBytes(h));
+        checkLength(b, len);
+        final int beg = b.position();
+        Slaw[] cmps = readArray(h, count, b, f);
+        b.position(beg + roundUp(len));
+        return f.array(cmps);
+    }
+
+    private static Slaw[] readArray(long h, int count,
+                                    ByteBuffer b, SlawFactory f)
+        throws SlawParseError {
+        final NumericIlk ni = numericIlk(h);
+        final boolean c = isComplexNumeric(h);
+        final Slaw[] cmps = new Slaw[count];
+        if (isNumericScalar(h)) {
+            for (int i = 0; i < count; i++)
+                cmps[i] = readNumber(ni, c, b, f);
+        } else {
+            final boolean mv = isMultivector(h);
+            final int d = numericDimension(h);
+            for (int i = 0; i < count; i++)
+                cmps[i] = readVector(ni, d, c, mv, b, f);
+        }
+        return cmps;
+    }
+
+    private static Slaw emptyArray(long h, ByteBuffer b, SlawFactory f) {
+        final NumericIlk ni = numericIlk(h);
+        final boolean c = isComplexNumeric(h);
+        SlawIlk i;
+        if (isNumericScalar(h)) i = c ? SlawIlk.COMPLEX_ARRAY : SlawIlk.ARRAY;
+        else if (isMultivector(h)) i = SlawIlk.MULTI_VECTOR_ARRAY;
+        else i = c ? SlawIlk.COMPLEX_VECTOR_ARRAY : SlawIlk.VECTOR_ARRAY;
+        return f.array(i, ni, numericDimension(h));
+    }
+
+    private static Slaw readVector(NumericIlk ni,
+                                   int d,
+                                   boolean c,
+                                   boolean mv,
+                                   ByteBuffer b,
+                                   SlawFactory f) throws SlawParseError {
+        final int cn = mv ? 1<<d : d;
+        final Slaw[] cmps = new Slaw[cn];
+        for (int i = 0; i < cn; i++) cmps[i] = readNumber(ni, c, b, f);
+        return mv ? f.multivector(cmps) : f.vector(cmps);
     }
 
     private Slaw internCons(ByteBuffer b, SlawFactory f)
@@ -274,4 +278,3 @@ final class PlasmaInternalizerV2 implements SlawInternalizer {
         return (byte)(0x0f & (b.get(b.position() + offset)>>>4));
     }
 }
-
