@@ -150,13 +150,21 @@ final class PlasmaInternalizerV2 implements SlawInternalizer {
                                    ByteBuffer b,
                                    SlawFactory f) throws SlawParseError {
         if (c) {
-            final Slaw re = readNumber(ni, false, b, f);
-            final Slaw im = readNumber(ni, false, b, f);
+            final Slaw re = readScalar(ni, b, f);
+            final Slaw im = readScalar(ni, b, f);
             return f.complex(re, im);
+        } else {
+            return readScalar(ni, b, f);
         }
+    }
+
+    private static Slaw readScalar(NumericIlk ni, ByteBuffer b, SlawFactory f)
+        throws SlawParseError {
+        final int bs = ni.bytes();
+        checkLength(b, bs);
         if (ni.isIntegral()) {
             long v = 0;
-            switch (ni.bytes()) {
+            switch (bs) {
             case 1: v = b.get() & 0xffL; break;
             case 2: v = b.getShort() & 0xffffL; break;
             case 4: v = b.getInt() & 0xffffffffL; break;
