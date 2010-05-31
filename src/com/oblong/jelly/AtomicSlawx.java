@@ -2,12 +2,6 @@
 
 package com.oblong.jelly;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-
 abstract class AtomicSlaw extends Slaw {
 
     @Override public int dimension() { return 1; }

@@ -36,34 +36,38 @@ final class PlasmaInternalizerV2 implements SlawInternalizer {
         final int beg = b.position();
         try {
             checkLength(b, OCT_LEN);
-            final byte nb = peekNibble(b, littleEndian(b) ? 7 : 0);
-            switch (nb) {
-            case PROTEIN_NATIVE_NIBBLE: case PROTEIN_NON_NATIVE_NIBBLE:
-                return internProtein(b, f);
-            case ATOM_NIBBLE:
-                return internAtom(b, f);
-            case WEE_STR_NIBBLE:
-                return internWeeString(b, f);
-            case STR_NIBBLE:
-                return internString(b, f);
-            case INT_NIBBLE: case UNT_NIBBLE: case FLOAT_NIBBLE:
-                return internNumeric(b, f);
-            case INT_ARRAY_NIBBLE: case UNT_ARRAY_NIBBLE:
-            case FLOAT_ARRAY_NIBBLE:
-                return internArray(b, f);
-            case CONS_NIBBLE:
-                return internCons(b, f);
-            case LIST_NIBBLE:
-                return internList(b, f);
-            case MAP_NIBBLE:
-                return internMap(b, f);
-            default:
-                throw new SlawParseError
-                    (b, "Unrecognized format (" + nb + ")");
-            }
+            return readSlaw(peekNibble(b, littleEndian(b) ? 7 : 0), b, f);
         } catch (BufferUnderflowException e) {
             b.position(beg);
             throw new SlawParseError(b, "Buffer too short");
+        }
+    }
+
+    private Slaw readSlaw(byte nb, ByteBuffer b, SlawFactory f)
+        throws SlawParseError {
+        switch (nb) {
+        case PROTEIN_NATIVE_NIBBLE: case PROTEIN_NON_NATIVE_NIBBLE:
+            return doInternProtein(b, f);
+        case ATOM_NIBBLE:
+            return internAtom(b, f);
+        case WEE_STR_NIBBLE:
+            return internWeeString(b, f);
+        case STR_NIBBLE:
+            return internString(b, f);
+        case INT_NIBBLE: case UNT_NIBBLE: case FLOAT_NIBBLE:
+            return internNumeric(b, f);
+        case INT_ARRAY_NIBBLE: case UNT_ARRAY_NIBBLE:
+        case FLOAT_ARRAY_NIBBLE:
+            return internArray(b, f);
+        case CONS_NIBBLE:
+            return internCons(b, f);
+        case LIST_NIBBLE:
+            return internList(b, f);
+        case MAP_NIBBLE:
+            return internMap(b, f);
+        default:
+            throw new SlawParseError
+                (b, "Unrecognized format (" + nb + ")");
         }
     }
 
@@ -79,6 +83,8 @@ final class PlasmaInternalizerV2 implements SlawInternalizer {
         final int end = b.position();
         final boolean wee = proteinHasWeeData(sh);
         final int dataLen = (int)(proteinDataLen(sh));
+        if (dataLen < 0)
+            throw new SlawParseError(b, "Invalid data length: " + dataLen);
         final byte[] data = new byte[dataLen];
         if (wee) b.position(beg + weeOffset(b, dataLen));
         b.get(data, 0, dataLen);
@@ -98,7 +104,8 @@ final class PlasmaInternalizerV2 implements SlawInternalizer {
     private static Slaw internWeeString(ByteBuffer b, SlawFactory f)
         throws SlawParseError {
         final int beg = b.position();
-        final int len = weeStringLength(b.get());
+        final byte hb = b.get(beg + (littleEndian(b) ? 7 : 0));
+        final int len = weeStringLength(hb);
         b.position(beg + weeOffset(b, len));
         final String str = readString(b, len - 1);
         b.position(beg + OCT_LEN);
@@ -136,7 +143,7 @@ final class PlasmaInternalizerV2 implements SlawInternalizer {
         checkLength(b, bs);
         Slaw res = isNumericScalar(h) ?
             internNum(h, b, f) : internVector(h, b, f);
-        if (!isWee) b.position(beg + roundUp(OCT_LEN + bs));
+        b.position(beg + (isWee ? OCT_LEN : roundUp(OCT_LEN + bs)));
         return res;
     }
 

@@ -2,6 +2,8 @@
 
 package com.oblong.jelly;
 
+import java.util.Arrays;
+
 final class SlawProtein extends Protein {
 
     static SlawProtein valueOf(Slaw descrips, Slaw ingests, byte[] data) {
@@ -35,13 +37,13 @@ final class SlawProtein extends Protein {
             op.descrips() == null : descrips.equals(op.descrips());
         if (eqs) eqs = ingests == null ?
                      op.ingests() == null : ingests.equals(op.ingests());
-        if (eqs) eqs = data == null ?
-                     op.data() == null : data.equals(op.data());
+        if (eqs) eqs = op.data() == null ?
+                     data.length == 0 : Arrays.equals(data, op.data());
         return eqs;
     }
 
     @Override String debugString() {
-        return "descrips: " + descrips + "\ningests: " + ingests
+        return "\ndescrips: " + descrips + "\ningests: " + ingests
             + "\n(" + data.length + " bytes of raw data" + ")";
     }
 

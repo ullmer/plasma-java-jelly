@@ -145,7 +145,8 @@ final class PlasmaProtocolV2 {
     static final int WEE_PROTEIN_DATA_LEN = 14;
 
     static long proteinHeading(long octs) {
-        return (PROTEIN_HEADING_BYTE << 56) | (octs<<4) | (octs & 0x0fL);
+        return (((long)PROTEIN_HEADING_BYTE) << 56)
+            | ((octs<<4) & (~0xf0L)) | (octs & 0x0fL);
     }
 
     static long proteinLength(long hd) {
@@ -175,11 +176,11 @@ final class PlasmaProtocolV2 {
     }
 
     static long proteinDataLen(long sh) {
-        return proteinHasWeeData(sh) ? (sh>>>56) & 7L : (sh<<4)>>>4;
+        return proteinHasWeeData(sh) ? (sh>>>56) & 7L : (sh<<5)>>>5;
     }
 
     private static byte proteinSByte(long sh) {
-        return (byte)((sh>>>56) & 0xc0);
+        return (byte)((sh>>>56) & 0x60L);
     }
 
     private static final byte[][] PROTEIN_SBYTE = {{0x00, 0x20},{0x40, 0x60}};

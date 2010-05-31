@@ -133,13 +133,12 @@ final class PlasmaExternalizerV2 extends SlawExternalizer {
         if (data != null && dataLen < OCT_LEN) b.put(data);
         final int end = b.position();
         final int octs = octs(roundUp(end - begin));
-        b.position(begin);
-        b.putLong(proteinHeading(octs));
-        b.put(proteinSecondHeadingByte(descrips != null,
-                                       ingests != null,
-                                       dataLen));
-        if (dataLen < OCT_LEN) pad(b, OCT_LEN - 1 - dataLen).put(data);
-        b.position(end);
+        b.putLong(begin, proteinHeading(octs));
+        b.put(begin + OCT_LEN, proteinSecondHeadingByte(descrips != null,
+                                                        ingests != null,
+                                                        dataLen));
+        if (dataLen > 0 && dataLen < OCT_LEN)
+            b.put(data, begin + OCT_LEN - dataLen, dataLen);
     }
 
     @Override int proteinExternSize(Protein p) {
@@ -175,25 +174,29 @@ final class PlasmaExternalizerV2 extends SlawExternalizer {
     private static ByteBuffer putNumVal(ByteBuffer buffer, Slaw n) {
         assert n.isNumber() || n.isComplex();
         if (n.isComplex()) {
-            putNumVal(buffer, n.car());
-            putNumVal(buffer, n.cdr());
+            putScalar(buffer, n.car());
+            putScalar(buffer, n.cdr());
         } else {
-            NumericIlk i = n.numericIlk();
-            if (i == FLOAT32) {
-                buffer.putFloat((float)n.emitDouble());
-            } else if (i == FLOAT64) {
-                buffer.putDouble(n.emitDouble());
-            } else if (i == INT8 || i == UNT8) {
-                buffer.put((byte)n.emitLong());
-            } else if (i == INT16 || i == UNT16) {
-                buffer.putShort((short)n.emitLong());
-            } else if (i == INT32 || i == UNT32) {
-                buffer.putInt((int)n.emitLong());
-            } else if (i == INT64 || i == UNT64) {
-                buffer.putLong(n.emitLong());
-            }
+            putScalar(buffer, n);
         }
         return buffer;
+    }
+
+    private static void putScalar(ByteBuffer buffer, Slaw n) {
+        NumericIlk i = n.numericIlk();
+        if (i == FLOAT32) {
+            buffer.putFloat((float)n.emitDouble());
+        } else if (i == FLOAT64) {
+            buffer.putDouble(n.emitDouble());
+        } else if (i == INT8 || i == UNT8) {
+            buffer.put((byte)n.emitLong());
+        } else if (i == INT16 || i == UNT16) {
+            buffer.putShort((short)n.emitLong());
+        } else if (i == INT32 || i == UNT32) {
+            buffer.putInt((int)n.emitLong());
+        } else if (i == INT64 || i == UNT64) {
+            buffer.putLong(n.emitLong());
+        }
     }
 
     private static void marshallWeeStr(byte[] bs, ByteBuffer b) {

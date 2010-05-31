@@ -29,7 +29,7 @@ class ExternalizerTestBase {
         return buf.toString();
     }
 
-    void check(Slaw s, byte[] b, String msg) {
+    void check(String msg, Slaw s, byte[] b) {
         final byte[] sb = externalizer.extern(s).array();
         String m = msg + ": " + arrayStr(sb) + " vs. expected " + arrayStr(b);
         assertEquals(sb.length, externalizer.externSize(s));
@@ -52,9 +52,7 @@ class ExternalizerTestBase {
 
     void check(Slaw[] s, short[][] b) {
         for (int i = 0; i < s.length; i++) {
-            byte[] bb = new byte[b[i].length];
-            for (int j = 0; j < b[i].length; ++j) bb[j] = (byte)b[i][j];
-            check(s[i], bb, i + "th iteration");
+            check(i + "th iteration", s[i], asBytes(b[i]));
         }
     }
 
@@ -65,5 +63,11 @@ class ExternalizerTestBase {
                 assertEquals(msg + "/" + j + "th slaw", sb[j], b.get());
         }
         assertFalse(b.hasRemaining());
+    }
+
+    byte[] asBytes(short[] s) {
+        byte[] bb = new byte[s.length];
+        for (int j = 0; j < s.length; ++j) bb[j] = (byte)s[j];
+        return bb;
     }
 }

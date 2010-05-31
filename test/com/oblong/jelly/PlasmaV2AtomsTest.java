@@ -23,7 +23,7 @@ public class PlasmaV2AtomsTest extends ExternalizerTestBase {
 
     @Test public void nils() {
         byte[] bs = {0x20, 0, 0, 0, 0, 0, 0, 0x02};
-        check(nil(), bs, "nil slaw");
+        check("nil slaw", nil(), bs);
     }
 
     @Test public void booleans() {
@@ -47,7 +47,7 @@ public class PlasmaV2AtomsTest extends ExternalizerTestBase {
                      0x6e, 0x6f, 0x74, 0x20, 0x61, 0x20, 0x77, 0x65,
                      0x65, 0x20, 0x73, 0x74, 0x72, 0x69, 0x6e, 0x67,
                      0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
-        check(string("this is not a wee string"), bs, "");
+        check("long string", string("this is not a wee string"), bs);
     }
 
     @Test public void int8s() {

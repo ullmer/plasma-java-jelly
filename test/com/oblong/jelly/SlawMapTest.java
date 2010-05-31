@@ -36,6 +36,18 @@ public class SlawMapTest {
                      float32(3), float32(3)};
         Slaw m0 = map(sx[0], sx[1], sx[4], sx[5], sx[2], sx[3]);
         assertEquals(map(sx), m0);
+        Slaw m1 = map(string("a"), int32(1), string("b"), int32(2));
+        Slaw m2 = map(string("a"), int32(1), string("b"), int32(2));
+        assertEquals(2, m1.count());
+        assertEquals(m1, m2);
+        assertEquals(m2, m1);
+        String a = new String("a");
+        String b = new String("b");
+        Slaw m3 = map(string(b), int32(2), string(a), int32(1));
+        assertEquals(m1, m3);
+        assertEquals(m2, m3);
+        assertEquals(m3, m2);
+        assertEquals(m3, m1);
     }
 
     @Test public void dups() {

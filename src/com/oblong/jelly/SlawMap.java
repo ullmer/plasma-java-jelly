@@ -35,8 +35,10 @@ final class SlawMap extends Slaw {
     @Override public int count() { return conses.count(); }
     @Override public Slaw nth(int n) { return conses.nth(n); }
     @Override public Slaw find(Slaw k) {
-        for (int i = 0, c = count(); i < c; i++)
-            if (k.equals(nth(i).car())) return nth(i).cdr();
+        if (k != null) {
+            for (int i = 0, c = count(); i < c; i++)
+                if (k.equals(nth(i).car())) return nth(i).cdr();
+        }
         return null;
     }
 
@@ -55,8 +57,12 @@ final class SlawMap extends Slaw {
 
     @Override boolean slawEquals(Slaw o) {
         if (o.count() != conses.count()) return false;
-        for (int i = 0, c = count(); i < c; i++)
-            if (!o.find(nth(i).car()).equals(nth(i).cdr())) return false;
+        for (int i = 0, c = count(); i < c; i++) {
+            final Slaw nth = conses.nth(i);
+            final Slaw key = nth.car();
+            final Slaw oval = o.find(key);
+            if (oval == null || !oval.equals(nth.cdr())) return false;
+        }
         return true;
     }
 
