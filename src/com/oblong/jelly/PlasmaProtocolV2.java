@@ -129,6 +129,7 @@ final class PlasmaProtocolV2 {
     static final byte LIST_NIBBLE = 0x4;
     static final byte MAP_NIBBLE = 0x5;
     static final int COMPOSITE_THRESHOLD_COUNT = 14;
+    static final int WEE_LIST_LEN = 14;
 
     static final int compositeCount(long h) {
         return (int)((h>>>56) & 0x0f);
@@ -142,7 +143,7 @@ final class PlasmaProtocolV2 {
     static final byte PROTEIN_NON_NATIVE_NIBBLE = 0x0;
     static final byte PROTEIN_HEADING_BYTE = PROTEIN_NATIVE_NIBBLE<<4;
     static final byte PROTEIN_NN_HEADING_BYTE = PROTEIN_NON_NATIVE_NIBBLE<<4;
-    static final int WEE_PROTEIN_DATA_LEN = 14;
+    static final int WEE_PROTEIN_DATA_LEN = 7;
 
     static long proteinHeading(long octs) {
         return (((long)PROTEIN_HEADING_BYTE) << 56)
@@ -172,7 +173,7 @@ final class PlasmaProtocolV2 {
     }
 
     static boolean proteinHasWeeData(long sh) {
-        return ((sh>>>59) & 0x01L) == 1L;
+        return ((sh>>>59) & 0x01L) == 0L;
     }
 
     static long proteinDataLen(long sh) {

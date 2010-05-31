@@ -26,6 +26,18 @@ public class PlasmaV2ProteinsTest extends ExternalizerTestBase {
         final byte[] bs = {0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02,
                            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
         check("Empty protein", protein(null, null, null), bs);
+
+        final byte[] ws = {0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02,
+                           0x05, 0x00, 0x00, 0x01, 0x02, 0x03, 0x04, 0x05};
+        check("Wee empty protein", protein(null, null, makeData(5)), ws);
+
+        final byte[] bd = {0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x06,
+                           0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x19,
+                           0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
+                           0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0x10,
+                           0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18,
+                           0x19, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+        check("Data protein", protein(null, null, makeData(25)), bd);
     }
 
     @Test public void littleEndianIntern() {
@@ -73,6 +85,11 @@ public class PlasmaV2ProteinsTest extends ExternalizerTestBase {
                             map(string("a"), int32(1), string("b"), int32(2)),
                             null),
                     p3);
+
+        final short[] p4 = {0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x10,
+                            0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x00, 0x06};
+        checkIntern(protein(null, null, makeData(6)), p4);
+
     }
 
     private void checkIntern(Protein[] s, short[][] b) {
@@ -82,11 +99,17 @@ public class PlasmaV2ProteinsTest extends ExternalizerTestBase {
     private void checkIntern(Protein s, short[] b) {
         try {
             final ByteBuffer b2 = ByteBuffer.wrap(asBytes(b));
-            final Slaw s2 = internalizer.internProtein(b2, factory);
+            final Protein s2 = internalizer.internProtein(b2, factory);
             assertEquals(0, b2.remaining());
             assertEquals(s, s2);
         } catch (SlawParseError e) {
             fail(e.toString());
         }
+    }
+
+    private static byte[] makeData(int len) {
+        byte[] d = new byte[len];
+        for (int i = 0; i < len; ++i) d[i] = (byte)(i+1);
+        return d;
     }
 }

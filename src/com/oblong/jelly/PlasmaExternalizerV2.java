@@ -130,15 +130,17 @@ final class PlasmaExternalizerV2 extends SlawExternalizer {
         if (descrips != null) extern(descrips, b);
         if (ingests != null) extern(ingests, b);
         final int dataLen = (data == null) ? 0 : data.length;
-        if (data != null && dataLen < OCT_LEN) b.put(data);
+        if (dataLen > WEE_PROTEIN_DATA_LEN) b.put(data);
         final int end = b.position();
-        final int octs = octs(roundUp(end - begin));
-        b.putLong(begin, proteinHeading(octs));
-        b.put(begin + OCT_LEN, proteinSecondHeadingByte(descrips != null,
-                                                        ingests != null,
-                                                        dataLen));
-        if (dataLen > 0 && dataLen < OCT_LEN)
-            b.put(data, begin + OCT_LEN - dataLen, dataLen);
+        final byte sb = proteinSecondHeadingByte(descrips != null,
+                                                 ingests != null, dataLen);
+        b.position(begin);
+        b.putLong(proteinHeading(octs(roundUp(end - begin))));
+        if (dataLen > 0 && dataLen <= WEE_PROTEIN_DATA_LEN)
+            pad(b.put(sb), WEE_PROTEIN_DATA_LEN - dataLen).put(data);
+        else
+            b.putLong((((long)sb)<<56)|(long)dataLen);
+        b.position(end);
     }
 
     @Override int proteinExternSize(Protein p) {
@@ -148,7 +150,8 @@ final class PlasmaExternalizerV2 extends SlawExternalizer {
         final Slaw descrips = p.descrips();
         if (descrips != null) len += externSize(descrips);
         final byte[] data = p.data();
-        if (data != null && data.length < OCT_LEN) len += data.length;
+        if (data != null && data.length > WEE_PROTEIN_DATA_LEN)
+            len += data.length;
         return roundUp(len);
     }
 
@@ -251,7 +254,7 @@ final class PlasmaExternalizerV2 extends SlawExternalizer {
     private int listSize(Slaw l) {
         final int count = l.count();
         int len = OCT_LEN;
-        if (count > WEE_PROTEIN_DATA_LEN) len += OCT_LEN;
+        if (count > WEE_LIST_LEN) len += OCT_LEN;
         for (int i = 0; i < count; i++) len += externSize(l.nth(i));
         return roundUp(len);
     }
@@ -260,7 +263,7 @@ final class PlasmaExternalizerV2 extends SlawExternalizer {
         final int begin = b.position();
         final int count = l.count();
         b.position(b.position() + OCT_LEN);
-        if (count > WEE_PROTEIN_DATA_LEN) b.putLong(count);
+        if (count > WEE_LIST_LEN) b.putLong(count);
         for (int i = 0; i < count; i++) extern(l.nth(i), b);
         final long h =
             (long)(compositeHeadingByte(l.ilk()))|Math.min(15, count);

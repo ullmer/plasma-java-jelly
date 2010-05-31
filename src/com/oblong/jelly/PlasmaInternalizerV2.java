@@ -80,15 +80,18 @@ final class PlasmaInternalizerV2 implements SlawInternalizer {
             proteinHasDescrips(sh) ? internSlaw(b, f) : null;
         final Slaw ingests =
             proteinHasIngests(sh) ? internSlaw(b, f) : null;
-        final int end = b.position();
-        final boolean wee = proteinHasWeeData(sh);
         final int dataLen = (int)(proteinDataLen(sh));
         if (dataLen < 0)
             throw new SlawParseError(b, "Invalid data length: " + dataLen);
         final byte[] data = new byte[dataLen];
-        if (wee) b.position(beg + weeOffset(b, dataLen));
-        b.get(data, 0, dataLen);
-        if (wee) b.position(end);
+        if (dataLen > 0) {
+            final boolean wee = proteinHasWeeData(sh);
+            final int end = b.position();
+            if (wee) b.position(beg + OCT_LEN + weeOffset(b, dataLen));
+            checkLength(b, dataLen);
+            b.get(data, 0, dataLen);
+            b.position(end + (wee ? 0 : roundUp(dataLen)));
+        }
         return f.protein(descrips, ingests, data);
     }
 
