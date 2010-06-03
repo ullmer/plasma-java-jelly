@@ -2,6 +2,8 @@
 
 package com.oblong.jelly;
 
+import net.jcip.annotations.Immutable;
+
 abstract class AtomicSlaw extends Slaw {
 
     @Override public int dimension() { return 1; }
@@ -19,6 +21,7 @@ abstract class AtomicSlaw extends Slaw {
 
 }
 
+@Immutable
 final class SlawNil extends AtomicSlaw {
 
     static final SlawNil INSTANCE = new SlawNil();
@@ -35,6 +38,7 @@ final class SlawNil extends AtomicSlaw {
     private SlawNil () {}
 }
 
+@Immutable
 final class SlawBool extends AtomicSlaw {
 
     static Slaw valueOf(boolean b) { return b ? TRUE : FALSE; }
@@ -58,6 +62,7 @@ final class SlawBool extends AtomicSlaw {
     private static final SlawBool FALSE = new SlawBool();
 }
 
+@Immutable
 final class SlawString extends AtomicSlaw {
 
     static Slaw valueOf(String s) { return new SlawString(s); }

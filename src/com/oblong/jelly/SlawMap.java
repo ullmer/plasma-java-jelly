@@ -9,6 +9,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import net.jcip.annotations.Immutable;
+
+@Immutable
 final class SlawMap extends Slaw {
 
     static Slaw valueOf(Map<Slaw,Slaw> map) {

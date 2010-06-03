@@ -4,6 +4,9 @@ package com.oblong.jelly;
 
 import java.util.Arrays;
 
+import net.jcip.annotations.Immutable;
+
+@Immutable
 final class SlawProtein extends Protein {
 
     static SlawProtein valueOf(Slaw descrips, Slaw ingests, byte[] data) {

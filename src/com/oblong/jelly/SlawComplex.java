@@ -4,6 +4,9 @@ package com.oblong.jelly;
 
 import java.math.BigInteger;
 
+import net.jcip.annotations.Immutable;
+
+@Immutable
 final class SlawComplex extends SlawPair {
 
     static Slaw valueOf(Slaw r, Slaw i) {

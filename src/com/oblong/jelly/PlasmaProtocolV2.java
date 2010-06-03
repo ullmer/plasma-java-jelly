@@ -7,9 +7,12 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.jcip.annotations.Immutable;
+
 import static com.oblong.jelly.NumericIlk.*;
 import static com.oblong.jelly.SlawIlk.*;
 
+@Immutable
 final class PlasmaProtocolV2 {
 
     static final byte NUL = 0;
@@ -156,10 +159,14 @@ final class PlasmaProtocolV2 {
 
     static byte proteinSecondHeadingByte(boolean descrips,
                                          boolean ingests,
-                                         int data_len) {
+                                         int dataLen) {
         int res = PROTEIN_SBYTE[descrips ? 1 : 0][ingests ? 1 : 0];
-        res |= Math.min(8, data_len);
+        res |= Math.min(8, dataLen);
         return (byte)res;
+    }
+
+    static long proteinSecondHeading(byte sb, long dataLen) {
+        return (((long)sb)<<56)|dataLen;
     }
 
     static boolean proteinHasDescrips(long sh) {

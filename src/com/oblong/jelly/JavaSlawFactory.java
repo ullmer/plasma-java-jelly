@@ -8,6 +8,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import net.jcip.annotations.Immutable;
+
+@Immutable
 final class JavaSlawFactory implements SlawFactory {
 
     @Override public Slaw nil() {

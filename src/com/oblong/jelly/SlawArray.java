@@ -6,8 +6,11 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
+import net.jcip.annotations.Immutable;
+
 import static com.oblong.jelly.SlawIlk.*;
 
+@Immutable
 final class SlawArray extends CompositeNumericSlaw {
 
     static Slaw valueOf(List<Slaw> cmps) {
@@ -35,6 +38,7 @@ final class SlawArray extends CompositeNumericSlaw {
     }
 }
 
+@Immutable
 final class EmptyArray extends Slaw {
 
     static Slaw valueOf(SlawIlk ilk, NumericIlk ni, int dimension) {

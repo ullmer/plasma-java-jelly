@@ -4,12 +4,13 @@ package com.oblong.jelly;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.jcip.annotations.Immutable;
+
+@Immutable
 final class SlawList extends Slaw {
     static final SlawList EMPTY_LIST =
         new SlawList(new ArrayList<Slaw>(), false);

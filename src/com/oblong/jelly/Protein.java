@@ -2,12 +2,15 @@
 
 package com.oblong.jelly;
 
+import net.jcip.annotations.Immutable;
+
 /**
  *
  * Created: Mon May 17 14:25:51 2010
  *
  * @author jao
  */
+@Immutable
 public abstract class Protein extends Slaw {
 
     public abstract Slaw ingests();

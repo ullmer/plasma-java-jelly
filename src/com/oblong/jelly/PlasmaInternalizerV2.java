@@ -9,8 +9,11 @@ import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.jcip.annotations.Immutable;
+
 import static com.oblong.jelly.PlasmaProtocolV2.*;
 
+@Immutable
 final class PlasmaInternalizerV2 implements SlawInternalizer {
 
     @Override public Protein internProtein(ByteBuffer b, SlawFactory f)

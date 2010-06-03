@@ -4,6 +4,8 @@ package com.oblong.jelly;
 
 import java.math.BigInteger;
 
+import net.jcip.annotations.Immutable;
+
 /**
  * Created: Sun Apr 18 19:12:34 2010
  *
@@ -84,6 +86,7 @@ abstract class SlawNumber extends AtomicSlaw {
     }
 }
 
+@Immutable
 final class SlawInt8 extends SlawNumber {
 
     SlawInt8(byte v) { value = v; }
@@ -94,6 +97,7 @@ final class SlawInt8 extends SlawNumber {
     private byte value;
 }
 
+@Immutable
 final class SlawInt16 extends SlawNumber {
 
     SlawInt16(short v) { value = v; }
@@ -104,6 +108,7 @@ final class SlawInt16 extends SlawNumber {
     private short value;
 }
 
+@Immutable
 final class SlawInt32 extends SlawNumber {
 
     SlawInt32(int v) { value = v; }
@@ -116,6 +121,7 @@ final class SlawInt32 extends SlawNumber {
     private int value;
 }
 
+@Immutable
 final class SlawInt64 extends SlawNumber {
 
     SlawInt64(long v) { value = v; }
@@ -126,6 +132,7 @@ final class SlawInt64 extends SlawNumber {
     private long value;
 }
 
+@Immutable
 final class SlawUnt8 extends SlawNumber {
 
     SlawUnt8(short v) { value = (short)normalize(v,0xFF); }
@@ -136,6 +143,7 @@ final class SlawUnt8 extends SlawNumber {
     private short value;
 }
 
+@Immutable
 final class SlawUnt16 extends SlawNumber {
     SlawUnt16(int v) { value = (int)normalize(v, 0xFFFF); }
 
@@ -145,6 +153,7 @@ final class SlawUnt16 extends SlawNumber {
     private int value;
 }
 
+@Immutable
 final class SlawUnt32 extends SlawNumber {
 
     SlawUnt32(long v) { value = normalize(v, 0xFFFFFFFF); }
@@ -155,6 +164,7 @@ final class SlawUnt32 extends SlawNumber {
     private long value;
 }
 
+@Immutable
 final class SlawUnt64 extends SlawNumber {
 
     SlawUnt64(long v) { value = v; }
@@ -173,6 +183,7 @@ final class SlawUnt64 extends SlawNumber {
     private long value;
 }
 
+@Immutable
 final class SlawFloat32 extends SlawNumber {
     SlawFloat32(float v) {
         value = v;
@@ -186,6 +197,7 @@ final class SlawFloat32 extends SlawNumber {
     private float value;
 }
 
+@Immutable
 final class SlawFloat64 extends SlawNumber {
     SlawFloat64(double v) {
         value = v;

@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.jcip.annotations.Immutable;
+
 import static com.oblong.jelly.NumericIlk.*;
 import static com.oblong.jelly.SlawIlk.*;
 import com.oblong.util.Pair;
@@ -17,6 +19,7 @@ import com.oblong.util.Pair;
  *
  * @author jao
  */
+@Immutable
 public abstract class Slaw {
 
     public abstract SlawIlk ilk();

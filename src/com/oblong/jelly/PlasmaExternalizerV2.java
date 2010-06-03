@@ -3,10 +3,13 @@ package com.oblong.jelly;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 
+import net.jcip.annotations.Immutable;
+
 import static com.oblong.jelly.NumericIlk.*;
 import static com.oblong.jelly.SlawIlk.*;
 import static com.oblong.jelly.PlasmaProtocolV2.*;
 
+@Immutable
 final class PlasmaExternalizerV2 extends SlawExternalizer {
 
     @Override int nilExternSize(Slaw s) { return OCT_LEN; }
@@ -139,7 +142,7 @@ final class PlasmaExternalizerV2 extends SlawExternalizer {
         if (dataLen > 0 && dataLen <= WEE_PROTEIN_DATA_LEN)
             pad(b.put(sb), WEE_PROTEIN_DATA_LEN - dataLen).put(data);
         else
-            b.putLong((((long)sb)<<56)|(long)dataLen);
+            b.putLong(proteinSecondHeading(sb, dataLen));
         b.position(end);
     }
 

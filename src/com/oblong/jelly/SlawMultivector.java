@@ -4,6 +4,9 @@ package com.oblong.jelly;
 
 import java.util.List;
 
+import net.jcip.annotations.Immutable;
+
+@Immutable
 final class SlawMultivector extends CompositeNumericSlaw {
 
     static Slaw valueOf(Slaw... cs) {

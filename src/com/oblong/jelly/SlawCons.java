@@ -2,6 +2,9 @@
 
 package com.oblong.jelly;
 
+import net.jcip.annotations.Immutable;
+
+@Immutable
 final class SlawCons extends SlawPair {
 
     static Slaw valueOf(Slaw f, Slaw s) { return new SlawCons(f, s); }
