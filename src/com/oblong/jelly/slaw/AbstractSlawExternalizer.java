@@ -21,7 +21,28 @@ public abstract class AbstractSlawExternalizer implements SlawExternalizer {
     public final int extern(Slaw s, ByteBuffer b) {
         prepareBuffer(b, s);
         final int begin = b.position();
-        dispatchExtern(s, b);
+        // Ugly, but shorter than an EnumMap and anonymous classes
+        switch (s.ilk()) {
+        case PROTEIN: externProtein(s.toProtein(), b); break;
+        case BOOL: externBool(s, b); break;
+        case STRING: externString(s, b); break;
+        case NUMBER: externNumber(s, b); break;
+        case COMPLEX: externComplex(s, b); break;
+        case VECTOR: externVector(s, b); break;
+        case COMPLEX_VECTOR: externComplexVector(s, b); break;
+        case MULTI_VECTOR: externMultivector(s, b); break;
+        case ARRAY: externArray(s, b); break;
+        case COMPLEX_ARRAY: externComplexArray(s, b); break;
+        case VECTOR_ARRAY: externVectorArray(s, b); break;
+        case COMPLEX_VECTOR_ARRAY: externComplexVectorArray(s, b); break;
+        case MULTI_VECTOR_ARRAY: externMultivectorArray(s, b); break;
+        case CONS: externCons(s, b); break;
+        case LIST: externList(s, b); break;
+        case MAP: externMap(s, b); break;
+        default:
+            assert s.ilk() == NIL : "Unexpected ilk: " + s.ilk();
+            externNil(s, b);
+        }
         finishBuffer(b, s, begin);
         return b.position() - begin;
     }
@@ -104,28 +125,4 @@ public abstract class AbstractSlawExternalizer implements SlawExternalizer {
     protected abstract void prepareBuffer(ByteBuffer b, Slaw s);
     protected abstract void finishBuffer(ByteBuffer b, Slaw s, int begin);
 
-    private void dispatchExtern(Slaw s, ByteBuffer b) {
-        // Ugly, but shorter than an EnumMap and anonymous classes
-        switch (s.ilk()) {
-        case PROTEIN: externProtein(s.toProtein(), b); break;
-        case BOOL: externBool(s, b); break;
-        case STRING: externString(s, b); break;
-        case NUMBER: externNumber(s, b); break;
-        case COMPLEX: externComplex(s, b); break;
-        case VECTOR: externVector(s, b); break;
-        case COMPLEX_VECTOR: externComplexVector(s, b); break;
-        case MULTI_VECTOR: externMultivector(s, b); break;
-        case ARRAY: externArray(s, b); break;
-        case COMPLEX_ARRAY: externComplexArray(s, b); break;
-        case VECTOR_ARRAY: externVectorArray(s, b); break;
-        case COMPLEX_VECTOR_ARRAY: externComplexVectorArray(s, b); break;
-        case MULTI_VECTOR_ARRAY: externMultivectorArray(s, b); break;
-        case CONS: externCons(s, b); break;
-        case LIST: externList(s, b); break;
-        case MAP: externMap(s, b); break;
-        default:
-            assert s.ilk() == NIL : "Unexpected ilk: " + s.ilk();
-            externNil(s, b);
-        }
-    }
 }
