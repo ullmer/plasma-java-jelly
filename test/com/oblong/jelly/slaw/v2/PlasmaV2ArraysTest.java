@@ -1,11 +1,12 @@
 // Copyright (c) 2010 Oblong Industries
 
-package com.oblong.jelly;
+package com.oblong.jelly.slaw.v2;
 
 import org.junit.Assert;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
+import com.oblong.jelly.*;
 import static com.oblong.jelly.Slaw.*;
 
 /**
@@ -18,7 +19,7 @@ import static com.oblong.jelly.Slaw.*;
 public class PlasmaV2ArraysTest extends ExternalizerTestBase {
 
     public PlasmaV2ArraysTest() {
-        super(new PlasmaExternalizerV2(), new PlasmaInternalizerV2());
+        super(new Externalizer(), new Internalizer());
     }
 
     @Test public void empty() {
@@ -90,8 +91,7 @@ public class PlasmaV2ArraysTest extends ExternalizerTestBase {
                                   complex(number(ni, 3L), number(ni, 4L)));
             final byte[] bs = externalizer.extern(ca).array();
             final String msg = "Array of " + ni + "/" + arrayStr(bs);
-            assertEquals(PlasmaProtocolV2.roundUp(8 + 4 * ni.bytes()),
-                         bs.length);
+            assertEquals(Protocol.roundUp(8 + 4 * ni.bytes()), bs.length);
             checkHeading(msg, bs, SlawIlk.COMPLEX_ARRAY, ni, 1, 2);
             if (ni.isIntegral()) {
                 for (int j = 0; j < 4; j++) {
@@ -110,8 +110,7 @@ public class PlasmaV2ArraysTest extends ExternalizerTestBase {
                                    vector(number(ni, 3L), number(ni, 4L)));
             final byte[] b22 = externalizer.extern(v22).array();
             final String msg = "Array of " + ni + "/" + arrayStr(b22);
-            assertEquals(PlasmaProtocolV2.roundUp(8 + 4 * ni.bytes()),
-                         b22.length);
+            assertEquals(Protocol.roundUp(8 + 4 * ni.bytes()), b22.length);
             checkHeading(msg, b22, SlawIlk.VECTOR_ARRAY, ni, 2, 2);
             if (ni.isIntegral()) {
                 for (int j = 0; j < 4; j++) {

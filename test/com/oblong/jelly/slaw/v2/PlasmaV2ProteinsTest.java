@@ -1,12 +1,13 @@
 // Copyright (c) 2010 Oblong Industries
 
-package com.oblong.jelly;
+package com.oblong.jelly.slaw.v2;
 
 import java.nio.ByteBuffer;
 import org.junit.Assert;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
+import com.oblong.jelly.*;
 import static com.oblong.jelly.Slaw.*;
 
 /**
@@ -19,7 +20,7 @@ import static com.oblong.jelly.Slaw.*;
 public class PlasmaV2ProteinsTest extends ExternalizerTestBase {
 
     public PlasmaV2ProteinsTest() {
-        super(new PlasmaExternalizerV2(), new PlasmaInternalizerV2());
+        super(new Externalizer(), new Internalizer());
     }
 
     @Test public void empty() {

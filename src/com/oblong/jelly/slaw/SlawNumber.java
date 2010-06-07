@@ -1,8 +1,12 @@
 // Copyright (c) 2010 Oblong Industries
 
-package com.oblong.jelly;
+package com.oblong.jelly.slaw;
 
 import java.math.BigInteger;
+
+import com.oblong.jelly.NumericIlk;
+import com.oblong.jelly.Slaw;
+import com.oblong.jelly.SlawIlk;
 
 import net.jcip.annotations.Immutable;
 
@@ -55,9 +59,9 @@ abstract class SlawNumber extends AtomicSlaw {
 
     @Override public final int hashCode() { return (int)emitLong(); }
 
-    @Override String debugString() { return "" + emitLong(); }
+    @Override public String debugString() { return "" + emitLong(); }
 
-    final boolean slawEquals(Slaw s) {
+    @Override final public boolean slawEquals(Slaw s) {
         if (numericIlk().isIntegral()) return emitLong() == s.emitLong();
         return emitDouble() == s.emitDouble();
     }
@@ -178,7 +182,9 @@ final class SlawUnt64 extends SlawNumber {
         return new BigInteger(1, toBytes(numericIlk(), value));
     }
 
-    @Override String debugString() { return emitBigInteger().toString(); }
+    @Override public String debugString() {
+        return emitBigInteger().toString();
+    }
 
     private long value;
 }

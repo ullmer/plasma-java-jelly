@@ -1,15 +1,16 @@
 // Copyright (c) 2010 Oblong Industries
 
-package com.oblong.jelly;
+package com.oblong.jelly.slaw.v2;
 
 import org.junit.Assert;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
+import com.oblong.jelly.*;
 import static com.oblong.jelly.Slaw.*;
 
 /**
- *  Unit Test for class PlasmaExternalizerV2: atomic slawx.
+ *  Unit Test for class Externalizer: atomic slawx.
  *
  * Created: Tue Apr 20 13:07:13 2010
  *
@@ -18,7 +19,7 @@ import static com.oblong.jelly.Slaw.*;
 public class PlasmaV2AtomsTest extends ExternalizerTestBase {
 
     public PlasmaV2AtomsTest() {
-        super(new PlasmaExternalizerV2(), new PlasmaInternalizerV2());
+        super(new Externalizer(), new Internalizer());
     }
 
     @Test public void nils() {

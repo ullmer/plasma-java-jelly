@@ -1,6 +1,6 @@
 // Copyright (c) 2010 Oblong Industries
 
-package com.oblong.jelly;
+package com.oblong.jelly.slaw.v2;
 
 import java.nio.ByteBuffer;
 
@@ -8,6 +8,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
+import com.oblong.jelly.*;
 import static com.oblong.jelly.Slaw.*;
 
 /**
@@ -20,7 +21,7 @@ import static com.oblong.jelly.Slaw.*;
 public class PlasmaV2ConsesTest extends ExternalizerTestBase {
 
     public PlasmaV2ConsesTest() {
-        super(new PlasmaExternalizerV2(), new PlasmaInternalizerV2());
+        super(new Externalizer(), new Internalizer());
     }
 
     @Test public void conses() {
@@ -40,7 +41,7 @@ public class PlasmaV2ConsesTest extends ExternalizerTestBase {
     }
 
     private void checkHeading(String msg, ByteBuffer b) {
-        final long octs = PlasmaProtocolV2.octs(b.remaining());
+        final long octs = Protocol.octs(b.remaining());
         final long h = b.getLong();
         assertEquals(msg, 0x62, h>>>56);
         assertEquals(msg, octs, h & (~(0xff<<56)));

@@ -1,6 +1,7 @@
 // Copyright (c) 2010 Oblong Industries
 
-package com.oblong.jelly;
+package com.oblong.jelly.slaw;
+
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -8,6 +9,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+
+import com.oblong.jelly.NumericIlk;
+import com.oblong.jelly.Slaw;
+import com.oblong.jelly.SlawIlk;
 
 import net.jcip.annotations.Immutable;
 
@@ -49,7 +54,7 @@ final class SlawMap extends Slaw {
     @Override public Slaw cdr() { return conses.cdr(); }
     @Override public Map<Slaw,Slaw> emitMap() { return conses.emitMap(); }
 
-    @Override String debugString() {
+    @Override public String debugString() {
         final StringBuilder buff = new StringBuilder("{");
         for (int i = 0, c = count(); i < c; i++) {
             buff.append(nth(i).debugString());
@@ -58,7 +63,7 @@ final class SlawMap extends Slaw {
         return buff.append("}").toString();
     }
 
-    @Override boolean slawEquals(Slaw o) {
+    @Override public boolean slawEquals(Slaw o) {
         if (o.count() != conses.count()) return false;
         for (int i = 0, c = count(); i < c; i++) {
             final Slaw nth = conses.nth(i);

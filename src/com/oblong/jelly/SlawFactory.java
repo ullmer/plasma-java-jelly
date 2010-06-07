@@ -11,7 +11,7 @@ import java.util.Map;
  *
  * @author jao
  */
-interface SlawFactory {
+public interface SlawFactory {
 
     Slaw nil();
     Slaw bool(boolean v);

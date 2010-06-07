@@ -1,8 +1,13 @@
 // Copyright (c) 2010 Oblong Industries
 
-package com.oblong.jelly;
+package com.oblong.jelly.slaw;
 
 import java.util.Arrays;
+
+import com.oblong.jelly.NumericIlk;
+import com.oblong.jelly.Protein;
+import com.oblong.jelly.Slaw;
+import com.oblong.jelly.SlawIlk;
 
 import net.jcip.annotations.Immutable;
 
@@ -34,7 +39,7 @@ final class SlawProtein extends Protein {
         return h;
     }
 
-    @Override boolean slawEquals(Slaw o) {
+    @Override public boolean slawEquals(Slaw o) {
         Protein op = o.toProtein();
         boolean eqs = descrips == null ?
             op.descrips() == null : descrips.equals(op.descrips());
@@ -45,7 +50,7 @@ final class SlawProtein extends Protein {
         return eqs;
     }
 
-    @Override String debugString() {
+    @Override public String debugString() {
         return "\ndescrips: " + descrips + "\ningests: " + ingests
             + "\n(" + data.length + " bytes of raw data" + ")";
     }

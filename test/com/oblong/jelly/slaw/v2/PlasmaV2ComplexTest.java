@@ -1,15 +1,16 @@
 // Copyright (c) 2010 Oblong Industries
 
-package com.oblong.jelly;
+package com.oblong.jelly.slaw.v2;
 
 import org.junit.Assert;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
+import com.oblong.jelly.*;
 import static com.oblong.jelly.Slaw.*;
 
 /**
- * Unit test for class PlasmaExternalizerV2: complex numbers.
+ * Unit test for class Externalizer: complex numbers.
  *
  * Created: Tue May 18 15:43:23 2010
  *
@@ -18,7 +19,7 @@ import static com.oblong.jelly.Slaw.*;
 public class PlasmaV2ComplexTest extends ExternalizerTestBase {
 
     public PlasmaV2ComplexTest() {
-        super(new PlasmaExternalizerV2(), new PlasmaInternalizerV2());
+        super(new Externalizer(), new Internalizer());
     }
 
     @Test public void weeComplexes() {

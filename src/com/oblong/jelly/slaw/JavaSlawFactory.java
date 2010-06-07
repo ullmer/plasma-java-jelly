@@ -1,6 +1,6 @@
 // Copyright (c) 2010 Oblong Industries
 
-package com.oblong.jelly;
+package com.oblong.jelly.slaw;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -8,10 +8,16 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import com.oblong.jelly.NumericIlk;
+import com.oblong.jelly.Protein;
+import com.oblong.jelly.Slaw;
+import com.oblong.jelly.SlawFactory;
+import com.oblong.jelly.SlawIlk;
+
 import net.jcip.annotations.Immutable;
 
 @Immutable
-final class JavaSlawFactory implements SlawFactory {
+public final class JavaSlawFactory implements SlawFactory {
 
     @Override public Slaw nil() {
         return SlawNil.INSTANCE;

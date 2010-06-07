@@ -1,12 +1,17 @@
 // Copyright (c) 2010 Oblong Industries
 
-package com.oblong.jelly;
+package com.oblong.jelly.slaw;
+
 
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.oblong.jelly.NumericIlk;
+import com.oblong.jelly.Slaw;
+import com.oblong.jelly.SlawIlk;
 
 import net.jcip.annotations.Immutable;
 
@@ -84,7 +89,7 @@ final class SlawList extends Slaw {
 
     @Override public int hashCode() { return elements.hashCode(); }
 
-    @Override boolean slawEquals(Slaw o) {
+    @Override public boolean slawEquals(Slaw o) {
         final int c = count();
         if (o.count() != c) return false;
         for (int i = 0; i < c; i++)
@@ -92,7 +97,7 @@ final class SlawList extends Slaw {
         return true;
     }
 
-    @Override String debugString() {
+    @Override public String debugString() {
         final StringBuilder buff = new StringBuilder("[");
         for (int i = 0, c = count(); i < c; i++) {
             buff.append(nth(i).toString());

@@ -1,6 +1,10 @@
 // Copyright (c) 2010 Oblong Industries
 
-package com.oblong.jelly;
+package com.oblong.jelly.slaw;
+
+import com.oblong.jelly.NumericIlk;
+import com.oblong.jelly.Slaw;
+import com.oblong.jelly.SlawIlk;
 
 import net.jcip.annotations.Immutable;
 
@@ -14,7 +18,7 @@ final class SlawCons extends SlawPair {
 
     @Override public int dimension() { return 0; }
 
-    @Override String debugString() {
+    @Override public String debugString() {
         return "(" + car().toString() + ", " + cdr().toString() + ")";
     }
 

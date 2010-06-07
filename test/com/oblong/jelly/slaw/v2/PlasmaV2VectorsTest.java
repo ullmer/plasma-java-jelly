@@ -1,11 +1,12 @@
 // Copyright (c) 2010 Oblong Industries
 
-package com.oblong.jelly;
+package com.oblong.jelly.slaw.v2;
 
 import org.junit.Assert;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
+import com.oblong.jelly.*;
 import static com.oblong.jelly.Slaw.*;
 
 /**
@@ -18,7 +19,7 @@ import static com.oblong.jelly.Slaw.*;
 public class PlasmaV2VectorsTest extends ExternalizerTestBase {
 
     public PlasmaV2VectorsTest() {
-        super(new PlasmaExternalizerV2(), new PlasmaInternalizerV2());
+        super(new Externalizer(), new Internalizer());
     }
 
     @Test public void vector8() {

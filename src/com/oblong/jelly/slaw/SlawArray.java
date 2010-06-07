@@ -1,14 +1,17 @@
 // Copyright (c) 2010 Oblong Industries
 
-package com.oblong.jelly;
+package com.oblong.jelly.slaw;
 
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
-import net.jcip.annotations.Immutable;
-
+import com.oblong.jelly.NumericIlk;
+import com.oblong.jelly.Slaw;
+import com.oblong.jelly.SlawIlk;
 import static com.oblong.jelly.SlawIlk.*;
+
+import net.jcip.annotations.Immutable;
 
 @Immutable
 final class SlawArray extends CompositeNumericSlaw {
@@ -21,7 +24,7 @@ final class SlawArray extends CompositeNumericSlaw {
 
     @Override public SlawIlk ilk() { return ilks.get(nth(0).ilk()); }
 
-    @Override Slaw withNumericIlk(NumericIlk ilk) {
+    @Override public Slaw withNumericIlk(NumericIlk ilk) {
         return (ilk == numericIlk()) ? this : new SlawArray(ilk, elements);
     }
 
@@ -58,13 +61,13 @@ final class EmptyArray extends Slaw {
 
     @Override public Slaw find(Slaw k) { return null; }
 
-    @Override String debugString() { return "{}"; }
+    @Override public String debugString() { return "{}"; }
 
-    @Override Slaw withNumericIlk(NumericIlk ni) {
+    @Override public Slaw withNumericIlk(NumericIlk ni) {
         return (ni == numericIlk) ? this : new EmptyArray(ilk, ni, dimension);
     }
 
-    @Override boolean slawEquals(Slaw o) {
+    @Override public boolean slawEquals(Slaw o) {
         return o.count() == 0 && o.dimension() == dimension;
     }
 

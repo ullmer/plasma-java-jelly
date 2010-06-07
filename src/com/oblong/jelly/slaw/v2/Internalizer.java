@@ -1,6 +1,6 @@
 // Copyright (c) 2010 Oblong Industries
 
-package com.oblong.jelly;
+package com.oblong.jelly.slaw.v2;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.BufferUnderflowException;
@@ -11,10 +11,18 @@ import java.util.List;
 
 import net.jcip.annotations.Immutable;
 
-import static com.oblong.jelly.PlasmaProtocolV2.*;
+import com.oblong.jelly.NumericIlk;
+import com.oblong.jelly.Slaw;
+import com.oblong.jelly.SlawIlk;
+import com.oblong.jelly.SlawInternalizer;
+import com.oblong.jelly.SlawFactory;
+import com.oblong.jelly.SlawParseError;
+import com.oblong.jelly.Protein;
+
+import static com.oblong.jelly.slaw.v2.Protocol.*;
 
 @Immutable
-final class PlasmaInternalizerV2 implements SlawInternalizer {
+final class Internalizer implements SlawInternalizer {
 
     @Override public Protein internProtein(ByteBuffer b, SlawFactory f)
         throws SlawParseError {

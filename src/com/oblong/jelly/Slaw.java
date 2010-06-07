@@ -130,9 +130,17 @@ public abstract class Slaw {
         return buff.toString();
     }
 
+    public Slaw withNumericIlk(NumericIlk ilk) {
+        throw new UnsupportedOperationException(ilk() + " not numeric");
+    }
+
+    public abstract boolean slawEquals(Slaw s);
+    public abstract String debugString();
+
     public static Slaw cons(Slaw car, Slaw cdr) {
         return factory.cons(car, cdr);
     }
+
     public static Slaw list(Slaw... s) { return factory.list(s); }
     public static Slaw list(List<Slaw> s) { return factory.list(s); }
     public static Slaw map(Slaw... kvs) { return factory.map(kvs); }
@@ -196,17 +204,10 @@ public abstract class Slaw {
         return factory.array(i, n, d);
     }
 
-    // we don't really want external clients to extend this class
-    Slaw() {}
-
-    abstract boolean slawEquals(Slaw s);
-    abstract String debugString();
-
-    Slaw withNumericIlk(NumericIlk ilk) {
-        throw new UnsupportedOperationException(ilk() + " not numeric");
-    }
+    protected Slaw() {}
 
     static void setFactory (SlawFactory f) { factory = f; }
 
-    private static SlawFactory factory = new JavaSlawFactory();
+    private static SlawFactory factory =
+        new com.oblong.jelly.slaw.JavaSlawFactory();
 }

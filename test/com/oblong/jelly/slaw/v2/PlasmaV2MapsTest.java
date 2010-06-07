@@ -1,6 +1,6 @@
 // Copyright (c) 2010 Oblong Industries
 
-package com.oblong.jelly;
+package com.oblong.jelly.slaw.v2;
 
 import java.nio.ByteBuffer;
 import java.util.Map;
@@ -10,10 +10,11 @@ import org.junit.Assert;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
+import com.oblong.jelly.*;
 import static com.oblong.jelly.Slaw.*;
 
 /**
- * Unit Test for class PlasmaExternalizerV2: maps.
+ * Unit Test for class Externalizer: maps.
  *
  *
  * Created: Tue May 25 12:37:22 2010
@@ -23,7 +24,7 @@ import static com.oblong.jelly.Slaw.*;
 public class PlasmaV2MapsTest extends ExternalizerTestBase {
 
     public PlasmaV2MapsTest() {
-        super(new PlasmaExternalizerV2(), new PlasmaInternalizerV2());
+        super(new Externalizer(), new Internalizer());
     }
 
     @Test public void maps() {
@@ -52,7 +53,7 @@ public class PlasmaV2MapsTest extends ExternalizerTestBase {
     }
 
     private void checkHeading(String msg, ByteBuffer b, long count) {
-        final long octs = PlasmaProtocolV2.octs(b.remaining());
+        final long octs = Protocol.octs(b.remaining());
         final long h = b.getLong();
         assertEquals(msg, 5, h>>>60);
         assertEquals(msg, octs, h & (~(0xff<<56)));

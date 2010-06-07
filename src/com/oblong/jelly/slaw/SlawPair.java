@@ -1,11 +1,11 @@
 // Copyright (c) 2010 Oblong Industries
 
-package com.oblong.jelly;
+package com.oblong.jelly.slaw;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+
+import com.oblong.jelly.Slaw;
 
 abstract class SlawPair extends Slaw {
 
@@ -31,7 +31,7 @@ abstract class SlawPair extends Slaw {
         return result;
     }
 
-    @Override final boolean slawEquals(Slaw s) {
+    @Override public final boolean slawEquals(Slaw s) {
         return car().equals(s.car()) && cdr().equals(s.cdr());
     }
 

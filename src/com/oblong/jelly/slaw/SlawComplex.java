@@ -1,8 +1,10 @@
 // Copyright (c) 2010 Oblong Industries
 
-package com.oblong.jelly;
+package com.oblong.jelly.slaw;
 
-import java.math.BigInteger;
+import com.oblong.jelly.NumericIlk;
+import com.oblong.jelly.Slaw;
+import com.oblong.jelly.SlawIlk;
 
 import net.jcip.annotations.Immutable;
 
@@ -21,12 +23,12 @@ final class SlawComplex extends SlawPair {
     @Override public SlawIlk ilk() { return SlawIlk.COMPLEX; }
     @Override public NumericIlk numericIlk() { return car().numericIlk(); }
 
-    @Override Slaw withNumericIlk(NumericIlk ilk) {
+    @Override public Slaw withNumericIlk(NumericIlk ilk) {
         if (numericIlk() == ilk) return this;
         return new SlawComplex(ilk, car(), cdr());
     }
 
-    @Override String debugString() {
+    @Override public String debugString() {
         return car().debugString() + "+" + cdr().debugString() + "i";
     }
 

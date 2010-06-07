@@ -1,7 +1,10 @@
 // Copyright (c) 2010 Oblong Industries
 
-package com.oblong.jelly;
+package com.oblong.jelly.slaw;
 
+import com.oblong.jelly.NumericIlk;
+import com.oblong.jelly.Slaw;
+import com.oblong.jelly.SlawIlk;
 import net.jcip.annotations.Immutable;
 
 abstract class AtomicSlaw extends Slaw {
@@ -31,7 +34,7 @@ final class SlawNil extends AtomicSlaw {
     @Override public SlawIlk ilk() { return SlawIlk.NIL; }
     @Override public NumericIlk numericIlk() { return null; }
 
-    @Override boolean slawEquals(Slaw o) { return true; }
+    @Override public boolean slawEquals(Slaw o) { return true; }
 
     @Override public String debugString() { return "nil"; }
 
@@ -48,7 +51,7 @@ final class SlawBool extends AtomicSlaw {
 
     @Override public boolean emitBoolean() { return this == TRUE; }
 
-    @Override boolean slawEquals(Slaw o) {
+    @Override public boolean slawEquals(Slaw o) {
         return o.emitBoolean() == emitBoolean();
     }
 

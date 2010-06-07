@@ -9,7 +9,7 @@ import java.nio.ByteBuffer;
  *
  * @author jao
  */
-interface SlawInternalizer {
+public interface SlawInternalizer {
 
     Protein internProtein(ByteBuffer b, SlawFactory f) throws SlawParseError;
     Slaw internSlaw(ByteBuffer b, SlawFactory f) throws SlawParseError;

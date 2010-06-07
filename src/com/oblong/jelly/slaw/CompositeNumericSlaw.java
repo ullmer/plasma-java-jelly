@@ -1,9 +1,12 @@
 // Copyright (c) 2010 Oblong Industries
 
-package com.oblong.jelly;
+package com.oblong.jelly.slaw;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.oblong.jelly.NumericIlk;
+import com.oblong.jelly.Slaw;
 
 abstract class CompositeNumericSlaw extends Slaw {
 
@@ -40,7 +43,7 @@ abstract class CompositeNumericSlaw extends Slaw {
 
     @Override public final int hashCode() { return elements.hashCode(); }
 
-    @Override final String debugString() {
+    @Override public final String debugString() {
         final StringBuilder buff = new StringBuilder("{");
         for (int i = 0, c = count(); i < c; i++) {
             buff.append(nth(i).debugString());

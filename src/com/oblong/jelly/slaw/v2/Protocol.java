@@ -1,6 +1,6 @@
 // Copyright (c) 2010 Oblong Industries
 
-package com.oblong.jelly;
+package com.oblong.jelly.slaw.v2;
 
 
 import java.util.EnumMap;
@@ -9,11 +9,15 @@ import java.util.Map;
 
 import net.jcip.annotations.Immutable;
 
+import com.oblong.jelly.NumericIlk;
+import com.oblong.jelly.Slaw;
+import com.oblong.jelly.SlawIlk;
+
 import static com.oblong.jelly.NumericIlk.*;
 import static com.oblong.jelly.SlawIlk.*;
 
 @Immutable
-final class PlasmaProtocolV2 {
+final class Protocol {
 
     static final byte NUL = 0;
     static final int OCT_LEN = 8;
@@ -260,5 +264,5 @@ final class PlasmaProtocolV2 {
         COMPOSITE_BYTE.put(MAP, MAP_NIBBLE<<4);
     }
 
-    private PlasmaProtocolV2() {}
+    private Protocol() {}
 }

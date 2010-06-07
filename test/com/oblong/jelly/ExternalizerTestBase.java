@@ -6,22 +6,23 @@ import java.nio.ByteBuffer;
 import org.junit.Assert;
 import static org.junit.Assert.*;
 
-class ExternalizerTestBase {
-    ExternalizerTestBase(SlawExternalizer e) {
+public class ExternalizerTestBase {
+    protected ExternalizerTestBase(SlawExternalizer e) {
         externalizer = e;
         internalizer = null;
     }
 
-    ExternalizerTestBase(SlawExternalizer e, SlawInternalizer i) {
+    protected ExternalizerTestBase(SlawExternalizer e, SlawInternalizer i) {
         externalizer = e;
         internalizer = i;
     }
 
-    SlawExternalizer externalizer;
-    SlawInternalizer internalizer;
-    SlawFactory factory = new JavaSlawFactory();
+    protected SlawExternalizer externalizer;
+    protected SlawInternalizer internalizer;
+    protected SlawFactory factory =
+        new com.oblong.jelly.slaw.JavaSlawFactory();
 
-    String arrayStr(byte[] bs) {
+    protected final String arrayStr(byte[] bs) {
         StringBuilder buf = new StringBuilder ("{ ");
         for (byte b : bs)
             buf.append(Integer.toBinaryString(((int)b) & 0xff)).append(" ");
@@ -29,7 +30,7 @@ class ExternalizerTestBase {
         return buf.toString();
     }
 
-    void check(String msg, Slaw s, byte[] b) {
+    protected final void check(String msg, Slaw s, byte[] b) {
         final byte[] sb = externalizer.extern(s).array();
         String m = msg + ": " + arrayStr(sb) + " vs. expected " + arrayStr(b);
         assertEquals(sb.length, externalizer.externSize(s));
@@ -37,7 +38,7 @@ class ExternalizerTestBase {
         checkIntern(msg, s, b);
     }
 
-    void checkIntern(String msg, Slaw s, byte[] b) {
+    protected final void checkIntern(String msg, Slaw s, byte[] b) {
         if (internalizer != null) {
             try {
                 final ByteBuffer b2 = ByteBuffer.wrap(b);
@@ -50,13 +51,13 @@ class ExternalizerTestBase {
         }
     }
 
-    void check(Slaw[] s, short[][] b) {
+    protected final void check(Slaw[] s, short[][] b) {
         for (int i = 0; i < s.length; i++) {
             check(i + "th iteration", s[i], asBytes(b[i]));
         }
     }
 
-    void checkSubslawx(String msg, ByteBuffer b, Slaw s) {
+    protected final void checkSubslawx(String msg, ByteBuffer b, Slaw s) {
         for (int i = 0, c = s.count(); i < c; i++) {
             byte[] sb = externalizer.extern(s.nth(i)).array();
             for (int j = 0; j < sb.length; j++)
@@ -65,7 +66,7 @@ class ExternalizerTestBase {
         assertFalse(b.hasRemaining());
     }
 
-    byte[] asBytes(short[] s) {
+    protected final byte[] asBytes(short[] s) {
         byte[] bb = new byte[s.length];
         for (int j = 0; j < s.length; ++j) bb[j] = (byte)s[j];
         return bb;

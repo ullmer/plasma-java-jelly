@@ -1,130 +1,156 @@
-package com.oblong.jelly;
+package com.oblong.jelly.slaw.v2;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 
+import com.oblong.jelly.NumericIlk;
+import static com.oblong.jelly.NumericIlk.*;
+import com.oblong.jelly.Protein;
+import com.oblong.jelly.Slaw;
+import com.oblong.jelly.SlawIlk;
+import static com.oblong.jelly.SlawIlk.*;
+
+import com.oblong.jelly.slaw.AbstractSlawExternalizer;
+import static com.oblong.jelly.slaw.v2.Protocol.*;
+
 import net.jcip.annotations.Immutable;
 
-import static com.oblong.jelly.NumericIlk.*;
-import static com.oblong.jelly.SlawIlk.*;
-import static com.oblong.jelly.PlasmaProtocolV2.*;
-
 @Immutable
-final class PlasmaExternalizerV2 extends SlawExternalizer {
+public final class Externalizer extends AbstractSlawExternalizer {
 
-    @Override int nilExternSize(Slaw s) { return OCT_LEN; }
+    @Override protected int nilExternSize(Slaw s) { return OCT_LEN; }
 
-    @Override void externNil(Slaw s, ByteBuffer b) { b.putLong(NIL_HEADING); }
+    @Override protected void externNil(Slaw s, ByteBuffer b) {
+        b.putLong(NIL_HEADING);
+    }
 
-    @Override int boolExternSize(Slaw b) { return OCT_LEN; }
+    @Override protected int boolExternSize(Slaw b) { return OCT_LEN; }
 
-    @Override void externBool(Slaw b, ByteBuffer r) {
+    @Override protected void externBool(Slaw b, ByteBuffer r) {
         r.putLong(b.emitBoolean() ? TRUE_HEADING : FALSE_HEADING);
     }
 
-    @Override int stringExternSize(Slaw s) {
+    @Override protected int stringExternSize(Slaw s) {
         final int bn = stringBytes(s).length;
         return (bn > STR_WEE_LEN) ? roundUp(bn + OCT_LEN + 1) : OCT_LEN;
     }
 
-    @Override void externString(Slaw s, ByteBuffer b) {
+    @Override protected void externString(Slaw s, ByteBuffer b) {
         final byte[] bs = stringBytes(s);
         if (bs.length > STR_WEE_LEN) marshallStr(bs, b);
         else marshallWeeStr(bs, b);
     }
 
-    @Override int numberExternSize(Slaw n) { return numericSize(n); }
+    @Override protected int numberExternSize(Slaw n) {
+        return numericSize(n);
+    }
 
-    @Override void externNumber(Slaw n, ByteBuffer b) {
+    @Override protected void externNumber(Slaw n, ByteBuffer b) {
         b.putLong(numberHeading(n.numericIlk()));
         adjustBufferForNumeric(b, n);
         putNumVal(b, n);
     }
 
-    @Override int complexExternSize(Slaw c) { return numericSize(c); }
+    @Override protected int complexExternSize(Slaw c) {
+        return numericSize(c);
+    }
 
-    @Override void externComplex(Slaw c, ByteBuffer b) {
+    @Override protected void externComplex(Slaw c, ByteBuffer b) {
         b.putLong(complexHeading(c.numericIlk()));
         adjustBufferForNumeric(b, c);
         putNumVal(b, c);
     }
 
-    @Override int vectorExternSize(Slaw v) { return numericSize(v); }
+    @Override protected int vectorExternSize(Slaw v) {
+        return numericSize(v);
+    }
 
-    @Override void externVector(Slaw v, ByteBuffer b) {
+    @Override protected void externVector(Slaw v, ByteBuffer b) {
         b.putLong(vectorHeading(v.numericIlk(), v.dimension()));
         adjustBufferForNumeric(b, v);
         for (Slaw n : v.emitList()) putNumVal(b, n);
     }
 
-    @Override int complexVectorExternSize(Slaw v) { return numericSize(v); }
+    @Override protected int complexVectorExternSize(Slaw v) {
+        return numericSize(v);
+    }
 
-    @Override void externComplexVector(Slaw v, ByteBuffer b) {
+    @Override protected void externComplexVector(Slaw v, ByteBuffer b) {
         b.putLong(complexVectorHeading(v.numericIlk(), v.dimension()));
         adjustBufferForNumeric(b, v);
         for (Slaw n : v.emitList()) putNumVal(putNumVal(b, n.car()), n.cdr());
     }
 
-    @Override int multivectorExternSize(Slaw v) { return numericSize(v); }
+    @Override protected int multivectorExternSize(Slaw v) {
+        return numericSize(v);
+    }
 
-    @Override void externMultivector(Slaw v, ByteBuffer b) {
+    @Override protected void externMultivector(Slaw v, ByteBuffer b) {
         b.putLong(multivectorHeading(v.numericIlk(), v.dimension()));
         adjustBufferForNumeric(b, v);
         for (Slaw n : v.emitList()) putNumVal(b, n);
     }
 
-    @Override int arrayExternSize(Slaw a) { return arraySize(a); }
+    @Override protected int arrayExternSize(Slaw a) { return arraySize(a); }
 
-    @Override void externArray(Slaw a, ByteBuffer b) {
+    @Override protected void externArray(Slaw a, ByteBuffer b) {
         putArray(arrayHeading(a.numericIlk()), b, a);
     }
 
-    @Override int complexArrayExternSize(Slaw a) {
+    @Override protected int complexArrayExternSize(Slaw a) {
         return complexArraySize(a);
     }
 
-    @Override void externComplexArray(Slaw a, ByteBuffer b) {
+    @Override protected void externComplexArray(Slaw a, ByteBuffer b) {
         putArray(complexArrayHeading(a.numericIlk()), b, a);
     }
 
-    @Override int vectorArrayExternSize(Slaw a) { return arraySize(a); }
+    @Override protected int vectorArrayExternSize(Slaw a) {
+        return arraySize(a);
+    }
 
-    @Override void externVectorArray(Slaw a, ByteBuffer b) {
+    @Override protected void externVectorArray(Slaw a, ByteBuffer b) {
         putArray(vectorArrayHeading(a.numericIlk(), a.dimension()), b, a);
     }
 
-    @Override int complexVectorArrayExternSize(Slaw a) {
+    @Override protected int complexVectorArrayExternSize(Slaw a) {
         return complexArraySize(a);
     }
 
-    @Override void externComplexVectorArray(Slaw a, ByteBuffer b) {
+    @Override protected void externComplexVectorArray(Slaw a, ByteBuffer b) {
         putArray(complexVectorArrayHeading(a.numericIlk(), a.dimension()),
                  b, a);
     }
 
-    @Override int multivectorArrayExternSize(Slaw a) {
+    @Override protected int multivectorArrayExternSize(Slaw a) {
         final int cno = 1 << a.dimension();
         return OCT_LEN + roundUp(a.count() * cno * a.numericIlk().bytes());
     }
 
-    @Override void externMultivectorArray(Slaw a, ByteBuffer b) {
+    @Override protected void externMultivectorArray(Slaw a, ByteBuffer b) {
         putArray(multivectorArrayHeading(a.numericIlk(), a.dimension()),
                  b, a);
     }
 
-    @Override int consExternSize(Slaw c) { return listSize(c); }
+    @Override protected int consExternSize(Slaw c) { return listSize(c); }
 
-    @Override void externCons(Slaw c, ByteBuffer b) { marshallAsList(c, b); }
+    @Override protected void externCons(Slaw c, ByteBuffer b) {
+        marshallAsList(c, b);
+    }
 
-    @Override int listExternSize(Slaw c) { return listSize(c); }
+    @Override protected int listExternSize(Slaw c) { return listSize(c); }
 
-    @Override void externList(Slaw c, ByteBuffer b) { marshallAsList(c, b); }
+    @Override protected void externList(Slaw c, ByteBuffer b) {
+        marshallAsList(c, b);
+    }
 
-    @Override int mapExternSize(Slaw c) { return listSize(c); }
+    @Override protected int mapExternSize(Slaw c) { return listSize(c); }
 
-    @Override void externMap(Slaw c, ByteBuffer b) { marshallAsList(c, b); }
+    @Override protected void externMap(Slaw c, ByteBuffer b) {
+        marshallAsList(c, b);
+    }
 
-    @Override void externProtein(Protein p, ByteBuffer b) {
+    @Override protected void externProtein(Protein p, ByteBuffer b) {
         final int begin = b.position();
         b.putLong(0).putLong(0);
         final Slaw descrips = p.descrips();
@@ -146,7 +172,7 @@ final class PlasmaExternalizerV2 extends SlawExternalizer {
         b.position(end);
     }
 
-    @Override int proteinExternSize(Protein p) {
+    @Override protected int proteinExternSize(Protein p) {
         int len = 2 * OCT_LEN;
         final Slaw ingests = p.ingests();
         if (ingests != null) len += externSize(ingests);
@@ -158,9 +184,9 @@ final class PlasmaExternalizerV2 extends SlawExternalizer {
         return roundUp(len);
     }
 
-    @Override void prepareBuffer(ByteBuffer b, Slaw s) {}
+    @Override protected void prepareBuffer(ByteBuffer b, Slaw s) {}
 
-    @Override void finishBuffer(ByteBuffer b, Slaw s, int begin) {
+    @Override protected void finishBuffer(ByteBuffer b, Slaw s, int begin) {
         pad(b, roundUp(b.position()) - b.position());
     }
 
