@@ -155,18 +155,17 @@ public final class Externalizer extends AbstractSlawExternalizer {
         b.putLong(0).putLong(0);
         final Slaw descrips = p.descrips();
         final Slaw ingests = p.ingests();
-        final byte[] data = p.data();
         if (descrips != null) extern(descrips, b);
         if (ingests != null) extern(ingests, b);
-        final int dataLen = (data == null) ? 0 : data.length;
-        if (dataLen > WEE_PROTEIN_DATA_LEN) b.put(data);
+        final int dataLen = p.dataLength();
+        if (dataLen > WEE_PROTEIN_DATA_LEN) p.putData(b);
         final int end = b.position();
         final byte sb = proteinSecondHeadingByte(descrips != null,
                                                  ingests != null, dataLen);
         b.position(begin);
         b.putLong(proteinHeading(octs(roundUp(end - begin))));
         if (dataLen > 0 && dataLen <= WEE_PROTEIN_DATA_LEN)
-            pad(b.put(sb), WEE_PROTEIN_DATA_LEN - dataLen).put(data);
+            p.putData(pad(b.put(sb), WEE_PROTEIN_DATA_LEN - dataLen));
         else
             b.putLong(proteinSecondHeading(sb, dataLen));
         b.position(end);
@@ -178,9 +177,7 @@ public final class Externalizer extends AbstractSlawExternalizer {
         if (ingests != null) len += externSize(ingests);
         final Slaw descrips = p.descrips();
         if (descrips != null) len += externSize(descrips);
-        final byte[] data = p.data();
-        if (data != null && data.length > WEE_PROTEIN_DATA_LEN)
-            len += data.length;
+        if (p.dataLength() > WEE_PROTEIN_DATA_LEN) len += p.dataLength();
         return roundUp(len);
     }
 

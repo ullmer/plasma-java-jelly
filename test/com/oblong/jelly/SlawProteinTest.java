@@ -21,7 +21,7 @@ public class SlawProteinTest {
         Protein p =  protein(null, null, null);
         assertEquals(null, p.ingests());
         assertEquals(null, p.descrips());
-        assertEquals(0, p.data().length);
+        assertEquals(0, p.dataLength());
         assertEquals(protein(null, null, null), p);
     }
 

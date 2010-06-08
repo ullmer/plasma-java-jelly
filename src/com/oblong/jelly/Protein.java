@@ -2,6 +2,7 @@
 
 package com.oblong.jelly;
 
+import java.nio.ByteBuffer;
 import net.jcip.annotations.Immutable;
 
 /**
@@ -15,5 +16,8 @@ public abstract class Protein extends Slaw {
 
     public abstract Slaw ingests();
     public abstract Slaw descrips();
-    public abstract byte[] data();
+
+    public abstract byte data(int n);
+    public abstract int dataLength();
+    public abstract int putData(ByteBuffer b);
 }

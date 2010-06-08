@@ -2,6 +2,7 @@
 
 package com.oblong.jelly.slaw;
 
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 import com.oblong.jelly.NumericIlk;
@@ -45,8 +46,9 @@ final class SlawProtein extends Protein {
             op.descrips() == null : descrips.equals(op.descrips());
         if (eqs) eqs = ingests == null ?
                      op.ingests() == null : ingests.equals(op.ingests());
-        if (eqs) eqs = op.data() == null ?
-                     data.length == 0 : Arrays.equals(data, op.data());
+        if (eqs) eqs = op.dataLength() == data.length;
+        for (int i = 0, c = data.length; eqs && i < c; ++i)
+            eqs = data[i] == op.data(i);
         return eqs;
     }
 
@@ -57,7 +59,14 @@ final class SlawProtein extends Protein {
 
     @Override public Slaw descrips() { return descrips; }
     @Override public Slaw ingests() { return ingests; }
-    @Override public byte[] data() { return data; }
+    @Override public byte data(int n) { return data[n]; }
+    @Override public int dataLength() { return data.length; }
+
+    @Override public int putData(ByteBuffer b) {
+        if (b.remaining() < data.length) return 0;
+        b.put(data);
+        return data.length;
+    }
 
     private SlawProtein(Slaw d, Slaw i, byte[] b) {
         descrips = d;
