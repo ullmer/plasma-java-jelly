@@ -212,19 +212,13 @@ public final class Externalizer extends AbstractSlawExternalizer {
     }
 
     private static void putScalar(ByteBuffer buffer, Slaw n) {
-        NumericIlk i = n.numericIlk();
-        if (i == FLOAT32) {
-            buffer.putFloat((float)n.emitDouble());
-        } else if (i == FLOAT64) {
-            buffer.putDouble(n.emitDouble());
-        } else if (i == INT8 || i == UNT8) {
-            buffer.put((byte)n.emitLong());
-        } else if (i == INT16 || i == UNT16) {
-            buffer.putShort((short)n.emitLong());
-        } else if (i == INT32 || i == UNT32) {
-            buffer.putInt((int)n.emitLong());
-        } else if (i == INT64 || i == UNT64) {
-            buffer.putLong(n.emitLong());
+        switch (n.numericIlk()) {
+        case FLOAT32: buffer.putFloat((float)n.emitDouble()); break;
+        case FLOAT64: buffer.putDouble(n.emitDouble()); break;
+        case INT8: case UNT8: buffer.put((byte)n.emitLong()); break;
+        case INT16: case UNT16: buffer.putShort((short)n.emitLong()); break;
+        case INT32: case UNT32: buffer.putInt((int)n.emitLong()); break;
+        case INT64: case UNT64: buffer.putLong(n.emitLong()); break;
         }
     }
 
