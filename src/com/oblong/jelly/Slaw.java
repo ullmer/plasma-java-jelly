@@ -206,8 +206,10 @@ public abstract class Slaw {
 
     protected Slaw() {}
 
-    static void setFactory (SlawFactory f) { factory = f; }
+    public static void setFactory (com.oblong.jelly.slaw.SlawFactory f) {
+        factory = f;
+    }
 
-    private static SlawFactory factory =
+    private static com.oblong.jelly.slaw.SlawFactory factory =
         new com.oblong.jelly.slaw.JavaSlawFactory();
 }

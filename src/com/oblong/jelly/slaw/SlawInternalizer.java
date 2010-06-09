@@ -5,7 +5,6 @@ package com.oblong.jelly.slaw;
 import java.nio.ByteBuffer;
 
 import com.oblong.jelly.Slaw;
-import com.oblong.jelly.SlawFactory;
 import com.oblong.jelly.Protein;
 
 /*

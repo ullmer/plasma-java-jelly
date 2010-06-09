@@ -14,9 +14,9 @@ import net.jcip.annotations.Immutable;
 import com.oblong.jelly.NumericIlk;
 import com.oblong.jelly.Slaw;
 import com.oblong.jelly.SlawIlk;
-import com.oblong.jelly.SlawFactory;
 import com.oblong.jelly.Protein;
 
+import com.oblong.jelly.slaw.SlawFactory;
 import com.oblong.jelly.slaw.SlawInternalizer;
 import com.oblong.jelly.slaw.SlawParseError;
 

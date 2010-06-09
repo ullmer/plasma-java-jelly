@@ -1,10 +1,15 @@
 // Copyright (c) 2010 Oblong Industries
 
-package com.oblong.jelly;
+package com.oblong.jelly.slaw;
 
 import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
+
+import com.oblong.jelly.NumericIlk;
+import com.oblong.jelly.Protein;
+import com.oblong.jelly.Slaw;
+import com.oblong.jelly.SlawIlk;
 
 /**
  * Created: Mon Apr 26 01:28:28 2010
