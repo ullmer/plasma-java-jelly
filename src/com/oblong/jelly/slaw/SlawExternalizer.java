@@ -1,8 +1,10 @@
 // Copyright (c) 2010 Oblong Industries
 
-package com.oblong.jelly;
+package com.oblong.jelly.slaw;
 
 import java.nio.ByteBuffer;
+
+import com.oblong.jelly.Slaw;
 
 /*
  * Created: Sun Apr 18 01:46:42 2010

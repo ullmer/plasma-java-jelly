@@ -9,6 +9,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 import com.oblong.jelly.*;
+import com.oblong.jelly.slaw.*;
 import static com.oblong.jelly.Slaw.*;
 
 /**

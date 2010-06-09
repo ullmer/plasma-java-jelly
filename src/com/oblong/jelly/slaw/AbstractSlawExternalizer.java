@@ -6,8 +6,9 @@ import java.nio.ByteBuffer;
 
 import com.oblong.jelly.Protein;
 import com.oblong.jelly.Slaw;
-import com.oblong.jelly.SlawExternalizer;
 import com.oblong.jelly.SlawIlk;
+import com.oblong.jelly.slaw.SlawExternalizer;
+
 import static com.oblong.jelly.SlawIlk.*;
 
 public abstract class AbstractSlawExternalizer implements SlawExternalizer {

@@ -1,10 +1,12 @@
 // Copyright (c) 2010 Oblong Industries
 
-package com.oblong.jelly;
+package com.oblong.jelly.slaw;
 
 import java.nio.ByteBuffer;
 import org.junit.Assert;
 import static org.junit.Assert.*;
+
+import com.oblong.jelly.*;
 
 public class ExternalizerTestBase {
     protected ExternalizerTestBase(SlawExternalizer e) {
