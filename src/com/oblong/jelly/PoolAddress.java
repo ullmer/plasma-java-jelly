@@ -59,7 +59,7 @@ public final class PoolAddress {
         return uri + "/" + name;
     }
 
-    private static class BadAddress extends PoolException {
+    static class BadAddress extends PoolException {
         BadAddress(String i) { super(PoolException.Code.BAD_ADDRESS, i); }
         BadAddress(Throwable e) { super(PoolException.Code.BAD_ADDRESS, e); }
     }
