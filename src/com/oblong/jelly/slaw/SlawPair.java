@@ -7,7 +7,7 @@ import java.util.Map;
 
 import com.oblong.jelly.Slaw;
 
-abstract class SlawPair extends Slaw {
+abstract class SlawPair extends JavaSlaw {
 
     @Override public Slaw car() { return first; }
 

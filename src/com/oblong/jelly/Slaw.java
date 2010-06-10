@@ -4,7 +4,6 @@ package com.oblong.jelly;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -12,7 +11,6 @@ import net.jcip.annotations.Immutable;
 
 import static com.oblong.jelly.NumericIlk.*;
 import static com.oblong.jelly.SlawIlk.*;
-import com.oblong.util.Pair;
 
 /**
  * Created: Mon Apr 12 16:46:30 2010
@@ -52,39 +50,18 @@ public abstract class Slaw {
     public final boolean isMap() { return is(MAP); }
     public final boolean isProtein() { return is(PROTEIN); }
 
-    public boolean emitBoolean() {
-        throw new UnsupportedOperationException(ilk() + " as boolean");
-    }
+    public abstract boolean emitBoolean();
+    public abstract String emitString();
+    public abstract long emitLong();
+    public abstract double emitDouble();
+    public abstract BigInteger emitBigInteger();
 
-    public String emitString() {
-        throw new UnsupportedOperationException(ilk() + " as string");
-    }
-
-    public long emitLong() {
-        throw new UnsupportedOperationException(ilk() + " as long");
-    }
-
-    public double emitDouble() {
-        throw new UnsupportedOperationException(ilk() + " as double");
-    }
-
-    public BigInteger emitBigInteger() {
-        throw new UnsupportedOperationException(ilk() + " as big integer");
-    }
-
-    public Slaw car() {
-        throw new UnsupportedOperationException(ilk() + "as pair");
-    }
-
-    public Slaw cdr() {
-        throw new UnsupportedOperationException(ilk() + "as pair");
-    }
+    public abstract Slaw car();
+    public abstract Slaw cdr();
 
     public abstract int dimension();
-
     public abstract int count();
     public abstract Slaw nth(int n);
-    public abstract Slaw find(Slaw key);
 
     public final int indexOf(Slaw elem) {
         for (int i = 0, c = count(); i < c; i++)
@@ -108,7 +85,8 @@ public abstract class Slaw {
         return ls;
     }
 
-    public Map<Slaw,Slaw> emitMap() { return new HashMap<Slaw,Slaw>(); }
+    public abstract Map<Slaw,Slaw> emitMap();
+    public abstract Slaw find(Slaw key);
 
     public final Protein toProtein() {
         if (!isProtein())
@@ -130,9 +108,7 @@ public abstract class Slaw {
         return buff.toString();
     }
 
-    public Slaw withNumericIlk(NumericIlk ilk) {
-        throw new UnsupportedOperationException(ilk() + " not numeric");
-    }
+    public abstract Slaw withNumericIlk(NumericIlk ilk);
 
     public abstract boolean slawEquals(Slaw s);
     public abstract String debugString();
@@ -204,12 +180,6 @@ public abstract class Slaw {
         return factory.array(i, n, d);
     }
 
-    protected Slaw() {}
-
-    public static void setFactory (com.oblong.jelly.slaw.SlawFactory f) {
-        factory = f;
-    }
-
-    private static com.oblong.jelly.slaw.SlawFactory factory =
+    private static final com.oblong.jelly.slaw.SlawFactory factory =
         new com.oblong.jelly.slaw.JavaSlawFactory();
 }

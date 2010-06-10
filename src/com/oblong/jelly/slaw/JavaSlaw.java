@@ -1,0 +1,56 @@
+// Copyright (c) 2010 Oblong Industries
+
+package com.oblong.jelly.slaw;
+
+import java.math.BigInteger;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.oblong.jelly.NumericIlk;
+import com.oblong.jelly.Slaw;
+
+/**
+ *
+ * Created: Fri Jun 11 00:22:04 2010
+ *
+ * @author jao
+ */
+abstract class JavaSlaw extends Slaw {
+
+    @Override public boolean emitBoolean() {
+        throw new UnsupportedOperationException(ilk() + " as boolean");
+    }
+
+    @Override public String emitString() {
+        throw new UnsupportedOperationException(ilk() + " as string");
+    }
+
+    @Override public long emitLong() {
+        throw new UnsupportedOperationException(ilk() + " as long");
+    }
+
+    @Override public double emitDouble() {
+        throw new UnsupportedOperationException(ilk() + " as double");
+    }
+
+    @Override public BigInteger emitBigInteger() {
+        throw new UnsupportedOperationException(ilk() + " as big integer");
+    }
+
+    @Override public Slaw car() {
+        throw new UnsupportedOperationException(ilk() + "as pair");
+    }
+
+    @Override public Slaw cdr() {
+        throw new UnsupportedOperationException(ilk() + "as pair");
+    }
+
+    @Override public Map<Slaw,Slaw> emitMap() {
+        return new HashMap<Slaw,Slaw>();
+    }
+
+    @Override public Slaw withNumericIlk(NumericIlk ilk) {
+        throw new UnsupportedOperationException(ilk() + " not numeric");
+    }
+
+}

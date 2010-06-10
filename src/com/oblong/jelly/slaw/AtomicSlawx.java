@@ -7,7 +7,7 @@ import com.oblong.jelly.Slaw;
 import com.oblong.jelly.SlawIlk;
 import net.jcip.annotations.Immutable;
 
-abstract class AtomicSlaw extends Slaw {
+abstract class AtomicSlaw extends JavaSlaw {
 
     @Override public int dimension() { return 1; }
     @Override public final int count() { return 1; }

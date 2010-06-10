@@ -16,7 +16,7 @@ import com.oblong.jelly.SlawIlk;
 import net.jcip.annotations.Immutable;
 
 @Immutable
-final class SlawList extends Slaw {
+final class SlawList extends JavaSlaw {
     static final SlawList EMPTY_LIST =
         new SlawList(new ArrayList<Slaw>(), false);
 

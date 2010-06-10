@@ -8,7 +8,7 @@ import java.util.List;
 import com.oblong.jelly.NumericIlk;
 import com.oblong.jelly.Slaw;
 
-abstract class CompositeNumericSlaw extends Slaw {
+abstract class CompositeNumericSlaw extends JavaSlaw {
 
     CompositeNumericSlaw(NumericIlk ilk, Slaw[] elems) {
         elements = new ArrayList<Slaw>(elems.length);

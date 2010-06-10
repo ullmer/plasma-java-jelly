@@ -2,14 +2,15 @@
 
 package com.oblong.jelly.slaw;
 
+import java.math.BigInteger;
 import java.nio.ByteBuffer;
-import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.oblong.jelly.NumericIlk;
 import com.oblong.jelly.Protein;
 import com.oblong.jelly.Slaw;
 import com.oblong.jelly.SlawIlk;
-
 import net.jcip.annotations.Immutable;
 
 @Immutable
@@ -21,6 +22,34 @@ final class SlawProtein extends Protein {
 
     @Override public SlawIlk ilk() { return SlawIlk.PROTEIN; }
     @Override public NumericIlk numericIlk() { return null; }
+
+    @Override public boolean emitBoolean() {
+        throw new UnsupportedOperationException(ilk() + " as boolean");
+    }
+
+    @Override public String emitString() {
+        throw new UnsupportedOperationException(ilk() + " as string");
+    }
+
+    @Override public long emitLong() {
+        throw new UnsupportedOperationException(ilk() + " as long");
+    }
+
+    @Override public double emitDouble() {
+        throw new UnsupportedOperationException(ilk() + " as double");
+    }
+
+    @Override public BigInteger emitBigInteger() {
+        throw new UnsupportedOperationException(ilk() + " as big integer");
+    }
+
+    @Override public Map<Slaw,Slaw> emitMap() {
+        return new HashMap<Slaw,Slaw>();
+    }
+
+    @Override public Slaw withNumericIlk(NumericIlk ilk) {
+        throw new UnsupportedOperationException(ilk() + " not numeric");
+    }
 
     @Override public Slaw car() { return descrips; }
     @Override public Slaw cdr() { return ingests; }

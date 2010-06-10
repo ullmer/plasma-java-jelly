@@ -17,7 +17,7 @@ import com.oblong.jelly.SlawIlk;
 import net.jcip.annotations.Immutable;
 
 @Immutable
-final class SlawMap extends Slaw {
+final class SlawMap extends JavaSlaw {
 
     static Slaw valueOf(Map<Slaw,Slaw> map) {
         if (map == null) return EMPTY_MAP;

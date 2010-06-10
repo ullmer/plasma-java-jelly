@@ -42,7 +42,7 @@ final class SlawArray extends CompositeNumericSlaw {
 }
 
 @Immutable
-final class EmptyArray extends Slaw {
+final class EmptyArray extends JavaSlaw {
 
     static Slaw valueOf(SlawIlk ilk, NumericIlk ni, int dimension) {
         assert ilk.isNumeric();
