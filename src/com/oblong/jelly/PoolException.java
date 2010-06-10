@@ -31,7 +31,7 @@ import net.jcip.annotations.Immutable;
 
     public PoolException(Code code, Throwable cause) {
         this.code = code;
-        info = cause.toString();
+        info = cause.getMessage();
     }
 
     public Code code() { return code; }

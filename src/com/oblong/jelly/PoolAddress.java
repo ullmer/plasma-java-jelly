@@ -7,8 +7,6 @@ import java.net.URISyntaxException;
 
 import net.jcip.annotations.Immutable;
 
-import static com.oblong.jelly.PoolException.Code.BAD_ADDRESS;
-
 /**
  *
  * Created: Wed Jun  9 16:20:42 2010
@@ -21,13 +19,15 @@ public final class PoolAddress {
     public PoolAddress(String address) throws PoolException {
         final int sep = address.lastIndexOf('/');
         if (sep == -1 || sep > address.length() - 2)
-            throw new PoolException(
-                BAD_ADDRESS, "Missing pool name in address: " + address);
+            throw new BadAddress("Missing pool name in address: " + address);
         name = checkName(address.substring(sep + 1));
         try {
             uri = new URI(address.substring(0, sep));
+            final String scm = uri.getScheme();
+            if (!(scm.isEmpty() || scm.equals(TCP_SCM)))
+                throw new BadAddress("Unsupported scheme: " + scm);
         } catch (URISyntaxException e) {
-            throw new PoolException(BAD_ADDRESS, e);
+            throw new BadAddress(e);
         }
     }
 
@@ -36,7 +36,7 @@ public final class PoolAddress {
         try {
             uri = new URI(TCP_SCM, "", host, port, "", "", "");
         } catch (URISyntaxException e) {
-            throw new PoolException(BAD_ADDRESS, e);
+            throw new BadAddress(e);
         }
         this.name = checkName(name);
     }
@@ -59,6 +59,11 @@ public final class PoolAddress {
         return uri + "/" + name;
     }
 
+    private static class BadAddress extends PoolException {
+        BadAddress(String i) { super(PoolException.Code.BAD_ADDRESS, i); }
+        BadAddress(Throwable e) { super(PoolException.Code.BAD_ADDRESS, e); }
+    }
+
     private static String checkName(String name) throws PoolException {
         String error = null;
         if (name == null || name.isEmpty())
@@ -73,8 +78,7 @@ public final class PoolAddress {
                      break;
                  }
         if (error != null)
-            throw new PoolException(BAD_ADDRESS,
-                                    "Invalid name (" + name + "): " + error);
+            throw new BadAddress("Invalid name (" + name + "): " + error);
         return name;
     }
 
