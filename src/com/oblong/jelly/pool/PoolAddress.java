@@ -23,9 +23,6 @@ public final class PoolAddress {
         name = checkName(address.substring(sep + 1));
         try {
             uri = new URI(address.substring(0, sep));
-            final String scm = uri.getScheme();
-            if (!(scm.isEmpty() || scm.equals(TCP_SCM)))
-                throw new BadAddress("Unsupported scheme: " + scm);
         } catch (URISyntaxException e) {
             throw new BadAddress(e);
         }
@@ -41,9 +38,25 @@ public final class PoolAddress {
         this.name = checkName(name);
     }
 
-    public String scheme() { return TCP_SCM; }
+    public PoolAddress(String scm, String host, int port, String name)
+        throws PoolException {
+        try {
+            uri = new URI(scm, "", host, port, "", "", "");
+        } catch (URISyntaxException e) {
+            throw new BadAddress(e);
+        }
+        this.name = checkName(name);
+    }
+
+    public String scheme() {
+        final String scm = uri.getScheme();
+        return scm.isEmpty() ? TCP_SCM : scm;
+    }
+
     public String host() { return uri.getHost(); }
+
     public int port() { return uri.getPort(); }
+
     public String name() { return name; }
 
     @Override public boolean equals(Object o) {
