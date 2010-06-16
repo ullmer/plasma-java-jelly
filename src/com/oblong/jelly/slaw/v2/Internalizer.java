@@ -37,7 +37,7 @@ final class Internalizer implements SlawInternalizer {
             }
             return internProtein(b, f);
         } catch (IOException e) {
-            throw new SlawParseError(b.position(), e.getMessage());
+            throw new SlawParseError(b.bytesSeen(), e.getMessage());
         }
     }
 
@@ -47,8 +47,7 @@ final class Internalizer implements SlawInternalizer {
         try {
             return internSlaw(b, f);
         } catch (IOException e) {
-            throw new SlawParseError(b.position(),
-                                     "Buffer too short (" + e + ")");
+            throw new SlawParseError(b.bytesSeen(), e.getMessage());
         }
     }
 
@@ -62,7 +61,7 @@ final class Internalizer implements SlawInternalizer {
             proteinHasIngests(sh) ? internSlaw(b, f) : null;
         final int dataLen = (int)(proteinDataLen(sh));
         if (dataLen < 0)
-            throw new SlawParseError(b.position(),
+            throw new SlawParseError(b.bytesSeen(),
                                      "Invalid data length: " + dataLen);
         final byte[] data = new byte[dataLen];
         if (dataLen > 0) {
@@ -106,7 +105,7 @@ final class Internalizer implements SlawInternalizer {
             return internMap(b, f);
         default:
             throw new SlawParseError
-                (b.position(), "Unrecognized format (" + nb + ")");
+                (b.bytesSeen(), "Unrecognized format (" + nb + ")");
         }
     }
 
@@ -116,7 +115,7 @@ final class Internalizer implements SlawInternalizer {
         if (h == NIL_HEADING) return f.nil();
         if (h == TRUE_HEADING) return f.bool(true);
         if (h == FALSE_HEADING) return f.bool(false);
-        throw new SlawParseError(b.position(), "Invalid atom (" + h + ")");
+        throw new SlawParseError(b.bytesSeen(), "Invalid atom (" + h + ")");
     }
 
     private static Slaw internWeeString(ByteReader b, SlawFactory f)
@@ -124,8 +123,9 @@ final class Internalizer implements SlawInternalizer {
         final byte hb = b.peek(b.isLittleEndian() ? 7 : 0);
         final int len = weeStringLength(hb) - 1;
         if (len < 0)
-            throw new SlawParseError(b.position(),
+            throw new SlawParseError(b.bytesSeen(),
                                      "Invalid wee string length: " + len);
+        if (len == 0) return f.string("");
         final byte[] bs = new byte[len];
         b.skip(weeOffset(b, len + 1)).get(bs, len);
         return f.string(makeString(bs));
@@ -211,7 +211,6 @@ final class Internalizer implements SlawInternalizer {
         final int count = (int)arrayBreadth(h);
         if (count == 0) return emptyArray(h, b, f);
         final int len = (int) (count * numericBytes(h));
-        final int beg = b.position();
         Slaw[] cmps = readArray(h, count, b, f);
         return f.array(cmps);
     }

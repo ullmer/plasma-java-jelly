@@ -15,11 +15,11 @@ import java.nio.ByteOrder;
  */
 public final class ByteReader {
 
-    public static final int DEFAULT_BUFFER_SIZE = 512;
+    public static final int DEFAULT_BUFFER_SIZE = 8;
 
     public ByteReader(InputStream s, int bufferSize) {
         assert s != null && bufferSize > 0;
-        size = Math.max(bufferSize, 8);
+        size = Math.max(bufferSize, DEFAULT_BUFFER_SIZE);
         buffer = ByteBuffer.wrap(new byte[size]);
         stream = s;
         bytes = 0;
@@ -38,111 +38,123 @@ public final class ByteReader {
         return buffer.order() == ByteOrder.LITTLE_ENDIAN;
     }
 
-    public int position() {
-        return buffer.position();
-    }
-
-    public int read() {
+    public int bytesSeen() {
         return read;
     }
 
     public ByteReader skip(int n) throws IOException {
         ensure(n);
-        buffer.position(buffer.position() + n);
+        shiftPosition(n);
         return this;
     }
 
     public byte peek(int p) throws IOException {
         ensure(1 + p);
-        final byte result = buffer.get(buffer.position() + p);
-        bytes += 1 + p;
-        return result;
+        final byte r = buffer.get(buffer.position() + p);
+        return r;
     }
 
     public long peekLong() throws IOException {
-        final int pos = buffer.position();
-        final long result = getLong();
-        buffer.position(pos);
-        bytes += 8;
+        ensure(8);
+        final long result = buffer.getLong();
+        buffer.position(buffer.position() - 8);
         return result;
+    }
+
+    public ByteReader get(byte[] bs, int len) throws IOException {
+        final int buffered = Math.min(len, bytes);
+        if (buffered > 0) {
+            buffer.get(bs, buffer.position(), buffered);
+            shiftPosition(buffered);
+        }
+        if (len > buffered) readFromStream(bs, buffered, len - buffered);
+        return this;
     }
 
     public byte get() throws IOException {
         ensure(1);
-        return buffer.get();
-    }
-
-    public ByteReader get(byte[] bs, int len) throws IOException {
-        final int blocks = len / size;
-        for (int i = 0; i < blocks; ++i) {
-            ensure(size);
-            buffer.get(bs, i * size, size);
-        }
-        final int left = len % size;
-        if (left > 0) {
-            ensure(left);
-            buffer.get(bs, blocks * size, left);
-        }
-        return this;
+        final byte r = buffer.get();
+        adjustRead(1);
+        return r;
     }
 
     public short getShort() throws IOException {
         ensure(2);
-        return buffer.getShort();
+        final short r = buffer.getShort();
+        adjustRead(2);
+        return r;
     }
 
     public int getInt() throws IOException {
         ensure(4);
-        return buffer.getInt();
+        final int r = buffer.getInt();
+        adjustRead(4);
+        return r;
     }
 
     public long getLong() throws IOException {
         ensure(8);
-        return buffer.getLong();
+        final long r = buffer.getLong();
+        adjustRead(8);
+        return r;
     }
 
     public float getFloat() throws IOException {
         ensure(4);
-        return buffer.getFloat();
+        final float r = buffer.getFloat();
+        adjustRead(4);
+        return r;
     }
 
     public double getDouble() throws IOException {
         ensure(8);
-        return buffer.getDouble();
+        final double r = buffer.getDouble();
+        adjustRead(8);
+        return r;
     }
 
     public ByteReader skipToBoundary(int b) throws IOException {
-        final int last = buffer.position() + bytes;
-        buffer.position(last);
-        bytes = 0;
-        final int pad = ((last + b - 1) & -b) - last;
-        if (pad > 0) {
-            ensure(pad);
-            buffer.position(last + pad);
-        }
+        if (bytes > 0) shiftPosition(bytes);
+        final int pad = ((read + b - 1) & -b) - read;
+        if (pad > 0) skip(pad);
         return this;
     }
 
+    public void dump(String msg) {
+        System.out.println(msg + ":");
+        System.out.println(" pos = " + buffer.position()
+                           + ", bytes = " + bytes);
+    }
+
+    private void adjustRead(int bs) {
+        buffer.position(buffer.position() % size);
+        bytes = Math.max(0, bytes - bs);
+    }
+
+    private void shiftPosition(int by) {
+        buffer.position((buffer.position() + by) % size);
+        bytes = Math.max(0, bytes - by);
+    }
+
+    private void readFromStream(byte[] bs, int offset, int len)
+        throws IOException {
+        final int r = stream.read(bs, offset, len);
+        if (len != r) throw new IOException(
+            "Stream underflow reading " + len + " (" + bytes + ")");
+        read += len;
+    }
+
     private void ensure(int len) throws IOException {
-        assert len <= size;
-        final int delta = len - bytes;
-        if (buffer.remaining() < len) {
-            final int p = buffer.position();
-            buffer.position(0);
-            buffer.put(buffer.array(), buffer.position(), bytes);
+        final int p = buffer.position();
+        if (size - p < len) {
+            final byte[] a = buffer.array();
+            for (int i = 0; i < bytes; ++i) a[i] = buffer.get(p + i);
             buffer.position(0);
         }
+        final int delta = len - bytes;
         if (delta > 0) {
-            final int r = stream.read(buffer.array(),
-                                      buffer.position() + bytes,
-                                      delta);
-            if (delta != r)
-                throw new IOException(
-                    "Stream underflow reading " + delta + " (" + bytes + ")");
-            bytes = 0;
-            read += delta;
-        } else {
-            bytes -= len;
+            readFromStream(buffer.array(), buffer.position() + bytes, delta);
+            bytes += delta;
         }
     }
 
