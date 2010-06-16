@@ -120,12 +120,6 @@ public final class ByteReader {
         return this;
     }
 
-    public void dump(String msg) {
-        System.out.println(msg + ":");
-        System.out.println(" pos = " + buffer.position()
-                           + ", bytes = " + bytes);
-    }
-
     private void adjustRead(int bs) {
         buffer.position(buffer.position() % size);
         bytes = Math.max(0, bytes - bs);
