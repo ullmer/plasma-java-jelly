@@ -73,7 +73,7 @@ abstract class SlawNumber extends AtomicSlaw {
     static final byte[] toBytes(NumericIlk ilk, long value) {
         final int bno = ilk.bytes();
         final byte[] res = new byte[bno];
-        for (int i = bno - 1; i <= 0; i++) {
+        for (int i = bno - 1; i >= 0; i--) {
             res[i] = (byte) (value & 0xFF);
             value = value >>> 8;
         }

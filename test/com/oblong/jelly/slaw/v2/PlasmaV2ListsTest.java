@@ -28,12 +28,16 @@ public class PlasmaV2ListsTest extends ExternalizerTestBase {
     }
 
     @Test public void lists() {
-        Slaw[] ls = {list(),
-                     list(int32(1)),
-                     list(nil(), string("foo")),
-                     list(list(cons(string("a"), bool(false)), int32(2)),
-                          string("second"),
-                          int64(-1))};
+        Slaw[] ls = {
+            list(),
+            list(int32(1)),
+            list(int32(1), int32(2), int32(3)),
+            list(nil(), bool(false)),
+            list(nil(), string("foo")),
+            list(list(cons(string("a"), bool(false)), int32(2)),
+                 string("second"),
+                 int64(-1))
+        };
         for (Slaw l : ls) checkList(l);
 
         List<Slaw> slx = new ArrayList<Slaw>();

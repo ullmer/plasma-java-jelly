@@ -2,14 +2,17 @@
 
 package com.oblong.jelly.slaw.v2;
 
-import java.nio.ByteBuffer;
+
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+
 import org.junit.Assert;
-import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Test;
 
 import com.oblong.jelly.*;
-import com.oblong.jelly.slaw.*;
 import static com.oblong.jelly.Slaw.*;
+import com.oblong.jelly.slaw.*;
 
 /**
  * Unit test for PlasmaV2 serialization: proteins.
@@ -100,9 +103,8 @@ public class PlasmaV2ProteinsTest extends ExternalizerTestBase {
 
     private void checkIntern(Protein s, short[] b) {
         try {
-            final ByteBuffer b2 = ByteBuffer.wrap(asBytes(b));
-            final Protein s2 = internalizer.internProtein(b2, factory);
-            assertEquals(0, b2.remaining());
+            final InputStream is = new ByteArrayInputStream(asBytes(b));
+            final Protein s2 = internalizer.internProtein(is, factory);
             assertEquals(s, s2);
         } catch (SlawParseError e) {
             fail(e.toString());

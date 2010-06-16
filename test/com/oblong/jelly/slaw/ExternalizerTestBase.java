@@ -2,7 +2,11 @@
 
 package com.oblong.jelly.slaw;
 
+
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.nio.ByteBuffer;
+
 import org.junit.Assert;
 import static org.junit.Assert.*;
 
@@ -43,10 +47,9 @@ public class ExternalizerTestBase {
     protected final void checkIntern(String msg, Slaw s, byte[] b) {
         if (internalizer != null) {
             try {
-                final ByteBuffer b2 = ByteBuffer.wrap(b);
-                final Slaw s2 = internalizer.internSlaw(b2, factory);
+                final InputStream is = new ByteArrayInputStream(b);
+                final Slaw s2 = internalizer.internSlaw(is, factory);
                 assertEquals(s, s2);
-                assertEquals(msg, 0, b2.remaining());
             } catch (SlawParseError e) {
                 fail(msg + ": " + e);
             }

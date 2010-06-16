@@ -36,6 +36,16 @@ final class Protocol {
     static final byte WEE_STR_HEADING_BYTE = WEE_STR_NIBBLE<<4;
     static final int STR_WEE_LEN = 6;
 
+    static final void weeBytes(long h, byte[] b, boolean le) {
+        final int len = b.length;
+        final int bits = (64 - 8 * len);
+        h = (h<<bits)>>bits;
+        for (int i = len - 1; i >= 0; --i) {
+            b[le ? len - 1 - i : i] = (byte)(h & 0xFFL);
+            h = h>>>8;
+        }
+    }
+
     static final int weeStringLength(byte hb) { return hb & 0x0f; }
     static final int stringLength(long h) {
         return (int)((h<<8)>>>5) - 8 - stringPadding(h);
