@@ -1,7 +1,9 @@
 package com.oblong.jelly.slaw.v2;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.nio.ByteBuffer;
+
+import net.jcip.annotations.Immutable;
 
 import com.oblong.jelly.NumericIlk;
 import static com.oblong.jelly.NumericIlk.*;
@@ -13,20 +15,22 @@ import static com.oblong.jelly.SlawIlk.*;
 import com.oblong.jelly.slaw.AbstractSlawExternalizer;
 import static com.oblong.jelly.slaw.v2.Protocol.*;
 
-import net.jcip.annotations.Immutable;
+import com.oblong.jelly.util.ByteWriter;
 
 @Immutable
 public final class Externalizer extends AbstractSlawExternalizer {
 
     @Override protected int nilExternSize(Slaw s) { return OCT_LEN; }
 
-    @Override protected void externNil(Slaw s, ByteBuffer b) {
+    @Override protected void externNil(Slaw s, ByteWriter b)
+        throws IOException {
         b.putLong(NIL_HEADING);
     }
 
     @Override protected int boolExternSize(Slaw b) { return OCT_LEN; }
 
-    @Override protected void externBool(Slaw b, ByteBuffer r) {
+    @Override protected void externBool(Slaw b, ByteWriter r)
+        throws IOException {
         r.putLong(b.emitBoolean() ? TRUE_HEADING : FALSE_HEADING);
     }
 
@@ -35,7 +39,8 @@ public final class Externalizer extends AbstractSlawExternalizer {
         return (bn > STR_WEE_LEN) ? roundUp(bn + OCT_LEN + 1) : OCT_LEN;
     }
 
-    @Override protected void externString(Slaw s, ByteBuffer b) {
+    @Override protected void externString(Slaw s, ByteWriter b)
+        throws IOException {
         final byte[] bs = stringBytes(s);
         if (bs.length > STR_WEE_LEN) marshallStr(bs, b);
         else marshallWeeStr(bs, b);
@@ -45,29 +50,27 @@ public final class Externalizer extends AbstractSlawExternalizer {
         return numericSize(n);
     }
 
-    @Override protected void externNumber(Slaw n, ByteBuffer b) {
-        b.putLong(numberHeading(n.numericIlk()));
-        adjustBufferForNumeric(b, n);
-        putNumVal(b, n);
+    @Override protected void externNumber(Slaw n, ByteWriter b)
+        throws IOException {
+        putNumVal(putNumHeader(numberHeading(n.numericIlk()), b, n), n);
     }
 
     @Override protected int complexExternSize(Slaw c) {
         return numericSize(c);
     }
 
-    @Override protected void externComplex(Slaw c, ByteBuffer b) {
-        b.putLong(complexHeading(c.numericIlk()));
-        adjustBufferForNumeric(b, c);
-        putNumVal(b, c);
+    @Override protected void externComplex(Slaw c, ByteWriter b)
+        throws IOException {
+        putNumVal(putNumHeader(complexHeading(c.numericIlk()), b, c), c);
     }
 
     @Override protected int vectorExternSize(Slaw v) {
         return numericSize(v);
     }
 
-    @Override protected void externVector(Slaw v, ByteBuffer b) {
-        b.putLong(vectorHeading(v.numericIlk(), v.dimension()));
-        adjustBufferForNumeric(b, v);
+    @Override protected void externVector(Slaw v, ByteWriter b)
+        throws IOException {
+        putNumHeader(vectorHeading(v.numericIlk(), v.dimension()), b, v);
         for (Slaw n : v.emitList()) putNumVal(b, n);
     }
 
@@ -75,9 +78,10 @@ public final class Externalizer extends AbstractSlawExternalizer {
         return numericSize(v);
     }
 
-    @Override protected void externComplexVector(Slaw v, ByteBuffer b) {
-        b.putLong(complexVectorHeading(v.numericIlk(), v.dimension()));
-        adjustBufferForNumeric(b, v);
+    @Override protected void externComplexVector(Slaw v, ByteWriter b)
+        throws IOException {
+        putNumHeader(
+            complexVectorHeading(v.numericIlk(), v.dimension()), b, v);
         for (Slaw n : v.emitList()) putNumVal(putNumVal(b, n.car()), n.cdr());
     }
 
@@ -85,15 +89,16 @@ public final class Externalizer extends AbstractSlawExternalizer {
         return numericSize(v);
     }
 
-    @Override protected void externMultivector(Slaw v, ByteBuffer b) {
-        b.putLong(multivectorHeading(v.numericIlk(), v.dimension()));
-        adjustBufferForNumeric(b, v);
+    @Override protected void externMultivector(Slaw v, ByteWriter b)
+        throws IOException {
+        putNumHeader(multivectorHeading(v.numericIlk(), v.dimension()), b, v);
         for (Slaw n : v.emitList()) putNumVal(b, n);
     }
 
     @Override protected int arrayExternSize(Slaw a) { return arraySize(a); }
 
-    @Override protected void externArray(Slaw a, ByteBuffer b) {
+    @Override protected void externArray(Slaw a, ByteWriter b)
+        throws IOException {
         putArray(arrayHeading(a.numericIlk()), b, a);
     }
 
@@ -101,7 +106,8 @@ public final class Externalizer extends AbstractSlawExternalizer {
         return complexArraySize(a);
     }
 
-    @Override protected void externComplexArray(Slaw a, ByteBuffer b) {
+    @Override protected void externComplexArray(Slaw a, ByteWriter b)
+        throws IOException {
         putArray(complexArrayHeading(a.numericIlk()), b, a);
     }
 
@@ -109,7 +115,8 @@ public final class Externalizer extends AbstractSlawExternalizer {
         return arraySize(a);
     }
 
-    @Override protected void externVectorArray(Slaw a, ByteBuffer b) {
+    @Override protected void externVectorArray(Slaw a, ByteWriter b)
+        throws IOException {
         putArray(vectorArrayHeading(a.numericIlk(), a.dimension()), b, a);
     }
 
@@ -117,77 +124,86 @@ public final class Externalizer extends AbstractSlawExternalizer {
         return complexArraySize(a);
     }
 
-    @Override protected void externComplexVectorArray(Slaw a, ByteBuffer b) {
+    @Override protected void externComplexVectorArray(Slaw a, ByteWriter b)
+        throws IOException {
         putArray(complexVectorArrayHeading(a.numericIlk(), a.dimension()),
                  b, a);
     }
 
     @Override protected int multivectorArrayExternSize(Slaw a) {
         final int cno = 1 << a.dimension();
-        return OCT_LEN + roundUp(a.count() * cno * a.numericIlk().bytes());
+        return OCT_LEN
+            + roundUp(a.count() * cno * a.numericIlk().bytes());
     }
 
-    @Override protected void externMultivectorArray(Slaw a, ByteBuffer b) {
+    @Override protected void externMultivectorArray(Slaw a, ByteWriter b)
+        throws IOException {
         putArray(multivectorArrayHeading(a.numericIlk(), a.dimension()),
                  b, a);
     }
 
     @Override protected int consExternSize(Slaw c) { return listSize(c); }
 
-    @Override protected void externCons(Slaw c, ByteBuffer b) {
+    @Override protected void externCons(Slaw c, ByteWriter b)
+        throws IOException {
         marshallAsList(c, b);
     }
 
     @Override protected int listExternSize(Slaw c) { return listSize(c); }
 
-    @Override protected void externList(Slaw c, ByteBuffer b) {
+    @Override protected void externList(Slaw c, ByteWriter b)
+        throws IOException {
         marshallAsList(c, b);
     }
 
     @Override protected int mapExternSize(Slaw c) { return listSize(c); }
 
-    @Override protected void externMap(Slaw c, ByteBuffer b) {
+    @Override protected void externMap(Slaw c, ByteWriter b)
+        throws IOException {
         marshallAsList(c, b);
     }
 
-    @Override protected void externProtein(Protein p, ByteBuffer b) {
-        final int begin = b.position();
-        b.putLong(0).putLong(0);
+    @Override protected void externProtein(Protein p, ByteWriter b)
+        throws IOException {
+        b.putLong(proteinHeading(octs(proteinExternSize(p))));
+
         final Slaw descrips = p.descrips();
         final Slaw ingests = p.ingests();
-        if (descrips != null) extern(descrips, b);
-        if (ingests != null) extern(ingests, b);
         final int dataLen = p.dataLength();
-        if (dataLen > WEE_PROTEIN_DATA_LEN) p.putData(b);
-        final int end = b.position();
+
         final byte sb = proteinSecondHeadingByte(descrips != null,
                                                  ingests != null, dataLen);
-        b.position(begin);
-        b.putLong(proteinHeading(octs(roundUp(end - begin))));
-        if (dataLen > 0 && dataLen <= WEE_PROTEIN_DATA_LEN)
-            p.putData(pad(b.put(sb), WEE_PROTEIN_DATA_LEN - dataLen));
-        else
+
+        if (dataLen > 0 && dataLen <= WEE_PROTEIN_DATA_LEN) {
+            b.put(sb);
+            if (dataLen < WEE_PROTEIN_DATA_LEN)
+                pad(b, WEE_PROTEIN_DATA_LEN - dataLen);
+            b.putProteinData(p);
+        } else {
             b.putLong(proteinSecondHeading(sb, dataLen));
-        b.position(end);
+        }
+
+        if (descrips != null) extern(descrips, b);
+        if (ingests != null) extern(ingests, b);
+        if (dataLen > WEE_PROTEIN_DATA_LEN) b.putProteinData(p);
     }
 
     @Override protected int proteinExternSize(Protein p) {
-        int len = 2 * OCT_LEN;
-        final Slaw ingests = p.ingests();
-        if (ingests != null) len += externSize(ingests);
-        final Slaw descrips = p.descrips();
-        if (descrips != null) len += externSize(descrips);
+        int len =
+            2 * OCT_LEN + externSize(p.ingests()) + externSize(p.descrips());
         if (p.dataLength() > WEE_PROTEIN_DATA_LEN) len += p.dataLength();
         return roundUp(len);
     }
 
-    @Override protected void prepareBuffer(ByteBuffer b, Slaw s) {}
+    @Override protected void prepareBuffer(ByteWriter b, Slaw s) {}
 
-    @Override protected void finishBuffer(ByteBuffer b, Slaw s, int begin) {
-        pad(b, roundUp(b.position()) - b.position());
+    @Override protected void finishBuffer(ByteWriter b, Slaw s)
+        throws IOException {
+        pad(b, padding(b.bytesWritten()));
     }
 
-    private static ByteBuffer pad(ByteBuffer b, int n) {
+    private static ByteWriter pad(ByteWriter b, long n)
+        throws IOException {
         while (n-- > 0) b.put(NUL);
         return b;
     }
@@ -200,7 +216,8 @@ public final class Externalizer extends AbstractSlawExternalizer {
         }
     }
 
-    private static ByteBuffer putNumVal(ByteBuffer buffer, Slaw n) {
+    private static ByteWriter putNumVal(ByteWriter buffer, Slaw n)
+        throws IOException {
         assert n.isNumber() || n.isComplex();
         if (n.isComplex()) {
             putScalar(buffer, n.car());
@@ -211,7 +228,8 @@ public final class Externalizer extends AbstractSlawExternalizer {
         return buffer;
     }
 
-    private static void putScalar(ByteBuffer buffer, Slaw n) {
+    private static void putScalar(ByteWriter buffer, Slaw n)
+        throws IOException {
         switch (n.numericIlk()) {
         case FLOAT32: buffer.putFloat((float)n.emitDouble()); break;
         case FLOAT64: buffer.putDouble(n.emitDouble()); break;
@@ -222,18 +240,20 @@ public final class Externalizer extends AbstractSlawExternalizer {
         }
     }
 
-    private static void marshallWeeStr(byte[] bs, ByteBuffer b) {
+    private static void marshallWeeStr(byte[] bs, ByteWriter b)
+        throws IOException {
         assert bs.length <= STR_WEE_LEN;
         final int fb = WEE_STR_HEADING_BYTE | (bs.length + 1);
         b.put((byte)fb);
         pad(b, STR_WEE_LEN - bs.length).put(bs);
     }
 
-    private static void marshallStr(byte[] bs, ByteBuffer b) {
+    private static void marshallStr(byte[] bs, ByteWriter b)
+        throws IOException {
         final int len = OCT_LEN + bs.length + 1;
-        final int p = roundUp(len) - len;
-        b.putLong(octs(len + p)).put(0, (byte)(STR_HEADING_BYTE|p))
-         .put(bs);
+        final int p = padding(len);
+        final long hb = ((long)(STR_HEADING_BYTE|p))<<56;
+        pad(b.putLong(hb|(long)octs(len+p)).put(bs), p);
     }
 
     private static int numericWidth(Slaw s) {
@@ -242,9 +262,12 @@ public final class Externalizer extends AbstractSlawExternalizer {
         return s.ilk().isComplexNumeric() ? 2 * w : w;
     }
 
-    private static void adjustBufferForNumeric(ByteBuffer b, Slaw s) {
+    private static ByteWriter putNumHeader(long h, ByteWriter b, Slaw s)
+        throws IOException {
         final int w = numericWidth(s);
-        if (w <= NUM_WEE_LEN) b.position(b.position() - w);
+        if (w > NUM_WEE_LEN) return b.putLong(h);
+        b.putInt((int)(h>>>32));
+        return pad(b, NUM_WEE_LEN - w);
     }
 
     private static int numericSize(Slaw s) {
@@ -262,7 +285,8 @@ public final class Externalizer extends AbstractSlawExternalizer {
             + roundUp(2 * a.count() * a.dimension() * a.numericIlk().bytes());
     }
 
-    private static void putArray(long h, ByteBuffer b, Slaw a) {
+    private static void putArray(long h, ByteWriter b, Slaw a)
+        throws IOException {
         final int c = a.count();
         b.putLong(h|c);
         for (int i = 0; i < c; i++) {
@@ -279,17 +303,13 @@ public final class Externalizer extends AbstractSlawExternalizer {
         return roundUp(len);
     }
 
-    private void marshallAsList(Slaw l, ByteBuffer b) {
-        final int begin = b.position();
+    private void marshallAsList(Slaw l, ByteWriter b)
+        throws IOException {
         final int count = l.count();
-        b.position(b.position() + OCT_LEN);
-        if (count > WEE_LIST_LEN) b.putLong(count);
-        for (int i = 0; i < count; i++) extern(l.nth(i), b);
         final long h =
             (long)(compositeHeadingByte(l.ilk()))|Math.min(15, count);
-        final int end = b.position();
-        final long octs = octs(roundUp(end - begin));
-        b.position(begin);
-        b.putLong((h<<56)|octs).position(end);
+        b.putLong((h<<56)|octs(listSize(l)));
+        if (count > WEE_LIST_LEN) b.putLong(count);
+        for (int i = 0; i < count; i++) extern(l.nth(i), b);
     }
 }

@@ -2,7 +2,8 @@
 
 package com.oblong.jelly.slaw;
 
-import java.nio.ByteBuffer;
+import java.io.IOException;
+import java.io.OutputStream;
 
 import com.oblong.jelly.Slaw;
 
@@ -13,7 +14,6 @@ import com.oblong.jelly.Slaw;
  */
 public interface SlawExternalizer {
 
-    ByteBuffer extern(Slaw s);
-    int extern(Slaw s, ByteBuffer b);
+    long extern(Slaw s, OutputStream os) throws IOException;
     int externSize(Slaw s);
 }

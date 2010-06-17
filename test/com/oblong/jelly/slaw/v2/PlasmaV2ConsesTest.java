@@ -35,7 +35,7 @@ public class PlasmaV2ConsesTest extends ExternalizerTestBase {
 
     private void checkCons(Slaw c) {
         final String msg = "Checking " + c;
-        final ByteBuffer b = externalizer.extern(c);
+        final ByteBuffer b = ByteBuffer.wrap(slawToBytes(c));
         checkHeading(msg, b);
         checkSubslawx(msg, b, c);
         checkIntern(msg, c, b.array());

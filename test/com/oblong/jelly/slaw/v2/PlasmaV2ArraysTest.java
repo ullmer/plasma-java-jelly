@@ -38,7 +38,7 @@ public class PlasmaV2ArraysTest extends ExternalizerTestBase {
                     assertEquals(msg, d, a.dimension());
                     assertEquals(msg, 0, a.count());
                     assertEquals(msg, 8, externalizer.externSize(a));
-                    byte[] bs = externalizer.extern(a).array();
+                    byte[] bs = slawToBytes(a);
                     msg = msg + "/" + arrayStr(bs);
                     assertEquals(msg, 8, bs.length);
                     checkHeading(msg, bs, i, ni, d, 0);
@@ -51,7 +51,7 @@ public class PlasmaV2ArraysTest extends ExternalizerTestBase {
     @Test public void numbers() {
         for (NumericIlk ni : NumericIlk.values()) {
             final Slaw a = array(number(ni, 1L));
-            final byte[] bs = externalizer.extern(a).array();
+            final byte[] bs = slawToBytes(a);
             final String msg = "Array of " + ni + "/" + arrayStr(bs);
             assertEquals(16, bs.length);
             checkHeading(msg, bs, SlawIlk.ARRAY, ni, 1, 1);
@@ -67,7 +67,7 @@ public class PlasmaV2ArraysTest extends ExternalizerTestBase {
         final Slaw[] ls = new Slaw[100];
         for (int i = 0; i < 100; i++) ls[i] = unt8(i);
         final Slaw a = array(ls);
-        final byte[] ba = externalizer.extern(a).array();
+        final byte[] ba = slawToBytes(a);
         checkHeading("Big array", ba, SlawIlk.ARRAY, NumericIlk.UNT8, 1, 100);
         for (int i = 0; i < 100; i++)
             assertEquals(i + "th", i, ba[i + 8]);
@@ -90,7 +90,7 @@ public class PlasmaV2ArraysTest extends ExternalizerTestBase {
         for (NumericIlk ni : NumericIlk.values()) {
             final Slaw ca = array(complex(number(ni, 1L), number(ni, 2L)),
                                   complex(number(ni, 3L), number(ni, 4L)));
-            final byte[] bs = externalizer.extern(ca).array();
+            final byte[] bs = slawToBytes(ca);
             final String msg = "Array of " + ni + "/" + arrayStr(bs);
             assertEquals(Protocol.roundUp(8 + 4 * ni.bytes()), bs.length);
             checkHeading(msg, bs, SlawIlk.COMPLEX_ARRAY, ni, 1, 2);
@@ -109,7 +109,7 @@ public class PlasmaV2ArraysTest extends ExternalizerTestBase {
         for (NumericIlk ni : NumericIlk.values()) {
             final Slaw v22 = array(vector(number(ni, 1L), number(ni, 2L)),
                                    vector(number(ni, 3L), number(ni, 4L)));
-            final byte[] b22 = externalizer.extern(v22).array();
+            final byte[] b22 = slawToBytes(v22);
             final String msg = "Array of " + ni + "/" + arrayStr(b22);
             assertEquals(Protocol.roundUp(8 + 4 * ni.bytes()), b22.length);
             checkHeading(msg, b22, SlawIlk.VECTOR_ARRAY, ni, 2, 2);

@@ -2,6 +2,8 @@
 
 package com.oblong.jelly.slaw;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
@@ -91,9 +93,8 @@ final class SlawProtein extends Protein {
     @Override public byte data(int n) { return data[n]; }
     @Override public int dataLength() { return data.length; }
 
-    @Override public int putData(ByteBuffer b) {
-        if (b.remaining() < data.length) return 0;
-        b.put(data);
+    @Override public int putData(OutputStream os) throws IOException {
+        os.write(data);
         return data.length;
     }
 

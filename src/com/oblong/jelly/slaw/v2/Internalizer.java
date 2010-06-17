@@ -27,7 +27,7 @@ final class Internalizer implements SlawInternalizer {
 
     @Override public Protein internProtein(InputStream s, SlawFactory f)
         throws SlawParseError {
-        ByteReader b = new ByteReader(s);
+        ByteReader b = new ByteReader(s, OCT_LEN);
         try {
             final byte hn = peekNibble(b, 0);
             if (hn == PROTEIN_NON_NATIVE_NIBBLE) {
@@ -43,7 +43,7 @@ final class Internalizer implements SlawInternalizer {
 
     @Override public Slaw internSlaw(InputStream s, SlawFactory f)
         throws SlawParseError {
-        ByteReader b = new ByteReader(s);
+        ByteReader b = new ByteReader(s, OCT_LEN);
         try {
             return internSlaw(b, f);
         } catch (IOException e) {

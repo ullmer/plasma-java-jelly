@@ -22,8 +22,9 @@ final class Protocol {
     static final byte NUL = 0;
     static final int OCT_LEN = 8;
 
-    static int octs(int len) { return len >>> 3; }
+    static long octs(long len) { return len >>> 3; }
     static int roundUp(int len) { return (len + 7) & -8; }
+    static int padding(long len) { return roundUp((int)len) - (int)len; }
 
     static final byte ATOM_NIBBLE = 0x02;
     static final long FALSE_HEADING = ((long)ATOM_NIBBLE)<<60;

@@ -47,7 +47,7 @@ public class PlasmaV2MapsTest extends ExternalizerTestBase {
 
     private void checkMap(Slaw m) {
         final String msg = "Checking " + m;
-        final ByteBuffer b = externalizer.extern(m);
+        final ByteBuffer b = ByteBuffer.wrap(slawToBytes(m));
         checkHeading(msg, b, m.count());
         checkSubslawx(msg, b, m);
         checkIntern(msg, m, b.array());

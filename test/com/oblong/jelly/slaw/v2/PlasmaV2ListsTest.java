@@ -49,7 +49,7 @@ public class PlasmaV2ListsTest extends ExternalizerTestBase {
 
     private void checkList(Slaw l) {
         final String msg = "Checking " + l;
-        final ByteBuffer b = externalizer.extern(l);
+        final ByteBuffer b = ByteBuffer.wrap(slawToBytes(l));
         checkHeading(msg, b, l.count());
         checkSubslawx(msg, b, l);
         checkIntern(msg, l, b.array());

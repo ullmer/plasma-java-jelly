@@ -7,12 +7,15 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
+import net.jcip.annotations.NotThreadSafe;
+
 /**
  *
  * Created: Tue Jun 15 21:40:38 2010
  *
  * @author jao
  */
+@NotThreadSafe
 public final class ByteReader {
 
     public static final int DEFAULT_BUFFER_SIZE = 8;
@@ -22,7 +25,7 @@ public final class ByteReader {
         size = Math.max(bufferSize, DEFAULT_BUFFER_SIZE);
         buffer = ByteBuffer.wrap(new byte[size]);
         stream = s;
-        bytes = 0;
+        bufferedBytes = 0;
         read = 0;
     }
 
@@ -62,7 +65,7 @@ public final class ByteReader {
     }
 
     public ByteReader get(byte[] bs, int len) throws IOException {
-        final int buffered = Math.min(len, bytes);
+        final int buffered = Math.min(len, bufferedBytes);
         if (buffered > 0) {
             buffer.get(bs, buffer.position(), buffered);
             shiftPosition(buffered);
@@ -114,7 +117,7 @@ public final class ByteReader {
     }
 
     public ByteReader skipToBoundary(int b) throws IOException {
-        if (bytes > 0) shiftPosition(bytes);
+        if (bufferedBytes > 0) shiftPosition(bufferedBytes);
         final int pad = ((read + b - 1) & -b) - read;
         if (pad > 0) skip(pad);
         return this;
@@ -122,19 +125,19 @@ public final class ByteReader {
 
     private void adjustRead(int bs) {
         buffer.position(buffer.position() % size);
-        bytes = Math.max(0, bytes - bs);
+        bufferedBytes = Math.max(0, bufferedBytes - bs);
     }
 
     private void shiftPosition(int by) {
         buffer.position((buffer.position() + by) % size);
-        bytes = Math.max(0, bytes - by);
+        bufferedBytes = Math.max(0, bufferedBytes - by);
     }
 
     private void readFromStream(byte[] bs, int offset, int len)
         throws IOException {
         final int r = stream.read(bs, offset, len);
         if (len != r) throw new IOException(
-            "Stream underflow reading " + len + " (" + bytes + ")");
+            "Stream underflow reading " + len + " (" + bufferedBytes + ")");
         read += len;
     }
 
@@ -142,19 +145,20 @@ public final class ByteReader {
         final int p = buffer.position();
         if (size - p < len) {
             final byte[] a = buffer.array();
-            for (int i = 0; i < bytes; ++i) a[i] = buffer.get(p + i);
+            for (int i = 0; i < bufferedBytes; ++i) a[i] = buffer.get(p + i);
             buffer.position(0);
         }
-        final int delta = len - bytes;
+        final int delta = len - bufferedBytes;
         if (delta > 0) {
-            readFromStream(buffer.array(), buffer.position() + bytes, delta);
-            bytes += delta;
+            readFromStream(
+                buffer.array(), buffer.position() + bufferedBytes, delta);
+            bufferedBytes += delta;
         }
     }
 
     final ByteBuffer buffer;
     final InputStream stream;
     final int size;
-    int bytes;
+    int bufferedBytes;
     int read;
 }

@@ -2,15 +2,16 @@
 
 package com.oblong.jelly.slaw;
 
-
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.ByteBuffer;
 
+import com.oblong.jelly.*;
 import org.junit.Assert;
 import static org.junit.Assert.*;
-
-import com.oblong.jelly.*;
 
 public class ExternalizerTestBase {
     protected ExternalizerTestBase(SlawExternalizer e) {
@@ -37,11 +38,28 @@ public class ExternalizerTestBase {
     }
 
     protected final void check(String msg, Slaw s, byte[] b) {
-        final byte[] sb = externalizer.extern(s).array();
-        String m = msg + ": " + arrayStr(sb) + " vs. expected " + arrayStr(b);
-        assertEquals(sb.length, externalizer.externSize(s));
-        assertArrayEquals(m + " for " + s, b, sb);
+        checkExtern(msg, s, b);
         checkIntern(msg, s, b);
+    }
+
+    protected final byte[] slawToBytes(Slaw s) {
+        final ByteArrayOutputStream os = new ByteArrayOutputStream();
+        try {
+            externalizer.extern(s, os);
+        } catch (IOException e) {
+            fail("Externalizing " + s + ": " + e.getMessage());
+        }
+        return os.toByteArray();
+    }
+
+    protected final void checkExtern(String msg, Slaw s, byte[] b) {
+        if (externalizer != null) {
+            final byte[] sb = slawToBytes(s);
+            String m = msg + ": " + arrayStr(sb) + " vs. expected "
+                + arrayStr(b);
+            assertEquals(m, b.length, externalizer.externSize(s));
+            assertArrayEquals(m + " for " + s, b, sb);
+        }
     }
 
     protected final void checkIntern(String msg, Slaw s, byte[] b) {
@@ -63,12 +81,11 @@ public class ExternalizerTestBase {
     }
 
     protected final void checkSubslawx(String msg, ByteBuffer b, Slaw s) {
-        for (int i = 0, c = s.count(); i < c; i++) {
-            byte[] sb = externalizer.extern(s.nth(i)).array();
-            for (int j = 0; j < sb.length; j++)
-                assertEquals(msg + "/" + j + "th slaw", sb[j], b.get());
+        for (Slaw c : s.emitList()) {
+            byte[] bs = new byte[externalizer.externSize(c)];
+            b.get(bs);
+            checkExtern(msg, c, bs);
         }
-        assertFalse(b.hasRemaining());
     }
 
     protected final byte[] asBytes(short[] s) {
