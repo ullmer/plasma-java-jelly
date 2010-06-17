@@ -2,13 +2,13 @@
 
 package com.oblong.jelly.util;
 
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 
-import com.oblong.jelly.Protein;
 import net.jcip.annotations.NotThreadSafe;
+
+import com.oblong.jelly.Protein;
 
 /**
  *

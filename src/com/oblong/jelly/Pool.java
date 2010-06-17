@@ -2,8 +2,6 @@
 
 package com.oblong.jelly;
 
-import java.util.List;
-
 /**
  *
  * Created: Thu Jun  3 10:08:24 2010
