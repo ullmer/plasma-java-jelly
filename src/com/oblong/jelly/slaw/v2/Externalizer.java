@@ -5,13 +5,8 @@ import java.io.UnsupportedEncodingException;
 
 import net.jcip.annotations.Immutable;
 
-import com.oblong.jelly.NumericIlk;
-import static com.oblong.jelly.NumericIlk.*;
 import com.oblong.jelly.Protein;
 import com.oblong.jelly.Slaw;
-import com.oblong.jelly.SlawIlk;
-import static com.oblong.jelly.SlawIlk.*;
-
 import com.oblong.jelly.slaw.AbstractSlawExternalizer;
 import static com.oblong.jelly.slaw.v2.Protocol.*;
 

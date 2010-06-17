@@ -30,4 +30,5 @@ public class SlawParseError extends Exception {
     public int position() { return position; }
 
     private final int position;
+    private static final long serialVersionUID = 5363556892136529454L;
 }

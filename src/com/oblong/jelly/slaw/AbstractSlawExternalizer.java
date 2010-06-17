@@ -7,7 +7,6 @@ import java.io.OutputStream;
 
 import com.oblong.jelly.Protein;
 import com.oblong.jelly.Slaw;
-import com.oblong.jelly.SlawIlk;
 import com.oblong.jelly.slaw.SlawExternalizer;
 import com.oblong.jelly.util.ByteWriter;
 

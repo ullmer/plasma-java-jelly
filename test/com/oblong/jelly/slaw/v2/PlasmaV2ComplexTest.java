@@ -2,8 +2,6 @@
 
 package com.oblong.jelly.slaw.v2;
 
-import org.junit.Assert;
-import static org.junit.Assert.*;
 import org.junit.Test;
 
 import com.oblong.jelly.*;

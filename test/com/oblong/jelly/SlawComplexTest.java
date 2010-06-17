@@ -4,7 +4,6 @@ package com.oblong.jelly;
 
 import java.util.Map;
 
-import org.junit.Assert;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -61,7 +60,7 @@ public class SlawComplexTest {
 
     private void testNonNumber(Slaw r, Slaw i) {
         try {
-            Slaw c = Slaw.complex(r, i);
+            Slaw.complex(r, i);
             fail();
         } catch (IllegalArgumentException e) {
             // expected

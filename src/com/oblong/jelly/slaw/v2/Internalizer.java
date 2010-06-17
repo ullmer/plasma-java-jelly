@@ -5,7 +5,6 @@ package com.oblong.jelly.slaw.v2;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,7 +52,7 @@ final class Internalizer implements SlawInternalizer {
 
     private static Protein internProtein(ByteReader b, SlawFactory f)
         throws SlawParseError, IOException {
-        final long hd = b.getLong();
+        b.skip(OCT_LEN);
         final long sh = b.getLong();
         final Slaw descrips =
             proteinHasDescrips(sh) ? internSlaw(b, f) : null;
@@ -210,7 +209,6 @@ final class Internalizer implements SlawInternalizer {
         final long h = b.getLong();
         final int count = (int)arrayBreadth(h);
         if (count == 0) return emptyArray(h, b, f);
-        final int len = (int) (count * numericBytes(h));
         Slaw[] cmps = readArray(h, count, b, f);
         return f.array(cmps);
     }

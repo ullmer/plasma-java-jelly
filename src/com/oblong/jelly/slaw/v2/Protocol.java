@@ -10,7 +10,6 @@ import java.util.Map;
 import net.jcip.annotations.Immutable;
 
 import com.oblong.jelly.NumericIlk;
-import com.oblong.jelly.Slaw;
 import com.oblong.jelly.SlawIlk;
 
 import static com.oblong.jelly.NumericIlk.*;

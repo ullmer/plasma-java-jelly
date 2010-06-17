@@ -4,7 +4,6 @@ package com.oblong.jelly;
 
 import java.util.Map;
 
-import org.junit.Assert;
 import static org.junit.Assert.*;
 import org.junit.Test;
 

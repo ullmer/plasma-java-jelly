@@ -6,11 +6,9 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.nio.ByteBuffer;
 
 import com.oblong.jelly.*;
-import org.junit.Assert;
 import static org.junit.Assert.*;
 
 public class ExternalizerTestBase {

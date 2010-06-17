@@ -6,7 +6,6 @@ package com.oblong.jelly.slaw.v2;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
-import org.junit.Assert;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -95,10 +94,6 @@ public class PlasmaV2ProteinsTest extends ExternalizerTestBase {
                             0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x00, 0x06};
         checkIntern(protein(null, null, makeData(6)), p4);
 
-    }
-
-    private void checkIntern(Protein[] s, short[][] b) {
-        for (int i = 0; i < s.length; i++) checkIntern(s[i], b[i]);
     }
 
     private void checkIntern(Protein s, short[] b) {

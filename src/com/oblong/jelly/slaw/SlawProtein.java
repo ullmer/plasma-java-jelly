@@ -5,7 +5,6 @@ package com.oblong.jelly.slaw;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.math.BigInteger;
-import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
 

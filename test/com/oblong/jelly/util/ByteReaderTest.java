@@ -7,7 +7,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-import org.junit.Assert;
 import static org.junit.Assert.*;
 import org.junit.Test;
 

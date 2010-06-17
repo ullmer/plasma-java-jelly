@@ -11,6 +11,7 @@ import net.jcip.annotations.Immutable;
  * @author jao
  */
 @Immutable public class PoolException extends Exception {
+    private static final long serialVersionUID = -3964934204273865061L;
 
     public static enum Code {
         BAD_ADDRESS("Malformed pool address", -1);

@@ -2,7 +2,6 @@
 
 package com.oblong.util;
 
-import org.junit.Assert;
 import static org.junit.Assert.*;
 import org.junit.Test;
 import java.math.BigDecimal;

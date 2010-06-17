@@ -4,7 +4,6 @@ package com.oblong.jelly.slaw.v2;
 
 import java.nio.ByteBuffer;
 
-import org.junit.Assert;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

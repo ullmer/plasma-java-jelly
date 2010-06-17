@@ -2,7 +2,6 @@
 
 package com.oblong.jelly;
 
-import org.junit.Assert;
 import static org.junit.Assert.*;
 
 class SlawTests {
