@@ -11,13 +11,13 @@ import java.nio.ByteBuffer;
 import com.oblong.jelly.*;
 import static org.junit.Assert.*;
 
-public class ExternalizerTestBase {
-    protected ExternalizerTestBase(SlawExternalizer e) {
+public class SerializationTestBase {
+    protected SerializationTestBase(SlawExternalizer e) {
         externalizer = e;
         internalizer = null;
     }
 
-    protected ExternalizerTestBase(SlawExternalizer e, SlawInternalizer i) {
+    protected SerializationTestBase(SlawExternalizer e, SlawInternalizer i) {
         externalizer = e;
         internalizer = i;
     }

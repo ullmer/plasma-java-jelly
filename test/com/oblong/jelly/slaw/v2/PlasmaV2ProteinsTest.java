@@ -20,7 +20,7 @@ import com.oblong.jelly.slaw.*;
  *
  * @author jao
  */
-public class PlasmaV2ProteinsTest extends ExternalizerTestBase {
+public class PlasmaV2ProteinsTest extends SerializationTestBase {
 
     public PlasmaV2ProteinsTest() {
         super(new Externalizer(), new Internalizer());

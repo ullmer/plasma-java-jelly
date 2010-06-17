@@ -21,7 +21,7 @@ import static com.oblong.jelly.Slaw.*;
  *
  * @author jao
  */
-public class PlasmaV2MapsTest extends ExternalizerTestBase {
+public class PlasmaV2MapsTest extends SerializationTestBase {
 
     public PlasmaV2MapsTest() {
         super(new Externalizer(), new Internalizer());

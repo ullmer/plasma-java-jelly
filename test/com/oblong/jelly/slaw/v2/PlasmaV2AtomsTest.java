@@ -15,7 +15,7 @@ import static com.oblong.jelly.Slaw.*;
  *
  * @author jao
  */
-public class PlasmaV2AtomsTest extends ExternalizerTestBase {
+public class PlasmaV2AtomsTest extends SerializationTestBase {
 
     public PlasmaV2AtomsTest() {
         super(new Externalizer(), new Internalizer());
