@@ -2,6 +2,7 @@
 
 package com.oblong.jelly.slaw;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 import com.oblong.jelly.Protein;
@@ -14,7 +15,9 @@ import com.oblong.jelly.Slaw;
  */
 public interface SlawInternalizer {
 
-    Protein internProtein(InputStream s, SlawFactory f) throws SlawParseError;
-    Slaw internSlaw(InputStream s, SlawFactory f) throws SlawParseError;
+    Protein internProtein(InputStream s, SlawFactory f)
+        throws SlawParseError, IOException;
+    Slaw internSlaw(InputStream s, SlawFactory f)
+        throws SlawParseError, IOException;
 
 }

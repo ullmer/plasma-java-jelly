@@ -66,7 +66,7 @@ public class ExternalizerTestBase {
                 final InputStream is = new ByteArrayInputStream(b);
                 final Slaw s2 = internalizer.internSlaw(is, factory);
                 assertEquals(s, s2);
-            } catch (SlawParseError e) {
+            } catch (Exception e) {
                 fail(msg + ": " + e);
             }
         }

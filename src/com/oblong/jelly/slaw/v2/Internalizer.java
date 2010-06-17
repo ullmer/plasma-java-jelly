@@ -25,29 +25,21 @@ import static com.oblong.jelly.slaw.v2.Protocol.*;
 final class Internalizer implements SlawInternalizer {
 
     @Override public Protein internProtein(InputStream s, SlawFactory f)
-        throws SlawParseError {
+        throws SlawParseError, IOException {
         ByteReader b = new ByteReader(s, OCT_LEN);
-        try {
-            final byte hn = peekNibble(b, 0);
-            if (hn == PROTEIN_NON_NATIVE_NIBBLE) {
-                b.setLittleEndian();
-            } else if (hn != PROTEIN_NATIVE_NIBBLE) {
-                throw new SlawParseError(0, "Not a protein");
-            }
-            return internProtein(b, f);
-        } catch (IOException e) {
-            throw new SlawParseError(b.bytesSeen(), e.getMessage());
+        final byte hn = peekNibble(b, 0);
+        if (hn == PROTEIN_NON_NATIVE_NIBBLE) {
+            b.setLittleEndian();
+        } else if (hn != PROTEIN_NATIVE_NIBBLE) {
+            throw new SlawParseError(0, "Not a protein");
         }
+        return internProtein(b, f);
     }
 
     @Override public Slaw internSlaw(InputStream s, SlawFactory f)
-        throws SlawParseError {
+        throws SlawParseError, IOException {
         ByteReader b = new ByteReader(s, OCT_LEN);
-        try {
-            return internSlaw(b, f);
-        } catch (IOException e) {
-            throw new SlawParseError(b.bytesSeen(), e.getMessage());
-        }
+        return internSlaw(b, f);
     }
 
     private static Protein internProtein(ByteReader b, SlawFactory f)

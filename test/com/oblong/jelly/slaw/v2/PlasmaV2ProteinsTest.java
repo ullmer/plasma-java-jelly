@@ -101,7 +101,7 @@ public class PlasmaV2ProteinsTest extends ExternalizerTestBase {
             final InputStream is = new ByteArrayInputStream(asBytes(b));
             final Protein s2 = internalizer.internProtein(is, factory);
             assertEquals(s, s2);
-        } catch (SlawParseError e) {
+        } catch (Exception e) {
             fail(e.toString());
         }
     }
