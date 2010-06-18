@@ -2,8 +2,13 @@
 
 package com.oblong.jelly.pool.tcp;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import com.oblong.jelly.PoolException;
 import com.oblong.jelly.PoolServer;
+import com.oblong.jelly.PoolServers;
+import com.oblong.jelly.PoolAddress;
 
 /**
  *
@@ -11,11 +16,18 @@ import com.oblong.jelly.PoolServer;
  *
  * @author jao
  */
-public class Factory implements PoolServer.Factory {
+public final class Factory implements PoolServers.Factory {
 
-    @Override public PoolServer get(String scheme, String host, int port)
+    @Override public PoolServer get(PoolAddress address)
         throws PoolException {
-        return null;
-        //  return new Server(new ServerAddress(host, port));
+        PoolServer server = servers.get(address);
+        if (server == null) {
+            server = new Server(address);
+            servers.put(address, server);
+        }
+        return server;
     }
+    
+    private static Map<PoolAddress, PoolServer> servers =
+        new ConcurrentHashMap<PoolAddress, PoolServer>();
 }
