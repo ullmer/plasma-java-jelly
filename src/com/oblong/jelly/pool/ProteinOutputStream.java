@@ -5,7 +5,6 @@ package com.oblong.jelly.pool;
 import java.io.IOException;
 
 import com.oblong.jelly.Protein;
-import com.oblong.jelly.slaw.SlawParseError;
 
 /**
  *
@@ -16,6 +15,6 @@ import com.oblong.jelly.slaw.SlawParseError;
  */
 public interface ProteinOutputStream {
 
-    void write(Protein p) throws SlawParseError, IOException;
+    void write(Protein p) throws IOException;
 
 }
