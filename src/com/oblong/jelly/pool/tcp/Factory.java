@@ -13,9 +13,9 @@ import com.oblong.jelly.PoolServer;
  */
 public class Factory implements PoolServer.Factory {
 
-    @Override public PoolServer get(String scheme, String host, short port)
+    @Override public PoolServer get(String scheme, String host, int port)
         throws PoolException {
         return null;
+        //  return new Server(new ServerAddress(host, port));
     }
-
 }

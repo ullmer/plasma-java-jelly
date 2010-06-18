@@ -2,24 +2,18 @@
 
 package com.oblong.jelly;
 
-import net.jcip.annotations.Immutable;
-
 /**
  *
  * Created: Thu Jun 10 20:56:49 2010
  *
  * @author jao
  */
-@Immutable
-public final class PoolOptions {
+public class PoolOptions {
 
     public static final PoolOptions SMALL;
     public static final PoolOptions MEDIUM;
     public static final PoolOptions LARGE;
     public static final PoolOptions HUGE;
-
-    public static final Slaw SIZE_KEY;
-    public static final Slaw INDEX_SIZE_KEY;
 
     public PoolOptions(Slaw options) {
         this.options = options == null ? Slaw.map() : options;
@@ -52,6 +46,9 @@ public final class PoolOptions {
     }
 
     private final Slaw options;
+
+    private static final Slaw SIZE_KEY;
+    private static final Slaw INDEX_SIZE_KEY;
 
     static {
         SIZE_KEY = Slaw.string("size");

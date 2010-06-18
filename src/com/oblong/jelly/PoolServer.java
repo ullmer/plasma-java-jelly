@@ -2,9 +2,9 @@
 
 package com.oblong.jelly;
 
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  *
@@ -14,22 +14,20 @@ import java.util.Map;
  */
 public abstract class PoolServer {
 
-    public static final short DEFAULT_PORT = -1;
+    public static final int DEFAULT_PORT = -1;
 
     public static final PoolServer connect(String scheme,
                                            String host,
-                                           short port)
+                                           int port)
         throws PoolException {
-        Factory f = null;
-        synchronized (factories) {
-            f = factories.get(scheme);
-        }
+        final Factory f =
+            TCP_SCM.equals(scheme) ? tcpFactory : factories.get(scheme);
         return (f == null) ? null : f.get(scheme, host, port);
     }
 
-    public static final PoolServer connect(String host, short port)
+    public static final PoolServer connect(String host, int port)
         throws PoolException {
-        return connect(TCP_SCM, host, port);
+        return tcpFactory.get(TCP_SCM, host, port);
     }
 
     public static final PoolServer connect(String host)
@@ -40,47 +38,35 @@ public abstract class PoolServer {
     public abstract Pool create(String name, PoolOptions opts)
         throws PoolException;
 
-    public final void dispose(String name) throws PoolException {
-        find(name).dispose();
-    }
+    public abstract void dispose(String name) throws PoolException;
 
     public abstract Pool find(String name);
 
     public abstract Pool find(String name, PoolOptions opts)
         throws PoolException;
 
-    public abstract List<Pool> list();
+    public abstract Set<String> pools();
 
-    public final Hose participate(String name) throws PoolException {
-        return find(name).participate();
-    }
+    public abstract Hose participate(String name) throws PoolException;
 
-    public final Hose participate(String name, PoolOptions opts)
-        throws PoolException {
-        return find(name, opts).participate();
-    }
-
+    public abstract Hose participate(String name, PoolOptions opts)
+        throws PoolException;
 
     public interface Factory {
-        PoolServer get(String scheme, String host, short port)
+        PoolServer get(String scheme, String host, int port)
             throws PoolException;
     }
 
     public static final boolean register(String scheme, Factory factory) {
         if (scheme == null || factory == null) return false;
-        synchronized (factories) {
-            factories.put(scheme, factory);
-        }
+        factories.put(scheme, factory);
         return true;
     }
 
     private static final String TCP_SCM = "tcp";
 
-    private static final Map<String, Factory> factories;
-
-    static {
-        factories = new HashMap<String, Factory>();
-        factories.put(TCP_SCM, new com.oblong.jelly.pool.tcp.Factory());
-    }
-
+    private static final Map<String, Factory> factories =
+        new ConcurrentHashMap<String, Factory>();
+    private static final Factory tcpFactory =
+        new com.oblong.jelly.pool.tcp.Factory();
 }
