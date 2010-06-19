@@ -10,24 +10,17 @@ import com.oblong.jelly.PoolAddress.BadAddress;
  *
  * @author jao
  */
-public abstract class Pool {
+public final class Pool {
 
-    public abstract String name();
-    public abstract PoolOptions options();
-    public abstract PoolServer server();
-
-    public abstract Hose participate() throws PoolException;
-    public abstract Hose participate(PoolOptions opts) throws PoolException;
-
-    public static Pool create(String uri, PoolOptions opts)
+    public static void create(String uri, PoolOptions opts)
         throws PoolException {
-        return create(new PoolAddress(uri), poolName(uri), opts);
+        create(new PoolAddress(uri), poolName(uri), opts);
     }
 
-    public static Pool create(PoolAddress addr,
+    public static void create(PoolAddress addr,
                               String name,
                               PoolOptions opts) throws PoolException {
-        return PoolServers.get(addr).create(name, opts);
+        PoolServers.get(addr).create(name, opts);
     }
 
     public static void dispose(String uri) throws PoolException {
@@ -46,7 +39,7 @@ public abstract class Pool {
 
     public static Hose participate(PoolAddress addr, String name)
         throws PoolException {
-        return PoolServers.get(addr).find(name).participate();
+        return PoolServers.get(addr).participate(name);
     }
 
     public static Hose participate(String uri, PoolOptions opts)
@@ -58,7 +51,7 @@ public abstract class Pool {
                                    String name,
                                    PoolOptions opts)
         throws PoolException {
-        return PoolServers.get(addr).find(name).participate(opts);
+        return PoolServers.get(addr).participate(name, opts);
     }
 
     private static String poolName(String uri) throws PoolException {
@@ -67,4 +60,6 @@ public abstract class Pool {
             throw new BadAddress("Empty pool name");
         return uri.substring(i);
     }
+
+    private Pool() {}
 }

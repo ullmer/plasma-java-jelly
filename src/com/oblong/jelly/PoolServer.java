@@ -12,11 +12,13 @@ import java.util.Set;
  */
 public interface PoolServer {
 
-    Pool create(String name, PoolOptions opts) throws PoolException;
+    void create(String name, PoolOptions opts) throws PoolException;
 
     void dispose(String name) throws PoolException;
 
-    Pool find(String name) throws PoolException;
+    Hose participate(String name) throws PoolException;
+
+    Hose participate(String name, PoolOptions opts) throws PoolException;
 
     Set<String> pools() throws PoolException;
 }

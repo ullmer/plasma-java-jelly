@@ -5,10 +5,11 @@ package com.oblong.jelly.slaw;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import net.jcip.annotations.Immutable;
+
 import com.oblong.jelly.Hose;
 import com.oblong.jelly.Protein;
 import com.oblong.jelly.Slaw;
-import net.jcip.annotations.Immutable;
 
 @Immutable
 final class SlawProtein extends Protein {

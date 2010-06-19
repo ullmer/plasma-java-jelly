@@ -5,6 +5,8 @@ package com.oblong.jelly;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import net.jcip.annotations.ThreadSafe;
+
 import com.oblong.jelly.PoolAddress.BadAddress;
 
 /**
@@ -13,6 +15,7 @@ import com.oblong.jelly.PoolAddress.BadAddress;
  *
  * @author jao
  */
+@ThreadSafe
 public class PoolServers {
 
     public static final int DEFAULT_PORT = -1;
@@ -46,7 +49,7 @@ public class PoolServers {
     private static final Map<String, Factory> factories =
         new ConcurrentHashMap<String, Factory>();
     private static final Factory tcpFactory =
-        new com.oblong.jelly.pool.tcp.Factory();
+        new com.oblong.jelly.pool.tcp.ServerFactory();
 
     private static final Map<PoolAddress, PoolServer> servers =
         new ConcurrentHashMap<PoolAddress, PoolServer>();
