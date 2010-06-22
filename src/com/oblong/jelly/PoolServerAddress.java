@@ -14,22 +14,22 @@ import net.jcip.annotations.Immutable;
  * @author jao
  */
 @Immutable
-public final class PoolAddress {
+public final class PoolServerAddress {
 
-    static public class BadAddress extends PoolException {
+    public static class BadAddress extends PoolException {
 
-        BadAddress(String i) { super(PoolException.Code.BAD_ADDRESS, i); }
-        BadAddress(Throwable e) { super(PoolException.Code.BAD_ADDRESS, e); }
+        BadAddress(String i) { super(Code.BAD_ADDRESS, i); }
+        BadAddress(Throwable e) { super(Code.BAD_ADDRESS, e); }
 
         private static final long serialVersionUID = -8010793100844536131L;
     }
 
-    public PoolAddress(String scheme, String host, int port)
+     public PoolServerAddress(String scheme, String host, int port)
         throws BadAddress {
         uri = makeURI(scheme, host, port);
     }
 
-    public PoolAddress(String uri) throws BadAddress {
+    public PoolServerAddress(String uri) throws BadAddress {
         try {
             final URI u = new URI(uri);
             this.uri = makeURI(u.getScheme(), u.getHost(), u.getPort());
@@ -45,8 +45,8 @@ public final class PoolAddress {
     public int port() { return uri.getPort(); }
 
     @Override public boolean equals(Object o) {
-        if (!(o instanceof PoolAddress)) return false;
-        return uri.equals(((PoolAddress)o).uri);
+        if (!(o instanceof PoolServerAddress)) return false;
+        return uri.equals(((PoolServerAddress)o).uri);
     }
 
     @Override public int hashCode() {

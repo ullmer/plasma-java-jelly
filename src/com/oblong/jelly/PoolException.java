@@ -17,31 +17,36 @@ public class PoolException extends Exception {
         BAD_ADDRESS("Malformed pool address"),
         IO_ERROR("I/O error"),
         UNSUPPORTED_OP("Unsupported operation"),
+        SERVER_ERROR("Server error"),
         UNCLASSIFIED("Unclassified error"),
         USER("User-defined exception");
-
-        private final String description;
 
         private Code(String desc) {
             description = desc;
         }
-    }
 
-    public PoolException(Code code, String info) {
-        this.code = code;
-        this.info = info;
-    }
-
-    public PoolException(Code code, Throwable cause) {
-        super(cause);
-        this.code = code;
-        info = cause.getMessage();
+        private final String description;
     }
 
     public final Code code() { return code; }
 
     @Override public String getMessage() {
         return code + "(" + code.description + "): " + info;
+    }
+
+    public PoolException(String msg) {
+        this(Code.UNCLASSIFIED, msg);
+    }
+
+    protected PoolException(Code code, String info) {
+        this.code = code;
+        this.info = info;
+    }
+
+    protected PoolException(Code code, Throwable cause) {
+        super(cause);
+        this.code = code;
+        info = cause.getMessage();
     }
 
     private final Code code;

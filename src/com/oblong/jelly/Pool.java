@@ -2,8 +2,6 @@
 
 package com.oblong.jelly;
 
-import com.oblong.jelly.PoolAddress.BadAddress;
-
 /**
  *
  * Created: Thu Jun  3 10:08:24 2010
@@ -14,40 +12,40 @@ public final class Pool {
 
     public static void create(String uri, PoolOptions opts)
         throws PoolException {
-        create(new PoolAddress(uri), poolName(uri), opts);
+        create(new PoolServerAddress(uri), poolName(uri), opts);
     }
 
-    public static void create(PoolAddress addr,
+    public static void create(PoolServerAddress addr,
                               String name,
                               PoolOptions opts) throws PoolException {
         PoolServers.get(addr).create(name, opts);
     }
 
     public static void dispose(String uri) throws PoolException {
-        dispose(new PoolAddress(uri), poolName(uri));
+        dispose(new PoolServerAddress(uri), poolName(uri));
     }
 
-    public static void dispose(PoolAddress addr, String name)
+    public static void dispose(PoolServerAddress addr, String name)
         throws PoolException {
         PoolServers.get(addr).dispose(name);
     }
 
     public static Hose participate(String uri)
         throws PoolException {
-        return participate(new PoolAddress(uri), poolName(uri));
+        return participate(new PoolServerAddress(uri), poolName(uri));
     }
 
-    public static Hose participate(PoolAddress addr, String name)
+    public static Hose participate(PoolServerAddress addr, String name)
         throws PoolException {
         return PoolServers.get(addr).participate(name);
     }
 
     public static Hose participate(String uri, PoolOptions opts)
         throws PoolException {
-        return participate(new PoolAddress(uri), poolName(uri), opts);
+        return participate(new PoolServerAddress(uri), poolName(uri), opts);
     }
 
-    public static Hose participate(PoolAddress addr,
+    public static Hose participate(PoolServerAddress addr,
                                    String name,
                                    PoolOptions opts)
         throws PoolException {
@@ -57,7 +55,7 @@ public final class Pool {
     private static String poolName(String uri) throws PoolException {
         final int i = uri.lastIndexOf('/');
         if (i < 0 || i == uri.length() - 1)
-            throw new BadAddress("Empty pool name");
+            throw new PoolServerAddress.BadAddress("Empty pool name");
         return uri.substring(i);
     }
 

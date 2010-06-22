@@ -11,18 +11,23 @@ import java.util.EnumSet;
 import java.util.Set;
 
 import com.oblong.jelly.NumericIlk;
-import com.oblong.jelly.PoolAddress;
+import com.oblong.jelly.PoolServerAddress;
 import com.oblong.jelly.PoolException;
 import com.oblong.jelly.Protein;
 import com.oblong.jelly.Slaw;
 
 import com.oblong.jelly.pool.PoolIOException;
+import com.oblong.jelly.pool.PoolOpException;
+import com.oblong.jelly.pool.Request;
+import com.oblong.jelly.pool.ServerConnection;
+import com.oblong.jelly.pool.ServerConnectionFactory;
+
 import com.oblong.jelly.slaw.SlawExternalizer;
 import com.oblong.jelly.slaw.SlawFactory;
 import com.oblong.jelly.slaw.SlawInternalizer;
 import com.oblong.jelly.util.ByteReader;
 
-import static com.oblong.jelly.pool.tcp.Request.*;
+import static com.oblong.jelly.pool.Request.*;
 
 /**
  *
@@ -32,7 +37,39 @@ import static com.oblong.jelly.pool.tcp.Request.*;
  */
 final class TCPServerConnection implements ServerConnection {
 
-    TCPServerConnection(PoolAddress addr) throws PoolException {
+    static class Factory implements ServerConnectionFactory {
+        @Override public ServerConnection get(PoolServerAddress addr)
+            throws PoolException {
+            return new TCPServerConnection(addr);
+        }
+    }
+    
+    @Override public PoolServerAddress address() { return address; }
+    @Override public int version() { return version; }
+    @Override public SlawFactory factory() { return factory; }
+
+
+    @Override public Slaw send(Request r, Slaw... args)
+        throws PoolException {
+        if (!supported.contains(r))
+            throw new PoolOpException("Unsupported server op " + r);
+        final Slaw code = factory.number(NumericIlk.INT32, r.code());
+        return send(factory.protein(null,
+                                    factory.map(OP_KEY, code,
+                                                ARGS_KEY, factory.list(args)),
+                                    null));
+    }
+
+    @Override public void close() {
+        try {
+            socket.close();
+        } catch (IOException e) {
+            // TODO: log this as a warning properly
+            e.printStackTrace();
+        }
+    }
+
+    private TCPServerConnection(PoolServerAddress addr) throws PoolException {
         try {
             address = addr;
             socket = new Socket(addr.host(), addr.port());
@@ -51,11 +88,7 @@ final class TCPServerConnection implements ServerConnection {
         }
     }
 
-    @Override public int version() { return version; }
-
-    @Override public PoolAddress address() { return address; }
-
-    @Override public Slaw send(Protein p) throws PoolException {
+    private Slaw send(Protein p) throws PoolException {
         try {
             externalizer.extern(p, socket.getOutputStream());
         } catch (Exception e) {
@@ -64,31 +97,11 @@ final class TCPServerConnection implements ServerConnection {
         return read();
     }
 
-    @Override public Slaw send(Request r, Protein... args)
-        throws PoolException {
-        if (!supported.contains(r))
-            throw new PoolException(PoolException.Code.UNSUPPORTED_OP,
-                                    "Unsupported server op " + r);
-        final Slaw code = factory.number(NumericIlk.INT32, r.code());
-        return send(factory.protein(null,
-                                    factory.map(OP_KEY, code,
-                                                ARGS_KEY, factory.list(args)),
-                                    null));
-    }
-
-    @Override public void close() {
-        try {
-            socket.close();
-        } catch (IOException e) {
-            // TODO: log this as a warning properly
-            e.printStackTrace();
-        }
-    }
-
     private Slaw read() throws PoolException {
         Slaw ret = null;
         try {
-            ret = internalizer.internProtein(socket.getInputStream(), factory);
+            ret =
+                internalizer.internProtein(socket.getInputStream(), factory);
         } catch (Exception e) {
             throw new PoolIOException(e);
         }
@@ -139,14 +152,13 @@ final class TCPServerConnection implements ServerConnection {
     private static void checkVersion(int min, int max, int v, String msg)
         throws PoolException {
         if (v < min || v > max) {
-            throw new PoolException(PoolException.Code.UNSUPPORTED_OP,
-                                    "Unsupported " + msg
-                                    + " server protocol (" + v + ")");
+            throw new PoolOpException("Unsupported " + msg
+                                      + " server protocol (" + v + ")");
         }
     }
 
     private final int version;
-    private final PoolAddress address;
+    private final PoolServerAddress address;
     private final Socket socket;
     private final Set<Request> supported;
     private final SlawExternalizer externalizer;

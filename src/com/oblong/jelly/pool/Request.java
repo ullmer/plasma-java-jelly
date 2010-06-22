@@ -1,6 +1,6 @@
 // Copyright (c) 2010 Oblong Industries
 
-package com.oblong.jelly.pool.tcp;
+package com.oblong.jelly.pool;
 
 /**
  *
@@ -8,7 +8,7 @@ package com.oblong.jelly.pool.tcp;
  *
  * @author jao
  */
-enum Request {
+public enum Request {
     CREATE(0), DISPOSE(1), PARTICIPATE(2), PARTICIPATE_C(3), WITHDRAW(4),
     DEPOSIT(5), NTH_PROTEIN(6), NEXT(7), PROBE_FWD(8), NEWEST_INDEX(9),
     OLDEST_INDEX(10), AWAIT_NEXT(11), ADD_AWAITER(12),

@@ -11,6 +11,8 @@ package com.oblong.jelly;
  */
 public interface Hose {
 
-    Pool pool();
     String name();
+    void setName(String n);
+    
+    String poolName();
 }

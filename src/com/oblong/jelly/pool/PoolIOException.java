@@ -12,7 +12,7 @@ import net.jcip.annotations.Immutable;
  * @author jao
  */
 @Immutable
-public final class PoolIOException extends PoolException {
+public class PoolIOException extends PoolException {
 
     public PoolIOException(Exception e) {
         super(Code.IO_ERROR, e);

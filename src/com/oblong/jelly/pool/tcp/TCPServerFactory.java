@@ -10,7 +10,9 @@ import net.jcip.annotations.ThreadSafe;
 import com.oblong.jelly.PoolException;
 import com.oblong.jelly.PoolServer;
 import com.oblong.jelly.PoolServers;
-import com.oblong.jelly.PoolAddress;
+import com.oblong.jelly.PoolServerAddress;
+import com.oblong.jelly.pool.Server;
+import com.oblong.jelly.pool.ServerConnectionFactory;
 
 /**
  *
@@ -19,18 +21,21 @@ import com.oblong.jelly.PoolAddress;
  * @author jao
  */
 @ThreadSafe
-public final class ServerFactory implements PoolServers.Factory {
+public final class TCPServerFactory implements PoolServers.Factory {
 
-    @Override public PoolServer get(PoolAddress address)
+    @Override public PoolServer get(PoolServerAddress address)
         throws PoolException {
         PoolServer server = servers.get(address);
         if (server == null) {
-            server = new Server(address);
+            server = new Server(factory, address);
             servers.put(address, server);
         }
         return server;
     }
 
-    private static Map<PoolAddress, PoolServer> servers =
-        new ConcurrentHashMap<PoolAddress, PoolServer>();
+    private static Map<PoolServerAddress, PoolServer> servers =
+        new ConcurrentHashMap<PoolServerAddress, PoolServer>();
+    
+    private static final ServerConnectionFactory factory =
+        new TCPServerConnection.Factory();
 }
