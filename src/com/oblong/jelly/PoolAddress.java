@@ -16,6 +16,14 @@ import net.jcip.annotations.Immutable;
 @Immutable
 public final class PoolAddress {
 
+    static public class BadAddress extends PoolException {
+
+        BadAddress(String i) { super(PoolException.Code.BAD_ADDRESS, i); }
+        BadAddress(Throwable e) { super(PoolException.Code.BAD_ADDRESS, e); }
+
+        private static final long serialVersionUID = -8010793100844536131L;
+    }
+
     public PoolAddress(String scheme, String host, int port)
         throws BadAddress {
         uri = makeURI(scheme, host, port);
@@ -47,14 +55,6 @@ public final class PoolAddress {
 
     @Override public String toString() {
         return uri.toString();
-    }
-
-    static class BadAddress extends PoolException {
-
-        BadAddress(String i) { super(PoolException.Code.BAD_ADDRESS, i); }
-        BadAddress(Throwable e) { super(PoolException.Code.BAD_ADDRESS, e); }
-
-        private static final long serialVersionUID = -8010793100844536131L;
     }
 
     private static final int DEFAULT_PORT = 65455;

@@ -16,5 +16,5 @@ import com.oblong.jelly.Protein;
 public interface ProteinOutputStream {
 
     void write(Protein p) throws IOException;
-
+    void close() throws IOException;
 }

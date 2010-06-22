@@ -25,6 +25,9 @@ public final class BasicProteinOutputStream implements ProteinOutputStream {
         externalizer.extern(protein, stream);
     }
 
+    public void close() throws IOException {
+        stream.close();
+    }
     private final OutputStream stream;
     private final SlawExternalizer externalizer;
 }

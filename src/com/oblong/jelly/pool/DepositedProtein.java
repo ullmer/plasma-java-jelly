@@ -18,9 +18,9 @@ import com.oblong.jelly.Slaw;
  * @author jao
  */
 @Immutable
-public final class PoolProtein extends Protein {
+public final class DepositedProtein extends Protein {
 
-    public PoolProtein(Protein p, long idx, double ts, Hose h) {
+    public DepositedProtein(Protein p, long idx, double ts, Hose h) {
         protein = p;
         index = idx;
         stamp = ts;

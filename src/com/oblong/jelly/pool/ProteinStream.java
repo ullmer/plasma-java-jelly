@@ -18,4 +18,5 @@ public interface ProteinStream
     extends ProteinInputStream, ProteinOutputStream {
 
     Protein query(Protein p) throws SlawParseError, IOException;
+    void close() throws IOException;
 }

@@ -30,7 +30,14 @@ public final class BasicProteinInputStream implements ProteinInputStream {
         return internalizer.internProtein(stream, factory);
     }
 
+    @Override public void close() throws IOException {
+        stream.close();
+    }
+     
+    public SlawFactory factory() { return factory; }
+
     private final InputStream stream;
     private final SlawInternalizer internalizer;
     private final SlawFactory factory;
+ 
 }

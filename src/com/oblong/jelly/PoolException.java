@@ -10,18 +10,20 @@ import net.jcip.annotations.Immutable;
  *
  * @author jao
  */
-@Immutable public class PoolException extends Exception {
-    private static final long serialVersionUID = -3964934204273865061L;
+@Immutable
+public class PoolException extends Exception {
 
     public static enum Code {
-        BAD_ADDRESS("Malformed pool address", -1);
+        BAD_ADDRESS("Malformed pool address"),
+        IO_ERROR("I/O error"),
+        UNSUPPORTED_OP("Unsupported operation"),
+        UNCLASSIFIED("Unclassified error"),
+        USER("User-defined exception");
 
-        public final String description;
-        public final int code;
+        private final String description;
 
-        Code(String desc, int c) {
+        private Code(String desc) {
             description = desc;
-            code = c;
         }
     }
 
@@ -31,16 +33,19 @@ import net.jcip.annotations.Immutable;
     }
 
     public PoolException(Code code, Throwable cause) {
+        super(cause);
         this.code = code;
         info = cause.getMessage();
     }
 
-    public Code code() { return code; }
+    public final Code code() { return code; }
 
-    @Override public String toString() {
+    @Override public String getMessage() {
         return code + "(" + code.description + "): " + info;
     }
 
     private final Code code;
     private final String info;
+
+    private static final long serialVersionUID = -3964934204273865061L;
 }

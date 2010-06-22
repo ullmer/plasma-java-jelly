@@ -5,6 +5,7 @@ package com.oblong.jelly.pool;
 import java.io.IOException;
 
 import com.oblong.jelly.Protein;
+import com.oblong.jelly.slaw.SlawFactory;
 import com.oblong.jelly.slaw.SlawParseError;
 
 /**
@@ -21,6 +22,10 @@ public final class BasicProteinStream implements ProteinStream {
         output = out;
     }
 
+    @Override public SlawFactory factory() {
+        return input.factory();
+    }
+
     @Override public Protein read() throws SlawParseError, IOException {
         return input.read();
     }
@@ -29,6 +34,10 @@ public final class BasicProteinStream implements ProteinStream {
         output.write(p);
     }
 
+    @Override public void close() throws IOException {
+        input.close();
+        output.close();
+    }
     @Override public Protein query(Protein p)
         throws SlawParseError, IOException {
         output.write(p);
