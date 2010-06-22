@@ -135,10 +135,15 @@ public final class ByteReader {
 
     private void readFromStream(byte[] bs, int offset, int len)
         throws IOException {
-        final int r = stream.read(bs, offset, len);
-        if (len != r) throw new IOException(
+        while (len > 0) {
+            int r = stream.read(bs, offset, len);
+            if (r < 0) break;
+            offset += r;
+            len -= r;
+            read += r;
+        }
+        if (len != 0) throw new IOException(
             "Stream underflow reading " + len + " (" + bufferedBytes + ")");
-        read += len;
     }
 
     private void ensure(int len) throws IOException {

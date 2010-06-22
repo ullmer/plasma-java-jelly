@@ -2,13 +2,13 @@
 
 package com.oblong.jelly.pool.tcp;
 
-import java.util.Set;
 
 import com.oblong.jelly.Hose;
 import com.oblong.jelly.PoolAddress;
 import com.oblong.jelly.PoolException;
 import com.oblong.jelly.PoolOptions;
 import com.oblong.jelly.PoolServer;
+import java.util.Set;
 
 /**
  *
@@ -22,6 +22,7 @@ final class Server implements PoolServer {
         assert address.scheme().equals("tcp");
         this.address = address;
     }
+
 
     @Override public void create(String name, PoolOptions opts)
         throws PoolException {

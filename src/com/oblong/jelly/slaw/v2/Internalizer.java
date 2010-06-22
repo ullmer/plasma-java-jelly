@@ -22,6 +22,7 @@ import com.oblong.jelly.util.ByteReader;
 import static com.oblong.jelly.slaw.v2.Protocol.*;
 
 @Immutable
+public
 final class Internalizer implements SlawInternalizer {
 
     @Override public Protein internProtein(InputStream s, SlawFactory f)
