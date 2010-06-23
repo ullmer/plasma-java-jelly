@@ -32,6 +32,9 @@ public abstract class Slaw {
     public final boolean isString() { return is(STRING); }
     public final boolean isNumeric() { return ilk().isNumeric(); }
     public final boolean isNumber() { return is(NUMBER); }
+    public final boolean isNumber(NumericIlk ni) {
+        return isNumber() && numericIlk() == ni;
+    }
     public final boolean isComplex() { return is(COMPLEX); }
     public final boolean isVector() { return ilk().isVector(); }
     public final boolean isNumberVector() { return is(VECTOR); }
@@ -182,4 +185,5 @@ public abstract class Slaw {
 
     private static final com.oblong.jelly.slaw.SlawFactory factory =
         new com.oblong.jelly.slaw.JavaSlawFactory();
+
 }

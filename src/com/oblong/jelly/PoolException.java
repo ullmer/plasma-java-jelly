@@ -18,6 +18,7 @@ public class PoolException extends Exception {
         IO_ERROR("I/O error"),
         UNSUPPORTED_OP("Unsupported operation"),
         SERVER_ERROR("Server error"),
+        PROTOCOL_ERROR("Protocol error"),
         UNCLASSIFIED("Unclassified error"),
         USER("User-defined exception");
 
@@ -30,6 +31,8 @@ public class PoolException extends Exception {
 
     public final Code code() { return code; }
 
+    public final int serverCode() { return serverCode; }
+
     @Override public String getMessage() {
         return code + "(" + code.description + "): " + info;
     }
@@ -41,16 +44,31 @@ public class PoolException extends Exception {
     protected PoolException(Code code, String info) {
         this.code = code;
         this.info = info;
+        this.serverCode = 0;
     }
 
     protected PoolException(Code code, Throwable cause) {
         super(cause);
         this.code = code;
         info = cause.getMessage();
+        this.serverCode = 0;
+    }
+
+    protected PoolException(int serverCode, String info) {
+        this.code = Code.SERVER_ERROR;
+        this.info = info;
+        this.serverCode = serverCode;
+    }
+
+    protected PoolException(int serverCode, Throwable cause) {
+        this.code = Code.SERVER_ERROR;
+        this.info = cause.getMessage();
+        this.serverCode = serverCode;
     }
 
     private final Code code;
     private final String info;
+    private final int serverCode;
 
     private static final long serialVersionUID = -3964934204273865061L;
 }

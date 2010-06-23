@@ -25,7 +25,7 @@ import com.oblong.jelly.slaw.SlawFactory;
 @ThreadSafe
 public final class Server implements PoolServer {
 
-    public Server(ServerConnectionFactory cf, PoolServerAddress addr) 
+    public Server(ServerConnectionFactory cf, PoolServerAddress addr)
         throws PoolException {
         address = addr;
         connectionFactory = cf;
@@ -35,29 +35,23 @@ public final class Server implements PoolServer {
         throws PoolException {
         final ServerConnection connection = connectionFactory.get(address);
         final SlawFactory factory = connection.factory();
-        checkRetort(connection.send(Request.CREATE,
+        Request.CREATE.sendAndClose(connection,
                                     factory.string(name),
                                     factory.string("mmap"),
-                                    opts.toSlaw()),
-                    0);
-        connection.close();
+                                    opts.toSlaw());
     }
 
     @Override public void dispose(String name) throws PoolException {
         final ServerConnection connection = connectionFactory.get(address);
         final SlawFactory factory = connection.factory();
-        checkRetort(connection.send(Request.DISPOSE,
-                                    factory.string(name)),
-                    0);
-        connection.close();
+        Request.DISPOSE.sendAndClose(connection, factory.string(name));
     }
 
     @Override public Set<String> pools() throws PoolException {
         final ServerConnection connection = connectionFactory.get(address);
-        final Slaw list = connection.send(Request.LIST);
-        connection.close();
+        final Slaw list = Request.LIST.sendAndClose(connection);
         Set<String> result = new HashSet<String>(list.count());
-        for (Slaw s : list.emitList()) {
+        for (Slaw s : list.nth(1).emitList()) {
             if (s.isString()) result.add(s.emitString());
         }
         return result;
@@ -66,10 +60,9 @@ public final class Server implements PoolServer {
     @Override public Hose participate(String name) throws PoolException {
         final ServerConnection connection = connectionFactory.get(address);
         final SlawFactory factory = connection.factory();
-        checkRetort(connection.send(Request.PARTICIPATE,
-                                    factory.string(name),
-                                    factory.protein(null, null, null)),
-                    0);
+        Request.PARTICIPATE.send(connection,
+                                 factory.string(name),
+                                 factory.protein(null, null, null));
         return new PoolHose(connection, name);
     }
 
@@ -77,18 +70,13 @@ public final class Server implements PoolServer {
         throws PoolException {
         final ServerConnection connection = connectionFactory.get(address);
         final SlawFactory factory = connection.factory();
-        checkRetort(connection.send(Request.PARTICIPATE_C,
-                                    factory.string(name),
-                                    factory.string("mmap"),
-                                    opts.toSlaw(),
-                                    factory.protein(null, null, null)),
-                    0);
+        Request.PARTICIPATE_C.send(connection,
+                                   factory.string(name),
+                                   factory.string("mmap"),
+                                   opts.toSlaw(),
+                                   factory.protein(null, null, null));
         return new PoolHose(connection, name);
      }
-
-    private static void checkRetort(Slaw ret, int pos)
-        throws PoolException {
-    }
 
     private final PoolServerAddress address;
     private final ServerConnectionFactory connectionFactory;
