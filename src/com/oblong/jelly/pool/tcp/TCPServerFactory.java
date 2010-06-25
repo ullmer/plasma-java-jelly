@@ -11,8 +11,8 @@ import com.oblong.jelly.PoolException;
 import com.oblong.jelly.PoolServer;
 import com.oblong.jelly.PoolServers;
 import com.oblong.jelly.PoolServerAddress;
-import com.oblong.jelly.pool.Server;
-import com.oblong.jelly.pool.ServerConnectionFactory;
+import com.oblong.jelly.pool.impl.Server;
+import com.oblong.jelly.pool.impl.ServerConnectionFactory;
 
 /**
  *

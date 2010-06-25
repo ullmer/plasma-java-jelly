@@ -217,6 +217,7 @@ final class Protocol {
             | ((mv ? 1<<d : d) * i.bytes() * (c ? 2 : 1) - 1L) << 46;
     }
 
+    @SuppressWarnings("rawtypes")
     private static final void putNumHeading(Map m, NumericIlk i, long d,
                                             boolean c, boolean mv) {
         @SuppressWarnings("unchecked")
@@ -226,8 +227,11 @@ final class Protocol {
 
     private static final Map<NumericIlk, Long> NUM_BYTE;
     private static final Map<Long, NumericIlk> NUM_ILK;
+    @SuppressWarnings("rawtypes")
     private static final Map[] NUM_HEADING = new EnumMap[4];
+    @SuppressWarnings("rawtypes")
     private static final Map[] COMPLEX_HEADING = new EnumMap[4];
+    @SuppressWarnings("rawtypes")
     private static final Map[] MVECT_HEADING = new EnumMap[4];
 
     private static final long NUM_ARRAY_MASK = 0x3L<<62;

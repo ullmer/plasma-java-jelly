@@ -1,6 +1,6 @@
 // Copyright (c) 2010 Oblong Industries
 
-package com.oblong.jelly.pool;
+package com.oblong.jelly.pool.impl;
 
 import com.oblong.jelly.PoolServerAddress;
 import com.oblong.jelly.PoolException;
@@ -15,5 +15,5 @@ public interface ServerConnection {
 
     Slaw send(Request r, Slaw... args) throws PoolException;
     void close();
-
+    boolean isOpen();
 }

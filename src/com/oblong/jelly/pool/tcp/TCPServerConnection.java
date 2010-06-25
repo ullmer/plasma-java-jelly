@@ -18,16 +18,16 @@ import com.oblong.jelly.Slaw;
 
 import com.oblong.jelly.pool.PoolIOException;
 import com.oblong.jelly.pool.PoolOpException;
-import com.oblong.jelly.pool.Request;
-import com.oblong.jelly.pool.ServerConnection;
-import com.oblong.jelly.pool.ServerConnectionFactory;
+import com.oblong.jelly.pool.impl.Request;
+import com.oblong.jelly.pool.impl.ServerConnection;
+import com.oblong.jelly.pool.impl.ServerConnectionFactory;
 
 import com.oblong.jelly.slaw.SlawExternalizer;
 import com.oblong.jelly.slaw.SlawFactory;
 import com.oblong.jelly.slaw.SlawInternalizer;
 import com.oblong.jelly.util.ByteReader;
 
-import static com.oblong.jelly.pool.Request.*;
+import static com.oblong.jelly.pool.impl.Request.*;
 
 /**
  *
@@ -67,6 +67,10 @@ final class TCPServerConnection implements ServerConnection {
             // TODO: log this as a warning properly
             e.printStackTrace();
         }
+    }
+    
+    @Override public boolean isOpen() {
+        return socket.isConnected();
     }
 
     private TCPServerConnection(PoolServerAddress addr) throws PoolException {

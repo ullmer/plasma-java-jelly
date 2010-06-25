@@ -1,10 +1,12 @@
 // Copyright (c) 2010 Oblong Industries
 
-package com.oblong.jelly.pool;
+package com.oblong.jelly.pool.impl;
 
 import com.oblong.jelly.NumericIlk;
 import com.oblong.jelly.PoolException;
 import com.oblong.jelly.Slaw;
+import com.oblong.jelly.pool.PoolProtocolException;
+import com.oblong.jelly.pool.PoolServerException;
 
 /**
  *
@@ -110,6 +112,9 @@ public enum Request {
 
     public Slaw send(ServerConnection conn, Slaw... args)
         throws PoolException {
+        if (conn == null || !conn.isOpen()) {
+            throw new PoolProtocolException("Connection closed");
+        }
         assert arity == args.length;
         return checkRetort(conn.send(this, args));
     }
@@ -127,8 +132,7 @@ public enum Request {
 
     private Slaw checkRetort(Slaw res) throws PoolException {
         if (res.count() < responseArity)
-            throw
-            new PoolProtocolException(res, "Wrong response arity "
+            throw new PoolProtocolException(res, "Wrong response arity "
                                             + res.count() + " ("
                                             + responseArity + " expected)");
         final Slaw ret = checkResponse(res);

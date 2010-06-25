@@ -17,8 +17,10 @@ public class PoolException extends Exception {
         BAD_ADDRESS("Malformed pool address"),
         IO_ERROR("I/O error"),
         UNSUPPORTED_OP("Unsupported operation"),
-        SERVER_ERROR("Server error"),
+        SERVER_ERROR("Server-side error"),
         PROTOCOL_ERROR("Protocol error"),
+        TIMEOUT("A timeout expired waiting for a protein"),
+        NO_SUCH_PROTEIN("Requested protein does not exist"),
         UNCLASSIFIED("Unclassified error"),
         USER("User-defined exception");
 
@@ -42,28 +44,32 @@ public class PoolException extends Exception {
     }
 
     protected PoolException(Code code, String info) {
-        this.code = code;
-        this.info = info;
-        this.serverCode = 0;
+        this(code, 0, info);
     }
 
     protected PoolException(Code code, Throwable cause) {
-        super(cause);
-        this.code = code;
-        info = cause.getMessage();
-        this.serverCode = 0;
+        this(code, 0, cause);
     }
 
     protected PoolException(int serverCode, String info) {
-        this.code = Code.SERVER_ERROR;
-        this.info = info;
-        this.serverCode = serverCode;
+        this(Code.SERVER_ERROR, serverCode, info);
     }
 
     protected PoolException(int serverCode, Throwable cause) {
-        this.code = Code.SERVER_ERROR;
-        this.info = cause.getMessage();
-        this.serverCode = serverCode;
+        this(Code.SERVER_ERROR, serverCode, cause);
+    }
+
+    protected PoolException(Code code, int sc, String info) {
+        this.code = code;
+        this.info = info;
+        this.serverCode = sc;
+    }
+
+    protected PoolException(Code code, int sc, Throwable cause) {
+        super(cause);
+        this.code = code;
+        info = cause.getMessage();
+        this.serverCode = sc;
     }
 
     private final Code code;

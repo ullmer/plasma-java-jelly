@@ -1,6 +1,6 @@
 // Copyright (c) 2010 Oblong Industries
 
-package com.oblong.jelly.pool;
+package com.oblong.jelly.pool.impl;
 
 import java.io.IOException;
 import java.io.OutputStream;
