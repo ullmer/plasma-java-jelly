@@ -13,30 +13,32 @@ public interface Hose {
 
     double WAIT = -1;
     double NO_WAIT = 0;
-    
+
     int version();
 
     String name();
     void setName(String n);
     String poolName();
     boolean isConnected();
-    
+
     void withdraw() throws PoolException;
-    
+
     long index();
     long newestIndex() throws PoolException;
     long oldestIndex() throws PoolException;
-    
+
     void seekTo(long index);
     void seekBy(long offset);
     void toLast() throws PoolException;
     void runOut() throws PoolException;
     void rewind() throws PoolException;
-    
+
     Protein deposit(Protein p) throws PoolException;
-    
+
     Protein next() throws PoolException;
+    Protein next(Slaw descrip) throws PoolException;
     Protein next(double timeout) throws PoolException;
     Protein previous() throws PoolException;
+    Protein previous(Slaw descrip) throws PoolException;
     Protein nth(long index) throws PoolException;
 }

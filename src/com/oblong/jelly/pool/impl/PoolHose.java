@@ -8,6 +8,7 @@ import com.oblong.jelly.PoolException;
 import com.oblong.jelly.Protein;
 import com.oblong.jelly.Slaw;
 import com.oblong.jelly.pool.ProtocolException;
+import com.oblong.jelly.pool.NoSuchProteinException;
 import com.oblong.jelly.slaw.SlawFactory;
 
 @NotThreadSafe
@@ -92,32 +93,71 @@ final class PoolHose implements Hose {
     }
 
     @Override public Protein next() throws PoolException {
-        // TODO Auto-generated method stub
-        return null;
+        final Slaw res = Request.NEXT.send(connection, indexSlaw(index));
+        index = res.nth(2).emitLong();
+        return new PoolProtein(res.nth(0).toProtein(),
+                               index,
+                               res.nth(1).emitDouble(),
+                               this);
     }
 
-    @Override public Protein next(double timeout) throws PoolException {
-        // TODO Auto-generated method stub
-        return null;
+    @Override public Protein next(Slaw descrip) throws PoolException {
+        if (descrip == null) throw new NoSuchProteinException(0L);
+        final Slaw res = Request.PROBE_FWD.send(connection, descrip);
+        index = res.nth(2).emitLong();
+        return new PoolProtein(res.nth(0).toProtein(),
+                               index,
+                               res.nth(1).emitDouble(),
+                               this);
+    }
+
+    @Override public Protein next(double t) throws PoolException {
+        final Slaw res = Request.AWAIT_NEXT.send(connection, timeoutSlaw(t));
+        index = res.nth(3).emitLong();
+        return new PoolProtein(res.nth(1).toProtein(),
+                               index,
+                               res.nth(2).emitDouble(),
+                               this);
     }
 
     @Override public Protein previous() throws PoolException {
-        // TODO Auto-generated method stub
-        return null;
+        final Slaw res = Request.PREV.send(connection, indexSlaw(index));
+        index = res.nth(2).emitLong();
+        return new PoolProtein(res.nth(0).toProtein(),
+                               index,
+                               res.nth(1).emitDouble(),
+                               this);
     }
 
-    @Override public Protein nth(long index) throws PoolException {
-        // TODO Auto-generated method stub
-        return null;
+    @Override public Protein previous(Slaw descrip) throws PoolException {
+        final Slaw res = Request.PROBE_BACK.send(connection, descrip);
+        index = res.nth(2).emitLong();
+        return new PoolProtein(res.nth(0).toProtein(),
+                               index,
+                               res.nth(1).emitDouble(),
+                               this);
     }
 
-    private Slaw timeoutToSlaw(double timeout) {
+    @Override public Protein nth(long idx) throws PoolException {
+        final Slaw sidx = indexSlaw(idx);
+        final Slaw res = Request.NTH_PROTEIN.send(connection, sidx);
+        return new PoolProtein(res.nth(0).toProtein(),
+                               sidx.emitLong(),
+                               res.nth(1).emitDouble(),
+                               this);
+    }
+
+    private Slaw timeoutSlaw(double timeout) {
         if (timeout < 0) timeout = WAIT;
         if (version() < FIRST_NEW_WAIT_V) {
             if (timeout == WAIT) timeout = OLD_WAIT;
             else if (timeout == NO_WAIT) timeout = OLD_NO_WAIT;
         }
         return factory.number(NumericIlk.FLOAT64, timeout);
+    }
+
+    private Slaw indexSlaw(long idx) {
+        return factory.number(NumericIlk.INT64, idx);
     }
 
     private static final double OLD_WAIT = NO_WAIT;
