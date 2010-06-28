@@ -38,10 +38,10 @@ public enum ServerError {
         ERROR_TO_C.put(Pair.create(v, err), sc);
     }
 
-    private static void reg(int v, ServerError err, long... scs) {
-        for (long sc : scs) {
+    private static void reg(int v, ServerError err, ServerErrorCode... cs) {
+        for (ServerErrorCode c : cs) {
             for (int i = 0; i <= v; ++i) {
-                registerError(v, sc, err);
+                registerError(v, c.code(), err);
             }
         }
     }
