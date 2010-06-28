@@ -157,7 +157,10 @@ public enum Request {
     }
 
     private static Slaw retort(Slaw s, int p) throws ProtocolException {
-        final Slaw ret = s.nth(p);
+        Slaw ret = s.nth(p);
+        // For now, we discard additional information associated
+        // with the error code, if any.
+        if (ret.isList() && ret.count() > 0) ret = ret.nth(0);
         check(s, p, "number", ret.isNumber(NumericIlk.INT64));
         return ret;
     }
