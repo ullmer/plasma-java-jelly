@@ -6,29 +6,34 @@ import com.oblong.jelly.PoolException;
 import com.oblong.jelly.Slaw;
 
 @Immutable
-public class PoolProtocolException extends PoolException {
+public class ProtocolException extends PoolException {
 
-    public PoolProtocolException(String info) {
+    public ProtocolException(String info) {
         this(null, info);
     }
 
-    public PoolProtocolException(Throwable cause) {
+    public ProtocolException(Throwable cause) {
         this(null, cause);
     }
 
-    public PoolProtocolException(Slaw res, String info) {
+    public ProtocolException(Slaw res, String info) {
         super(Code.PROTOCOL_ERROR, info);
         response = res;
     }
 
-    public PoolProtocolException(Slaw res, Throwable cause) {
+    public ProtocolException(Slaw res, Throwable cause) {
         super(Code.PROTOCOL_ERROR, cause);
         response = res;
     }
 
+    public ProtocolException(Slaw res, long sc) {
+        super(Code.PROTOCOL_ERROR, sc, "Server rejected request");
+        response = res;
+    }
+
     public Slaw response() { return response; }
-
+    
     private final Slaw response;
-
+    
     private static final long serialVersionUID = -7586082498540248002L;
 }

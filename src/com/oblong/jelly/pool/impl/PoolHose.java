@@ -7,7 +7,7 @@ import com.oblong.jelly.NumericIlk;
 import com.oblong.jelly.PoolException;
 import com.oblong.jelly.Protein;
 import com.oblong.jelly.Slaw;
-import com.oblong.jelly.pool.PoolProtocolException;
+import com.oblong.jelly.pool.ProtocolException;
 import com.oblong.jelly.slaw.SlawFactory;
 
 @NotThreadSafe
@@ -59,7 +59,7 @@ final class PoolHose implements Hose {
         try {
             return res.emitLong();
         } catch (UnsupportedOperationException e) {
-            throw new PoolProtocolException(res, "Invalid argument 0");
+            throw new ProtocolException(res, "Invalid argument 0");
         }
     }
 

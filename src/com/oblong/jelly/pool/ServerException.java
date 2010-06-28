@@ -6,22 +6,22 @@ import com.oblong.jelly.PoolException;
 import com.oblong.jelly.Slaw;
 
 @Immutable
-public class PoolServerException extends PoolException {
+public class ServerException extends PoolException {
 
-    public PoolServerException(long serverCode, String info) {
+    public ServerException(long serverCode, String info) {
         this(serverCode, null, info);
     }
 
-    public PoolServerException(long serverCode, Throwable cause) {
+    public ServerException(long serverCode, Throwable cause) {
         this(serverCode, null, cause);
     }
 
-    public PoolServerException(long serverCode, Slaw res, String info) {
+    public ServerException(long serverCode, Slaw res, String info) {
         super(serverCode, info);
         response = res;
     }
 
-    public PoolServerException(long serverCode, Slaw res, Throwable cause) {
+    public ServerException(long serverCode, Slaw res, Throwable cause) {
         super(serverCode, cause);
         response = res;
     }

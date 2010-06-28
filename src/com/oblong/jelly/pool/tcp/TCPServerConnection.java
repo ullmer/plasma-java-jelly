@@ -16,8 +16,8 @@ import com.oblong.jelly.PoolException;
 import com.oblong.jelly.Protein;
 import com.oblong.jelly.Slaw;
 
-import com.oblong.jelly.pool.PoolIOException;
-import com.oblong.jelly.pool.PoolOpException;
+import com.oblong.jelly.pool.InOutException;
+import com.oblong.jelly.pool.InvalidOperationException;
 import com.oblong.jelly.pool.impl.Request;
 import com.oblong.jelly.pool.impl.ServerConnection;
 import com.oblong.jelly.pool.impl.ServerConnectionFactory;
@@ -52,7 +52,7 @@ final class TCPServerConnection implements ServerConnection {
     @Override public Slaw send(Request r, Slaw... args)
         throws PoolException {
         if (!supported.contains(r))
-            throw new PoolOpException("Unsupported server op " + r);
+            throw new InvalidOperationException("Unsupported server op " + r);
         final Slaw code = factory.number(NumericIlk.INT32, r.code());
         return send(factory.protein(null,
                                     factory.map(OP_KEY, code,
@@ -88,7 +88,7 @@ final class TCPServerConnection implements ServerConnection {
             externalizer = defaultExternalizer;
             internalizer = defaultInternalizer;
         } catch (IOException e) {
-            throw new PoolIOException(e);
+            throw new InOutException(e);
         }
     }
 
@@ -96,7 +96,7 @@ final class TCPServerConnection implements ServerConnection {
         try {
             externalizer.extern(p, socket.getOutputStream());
         } catch (Exception e) {
-            throw new PoolIOException(e);
+            throw new InOutException(e);
         }
         return read();
     }
@@ -107,14 +107,14 @@ final class TCPServerConnection implements ServerConnection {
             ret =
                 internalizer.internProtein(socket.getInputStream(), factory);
         } catch (Exception e) {
-            throw new PoolIOException(e);
+            throw new InOutException(e);
         }
         if (!ret.isProtein())
-            throw new PoolIOException("Non-protein received from server");
+            throw new InOutException("Non-protein received from server");
         ret = ret.toProtein().ingests();
         if (ret != null) ret = ret.find(ARGS_KEY);
         if (ret == null)
-            throw new PoolIOException("Empty response from server");
+            throw new InOutException("Empty response from server");
         return ret;
     }
 
@@ -136,10 +136,10 @@ final class TCPServerConnection implements ServerConnection {
     }
 
     private static Set<Request> readSupported(InputStream is, int v)
-        throws PoolIOException, IOException {
+        throws InOutException, IOException {
         if (v == 0) return defaultSupported;
         final int len = is.read();
-        if (len <= 0) throw new PoolIOException("Server supports no ops.");
+        if (len <= 0) throw new InOutException("Server supports no ops.");
         final byte[] data = new byte[len];
         final ByteReader reader = new ByteReader(is);
         reader.get(data, len);
@@ -156,7 +156,7 @@ final class TCPServerConnection implements ServerConnection {
     private static void checkVersion(int min, int max, int v, String msg)
         throws PoolException {
         if (v < min || v > max) {
-            throw new PoolOpException("Unsupported " + msg
+            throw new InvalidOperationException("Unsupported " + msg
                                       + " server protocol (" + v + ")");
         }
     }

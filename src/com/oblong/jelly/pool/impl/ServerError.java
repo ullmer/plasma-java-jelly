@@ -2,22 +2,72 @@ package com.oblong.jelly.pool.impl;
 
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.oblong.jelly.PoolException;
+import com.oblong.jelly.PoolServerAddress.BadAddress;
 import com.oblong.jelly.Slaw;
-import com.oblong.util.Pair;
+import com.oblong.jelly.pool.CorruptPoolException;
+import com.oblong.jelly.pool.InvalidOperationException;
+import com.oblong.jelly.pool.NoSuchPoolException;
+import com.oblong.jelly.pool.PoolExistsException;
+import com.oblong.jelly.pool.ProtocolException;
+import com.oblong.jelly.pool.TimeoutException;
 
 import static com.oblong.jelly.pool.impl.ServerErrorCode.*;
+import com.oblong.util.Pair;
 
 public enum ServerError {
-    SPLEND,
-    NO_SUCH_PROTEIN,
-    NO_SUCH_POOL,
-    POOL_EXISTS,
-    TIMEOUT,
-    CORRUPT_POOL,
-    BAD_NAME,
-    NO_OP,
-    PROTOCOL_ERROR,
-    UNREGISTERED;
+    SPLEND {
+        public PoolException asException(Slaw res, long code) {
+            return null;
+        }
+    },
+    NO_SUCH_PROTEIN {
+        public PoolException asException(Slaw res, long code) {
+            return new NoSuchPoolException(code);
+        }
+    },
+    NO_SUCH_POOL {
+        public PoolException asException(Slaw res, long code) {
+            return new NoSuchPoolException(code);
+        }
+    },
+    POOL_EXISTS {
+        public PoolException asException(Slaw res, long code) {
+            return new PoolExistsException(code);
+        }
+    },
+    TIMEOUT {
+        public PoolException asException(Slaw res, long code) {
+            return new TimeoutException(code);
+        }
+    },
+    CORRUPT_POOL {
+        public PoolException asException(Slaw res, long code) {
+            return new CorruptPoolException(code);
+        }
+    },
+    BAD_NAME {
+        public PoolException asException(Slaw res, long code) {
+            return new BadAddress(code);
+        }
+    },
+    NO_OP {
+        public PoolException asException(Slaw res, long code) {
+            return new InvalidOperationException(code);
+        }
+    },
+    PROTOCOL_ERROR {
+        public PoolException asException(Slaw res, long code) {
+            return new ProtocolException(res, code);
+        }
+    },
+    UNREGISTERED {
+        public PoolException asException(Slaw res, long code) {
+            return new ProtocolException(res, code);
+        }
+    };
+
+    public abstract PoolException asException(Slaw res, long code);
 
     public static ServerError getError(int v, long sc) {
         final ServerError e = C_TO_ERROR.get(Pair.create(v, sc));

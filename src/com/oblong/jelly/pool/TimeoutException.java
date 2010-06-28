@@ -5,9 +5,9 @@ import net.jcip.annotations.Immutable;
 import com.oblong.jelly.PoolException;
 
 @Immutable
-public class PoolTimeoutException extends PoolException {
+public class TimeoutException extends PoolException {
 
-    public PoolTimeoutException(long sc) {
+    public TimeoutException(long sc) {
         super(Code.TIMEOUT, sc, "Server code was " + sc);
     }
 

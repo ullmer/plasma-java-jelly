@@ -13,9 +13,9 @@ import com.oblong.jelly.PoolException;
  * @author jao
  */
 @Immutable
-public class PoolCorruptException extends PoolException {
+public class CorruptPoolException extends PoolException {
 
-    public PoolCorruptException(long sc) {
+    public CorruptPoolException(long sc) {
         super(Code.CORRUPT_POOL, sc, "Server code was " + sc);
     }
 
