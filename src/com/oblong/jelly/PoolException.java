@@ -14,13 +14,16 @@ import net.jcip.annotations.Immutable;
 public class PoolException extends Exception {
 
     public static enum Code {
-        BAD_ADDRESS("Malformed pool address"),
+        BAD_ADDRESS("Malformed pool address or name"),
         IO_ERROR("I/O error"),
         UNSUPPORTED_OP("Unsupported operation"),
         SERVER_ERROR("Server-side error"),
         PROTOCOL_ERROR("Protocol error"),
         TIMEOUT("A timeout expired waiting for a protein"),
         NO_SUCH_PROTEIN("Requested protein does not exist"),
+        NO_SUCH_POOL("Requested pool does not exist"),
+        POOL_EXISTS("Pool could not be created: it already exists"),
+        CORRUPT_POOL("Pool couldn't be accessed on server"),
         UNCLASSIFIED("Unclassified error"),
         USER("User-defined exception");
 
@@ -33,7 +36,7 @@ public class PoolException extends Exception {
 
     public final Code code() { return code; }
 
-    public final int serverCode() { return serverCode; }
+    public final long serverCode() { return serverCode; }
 
     @Override public String getMessage() {
         return code + "(" + code.description + "): " + info;
@@ -51,21 +54,21 @@ public class PoolException extends Exception {
         this(code, 0, cause);
     }
 
-    protected PoolException(int serverCode, String info) {
+    protected PoolException(long serverCode, String info) {
         this(Code.SERVER_ERROR, serverCode, info);
     }
 
-    protected PoolException(int serverCode, Throwable cause) {
+    protected PoolException(long serverCode, Throwable cause) {
         this(Code.SERVER_ERROR, serverCode, cause);
     }
 
-    protected PoolException(Code code, int sc, String info) {
+    protected PoolException(Code code, long sc, String info) {
         this.code = code;
         this.info = info;
         this.serverCode = sc;
     }
 
-    protected PoolException(Code code, int sc, Throwable cause) {
+    protected PoolException(Code code, long sc, Throwable cause) {
         super(cause);
         this.code = code;
         info = cause.getMessage();
@@ -74,7 +77,7 @@ public class PoolException extends Exception {
 
     private final Code code;
     private final String info;
-    private final int serverCode;
+    private final long serverCode;
 
     private static final long serialVersionUID = -3964934204273865061L;
 }

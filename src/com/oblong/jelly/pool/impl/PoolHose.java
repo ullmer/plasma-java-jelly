@@ -3,6 +3,7 @@ package com.oblong.jelly.pool.impl;
 import net.jcip.annotations.NotThreadSafe;
 
 import com.oblong.jelly.Hose;
+import com.oblong.jelly.NumericIlk;
 import com.oblong.jelly.PoolException;
 import com.oblong.jelly.Protein;
 import com.oblong.jelly.Slaw;
@@ -19,11 +20,11 @@ final class PoolHose implements Hose {
         setName(null);
         index = newestIndex();
     }
-    
+
     @Override public int version() {
         return connection.version();
     }
-    
+
     @Override public String name() {
         return name;
     }
@@ -31,34 +32,30 @@ final class PoolHose implements Hose {
     @Override public void setName(String n) {
         name = n == null ? connection.address() + "/" + poolName : n;
     }
-    
+
     @Override public String poolName() {
         return poolName;
     }
-    
+
     @Override public boolean isConnected() {
         return connection.isOpen();
     }
+
     @Override public void withdraw() throws PoolException {
-        try {
-            Request.WITHDRAW.sendAndClose(connection, factory.string(poolName));
-        } finally {
-            connection = null;
-            factory = null;
-        }
+        Request.WITHDRAW.sendAndClose(connection, factory.string(poolName));
     }
-    
+
     @Override public long index() {
         return index;
     }
 
     @Override public long newestIndex() throws PoolException {
-        final Slaw res = Request.NEWEST_INDEX.send(connection).nth(0); 
+        final Slaw res = Request.NEWEST_INDEX.send(connection).nth(0);
         return res.emitLong();
     }
 
     @Override public long oldestIndex() throws PoolException {
-        final Slaw res = Request.OLDEST_INDEX.send(connection).nth(0); 
+        final Slaw res = Request.OLDEST_INDEX.send(connection).nth(0);
         try {
             return res.emitLong();
         } catch (UnsupportedOperationException e) {
@@ -94,32 +91,41 @@ final class PoolHose implements Hose {
         return new PoolProtein(recProt, index, stamp, this);
     }
 
-    @Override
-    public Protein next() throws PoolException {
+    @Override public Protein next() throws PoolException {
         // TODO Auto-generated method stub
         return null;
     }
 
-    @Override
-    public Protein next(double timeout) throws PoolException {
+    @Override public Protein next(double timeout) throws PoolException {
         // TODO Auto-generated method stub
         return null;
     }
 
-    @Override
-    public Protein previous() throws PoolException {
+    @Override public Protein previous() throws PoolException {
         // TODO Auto-generated method stub
         return null;
     }
 
-    @Override
-    public Protein nth(long index) throws PoolException {
+    @Override public Protein nth(long index) throws PoolException {
         // TODO Auto-generated method stub
         return null;
     }
 
-    private ServerConnection connection;
-    private SlawFactory factory;
+    private Slaw timeoutToSlaw(double timeout) {
+        if (timeout < 0) timeout = WAIT;
+        if (version() < FIRST_NEW_WAIT_V) {
+            if (timeout == WAIT) timeout = OLD_WAIT;
+            else if (timeout == NO_WAIT) timeout = OLD_NO_WAIT;
+        }
+        return factory.number(NumericIlk.FLOAT64, timeout);
+    }
+
+    private static final double OLD_WAIT = NO_WAIT;
+    private static final double OLD_NO_WAIT = WAIT;
+    private static final int FIRST_NEW_WAIT_V = 2;
+
+    private final ServerConnection connection;
+    private final SlawFactory factory;
     private final String poolName;
     private String name;
     long index;

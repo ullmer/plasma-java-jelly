@@ -5,9 +5,9 @@ import net.jcip.annotations.Immutable;
 import com.oblong.jelly.PoolException;
 
 @Immutable
-public final class PoolNoSuchProteinException extends PoolException {
+public class PoolNoSuchProteinException extends PoolException {
 
-    public PoolNoSuchProteinException(int sc) {
+    public PoolNoSuchProteinException(long sc) {
         super(Code.NO_SUCH_PROTEIN, sc, "Server code was " + sc);
     }
 
