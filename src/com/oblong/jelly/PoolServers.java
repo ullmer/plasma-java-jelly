@@ -20,16 +20,12 @@ public class PoolServers {
 
     public static final PoolServer get(PoolServerAddress address)
         throws PoolException {
-        PoolServer server = servers.get(address);
-        if (server == null) {
-            String scheme = address.scheme();
-            final Factory f = (scheme == null || TCP_SCM.equals(scheme))
-                ? tcpFactory : factories.get(scheme);
-            if (f == null) 
-                throw new PoolServerAddress.BadAddress("Bad scheme: " + scheme);
-            server = f.get(address);
-            servers.put(address, server);
-        }
+        final String scheme = address.scheme();
+        final Factory f = (scheme == null || TCP_SCM.equals(scheme)) ?
+                tcpFactory : factories.get(scheme);
+        if (f == null) 
+            throw new PoolServerAddress.BadAddress("Bad scheme: " + scheme);
+        final PoolServer server = f.get(address);
         return server;
     }
 
@@ -49,9 +45,6 @@ public class PoolServers {
         new ConcurrentHashMap<String, Factory>();
     private static final Factory tcpFactory =
         new com.oblong.jelly.pool.tcp.TCPServerFactory();
-
-    private static final Map<PoolServerAddress, PoolServer> servers =
-        new ConcurrentHashMap<PoolServerAddress, PoolServer>();
 
     private PoolServers() {}
 }

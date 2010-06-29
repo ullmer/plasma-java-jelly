@@ -9,6 +9,7 @@ package com.oblong.jelly.pool.impl;
  * @author jao
  */
 public enum ServerErrorCode {
+    POOL_SPLEND(0),
     // Some file-related op failed
     POOL_FILE_BADTH(pe(500)),
     POOL_NULL_HOSE(pe(505)),
