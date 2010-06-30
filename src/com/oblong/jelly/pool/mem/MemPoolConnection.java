@@ -15,8 +15,8 @@ import static com.oblong.jelly.pool.impl.Request.*;
 import static com.oblong.jelly.pool.impl.ServerErrorCode.*;
 
 import com.oblong.jelly.pool.impl.PoolProtein;
-import com.oblong.jelly.pool.impl.ServerConnection;
-import com.oblong.jelly.pool.impl.ServerConnectionFactory;
+import com.oblong.jelly.pool.impl.PoolConnection;
+import com.oblong.jelly.pool.impl.PoolConnectionFactory;
 import com.oblong.jelly.pool.impl.ServerErrorCode;
 import com.oblong.jelly.slaw.SlawFactory;
 
@@ -27,15 +27,15 @@ import com.oblong.jelly.slaw.SlawFactory;
  *
  * @author jao
  */
-final class MemConnection implements ServerConnection {
+final class MemPoolConnection implements PoolConnection {
 
-    static class Factory implements ServerConnectionFactory {
-        @Override public ServerConnection get(PoolServerAddress addr) {
-            return new MemConnection(addr);
+    static class Factory implements PoolConnectionFactory {
+        @Override public PoolConnection get(PoolServerAddress addr) {
+            return new MemPoolConnection(addr);
         }
     }
 
-    public MemConnection(PoolServerAddress addr) {
+    public MemPoolConnection(PoolServerAddress addr) {
         address = addr;
         pool = null;
         index = Protein.INVALID_INDEX;
@@ -67,31 +67,37 @@ final class MemConnection implements ServerConnection {
 
     @Override public Slaw send(Request request, Slaw... args)
         throws PoolException {
+        if (POOL_OPS.contains(request))
+            return poolRequest(request, args[0].emitString());
+        if (LIST == request)
+            return makeResponse(OK, factory.list(MemPool.names()));
+        return hoseRequest(request, args);
+    }
+
+    private Slaw poolRequest(Request request, String poolName) {
         switch (request) {
         case CREATE:
-            MemPool p = MemPool.getNew(args[0].emitString());
+            MemPool p = MemPool.create(poolName);
             return makeResponse(p == null ? POOL_EXISTS : OK);
         case DISPOSE:
-            boolean r = MemPool.dispose(args[0].emitString());
+            boolean r = MemPool.dispose(poolName);
             return makeResponse(r ? OK : NO_SUCH_POOL);
         case PARTICIPATE:
-            pool = MemPool.get(args[0].emitString());
+            pool = MemPool.get(poolName);
             open = pool != null;
             return makeResponse(open ? NO_SUCH_POOL : OK);
         case PARTICIPATE_C:
-            pool = MemPool.get(args[0].emitString());
-            if (pool == null) pool = MemPool.getNew(args[0].emitString());
+            pool = MemPool.get(poolName);
+            if (pool == null) pool = MemPool.create(poolName);
             open = pool != null;
             return makeResponse(OK);
-        case LIST:
-            return makeResponse(OK, factory.list(MemPool.names()));
         default:
-            return poolRequest(request, args);
+            return makeResponse(NOP);
         }
     }
 
-    private Slaw poolRequest(Request request, Slaw[] args) {
-        if (pool == null) return NULL_HOSE;
+    private Slaw hoseRequest(Request request, Slaw[] args) {
+        if (pool == null) return makeResponse(NULL_HOSE);
         switch (request) {
         case OLDEST_INDEX:
             return makeResponse(makeIndex(pool.oldestIndex()), OK);
@@ -115,7 +121,7 @@ final class MemConnection implements ServerConnection {
             close();
             return makeResponse(OK);
         default:
-            return NOP;
+            return makeResponse(NOP);
         }
     }
 
@@ -164,7 +170,6 @@ final class MemConnection implements ServerConnection {
         return makeResponse(ret, prot, time, makeIndex(index));
     }
 
-
     private static Slaw makeResponse(Slaw... args) {
         return factory.list(args);
     }
@@ -199,5 +204,7 @@ final class MemConnection implements ServerConnection {
     private static final Set<Request> SUPPORTED =
         EnumSet.of(CREATE, DISPOSE, PARTICIPATE, PARTICIPATE_C, WITHDRAW,
                    OLDEST_INDEX, NEWEST_INDEX, DEPOSIT, NTH_PROTEIN, NEXT,
-                   PROBE_FWD, PREV, PROBE_BACK, AWAIT_NEXT);
+                   PROBE_FWD, PREV, PROBE_BACK, AWAIT_NEXT, LIST);
+    private static final Set<Request> POOL_OPS =
+        EnumSet.of(CREATE, DISPOSE, PARTICIPATE, PARTICIPATE_C);
 }

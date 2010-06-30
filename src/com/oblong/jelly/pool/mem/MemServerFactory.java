@@ -12,7 +12,7 @@ import com.oblong.jelly.PoolServer;
 import com.oblong.jelly.PoolServerAddress;
 import com.oblong.jelly.PoolServers;
 import com.oblong.jelly.pool.impl.Server;
-import com.oblong.jelly.pool.impl.ServerConnectionFactory;
+import com.oblong.jelly.pool.impl.PoolConnectionFactory;
 
 /**
  *
@@ -37,6 +37,6 @@ public final class MemServerFactory implements PoolServers.Factory {
     private static Map<PoolServerAddress, PoolServer> servers =
         new ConcurrentHashMap<PoolServerAddress, PoolServer>();
 
-    private static final ServerConnectionFactory factory =
-        new MemConnection.Factory();
+    private static final PoolConnectionFactory factory =
+        new MemPoolConnection.Factory();
 }

@@ -14,7 +14,7 @@ import com.oblong.jelly.slaw.SlawFactory;
 @NotThreadSafe
 final class PoolHose implements Hose {
 
-    PoolHose(ServerConnection conn, String pn) throws PoolException {
+    PoolHose(PoolConnection conn, String pn) throws PoolException {
         connection = conn;
         factory = conn.factory();
         poolName = pn;
@@ -92,6 +92,10 @@ final class PoolHose implements Hose {
         return new PoolProtein(recProt, index, stamp, this);
     }
 
+    @Override public Protein current() throws PoolException {
+        return nth(index);
+    }
+    
     @Override public Protein next() throws PoolException {
         final Slaw res = Request.NEXT.send(connection, indexSlaw(index));
         index = res.nth(2).emitLong();
@@ -164,7 +168,7 @@ final class PoolHose implements Hose {
     private static final double OLD_NO_WAIT = WAIT;
     private static final int FIRST_NEW_WAIT_V = 2;
 
-    private final ServerConnection connection;
+    private final PoolConnection connection;
     private final SlawFactory factory;
     private final String poolName;
     private String name;

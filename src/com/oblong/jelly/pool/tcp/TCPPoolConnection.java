@@ -19,8 +19,8 @@ import com.oblong.jelly.Slaw;
 import com.oblong.jelly.pool.InOutException;
 import com.oblong.jelly.pool.InvalidOperationException;
 import com.oblong.jelly.pool.impl.Request;
-import com.oblong.jelly.pool.impl.ServerConnection;
-import com.oblong.jelly.pool.impl.ServerConnectionFactory;
+import com.oblong.jelly.pool.impl.PoolConnection;
+import com.oblong.jelly.pool.impl.PoolConnectionFactory;
 
 import com.oblong.jelly.slaw.SlawExternalizer;
 import com.oblong.jelly.slaw.SlawFactory;
@@ -35,12 +35,12 @@ import static com.oblong.jelly.pool.impl.Request.*;
  *
  * @author jao
  */
-final class TCPServerConnection implements ServerConnection {
+final class TCPPoolConnection implements PoolConnection {
 
-    static class Factory implements ServerConnectionFactory {
-        @Override public ServerConnection get(PoolServerAddress addr)
+    static class Factory implements PoolConnectionFactory {
+        @Override public PoolConnection get(PoolServerAddress addr)
             throws PoolException {
-            return new TCPServerConnection(addr);
+            return new TCPPoolConnection(addr);
         }
     }
 
@@ -72,7 +72,7 @@ final class TCPServerConnection implements ServerConnection {
         return socket.isConnected();
     }
 
-    private TCPServerConnection(PoolServerAddress addr) throws PoolException {
+    private TCPPoolConnection(PoolServerAddress addr) throws PoolException {
         try {
             address = addr;
             socket = new Socket(addr.host(), addr.port());

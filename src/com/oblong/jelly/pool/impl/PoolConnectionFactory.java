@@ -3,7 +3,7 @@ package com.oblong.jelly.pool.impl;
 import com.oblong.jelly.PoolServerAddress;
 import com.oblong.jelly.PoolException;
 
-public interface ServerConnectionFactory {
+public interface PoolConnectionFactory {
 
-    ServerConnection get(PoolServerAddress address) throws PoolException;
+    PoolConnection get(PoolServerAddress address) throws PoolException;
 }

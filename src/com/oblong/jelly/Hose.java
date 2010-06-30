@@ -35,6 +35,7 @@ public interface Hose {
 
     Protein deposit(Protein p) throws PoolException;
 
+    Protein current() throws PoolException;
     Protein next() throws PoolException;
     Protein next(Slaw descrip) throws PoolException;
     Protein next(double timeout) throws PoolException;

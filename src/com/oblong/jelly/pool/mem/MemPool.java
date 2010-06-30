@@ -17,20 +17,20 @@ import com.oblong.jelly.pool.impl.PoolProtein;
 @ThreadSafe
 final class MemPool {
 
+    public static boolean exists(String emitString) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    public static MemPool create(String name) {
+        return null;
+    }
+
     public static MemPool get(String name) {
         return null;
     }
 
     public static boolean dispose(String emitString) {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    public static MemPool getNew(String name) {
-        return null;
-    }
-
-    public static boolean exists(String emitString) {
         // TODO Auto-generated method stub
         return false;
     }
@@ -46,6 +46,8 @@ final class MemPool {
     public long newestIndex() { return 0; }
 
     public PoolProtein nth(long index) {
+        if (index < newestIndex()) {
+        }
         return null;
     }
 

@@ -9,7 +9,7 @@ import com.oblong.jelly.PoolException;
 import com.oblong.jelly.Slaw;
 import com.oblong.jelly.slaw.SlawFactory;
 
-public interface ServerConnection {
+public interface PoolConnection {
 
     PoolServerAddress address();
     int version();

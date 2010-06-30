@@ -117,7 +117,7 @@ public enum Request {
     public int arity() { return arity; }
     public int responseArity() { return responseArity; }
 
-    public Slaw send(ServerConnection conn, Slaw... args)
+    public Slaw send(PoolConnection conn, Slaw... args)
         throws PoolException {
         if (conn == null || !conn.isOpen()) {
             throw new ProtocolException("Connection closed");
@@ -128,7 +128,7 @@ public enum Request {
         return checkResponse(conn.send(this, args), conn.version());
     }
 
-    public Slaw sendAndClose(ServerConnection conn, Slaw... args)
+    public Slaw sendAndClose(PoolConnection conn, Slaw... args)
         throws PoolException {
         try {
             return send(conn, args);

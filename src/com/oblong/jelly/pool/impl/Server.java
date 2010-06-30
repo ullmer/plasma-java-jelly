@@ -25,7 +25,7 @@ import com.oblong.jelly.slaw.SlawFactory;
 @ThreadSafe
 public final class Server implements PoolServer {
 
-    public Server(ServerConnectionFactory cf, PoolServerAddress addr)
+    public Server(PoolConnectionFactory cf, PoolServerAddress addr)
         throws PoolException {
         address = addr;
         connectionFactory = cf;
@@ -33,7 +33,7 @@ public final class Server implements PoolServer {
 
     @Override public void create(String name, PoolOptions opts)
         throws PoolException {
-        final ServerConnection connection = connectionFactory.get(address);
+        final PoolConnection connection = connectionFactory.get(address);
         final SlawFactory factory = connection.factory();
         Request.CREATE.sendAndClose(connection,
                                     factory.string(name),
@@ -42,13 +42,13 @@ public final class Server implements PoolServer {
     }
 
     @Override public void dispose(String name) throws PoolException {
-        final ServerConnection connection = connectionFactory.get(address);
+        final PoolConnection connection = connectionFactory.get(address);
         final SlawFactory factory = connection.factory();
         Request.DISPOSE.sendAndClose(connection, factory.string(name));
     }
 
     @Override public Set<String> pools() throws PoolException {
-        final ServerConnection connection = connectionFactory.get(address);
+        final PoolConnection connection = connectionFactory.get(address);
         final Slaw list = Request.LIST.sendAndClose(connection);
         Set<String> result = new HashSet<String>(list.count());
         for (Slaw s : list.nth(1).emitList()) {
@@ -58,7 +58,7 @@ public final class Server implements PoolServer {
     }
 
     @Override public Hose participate(String name) throws PoolException {
-        final ServerConnection connection = connectionFactory.get(address);
+        final PoolConnection connection = connectionFactory.get(address);
         final SlawFactory factory = connection.factory();
         Request.PARTICIPATE.send(connection,
                                  factory.string(name),
@@ -68,7 +68,7 @@ public final class Server implements PoolServer {
 
     @Override public Hose participate(String name, PoolOptions opts)
         throws PoolException {
-        final ServerConnection connection = connectionFactory.get(address);
+        final PoolConnection connection = connectionFactory.get(address);
         final SlawFactory factory = connection.factory();
         Request.PARTICIPATE_C.send(connection,
                                    factory.string(name),
@@ -79,5 +79,5 @@ public final class Server implements PoolServer {
      }
 
     private final PoolServerAddress address;
-    private final ServerConnectionFactory connectionFactory;
+    private final PoolConnectionFactory connectionFactory;
 }
