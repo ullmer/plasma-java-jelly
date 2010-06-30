@@ -2,6 +2,8 @@
 
 package com.oblong.jelly;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  *
  *
@@ -10,9 +12,6 @@ package com.oblong.jelly;
  * @author jao
  */
 public interface Hose {
-
-    double WAIT = -1;
-    double NO_WAIT = 0;
 
     int version();
 
@@ -38,7 +37,8 @@ public interface Hose {
     Protein current() throws PoolException;
     Protein next() throws PoolException;
     Protein next(Slaw descrip) throws PoolException;
-    Protein next(double timeout) throws PoolException;
+    Protein next(long period, TimeUnit unit) throws PoolException;
+    Protein waitNext() throws PoolException;
     Protein previous() throws PoolException;
     Protein previous(Slaw descrip) throws PoolException;
     Protein nth(long index) throws PoolException;

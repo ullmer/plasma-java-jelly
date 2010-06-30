@@ -2,7 +2,6 @@
 
 package com.oblong.jelly;
 
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.jcip.annotations.ThreadSafe;
@@ -35,13 +34,13 @@ public class PoolServers {
 
     public static final boolean register(String scheme, Factory factory) {
         if (scheme == null || factory == null) return false;
-        factories.put(scheme, factory);
+        factories.putIfAbsent(scheme, factory);
         return true;
     }
 
     private static final String TCP_SCM = "tcp";
 
-    private static final Map<String, Factory> factories =
+    private static final ConcurrentHashMap<String, Factory> factories =
         new ConcurrentHashMap<String, Factory>();
     private static final Factory tcpFactory =
         new com.oblong.jelly.pool.tcp.TCPServerFactory();

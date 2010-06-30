@@ -27,6 +27,8 @@ public final class PoolProtein extends Protein {
         hose = h;
     }
 
+    public Protein bareProtein() { return protein; }
+    
     @Override public String debugString() {
         return protein.debugString()
             + "\nIndex: " + index + ", Timestamp: " + stamp;

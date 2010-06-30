@@ -5,6 +5,8 @@ package com.oblong.jelly.pool.mem;
 import java.util.EnumSet;
 import java.util.Set;
 
+import net.jcip.annotations.NotThreadSafe;
+
 import com.oblong.jelly.NumericIlk;
 import com.oblong.jelly.PoolException;
 import com.oblong.jelly.PoolServerAddress;
@@ -27,6 +29,7 @@ import com.oblong.jelly.slaw.SlawFactory;
  *
  * @author jao
  */
+@NotThreadSafe
 final class MemPoolConnection implements PoolConnection {
 
     static class Factory implements PoolConnectionFactory {
@@ -135,7 +138,7 @@ final class MemPoolConnection implements PoolConnection {
     private Slaw nth(long idx) {
         final PoolProtein p = pool.nth(idx);
         final Slaw time = makeStamp(p == null ? 0 : p.timestamp());
-        final Slaw prot = p == null ? NULL_PROT : p;
+        final Slaw prot = p == null ? NULL_PROT : p.bareProtein();
         final Slaw ret =
             p == null ? makeResponse(NO_SUCH_PROTEIN) : OK;
         return makeResponse(prot, time, ret);
@@ -155,7 +158,7 @@ final class MemPoolConnection implements PoolConnection {
 
     private Slaw makePTIR(PoolProtein p) {
         final Slaw time = makeStamp(p == null ? 0 : p.timestamp());
-        final Slaw prot = p == null ? NULL_PROT : p;
+        final Slaw prot = p == null ? NULL_PROT : p.bareProtein();
         final Slaw ret = p == null ? NO_SUCH_PROTEIN : OK;
         if (p != null) index = p.index();
         return makeResponse(prot, time, makeIndex(index), ret);
@@ -164,7 +167,7 @@ final class MemPoolConnection implements PoolConnection {
     private Slaw await(double timeout) {
         final PoolProtein p = pool.next(index, timeout);
         final Slaw time = makeStamp(p == null ? 0 : p.timestamp());
-        final Slaw prot = p == null ? NULL_PROT : p;
+        final Slaw prot = p == null ? NULL_PROT : p.bareProtein();
         final Slaw ret = p == null ? NO_SUCH_PROTEIN : OK;
         if (p != null) index = p.index();
         return makeResponse(ret, prot, time, makeIndex(index));

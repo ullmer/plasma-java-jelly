@@ -1,5 +1,7 @@
 package com.oblong.jelly.pool.impl;
 
+import java.util.concurrent.TimeUnit;
+
 import net.jcip.annotations.NotThreadSafe;
 
 import com.oblong.jelly.Hose;
@@ -115,13 +117,18 @@ final class PoolHose implements Hose {
                                this);
     }
 
-    @Override public Protein next(double t) throws PoolException {
-        final Slaw res = Request.AWAIT_NEXT.send(connection, timeoutSlaw(t));
+    @Override public Protein next(long t, TimeUnit unit) throws PoolException {
+        final Slaw res = 
+            Request.AWAIT_NEXT.send(connection, timeoutSlaw(t, unit));
         index = res.nth(3).emitLong();
         return new PoolProtein(res.nth(1).toProtein(),
                                index,
                                res.nth(2).emitDouble(),
                                this);
+    }
+    
+    @Override public Protein waitNext() throws PoolException {
+        return next(0, TimeUnit.NANOSECONDS);
     }
 
     @Override public Protein previous() throws PoolException {
@@ -151,21 +158,24 @@ final class PoolHose implements Hose {
                                this);
     }
 
-    private Slaw timeoutSlaw(double timeout) {
-        if (timeout < 0) timeout = WAIT;
+    private Slaw timeoutSlaw(long timeout, TimeUnit unit) {
+        double poolTimeout = 
+            timeout < 0 ? WAIT_FOREVER : ((double)unit.toNanos(timeout))/10e9;
         if (version() < FIRST_NEW_WAIT_V) {
-            if (timeout == WAIT) timeout = OLD_WAIT;
-            else if (timeout == NO_WAIT) timeout = OLD_NO_WAIT;
+            if (poolTimeout == WAIT_FOREVER) poolTimeout = OLD_WAIT;
+            else if (poolTimeout == NO_WAIT) poolTimeout = OLD_NO_WAIT;
         }
-        return factory.number(NumericIlk.FLOAT64, timeout);
+        return factory.number(NumericIlk.FLOAT64, poolTimeout);
     }
 
     private Slaw indexSlaw(long idx) {
         return factory.number(NumericIlk.INT64, idx);
     }
 
+    private static final double WAIT_FOREVER = -1;
+    private static final double NO_WAIT = 0;
     private static final double OLD_WAIT = NO_WAIT;
-    private static final double OLD_NO_WAIT = WAIT;
+    private static final double OLD_NO_WAIT = WAIT_FOREVER;
     private static final int FIRST_NEW_WAIT_V = 2;
 
     private final PoolConnection connection;
