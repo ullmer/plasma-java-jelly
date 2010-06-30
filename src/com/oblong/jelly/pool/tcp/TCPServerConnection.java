@@ -43,16 +43,15 @@ final class TCPServerConnection implements ServerConnection {
             return new TCPServerConnection(addr);
         }
     }
-    
+
     @Override public PoolServerAddress address() { return address; }
     @Override public int version() { return version; }
     @Override public SlawFactory factory() { return factory; }
+    @Override public Set<Request> supportedRequests() { return supported; }
 
 
     @Override public Slaw send(Request r, Slaw... args)
         throws PoolException {
-        if (!supported.contains(r))
-            throw new InvalidOperationException("Unsupported server op " + r);
         final Slaw code = factory.number(NumericIlk.INT32, r.code());
         return send(factory.protein(null,
                                     factory.map(OP_KEY, code,
@@ -68,7 +67,7 @@ final class TCPServerConnection implements ServerConnection {
             e.printStackTrace();
         }
     }
-    
+
     @Override public boolean isOpen() {
         return socket.isConnected();
     }
