@@ -67,27 +67,42 @@ final class MemPool {
     }
 
     public PoolProtein next(long index, double timeout) {
-        PoolProtein p = nth(index);
-        if (p != null || timeout == 0) return p;
-        long nanos = Math.max((long)(timeout * 10e9), 0);
-        while (p == null) {
-            try {
+        if (timeout == 0) return nth(index + 1);
+        if (timeout < 0) return waitNext(index);
+        synchronized (proteins) {
+            final long idx = index + 1;
+            PoolProtein p = nth(idx);
+            if (p != null) return p;
+            long nanos = (long)(timeout * 10e9);
+            while (nanos > 0 && p == null) {
                 final long start = System.currentTimeMillis();
-                synchronized (proteins) {
+                try {
                     proteins.wait(nanos/THOUSAND, (int)(nanos % THOUSAND));
+                } catch (InterruptedException e) {
+                    return null;
                 }
-                if (nanos > 0) {
-                    nanos -= (System.currentTimeMillis() - start) * THOUSAND;
-                    if (nanos <= 0) return nth(index);
-                }
-                p = nth(index);
-            } catch (InterruptedException e) {
-                return null;
+                p = nth(idx);
+                nanos -= (System.currentTimeMillis() - start) * THOUSAND;
             }
+            return p;
         }
-        return p;
     }
 
+    public PoolProtein waitNext(long index) {
+        synchronized (proteins) {
+            PoolProtein p = nth(index + 1);
+            while (p == null) {
+                try {
+                    proteins.wait();
+                    p = nth(index + 1);
+                } catch (InterruptedException e) {
+                    return null;
+                }
+            }
+            return p;
+        }
+    }
+    
     public PoolProtein find(long index, Slaw descrip, boolean fwd) {
         synchronized (proteins) {
             final int last = fwd ? proteins.size() - 1 : 0;

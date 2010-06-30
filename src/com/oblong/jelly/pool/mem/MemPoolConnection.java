@@ -12,6 +12,7 @@ import com.oblong.jelly.PoolException;
 import com.oblong.jelly.PoolServerAddress;
 import com.oblong.jelly.Protein;
 import com.oblong.jelly.Slaw;
+import com.oblong.jelly.pool.TimeoutException;
 import com.oblong.jelly.pool.impl.Request;
 import static com.oblong.jelly.pool.impl.Request.*;
 import static com.oblong.jelly.pool.impl.ServerErrorCode.*;
@@ -99,7 +100,8 @@ final class MemPoolConnection implements PoolConnection {
         }
     }
 
-    private Slaw hoseRequest(Request request, Slaw[] args) {
+    private Slaw hoseRequest(Request request, Slaw[] args) 
+        throws PoolException {
         if (pool == null) return makeResponse(NULL_HOSE);
         switch (request) {
         case OLDEST_INDEX:
@@ -164,8 +166,10 @@ final class MemPoolConnection implements PoolConnection {
         return makeResponse(prot, time, makeIndex(index), ret);
     }
 
-    private Slaw await(double timeout) {
+    private Slaw await(double timeout) throws PoolException {
         final PoolProtein p = pool.next(index, timeout);
+        if (p == null && timeout > 0)
+            throw new TimeoutException(POOL_AWAIT_TIMEDOUT.code());
         final Slaw time = makeStamp(p == null ? 0 : p.timestamp());
         final Slaw prot = p == null ? NULL_PROT : p.bareProtein();
         final Slaw ret = p == null ? NO_SUCH_PROTEIN : OK;
