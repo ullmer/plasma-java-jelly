@@ -97,24 +97,40 @@ final class MemConnection implements ServerConnection {
                                 OK,
                                 makeStamp(p.timestamp()));
         }
-        case NTH_PROTEIN: {
-            final PoolProtein p = pool.nth(args[0].emitLong());
-            if (p == null) return makeResponse(makeRet(POOL_NO_SUCH_PROTEIN));
-            return makeResponse(p, makeStamp(p.timestamp()), OK);
-        }
+        case NTH_PROTEIN:
+            return nth(args[0].emitLong());
         case NEXT:
             return next(args[0].emitLong(), null);
         case PROBE_FWD:
             return next(args[0].emitLong(), args[1]);
+        case PREV:
+            return prev(args[0].emitLong(), null);
+        case PROBE_BACK:
+            return prev(args[0].emitLong(), args[1]);
         case AWAIT_NEXT:
-            // return await(index, args[0].emitDouble());
+            return await(args[0].emitDouble());
         }
-        return null;
+        return makeRet(POOL_UNSUPPORTED_OPERATION);
+    }
+    
+    private Slaw nth(long idx) {
+        final PoolProtein p = pool.nth(idx);
+        final Slaw time = makeStamp(p == null ? 0 : p.timestamp());
+        final Slaw prot = p == null ? NULL_PROT : p;
+        final Slaw ret = 
+            p == null ? makeResponse(makeRet(POOL_NO_SUCH_PROTEIN)) : OK;
+        return makeResponse(prot, time, ret);
     }
     
     private Slaw next(long idx, Slaw desc) {
         final PoolProtein p = 
-            desc == null ? pool.next(idx, 0) : pool.find(idx, desc);
+            desc == null ? pool.next(idx, 0) : pool.find(idx, desc, false);
+        return makePTIR(p);
+    }
+    
+    private Slaw prev(long idx, Slaw desc) {
+        final PoolProtein p = 
+            desc == null ? pool.nth(idx - 2) : pool.find(idx, desc, true);
         return makePTIR(p);
     }
     
@@ -125,6 +141,16 @@ final class MemConnection implements ServerConnection {
         if (p != null) index = p.index();
         return makeResponse(prot, time, makeIndex(index), ret);
     }
+    
+    private Slaw await(double timeout) {
+        final PoolProtein p = pool.next(index, timeout);
+        final Slaw time = makeStamp(p == null ? 0 : p.timestamp());
+        final Slaw prot = p == null ? NULL_PROT : p;
+        final Slaw ret = p == null ? makeRet(POOL_NO_SUCH_PROTEIN) : OK;
+        if (p != null) index = p.index();
+        return makeResponse(ret, prot, time, makeIndex(index));
+    }
+    
     
     private static Slaw makeResponse(Slaw... args) {
         return factory.list(args);

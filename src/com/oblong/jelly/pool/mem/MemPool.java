@@ -54,7 +54,7 @@ final class MemPool {
         return null;
     }
 
-    public PoolProtein find(long index, Slaw descrip) {
+    public PoolProtein find(long index, Slaw descrip, boolean fwd) {
         return null;
     }
 
