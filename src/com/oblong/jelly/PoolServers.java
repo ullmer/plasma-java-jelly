@@ -18,21 +18,16 @@ import com.oblong.jelly.pool.tcp.TCPServerFactory;
 @ThreadSafe
 public class PoolServers {
 
-    public static final PoolServer get(PoolServerAddress address) {
+    public static final PoolServer get(PoolServerAddress address)
+        throws PoolException {
         PoolServer server = servers.get(address);
         if (server == null) {
             final String scheme = address.scheme();
             final Factory f = factories.get(scheme);
             if (f != null) {
-                try {
-                    server = f.get(address);
-                    final PoolServer oldServer =
-                        servers.putIfAbsent(address, server);
-                    if (oldServer != null) server = oldServer;
-                } catch (PoolException e) {
-                    // TODO: proper logging
-                    e.printStackTrace();
-                }
+                server = f.get(address);
+                final PoolServer old = servers.putIfAbsent(address, server);
+                if (old != null) server = old;
             }
         }
         return server;
