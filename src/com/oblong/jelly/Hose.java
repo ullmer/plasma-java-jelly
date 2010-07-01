@@ -17,7 +17,7 @@ public interface Hose {
 
     String name();
     void setName(String n);
-    String poolName();
+    PoolAddress poolAddress();
     boolean isConnected();
 
     void withdraw() throws PoolException;

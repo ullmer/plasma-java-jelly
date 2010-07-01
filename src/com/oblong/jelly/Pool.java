@@ -12,51 +12,40 @@ public final class Pool {
 
     public static void create(String uri, PoolOptions opts)
         throws PoolException {
-        create(new PoolServerAddress(uri), poolName(uri), opts);
+        create(PoolAddress.fromURI(uri), opts);
     }
 
-    public static void create(PoolServerAddress addr,
-                              String name,
-                              PoolOptions opts) throws PoolException {
-        PoolServers.get(addr).create(name, opts);
+    public static void create(PoolAddress addr, PoolOptions opts)
+        throws PoolException {
+        PoolServers.get(addr.serverAddress()).create(addr.poolName(), opts);
     }
 
     public static void dispose(String uri) throws PoolException {
-        dispose(new PoolServerAddress(uri), poolName(uri));
+        dispose(PoolAddress.fromURI(uri));
     }
 
-    public static void dispose(PoolServerAddress addr, String name)
-        throws PoolException {
-        PoolServers.get(addr).dispose(name);
+    public static void dispose(PoolAddress addr) throws PoolException {
+        PoolServers.get(addr.serverAddress()).dispose(addr.poolName());
     }
 
-    public static Hose participate(String uri)
-        throws PoolException {
-        return participate(new PoolServerAddress(uri), poolName(uri));
+    public static Hose participate(String uri) throws PoolException {
+        return participate(PoolAddress.fromURI(uri));
     }
 
-    public static Hose participate(PoolServerAddress addr, String name)
-        throws PoolException {
-        return PoolServers.get(addr).participate(name);
+    public static Hose participate(PoolAddress addr) throws PoolException {
+        return PoolServers.get(addr.serverAddress())
+                          .participate(addr.poolName());
     }
 
     public static Hose participate(String uri, PoolOptions opts)
         throws PoolException {
-        return participate(new PoolServerAddress(uri), poolName(uri), opts);
+        return participate(PoolAddress.fromURI(uri), opts);
     }
 
-    public static Hose participate(PoolServerAddress addr,
-                                   String name,
-                                   PoolOptions opts)
+    public static Hose participate(PoolAddress addr, PoolOptions opts)
         throws PoolException {
-        return PoolServers.get(addr).participate(name, opts);
-    }
-
-    private static String poolName(String uri) throws PoolException {
-        final int i = uri.lastIndexOf('/');
-        if (i < 0 || i == uri.length() - 1)
-            throw new PoolServerAddress.BadAddress("Empty pool name");
-        return uri.substring(i);
+        return PoolServers.get(addr.serverAddress())
+                          .participate(addr.poolName(), opts);
     }
 
     private Pool() {}

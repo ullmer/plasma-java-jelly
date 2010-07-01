@@ -6,11 +6,12 @@ import net.jcip.annotations.NotThreadSafe;
 
 import com.oblong.jelly.Hose;
 import com.oblong.jelly.NumericIlk;
+import com.oblong.jelly.PoolAddress;
 import com.oblong.jelly.PoolException;
 import com.oblong.jelly.Protein;
 import com.oblong.jelly.Slaw;
-import com.oblong.jelly.pool.ProtocolException;
 import com.oblong.jelly.pool.NoSuchProteinException;
+import com.oblong.jelly.pool.ProtocolException;
 import com.oblong.jelly.slaw.SlawFactory;
 
 @NotThreadSafe
@@ -19,7 +20,7 @@ final class PoolHose implements Hose {
     PoolHose(PoolConnection conn, String pn) throws PoolException {
         connection = conn;
         factory = conn.factory();
-        poolName = pn;
+        poolAddress = new PoolAddress(connection.address(), pn);
         setName(null);
         index = newestIndex();
     }
@@ -33,11 +34,11 @@ final class PoolHose implements Hose {
     }
 
     @Override public void setName(String n) {
-        name = n == null ? connection.address() + "/" + poolName : n;
+        name = n == null ? poolAddress.toString() : n;
     }
 
-    @Override public String poolName() {
-        return poolName;
+    @Override public PoolAddress poolAddress() {
+        return poolAddress;
     }
 
     @Override public boolean isConnected() {
@@ -45,7 +46,8 @@ final class PoolHose implements Hose {
     }
 
     @Override public void withdraw() throws PoolException {
-        Request.WITHDRAW.sendAndClose(connection, factory.string(poolName));
+        Request.WITHDRAW.sendAndClose(connection,
+                                      factory.string(poolAddress.poolName()));
     }
 
     @Override public long index() {
@@ -97,7 +99,7 @@ final class PoolHose implements Hose {
     @Override public Protein current() throws PoolException {
         return nth(index);
     }
-    
+
     @Override public Protein next() throws PoolException {
         final Slaw res = Request.NEXT.send(connection, indexSlaw(index));
         index = res.nth(2).emitLong();
@@ -117,8 +119,9 @@ final class PoolHose implements Hose {
                                this);
     }
 
-    @Override public Protein next(long t, TimeUnit unit) throws PoolException {
-        final Slaw res = 
+    @Override public Protein next(long t, TimeUnit unit)
+        throws PoolException {
+        final Slaw res =
             Request.AWAIT_NEXT.send(connection, timeoutSlaw(t, unit));
         index = res.nth(3).emitLong();
         return new PoolProtein(res.nth(1).toProtein(),
@@ -126,7 +129,7 @@ final class PoolHose implements Hose {
                                res.nth(2).emitDouble(),
                                this);
     }
-    
+
     @Override public Protein waitNext() throws PoolException {
         return next(0, TimeUnit.NANOSECONDS);
     }
@@ -159,7 +162,7 @@ final class PoolHose implements Hose {
     }
 
     private Slaw timeoutSlaw(long timeout, TimeUnit unit) {
-        double poolTimeout = 
+        double poolTimeout =
             timeout < 0 ? WAIT_FOREVER : ((double)unit.toNanos(timeout))/10e9;
         if (version() < FIRST_NEW_WAIT_V) {
             if (poolTimeout == WAIT_FOREVER) poolTimeout = OLD_WAIT;
@@ -180,7 +183,7 @@ final class PoolHose implements Hose {
 
     private final PoolConnection connection;
     private final SlawFactory factory;
-    private final String poolName;
+    private final PoolAddress poolAddress;
     private String name;
     long index;
 }
