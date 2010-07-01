@@ -2,9 +2,8 @@
 
 package com.oblong.jelly.pool.mem;
 
-import java.util.concurrent.ConcurrentHashMap;
 
-import net.jcip.annotations.ThreadSafe;
+import net.jcip.annotations.Immutable;
 
 import com.oblong.jelly.PoolException;
 import com.oblong.jelly.PoolServer;
@@ -20,21 +19,21 @@ import com.oblong.jelly.pool.impl.PoolConnectionFactory;
  *
  * @author jao
  */
-@ThreadSafe
+@Immutable
 public final class MemServerFactory implements PoolServers.Factory {
 
     @Override public PoolServer get(PoolServerAddress address)
         throws PoolException {
-        PoolServer server = servers.get(address);
-        if (server == null) {
-            server = 
-                servers.putIfAbsent(address, new Server(factory, address));
-        }
-        return server;
+        return new Server(factory, address);
     }
 
-    private static ConcurrentHashMap<PoolServerAddress, PoolServer> servers =
-        new ConcurrentHashMap<PoolServerAddress, PoolServer>();
+    public static boolean register() {
+        return register("mem");
+    }
+
+    public static boolean register(String scheme) {
+        return PoolServers.register(scheme, new MemServerFactory());
+    }
 
     private static final PoolConnectionFactory factory =
         new MemPoolConnection.Factory();

@@ -6,6 +6,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import net.jcip.annotations.ThreadSafe;
 
+import com.oblong.jelly.PoolServerAddress.BadAddress;
+import com.oblong.jelly.pool.tcp.TCPServerFactory;
+
 /**
  *
  * Created: Sat Jun 19 00:33:27 2010
@@ -15,16 +18,23 @@ import net.jcip.annotations.ThreadSafe;
 @ThreadSafe
 public class PoolServers {
 
-    public static final int DEFAULT_PORT = -1;
-
-    public static final PoolServer get(PoolServerAddress address)
-        throws PoolException {
-        final String scheme = address.scheme();
-        final Factory f = (scheme == null || TCP_SCM.equals(scheme)) ?
-                tcpFactory : factories.get(scheme);
-        if (f == null) 
-            throw new PoolServerAddress.BadAddress("Bad scheme: " + scheme);
-        final PoolServer server = f.get(address);
+    public static final PoolServer get(PoolServerAddress address) {
+        PoolServer server = servers.get(address);
+        if (server == null) {
+            final String scheme = address.scheme();
+            final Factory f = factories.get(scheme);
+            if (f != null) {
+                try {
+                    server = f.get(address);
+                    final PoolServer oldServer =
+                        servers.putIfAbsent(address, server);
+                    if (oldServer != null) server = oldServer;
+                } catch (PoolException e) {
+                    // TODO: proper logging
+                    e.printStackTrace();
+                }
+            }
+        }
         return server;
     }
 
@@ -34,16 +44,18 @@ public class PoolServers {
 
     public static final boolean register(String scheme, Factory factory) {
         if (scheme == null || factory == null) return false;
-        factories.putIfAbsent(scheme, factory);
-        return true;
+        return factories.put(scheme, factory) == null;
     }
-
-    private static final String TCP_SCM = "tcp";
 
     private static final ConcurrentHashMap<String, Factory> factories =
         new ConcurrentHashMap<String, Factory>();
-    private static final Factory tcpFactory =
-        new com.oblong.jelly.pool.tcp.TCPServerFactory();
+
+    static {
+        register("tcp", new com.oblong.jelly.pool.tcp.TCPServerFactory());
+    }
+
+    private static ConcurrentHashMap<PoolServerAddress, PoolServer> servers =
+        new ConcurrentHashMap<PoolServerAddress, PoolServer>();
 
     private PoolServers() {}
 }

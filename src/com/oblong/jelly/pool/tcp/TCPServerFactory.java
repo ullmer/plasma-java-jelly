@@ -2,9 +2,7 @@
 
 package com.oblong.jelly.pool.tcp;
 
-import java.util.concurrent.ConcurrentHashMap;
-
-import net.jcip.annotations.ThreadSafe;
+import net.jcip.annotations.Immutable;
 
 import com.oblong.jelly.PoolException;
 import com.oblong.jelly.PoolServer;
@@ -19,22 +17,14 @@ import com.oblong.jelly.pool.impl.PoolConnectionFactory;
  *
  * @author jao
  */
-@ThreadSafe
+@Immutable
 public final class TCPServerFactory implements PoolServers.Factory {
 
     @Override public PoolServer get(PoolServerAddress address)
         throws PoolException {
-        PoolServer server = servers.get(address);
-        if (server == null) {
-            server = 
-                servers.putIfAbsent(address, new Server(factory, address));
-        }
-        return server;
+        return new Server(factory, address);
     }
 
-    private static ConcurrentHashMap<PoolServerAddress, PoolServer> servers =
-        new ConcurrentHashMap<PoolServerAddress, PoolServer>();
-    
     private static final PoolConnectionFactory factory =
         new TCPPoolConnection.Factory();
 }

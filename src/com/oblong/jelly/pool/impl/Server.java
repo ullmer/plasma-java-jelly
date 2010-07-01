@@ -31,6 +31,8 @@ public final class Server implements PoolServer {
         connectionFactory = cf;
     }
 
+    @Override public PoolServerAddress address() { return address; }
+
     @Override public void create(String name, PoolOptions opts)
         throws PoolException {
         final PoolConnection connection = connectionFactory.get(address);

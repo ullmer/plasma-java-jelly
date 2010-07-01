@@ -12,6 +12,8 @@ import java.util.Set;
  */
 public interface PoolServer {
 
+    PoolServerAddress address();
+
     void create(String name, PoolOptions opts) throws PoolException;
 
     void dispose(String name) throws PoolException;
