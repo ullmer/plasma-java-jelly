@@ -6,9 +6,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import net.jcip.annotations.ThreadSafe;
 
-import com.oblong.jelly.PoolServerAddress.BadAddress;
-import com.oblong.jelly.pool.tcp.TCPServerFactory;
-
 /**
  *
  * Created: Sat Jun 19 00:33:27 2010

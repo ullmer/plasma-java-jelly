@@ -21,12 +21,14 @@ import com.oblong.jelly.pool.impl.PoolProtein;
 final class MemPool {
 
     public static boolean exists(String name) {
-        return pools.contains(name);
+        return pools.containsKey(name);
     }
 
     public static MemPool create(String name) {
         if (exists(name)) return null;
-        return pools.putIfAbsent(name, new MemPool(name));
+        final MemPool p = new MemPool(name);
+        final MemPool old = pools.putIfAbsent(name, p);
+        return old == null ? p : old;
     }
 
     public static MemPool get(String name) {
@@ -47,21 +49,23 @@ final class MemPool {
 
     public String name() { return name; }
 
-    public long oldestIndex() { 
+    public long oldestIndex() {
         synchronized (proteins) {
-            return proteins.size() > 0 ? 0 : -1; 
+            return proteins.size() > 0 ? 0 : -1;
         }
     }
-    
-    public long newestIndex() { 
+
+    public long newestIndex() {
         synchronized (proteins) {
-            return proteins.size() - 1; 
+            return proteins.size() - 1;
         }
     }
 
     public PoolProtein nth(long index) {
-        synchronized (proteins) {
-            if (index < proteins.size()) return proteins.get((int)index);
+        if (index >= 0) {
+            synchronized (proteins) {
+                if (index < proteins.size()) return proteins.get((int)index);
+            }
         }
         return null;
     }
@@ -102,19 +106,10 @@ final class MemPool {
             return p;
         }
     }
-    
+
     public PoolProtein find(long index, Slaw descrip, boolean fwd) {
-        synchronized (proteins) {
-            final int last = fwd ? proteins.size() - 1 : 0;
-            final int first = (int)(
-                    fwd ? Math.min(index + 1, last) : Math.max(index - 1, 0));
-            final int step = fwd ? 1 : -1;
-            for (int i = first; i != last; i += step) {
-                final PoolProtein p = proteins.get(i);
-                if (p.descrips().contains(descrip)) return p;
-            }
-        }
-        return null;
+        final int idx = (int)index;
+        return fwd ? findFwd(idx, descrip) : findBack(idx, descrip);
     }
 
     public PoolProtein deposit(Protein p) {
@@ -123,22 +118,45 @@ final class MemPool {
 
     PoolProtein deposit(Protein p, double stamp) {
         synchronized (proteins) {
-            final PoolProtein pp = 
-                new PoolProtein(p, proteins.size(), stamp, null); 
+            final PoolProtein pp =
+                new PoolProtein(p, proteins.size(), stamp, null);
             proteins.add(pp);
             proteins.notifyAll();
             return pp;
         }
     }
-    
+
     private MemPool(String name) {
         this.name = name;
     }
 
+    private PoolProtein findBack(int index, Slaw descrip) {
+        synchronized (proteins) {
+            if (index > proteins.size()) index = proteins.size();
+            for (int i = index - 1; i > -1; --i) {
+                final PoolProtein p = proteins.get(i);
+                if (p.descrips().contains(descrip)) return p;
+            }
+        }
+        return null;
+    }
+
+    private PoolProtein findFwd(int index, Slaw descrip) {
+        synchronized (proteins) {
+            if (index < 0) index = -1;
+            final int last = proteins.size();
+            for (int i = index + 1; i < last; ++i) {
+                final PoolProtein p = proteins.get(i);
+                if (p.descrips().contains(descrip)) return p;
+            }
+        }
+        return null;
+    }
+
     private final String name;
-    private final ArrayList<PoolProtein> proteins = 
+    private final ArrayList<PoolProtein> proteins =
         new ArrayList<PoolProtein>();
-    
+
     private static ConcurrentHashMap<String, MemPool> pools =
         new ConcurrentHashMap<String, MemPool>();
 

@@ -89,10 +89,10 @@ final class MemPoolConnection implements PoolConnection {
         case PARTICIPATE:
             pool = MemPool.get(poolName);
             open = pool != null;
-            return makeResponse(open ? NO_SUCH_POOL : OK);
+            return makeResponse(open ? OK : NO_SUCH_POOL);
         case PARTICIPATE_C:
-            pool = MemPool.get(poolName);
-            if (pool == null) pool = MemPool.create(poolName);
+            pool = MemPool.exists(poolName) ?
+                MemPool.get(poolName) :  MemPool.create(poolName);
             open = pool != null;
             return makeResponse(OK);
         default:
@@ -100,7 +100,7 @@ final class MemPoolConnection implements PoolConnection {
         }
     }
 
-    private Slaw hoseRequest(Request request, Slaw[] args) 
+    private Slaw hoseRequest(Request request, Slaw[] args)
         throws PoolException {
         if (pool == null) return makeResponse(NULL_HOSE);
         switch (request) {
