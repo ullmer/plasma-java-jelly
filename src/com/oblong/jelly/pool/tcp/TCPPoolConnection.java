@@ -53,10 +53,9 @@ final class TCPPoolConnection implements PoolConnection {
     @Override public Slaw send(Request r, Slaw... args)
         throws PoolException {
         final Slaw code = factory.number(NumericIlk.INT32, r.code());
-        return send(factory.protein(null,
-                                    factory.map(OP_KEY, code,
-                                                ARGS_KEY, factory.list(args)),
-                                    null));
+        final Slaw ings = factory.map(OP_KEY, code,
+                                      ARGS_KEY, factory.list(args));
+        return send(factory.protein(null, ings , null));
     }
 
     @Override public void close() {
@@ -134,6 +133,17 @@ final class TCPPoolConnection implements PoolConnection {
         return tcpVersion;
     }
 
+    static byte[] supportedToData(Set<Request> supp) {
+        int bits = 0;
+        for (Request r : supp) bits = bits | (1<<(31 - r.code()));
+        final byte[] result = new byte[4];
+        for (int i = 0; i < 4; i++) {
+            result[4 - i] = (byte)(bits & 0xff);
+            bits = bits>>>8;
+        }
+        return result;
+    }
+
     private static Set<Request> readSupported(InputStream is, int v)
         throws InOutException, IOException {
         if (v == 0) return defaultSupported;
@@ -180,15 +190,15 @@ final class TCPPoolConnection implements PoolConnection {
                    NEWEST_INDEX, NEXT, OLDEST_INDEX,
                    AWAIT_NEXT, ADD_AWAITER, INFO, LIST);
 
-    private static final Slaw OP_KEY = factory.string("op");
-    private static final Slaw ARGS_KEY = factory.string("args");
-
     private static final int MIN_SLAW_VERSION = 2;
     private static final int MAX_SLAW_VERSION = 2;
     private static final int MIN_TCP_VERSION = 0;
     private static final int MAX_TCP_VERSION = 3;
 
-    private static final byte[] PREAMBLE = {
+    static final Slaw OP_KEY = factory.string("op");
+    static final Slaw ARGS_KEY = factory.string("args");
+
+    static final byte[] PREAMBLE = {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x50,
         (byte)0x93, (byte)0x93, 0x00, (byte)0x80, 0x18, 0x00, 0x00, 0x02,
         0x00, 0x00, 0x00, 0x10, 0x40, 0x00, 0x00, 0x04,
@@ -201,7 +211,7 @@ final class TCPPoolConnection implements PoolConnection {
         0x5e, 0x2f, 0x5e, 0x00
     };
 
-    private static final byte[] POSTAMBLE = {
+    static final byte[] POSTAMBLE = {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
     };
 

@@ -2,6 +2,8 @@
 
 package com.oblong.jelly.pool.impl;
 
+import java.util.HashMap;
+
 import com.oblong.jelly.NumericIlk;
 import com.oblong.jelly.PoolException;
 import com.oblong.jelly.Slaw;
@@ -113,6 +115,10 @@ public enum Request {
         }
     };
 
+    public static Request fromCode(int code) {
+        return i2r.get(code);
+    }
+
     public int code() { return code; }
     public int arity() { return arity; }
     public int responseArity() { return responseArity; }
@@ -189,4 +195,11 @@ public enum Request {
     private final int code;
     private final int arity;
     private final int responseArity;
+
+    private static final HashMap<Integer, Request> i2r =
+       new HashMap<Integer, Request>();
+
+    static {
+        for (Request r : values()) i2r.put(r.code(), r);
+    }
 }

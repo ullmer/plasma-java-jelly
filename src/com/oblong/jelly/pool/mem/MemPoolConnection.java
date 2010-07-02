@@ -73,8 +73,7 @@ final class MemPoolConnection implements PoolConnection {
         throws PoolException {
         if (POOL_OPS.contains(request))
             return poolRequest(request, args[0].emitString());
-        if (LIST == request)
-            return makeResponse(OK, factory.list(MemPool.names()));
+        if (LIST == request) return listRequest();
         return hoseRequest(request, args);
     }
 
@@ -82,9 +81,11 @@ final class MemPoolConnection implements PoolConnection {
         switch (request) {
         case CREATE:
             MemPool p = MemPool.create(poolName);
+            open = false;
             return makeResponse(p == null ? POOL_EXISTS : OK);
         case DISPOSE:
             boolean r = MemPool.dispose(poolName);
+            open = false;
             return makeResponse(r ? OK : NO_SUCH_POOL);
         case PARTICIPATE:
             pool = MemPool.get(poolName);
@@ -128,6 +129,11 @@ final class MemPoolConnection implements PoolConnection {
         default:
             return makeResponse(NOP);
         }
+    }
+
+    private Slaw listRequest() {
+        open = false;
+        return makeResponse(OK, factory.list(MemPool.names()));
     }
 
     private Slaw deposit(Slaw s) {
