@@ -9,6 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.oblong.jelly.pool.NoSuchPoolException;
+import com.oblong.jelly.pool.PoolExistsException;
 
 /**
  *
@@ -42,6 +43,20 @@ public class PoolServerTestBase {
         PoolAddress fa = new PoolAddress(server.address(), "foo");
         Pool.create(fa, null);
         Hose fh = Pool.participate(fa);
+        Hose fhd = Pool.participate(fa, PoolOptions.SMALL);
+        fhd = Pool.participate(fa);
+        assertEquals(fa, fh.poolAddress());
+        assertEquals(fa, fhd.poolAddress());
+        fh.withdraw();
+        assertTrue(fhd.isConnected());
+        assertFalse(fh.isConnected());
+        assertTrue(server.pools().contains(fa.poolName()));
+        try {
+            Pool.create(fa, PoolOptions.LARGE);
+        } catch (PoolExistsException e) {
+            return;
+        }
+        fail("Duplicate pool creation");
     }
 
     private final PoolServer server;

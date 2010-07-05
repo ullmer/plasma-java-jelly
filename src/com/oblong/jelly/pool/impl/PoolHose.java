@@ -46,8 +46,7 @@ final class PoolHose implements Hose {
     }
 
     @Override public void withdraw() throws PoolException {
-        Request.WITHDRAW.sendAndClose(connection,
-                                      factory.string(poolAddress.poolName()));
+        Request.WITHDRAW.sendAndClose(connection);
     }
 
     @Override public long index() {

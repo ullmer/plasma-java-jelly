@@ -5,10 +5,7 @@ package com.oblong.jelly.pool.tcp;
 import java.io.IOException;
 
 import org.junit.AfterClass;
-import static org.junit.Assert.*;
 import org.junit.BeforeClass;
-import org.junit.Test;
-
 import com.oblong.jelly.PoolException;
 import com.oblong.jelly.PoolServerTestBase;
 import com.oblong.jelly.pool.mem.TCPMemProxy;

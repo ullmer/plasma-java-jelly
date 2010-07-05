@@ -68,7 +68,7 @@ final class TCPPoolConnection implements PoolConnection {
     }
 
     @Override public boolean isOpen() {
-        return socket.isConnected();
+        return !socket.isClosed();
     }
 
     private TCPPoolConnection(PoolServerAddress addr) throws PoolException {
@@ -136,7 +136,7 @@ final class TCPPoolConnection implements PoolConnection {
 
     static byte[] supportedToData(Set<Request> supp) {
         int bits = 0;
-        for (Request r : supp) 
+        for (Request r : supp)
             bits = bits | (1<<(31 - r.code()));
         final byte[] result = new byte[5];
         result[0] = 4;

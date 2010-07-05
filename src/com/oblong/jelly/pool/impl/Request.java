@@ -130,7 +130,9 @@ public enum Request {
         }
         if (!conn.supportedRequests().contains(this))
             throw new InvalidOperationException("Unsupported op " + this);
-        assert arity == args.length;
+        assert arity == args.length
+            : this + ": expected arity: " + arity
+              + " but got " + args.length + " args";
         return checkResponse(conn.send(this, args), conn.version());
     }
 
