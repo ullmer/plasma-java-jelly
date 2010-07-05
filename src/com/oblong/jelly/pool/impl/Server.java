@@ -40,7 +40,7 @@ public final class Server implements PoolServer {
         Request.CREATE.sendAndClose(connection,
                                     factory.string(name),
                                     factory.string("mmap"),
-                                    opts.toSlaw());
+                                    optSlaw(opts));
     }
 
     @Override public void dispose(String name) throws PoolException {
@@ -75,10 +75,16 @@ public final class Server implements PoolServer {
         Request.PARTICIPATE_C.send(connection,
                                    factory.string(name),
                                    factory.string("mmap"),
-                                   opts.toSlaw(),
+                                   optSlaw(opts),
                                    factory.protein(null, null, null));
         return new PoolHose(connection, name);
      }
+
+    private static final Slaw optSlaw(PoolOptions opts) {
+        return opts == null ? NULL_OPTS : opts.toSlaw();
+    }
+
+    private static final Slaw NULL_OPTS = new PoolOptions(null).toSlaw();
 
     private final PoolServerAddress address;
     private final PoolConnectionFactory connectionFactory;

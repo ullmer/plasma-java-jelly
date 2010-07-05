@@ -13,9 +13,9 @@ import net.jcip.annotations.ThreadSafe;
  * @author jao
  */
 @ThreadSafe
-public class PoolServers {
+public final class PoolServers {
 
-    public static final PoolServer get(PoolServerAddress address)
+    public static PoolServer get(PoolServerAddress address)
         throws PoolException {
         PoolServer server = servers.get(address);
         if (server == null) {
@@ -34,12 +34,12 @@ public class PoolServers {
         PoolServer get(PoolServerAddress address) throws PoolException;
     }
 
-    public static final boolean register(String scheme, Factory factory) {
+    public static boolean register(String scheme, Factory factory) {
         if (scheme == null || factory == null) return false;
         return factories.put(scheme, factory) == null;
     }
 
-    private static final ConcurrentHashMap<String, Factory> factories =
+    private static ConcurrentHashMap<String, Factory> factories =
         new ConcurrentHashMap<String, Factory>();
 
     static {

@@ -214,10 +214,10 @@ final class MemPoolConnection implements PoolConnection {
     private static final Slaw NULL_HOSE = makeRet(POOL_NULL_HOSE);
     private static final Slaw NULL_PROT = factory.protein(null, null, null);
 
-    private static final Set<Request> SUPPORTED =
+    static final Set<Request> SUPPORTED =
         EnumSet.of(CREATE, DISPOSE, PARTICIPATE, PARTICIPATE_C, WITHDRAW,
                    OLDEST_INDEX, NEWEST_INDEX, DEPOSIT, NTH_PROTEIN, NEXT,
                    PROBE_FWD, PREV, PROBE_BACK, AWAIT_NEXT, LIST);
-    private static final Set<Request> POOL_OPS =
+    static final Set<Request> POOL_OPS =
         EnumSet.of(CREATE, DISPOSE, PARTICIPATE, PARTICIPATE_C);
 }

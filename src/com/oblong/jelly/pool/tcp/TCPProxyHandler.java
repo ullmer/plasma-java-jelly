@@ -6,6 +6,7 @@ package com.oblong.jelly.pool.tcp;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.util.Arrays;
 
 import com.oblong.jelly.NumericIlk;
 import com.oblong.jelly.PoolException;
@@ -21,6 +22,7 @@ import com.oblong.jelly.slaw.SlawInternalizer;
 import com.oblong.jelly.slaw.SlawParseError;
 import com.oblong.jelly.slaw.v2.Externalizer;
 import com.oblong.jelly.slaw.v2.Internalizer;
+import com.oblong.jelly.util.ByteReader;
 
 /**
  *
@@ -60,20 +62,21 @@ final class TCPProxyHandler implements Runnable {
     void close() { connection.close(); }
 
     private void init() throws IOException {
-        final Protein p = next();
-        final Slaw[] args = getArgs(p);
-        if (getRequest(p) != Request.DISPOSE
-            || args.length != 1
-            || !args[0].isString()
-            || !args[0].emitString().equals("^/^/^/^")
-            || p.dataLength() != 12
-            || p.data(0) < connection.version()
-            || p.data(1) != 2) {
-            throw new IOException("Initialisation failure");
-        }
+        ByteReader br = new ByteReader(socket.getInputStream());
+        final int preLen = TCPPoolConnection.PREAMBLE.length;
+        final int postLen = TCPPoolConnection.POSTAMBLE.length;
+        byte[] buffer = new byte[preLen];
+        br.get(buffer, preLen);
+        if (!Arrays.equals(buffer, TCPPoolConnection.PREAMBLE))
+            throw new IOException("Unexpected preamble");
+        final int netv = br.get();
+        final int slawv = br.get();
+        if (netv > connection.version() || slawv != 2)
+            throw new IOException("Unsupported versions " + netv + ", " + slawv);
+        br.get(buffer, postLen);
         final OutputStream os = socket.getOutputStream();
         os.write((byte)connection.version());
-        os.write(p.data(1));
+        os.write(slawv);
         os.write(TCPPoolConnection.supportedToData(
                      connection.supportedRequests()));
         os.flush();
@@ -110,7 +113,7 @@ final class TCPProxyHandler implements Runnable {
     }
 
     private static Slaw[] getArgs(Protein p) {
-        if (p == null) return new Slaw[0];
+        if (p == null || p.ingests() == null) return new Slaw[0];
         final Slaw sargs = p.ingests().find(TCPPoolConnection.ARGS_KEY);
         final Slaw[] args = new Slaw[sargs == null ? 0 : sargs.count()];
         for (int i = 0; i < args.length; ++i) args[i] = sargs.nth(i);

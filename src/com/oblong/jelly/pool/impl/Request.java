@@ -158,7 +158,7 @@ public enum Request {
     }
 
     private static Slaw index(Slaw s, int p) throws ProtocolException {
-        return check(s, p, "int32", s.nth(p).isNumber(NumericIlk.INT32));
+        return check(s, p, "int64", s.nth(p).isNumber(NumericIlk.INT64));
     }
 
     private static Slaw protein(Slaw s, int p) throws ProtocolException {
@@ -182,7 +182,8 @@ public enum Request {
     private static Slaw check(Slaw s, int p, String kind, boolean b)
         throws ProtocolException {
         if (!b)
-            throw new ProtocolException(s, kind + "expected at " + p);
+            throw new ProtocolException(s, kind + " expected at " + p
+                                           + " (was: " + s + ")");
         return s;
     }
 

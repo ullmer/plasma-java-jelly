@@ -53,9 +53,19 @@ public final class TCPProxy implements Runnable {
         waitChildren();
     }
 
-    public void quit() { exit = true; }
+    public PoolServerAddress tcpAddress() {
+        try {
+            return new PoolServerAddress("localhost", socket.getLocalPort());
+        } catch (PoolException e) {
+            assert false : "We know this address is well-formed";
+            return null;
+        }
+    }
 
-    private void launchHandler(Socket sock, PoolConnection pc) {
+    public void exit() { exit = true; }
+
+    private void launchHandler(Socket sock, PoolConnection pc)
+        throws IOException {
         final TCPProxyHandler handler = new TCPProxyHandler(sock, pc);
         final Thread th = new Thread(handler);
         th.start();
