@@ -4,10 +4,8 @@ package com.oblong.jelly;
 
 import java.util.Set;
 
-import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assume.*;
 import static org.junit.Assert.*;
 
 import com.oblong.jelly.pool.PoolExistsException;
@@ -28,10 +26,6 @@ public class PoolTestBase extends PoolServerTestBase {
         super(addr);
     }
 
-    @Before public void maybeDisable() {
-        assumeTrue(server != null);
-    }
-    
     @Test public void registration() throws PoolException {
         final PoolAddress fa = poolAddress("foo");
         Pool.create(fa, null);

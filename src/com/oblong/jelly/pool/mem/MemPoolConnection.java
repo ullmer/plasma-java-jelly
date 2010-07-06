@@ -160,7 +160,7 @@ final class MemPoolConnection implements PoolConnection {
 
     private Slaw prev(long idx, Slaw desc) {
         final PoolProtein p =
-            desc == null ? pool.nth(idx - 2) : pool.find(idx, desc, true);
+            desc == null ? pool.nth(idx - 1) : pool.find(idx, desc, true);
         return makePTIR(p);
     }
 

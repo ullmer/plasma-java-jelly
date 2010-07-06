@@ -91,8 +91,7 @@ final class PoolHose implements Hose {
         final Slaw res = Request.DEPOSIT.send(connection, p);
         final long index = res.nth(0).emitLong();
         final double stamp = res.nth(2).emitDouble();
-        final Protein recProt = res.nth(1).toProtein();
-        return new PoolProtein(recProt, index, stamp, this);
+        return new PoolProtein(p, index, stamp, this);
     }
 
     @Override public Protein current() throws PoolException {

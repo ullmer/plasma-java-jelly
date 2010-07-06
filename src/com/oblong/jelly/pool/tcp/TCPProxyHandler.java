@@ -41,6 +41,7 @@ final class TCPProxyHandler implements Runnable {
             init();
         } catch (IOException e) {
             // TODO: log
+            e.printStackTrace();
             connection.close();
         }
         while (connection.isOpen()) {
@@ -48,6 +49,7 @@ final class TCPProxyHandler implements Runnable {
                 reply(forward(next()));
             } catch (Exception e) {
                 // TODO: log
+                e.printStackTrace();
                 connection.close();
             }
         }
@@ -56,6 +58,7 @@ final class TCPProxyHandler implements Runnable {
             socket.close();
         } catch (Exception e) {
             // TODO: log
+            e.printStackTrace();
         }
     }
 
@@ -72,7 +75,8 @@ final class TCPProxyHandler implements Runnable {
         final int netv = br.get();
         final int slawv = br.get();
         if (netv > connection.version() || slawv != 2)
-            throw new IOException("Unsupported versions " + netv + ", " + slawv);
+            throw new IOException("Unsupported versions "
+                                  + netv + ", " + slawv);
         br.get(buffer, postLen);
         final OutputStream os = socket.getOutputStream();
         os.write((byte)connection.version());
@@ -84,10 +88,10 @@ final class TCPProxyHandler implements Runnable {
 
     private Protein next() throws IOException {
         try {
-            return internalizer.internProtein(socket.getInputStream(),
-                                              factory);
+            return internalizer.internProtein(socket.getInputStream(),factory);
         } catch (SlawParseError e) {
             // TODO: log
+            e.printStackTrace();
             return null;
         }
     }

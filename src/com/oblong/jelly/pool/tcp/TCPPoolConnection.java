@@ -37,13 +37,6 @@ import static com.oblong.jelly.pool.impl.Request.*;
  */
 final class TCPPoolConnection implements PoolConnection {
 
-    static class Factory implements PoolConnectionFactory {
-        @Override public PoolConnection get(PoolServerAddress addr)
-            throws PoolException {
-            return new TCPPoolConnection(addr);
-        }
-    }
-
     @Override public PoolServerAddress address() { return address; }
     @Override public int version() { return version; }
     @Override public SlawFactory factory() { return factory; }
@@ -69,6 +62,44 @@ final class TCPPoolConnection implements PoolConnection {
 
     @Override public boolean isOpen() {
         return !socket.isClosed();
+    }
+
+    static class Factory implements PoolConnectionFactory {
+        @Override public PoolConnection get(PoolServerAddress addr)
+            throws PoolException {
+            return new TCPPoolConnection(addr);
+        }
+    }
+
+    static byte[] supportedToData(Set<Request> supp) {
+        int bits = 0;
+        for (Request r : supp)
+            bits = bits | (1<<(31 - r.code()));
+        final byte[] result = new byte[5];
+        result[0] = 4;
+        for (int i = 0; i < 4; i++) {
+            result[4 - i] = (byte)(bits & 0xff);
+            bits = bits>>>8;
+        }
+        return result;
+    }
+
+    static Set<Request> readSupported(InputStream is, int v)
+        throws InOutException, IOException {
+        if (v == 0) return defaultSupported;
+        final int len = is.read();
+        if (len <= 0) throw new InOutException("Server supports no ops.");
+        final byte[] data = new byte[len];
+        final ByteReader reader = new ByteReader(is);
+        reader.get(data, len);
+        final Set<Request> result = EnumSet.noneOf(Request.class);
+        for (Request c : Request.values()) {
+            final int code = c.code();
+            final int bn = code / 8;
+            if (bn < data.length && (data[bn] & (1<<(7 - code % 8))) != 0)
+                result.add(c);
+        }
+        return result;
     }
 
     private TCPPoolConnection(PoolServerAddress addr) throws PoolException {
@@ -134,37 +165,6 @@ final class TCPPoolConnection implements PoolConnection {
         return tcpVersion;
     }
 
-    static byte[] supportedToData(Set<Request> supp) {
-        int bits = 0;
-        for (Request r : supp)
-            bits = bits | (1<<(31 - r.code()));
-        final byte[] result = new byte[5];
-        result[0] = 4;
-        for (int i = 0; i < 4; i++) {
-            result[4 - i] = (byte)(bits & 0xff);
-            bits = bits>>>8;
-        }
-        return result;
-    }
-
-    private static Set<Request> readSupported(InputStream is, int v)
-        throws InOutException, IOException {
-        if (v == 0) return defaultSupported;
-        final int len = is.read();
-        if (len <= 0) throw new InOutException("Server supports no ops.");
-        final byte[] data = new byte[len];
-        final ByteReader reader = new ByteReader(is);
-        reader.get(data, len);
-        final Set<Request> result = EnumSet.noneOf(Request.class);
-        for (Request c : Request.values()) {
-            final int code = c.code();
-            final int bn = code / 8;
-            if (bn < data.length && (data[bn] & (1<<(7 - code % 8))) != 0)
-                result.add(c);
-        }
-        return result;
-    }
-
     private static void checkVersion(int min, int max, int v, String msg)
         throws PoolException {
         if (v < min || v > max) {
@@ -187,7 +187,7 @@ final class TCPPoolConnection implements PoolConnection {
     private static final SlawInternalizer defaultInternalizer =
         new com.oblong.jelly.slaw.v2.Internalizer();
 
-    private static final Set<Request> defaultSupported =
+    static final Set<Request> defaultSupported =
         EnumSet.of(CREATE, DISPOSE, PARTICIPATE, PARTICIPATE_C,
                    WITHDRAW, DEPOSIT, NTH_PROTEIN, NEXT, PROBE_FWD,
                    NEWEST_INDEX, NEXT, OLDEST_INDEX,

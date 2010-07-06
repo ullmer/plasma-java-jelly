@@ -51,10 +51,10 @@ public enum Request {
     },
     DEPOSIT(5, 1, 3) {
         Slaw getRetort(Slaw res, int v) throws ProtocolException {
-            return index(retort(index(res, 0), 1), 2);
+            return retort(index(stamp(res, 2), 0), 1);
         }
     },
-    NTH_PROTEIN(6, 1, 3){
+    NTH_PROTEIN(6, 1, 3) {
         Slaw getRetort(Slaw res, int v) throws ProtocolException {
             return retort(stamp(protein(res, 0), 1), 2);
         }
@@ -91,7 +91,7 @@ public enum Request {
     },
     INFO(15, 1, 2) {
         Slaw getRetort(Slaw res, int v) throws ProtocolException {
-            return protein(retort(res, 0), 1);
+            return retort(protein(res, 1), 0);
         }
     },
     LIST(16, 0, 2) {

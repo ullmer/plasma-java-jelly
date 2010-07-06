@@ -4,6 +4,7 @@ package com.oblong.jelly;
 
 import java.util.Set;
 
+import org.junit.After;
 import org.junit.Before;
 
 import static org.junit.Assume.*;
@@ -30,10 +31,15 @@ public class PoolServerTestBase {
         assertEquals(addr, server.address());
     }
 
-    @Before public void clean() throws PoolException {
+    @Before public void maybeDisable() {
         assumeTrue(server != null);
-        final Set<String> pools = server.pools();
-        for (String n : pools) server.dispose(n);
+    }
+    
+    @After public void clean() throws PoolException {
+        if (server != null) {
+            final Set<String> pools = server.pools();
+            for (String n : pools) server.dispose(n);
+        }
     }
 
     protected PoolAddress poolAddress(String name) throws PoolException {

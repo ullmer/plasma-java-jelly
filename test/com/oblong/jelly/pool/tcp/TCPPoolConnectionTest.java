@@ -2,13 +2,20 @@
 
 package com.oblong.jelly.pool.tcp;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.EnumSet;
+import java.util.Set;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import com.oblong.jelly.PoolException;
 import com.oblong.jelly.PoolTestBase;
+import com.oblong.jelly.pool.impl.Request;
+import static com.oblong.jelly.pool.impl.Request.*;
 import com.oblong.jelly.pool.mem.TCPMemProxy;
 
 /**
@@ -37,6 +44,27 @@ public class TCPPoolConnectionTest extends PoolTestBase {
     public TCPPoolConnectionTest() throws PoolException {
         super(proxy.tcpAddress());
     }
+
+    @Test public void supportedSets() throws PoolException, IOException {
+        checkSupported(TCPPoolConnection.defaultSupported);
+        for (Request r : Request.values()) checkSupported(r);
+        checkSupported(CREATE, DISPOSE, PARTICIPATE, PARTICIPATE_C, WITHDRAW,
+                       OLDEST_INDEX, NEWEST_INDEX, DEPOSIT, NTH_PROTEIN, NEXT,
+                       PROBE_FWD, PREV, PROBE_BACK, AWAIT_NEXT, LIST);
+    }
+
+    private static void checkSupported(Request req, Request... rest)
+        throws PoolException, IOException {
+        checkSupported(EnumSet.of(req, rest));
+    }
+
+    private static void checkSupported(Set<Request> supp)
+        throws PoolException, IOException {
+        final byte[] data = TCPPoolConnection.supportedToData(supp);
+        final ByteArrayInputStream is = new ByteArrayInputStream(data);
+        assertEquals(supp, TCPPoolConnection.readSupported(is, 3));
+    }
+
 
     private static TCPMemProxy proxy;
     private static Thread proxyThread;
