@@ -7,24 +7,23 @@ import java.io.IOException;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
+import com.oblong.jelly.HoseTestBase;
 import com.oblong.jelly.PoolException;
-import com.oblong.jelly.PoolTestBase;
 import com.oblong.jelly.pool.mem.TCPMemProxy;
 
 /**
- * Unit Test for TCP pool servers, using a MemPool-base TCPProxy
- * as the target PoolServer.
+ * Unit Test for hose operations on TCP pools, using a MemPool-base
+ * TCPProxy as the target PoolServer.
  *
- *
- * Created: Mon Jul  5 21:15:43 2010
+ * Created: Tue Jul  6 15:25:02 2010
  *
  * @author jao
  */
-public class TCPPoolConnectionTest extends PoolTestBase {
+public class TCPHoseTest extends HoseTestBase {
 
     @BeforeClass public static void startUp()
         throws IOException, PoolException {
-        proxy = new TCPMemProxy(60000);
+        proxy = new TCPMemProxy(60005);
         proxyThread = new Thread(proxy);
         proxyThread.start();
     }
@@ -34,7 +33,7 @@ public class TCPPoolConnectionTest extends PoolTestBase {
         proxyThread.join(100);
     }
 
-    public TCPPoolConnectionTest() throws PoolException {
+    public TCPHoseTest() throws PoolException {
         super(proxy.tcpAddress());
     }
 

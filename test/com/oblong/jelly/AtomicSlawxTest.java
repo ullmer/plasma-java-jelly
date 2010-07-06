@@ -8,7 +8,7 @@ import org.junit.Test;
 import static com.oblong.jelly.SlawTests.*;
 
 /**
- *  Unit Test for class atomic Slawx
+ *  Unit Test for atomic Slawx
  *
  *
  * Created: Fri May  7 00:51:21 2010
