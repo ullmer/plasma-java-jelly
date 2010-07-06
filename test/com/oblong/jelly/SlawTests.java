@@ -7,7 +7,7 @@ import static org.junit.Assert.*;
 class SlawTests {
 
     static final void testIlk(Slaw s, SlawIlk ilk, NumericIlk nilk) {
-        assertFalse(s == null);
+        assertNotNull(s);
         assertEquals(s, s);
         assertEquals(ilk, s.ilk());
         assertEquals(nilk, s.numericIlk());

@@ -19,6 +19,6 @@ public class NumericIlkTest {
         NumericIlk[] is = {UNT8, FLOAT32, UNT64};
         assertEquals(FLOAT32, dominantIlk(is));
         assertEquals(INT16, dominantIlk(INT8, INT8, UNT8, INT16));
-        assertEquals(null, dominantIlk(FLOAT64, INT16, INT8, null, INT16));
+        assertNull(dominantIlk(FLOAT64, INT16, INT8, null, INT16));
     }
 }

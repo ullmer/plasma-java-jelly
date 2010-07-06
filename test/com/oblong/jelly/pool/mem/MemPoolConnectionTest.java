@@ -2,9 +2,6 @@
 
 package com.oblong.jelly.pool.mem;
 
-import static org.junit.Assert.*;
-import org.junit.Test;
-
 import com.oblong.jelly.PoolServerTestBase;
 import com.oblong.jelly.PoolException;
 import com.oblong.jelly.PoolServerAddress;

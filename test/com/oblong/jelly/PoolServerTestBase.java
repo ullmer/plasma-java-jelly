@@ -4,9 +4,11 @@ package com.oblong.jelly;
 
 import java.util.Set;
 
-import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.junit.Assume.*;
+import static org.junit.Assert.*;
 
 import com.oblong.jelly.pool.NoSuchPoolException;
 import com.oblong.jelly.pool.PoolExistsException;
@@ -19,18 +21,25 @@ import com.oblong.jelly.pool.PoolExistsException;
  */
 public class PoolServerTestBase {
 
-    public PoolServerTestBase(PoolServerAddress addr) throws PoolException {
+    public PoolServerTestBase() {
+        server = null;
+    }
+
+    protected PoolServerTestBase(PoolServerAddress addr)
+        throws PoolException {
         server = PoolServers.get(addr);
-        assertTrue(server != null);
+        assertNotNull(server);
         assertEquals(addr, server.address());
     }
 
     @Before public void clean() throws PoolException {
+        assumeTrue(server != null);
         final Set<String> pools = server.pools();
         for (String n : pools) server.dispose(n);
     }
 
     @Test public void registration() throws PoolException {
+        assumeTrue(server != null);
         final PoolAddress fa = poolAddress("foo");
         Pool.create(fa, null);
         Hose fh = Pool.participate(fa);
@@ -45,6 +54,7 @@ public class PoolServerTestBase {
     }
 
     @Test public void funnyNames() throws PoolException {
+        assumeTrue(server != null);
         final String[] names = {"a pool%", "da-pool"};
         for (String n : names) Pool.create(poolAddress(n), null);
         final Set<String> pools = Pool.pools(server.address().toString());
@@ -52,16 +62,14 @@ public class PoolServerTestBase {
         for (String n : names) assertTrue(pools.contains(n));
     }
 
-    @Test public void nonExistent() throws PoolException {
-        try {
-            server.participate("non-existent-pool%%");
-        } catch (NoSuchPoolException e) {
-            return;
-        }
-        fail("Non existent pool apparently found");
+    @Test(expected=NoSuchPoolException.class)
+    public void nonExistent() throws PoolException {
+        assumeTrue(server != null);
+        server.participate("non-existent-pool%%");
     }
 
     @Test public void duplicates() throws PoolException {
+        assumeTrue(server != null);
         final PoolAddress a = poolAddress("bar");
         final Hose h = Pool.participate(a, PoolOptions.SMALL);
         checkDup(a);

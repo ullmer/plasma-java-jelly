@@ -2,8 +2,10 @@
 
 package com.oblong.jelly;
 
-import static org.junit.Assert.*;
 import org.junit.Test;
+
+import static org.junit.Assert.*;
+import static org.junit.Assume.*;
 
 /**
  *  Base unit test for class PoolServers
@@ -15,26 +17,31 @@ import org.junit.Test;
  */
 public class PoolServersTestBase {
 
-    public PoolServersTestBase(String scheme) {
+    public PoolServersTestBase () { scheme = null; }
+
+    protected PoolServersTestBase(String scheme) {
         this.scheme = scheme;
+        assertNotNull(this.scheme);
     }
 
     @Test public void addresses() throws PoolException {
+        assumeTrue(scheme != null);
         final String[] as = {"local", "foo:2349", ""};
         for (String a : as) {
             final String uri = scheme + "://" + a;
             final PoolServerAddress addr = PoolServerAddress.fromURI(uri);
             assertEquals(scheme, addr.scheme());
             final PoolServer s = PoolServers.get(addr);
-            assertTrue(uri, s != null);
+            assertNotNull(uri, s);
             assertEquals(addr, s.address());
         }
     }
 
     @Test public void unregistered() throws PoolException {
+        assumeTrue(scheme != null);
         final PoolServerAddress addr =
             new PoolServerAddress(scheme + "aaaa", "localhost", 22);
-        assertTrue(null == PoolServers.get(addr));
+        assertNull(PoolServers.get(addr));
     }
 
     private final String scheme;

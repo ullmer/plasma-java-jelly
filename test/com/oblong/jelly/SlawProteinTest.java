@@ -18,8 +18,8 @@ public class SlawProteinTest {
 
     @Test public void empty() {
         Protein p =  protein(null, null, null);
-        assertEquals(null, p.ingests());
-        assertEquals(null, p.descrips());
+        assertNull(p.ingests());
+        assertNull(p.descrips());
         assertEquals(0, p.dataLength());
         assertEquals(protein(null, null, null), p);
     }

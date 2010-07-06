@@ -30,14 +30,14 @@ public class MemPoolTest {
         assertEquals(0, MemPool.names().length);
         for (String n : names) {
             assertFalse(MemPool.exists(n));
-            assertTrue(MemPool.create(n) != null);
+            assertNotNull(MemPool.create(n));
             assertTrue(MemPool.exists(n));
         }
         assertEquals(names.length, MemPool.names().length);
         for (String n : names) {
-            assertTrue(MemPool.create(n) == null);
+            assertNull(MemPool.create(n));
             final MemPool pool = MemPool.get(n);
-            assertTrue(pool != null);
+            assertNotNull(pool);
             assertEquals(n, pool.name());
         }
         for (Slaw n : MemPool.names()) {
@@ -50,7 +50,7 @@ public class MemPoolTest {
     @Test public void deposit() {
         final Protein p = Slaw.protein(null, null, null);
         final MemPool pool = MemPool.create("pool");
-        assertTrue(pool != null);
+        assertNotNull(pool);
         final int PN = 5;
         final PoolProtein[] deps = new PoolProtein[PN];
         for (int i = 0, idx = 0; i < PN; ++i, ++idx) {
@@ -70,7 +70,7 @@ public class MemPoolTest {
 
     @Test public void find() {
         final MemPool pool = MemPool.create("pool");
-        assertTrue(pool != null);
+        assertNotNull(pool);
         final int PN = 5;
         final PoolProtein[] deps = new PoolProtein[PN];
         final Slaw[] ds = new Slaw[PN];
@@ -78,11 +78,11 @@ public class MemPoolTest {
             ds[i] = Slaw.int32(i);
             final Slaw d = Slaw.list(Slaw.string("foo"), ds[i]);
             deps[i] = pool.deposit(Slaw.protein(d, null, null));
-            assertTrue(null != deps[i]);
+            assertNotNull(deps[i]);
         }
         for (int i = 0; i < PN; ++i) {
-            assertTrue(i + "th", null == pool.find(i, ds[i], true));
-            assertTrue(i + "th", null == pool.find(i, ds[i], false));
+            assertNull(i + "th", pool.find(i, ds[i], true));
+            assertNull(i + "th", pool.find(i, ds[i], false));
             for (int j = -1; j < i; ++j)
                 assertEquals(deps[i], pool.find(j, ds[i], true));
             for (int j = PN; j > i; --j)
