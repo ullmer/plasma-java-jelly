@@ -95,8 +95,16 @@ public class PlasmaV2ProteinsTest extends SerializationTestBase {
         checkIntern(protein(null, null, makeData(6)), p4);
 
     }
+    
+    @Test public void circular() {
+        final Protein[] ps = {
+                protein(string("eightelt"), null, null)
+        };
+        for (Protein p : ps) circularCheck("", p);
+    }
 
     private void checkIntern(Protein s, short[] b) {
+        circularCheck("Part of intern checks", s);
         try {
             final InputStream is = new ByteArrayInputStream(asBytes(b));
             final Protein s2 = internalizer.internProtein(is, factory);

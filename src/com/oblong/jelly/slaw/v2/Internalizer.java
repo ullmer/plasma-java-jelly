@@ -32,7 +32,7 @@ final class Internalizer implements SlawInternalizer {
         if (hn == PROTEIN_NON_NATIVE_NIBBLE) {
             b.setLittleEndian();
         } else if (hn != PROTEIN_NATIVE_NIBBLE) {
-            throw new SlawParseError(0, "Not a protein");
+            throw new SlawParseError(0, "Not a protein: nibble was " + hn);
         }
         return internProtein(b, f);
     }
@@ -59,9 +59,8 @@ final class Internalizer implements SlawInternalizer {
         if (dataLen > 0) {
             final boolean wee = proteinHasWeeData(sh);
             if (wee) weeBytes(sh, data, b.isLittleEndian());
-            else b.get(data, dataLen);
+            else align(b.get(data, dataLen));
         }
-        align(b);
         return f.protein(descrips, ingests, data);
     }
 
@@ -129,6 +128,7 @@ final class Internalizer implements SlawInternalizer {
         final int len = stringLength(h) - 1;
         final byte[] bs = new byte[len];
         b.get(bs, len);
+        b.get(); // consuming trailing null 
         return f.string(makeString(bs));
     }
 

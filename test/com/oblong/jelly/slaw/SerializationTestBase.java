@@ -50,6 +50,14 @@ public class SerializationTestBase {
         return os.toByteArray();
     }
 
+    protected final void circularCheck(String msg, Slaw s) {
+        if (externalizer != null) {
+            final byte[] b = slawToBytes(s);
+            assertEquals(msg, externalizer.externSize(s), b.length);
+            checkIntern(msg, s, b);
+        }
+    }
+    
     protected final void checkExtern(String msg, Slaw s, byte[] b) {
         if (externalizer != null) {
             final byte[] sb = slawToBytes(s);
@@ -63,9 +71,10 @@ public class SerializationTestBase {
     protected final void checkIntern(String msg, Slaw s, byte[] b) {
         if (internalizer != null) {
             try {
-                final InputStream is = new ByteArrayInputStream(b);
+                final ByteArrayInputStream is = new ByteArrayInputStream(b);
                 final Slaw s2 = internalizer.internSlaw(is, factory);
-                assertEquals(s, s2);
+                assertEquals(msg, s, s2);
+                assertEquals(msg, 0, is.available());
             } catch (Exception e) {
                 fail(msg + ": " + e);
             }
