@@ -19,7 +19,7 @@ import com.oblong.jelly.PoolServersTestBase;
 public class MemServerFactoryTest extends PoolServersTestBase {
 
     @BeforeClass public static void setup() {
-        assertTrue(MemServerFactory.register());
+        MemServerFactory.register();
     }
 
     public MemServerFactoryTest() {
