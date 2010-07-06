@@ -6,6 +6,7 @@ import java.io.IOException;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+
 import com.oblong.jelly.PoolException;
 import com.oblong.jelly.PoolServerTestBase;
 import com.oblong.jelly.pool.mem.TCPMemProxy;

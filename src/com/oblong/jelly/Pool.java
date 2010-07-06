@@ -2,6 +2,8 @@
 
 package com.oblong.jelly;
 
+import java.util.Set;
+
 /**
  *
  * Created: Thu Jun  3 10:08:24 2010
@@ -46,6 +48,15 @@ public final class Pool {
         throws PoolException {
         return PoolServers.get(addr.serverAddress())
                           .participate(addr.poolName(), opts);
+    }
+
+    public static Set<String> pools(String serverURI) throws PoolException {
+        return pools(PoolServerAddress.fromURI(serverURI));
+    }
+
+    public static Set<String> pools(PoolServerAddress addr)
+        throws PoolException {
+        return PoolServers.get(addr).pools();
     }
 
     private Pool() {}
