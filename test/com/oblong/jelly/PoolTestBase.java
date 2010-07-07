@@ -5,7 +5,7 @@ package com.oblong.jelly;
 import java.util.Set;
 
 import org.junit.Test;
-
+import org.junit.After;
 import static org.junit.Assert.*;
 
 import com.oblong.jelly.pool.PoolExistsException;
@@ -24,6 +24,10 @@ public class PoolTestBase extends PoolServerTestBase {
 
     protected PoolTestBase(PoolServerAddress addr) throws PoolException {
         super(addr);
+    }
+
+    @After public void cleanPools() throws PoolException {
+        clean();
     }
 
     @Test public void registration() throws PoolException {

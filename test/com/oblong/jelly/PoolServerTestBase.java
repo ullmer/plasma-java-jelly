@@ -4,7 +4,6 @@ package com.oblong.jelly;
 
 import java.util.Set;
 
-import org.junit.After;
 import org.junit.Before;
 
 import static org.junit.Assume.*;
@@ -34,8 +33,8 @@ public class PoolServerTestBase {
     @Before public void maybeDisable() {
         assumeTrue(server != null);
     }
-    
-    @After public void clean() throws PoolException {
+
+    public void clean() throws PoolException {
         if (server != null) {
             final Set<String> pools = server.pools();
             for (String n : pools) server.dispose(n);

@@ -4,6 +4,8 @@ package com.oblong.jelly.pool.tcp;
 
 import static org.junit.Assert.*;
 
+import org.junit.AfterClass;
+
 import com.oblong.jelly.HoseTestBase;
 import com.oblong.jelly.PoolException;
 import com.oblong.jelly.pool.mem.TCPMemProxy;
@@ -22,6 +24,11 @@ public class TCPHoseTest extends HoseTestBase {
         super(proxy.tcpAddress());
     }
 
+    @AfterClass public static void close() {
+        proxy.exit();
+        try { proxyThread.join(10); } catch (Exception e) {}
+    }
+
     private static TCPMemProxy proxy;
     private static Thread proxyThread;
 
@@ -33,5 +40,13 @@ public class TCPHoseTest extends HoseTestBase {
         } catch (Exception e) {
             fail("Initialization error: " + e);
         }
+    }
+
+    public static void main(String[] args) throws PoolException {
+        TCPHoseTest test = new TCPHoseTest();
+        test.openDefault();
+        test.deposit();
+        test.clean();
+        close();
     }
 }
