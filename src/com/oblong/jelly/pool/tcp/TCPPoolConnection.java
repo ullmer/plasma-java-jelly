@@ -5,7 +5,6 @@ package com.oblong.jelly.pool.tcp;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.EnumSet;
 import java.util.Set;
@@ -105,14 +104,14 @@ final class TCPPoolConnection implements PoolConnection {
     private TCPPoolConnection(PoolServerAddress addr) throws PoolException {
         try {
             address = addr;
-            socket = new Socket(addr.host(), addr.port());
+            Socket socket = new Socket(addr.host(), addr.port());
             sendPreamble(socket.getOutputStream());
             version = readVersions(socket.getInputStream());
             if (0 == version) {
                 socket.close();
-                socket.connect(new InetSocketAddress(address.host(),
-                               address.port()));
+                socket = new Socket(addr.host(), addr.port());
             }
+            this.socket = socket;
             supported = readSupported(socket.getInputStream(), version);
             externalizer = defaultExternalizer;
             internalizer = defaultInternalizer;
@@ -124,7 +123,6 @@ final class TCPPoolConnection implements PoolConnection {
     private Slaw send(Protein p) throws PoolException {
         try {
             externalizer.extern(p, socket.getOutputStream());
-            socket.getOutputStream().flush();
         } catch (Exception e) {
             throw new InOutException(e);
         }
