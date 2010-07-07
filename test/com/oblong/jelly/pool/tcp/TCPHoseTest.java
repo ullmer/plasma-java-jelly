@@ -2,10 +2,7 @@
 
 package com.oblong.jelly.pool.tcp;
 
-import java.io.IOException;
-
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import static org.junit.Assert.*;
 
 import com.oblong.jelly.HoseTestBase;
 import com.oblong.jelly.PoolException;
@@ -21,22 +18,20 @@ import com.oblong.jelly.pool.mem.TCPMemProxy;
  */
 public class TCPHoseTest extends HoseTestBase {
 
-    @BeforeClass public static void startUp()
-        throws IOException, PoolException {
-        proxy = new TCPMemProxy(60005);
-        proxyThread = new Thread(proxy);
-        proxyThread.start();
-    }
-
-    @AfterClass public static void shutDown() throws InterruptedException {
-        proxy.exit();
-        proxyThread.join(100);
-    }
-
     public TCPHoseTest() throws PoolException {
         super(proxy.tcpAddress());
     }
 
     private static TCPMemProxy proxy;
     private static Thread proxyThread;
+
+    static {
+        try {
+            proxy = new TCPMemProxy(60005);
+            proxyThread = new Thread(proxy);
+            proxyThread.start();
+        } catch (Exception e) {
+            fail("Initialization error: " + e);
+        }
+    }
 }

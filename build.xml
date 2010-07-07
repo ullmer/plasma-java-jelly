@@ -21,7 +21,7 @@
 
   <property name="compile.debug" value="true"/>
   <property name="compile.encoding" value=""/>
-  <property name="compile.deprecation" value="false"/>
+  <property name="compile.deprecation" value="true"/>
   <property name="compile.optimize" value="true"/>
   <property name="compile.source" value="1.6"/>
   <property name="compile.target" value="1.6"/>
@@ -107,6 +107,9 @@
     <junit fork="yes" forkMode="once" haltonerror="yes" haltonfailure="yes"
            printsummary="off" showoutput="no" logfailedtests="no">
       <assertions><enable/></assertions>
+      <jvmarg value="-Xms256m"/>
+      <jvmarg value="-Xmx256m"/>
+      <jvmarg value="-server"/>
       <classpath refid="test.run.classpath"/>
       <formatter type="plain" usefile="false"/>
       <formatter type="plain" usefile="true"/>
@@ -122,6 +125,9 @@
           description="Run unit tests and generate HTML report">
     <junit fork="yes" forkMode="once" printsummary="off"
            errorProperty="test.failed" failureProperty="test.failed">
+      <jvmarg value="-Xms256m"/>
+      <jvmarg value="-Xmx256m"/>
+      <jvmarg value="-server"/>
       <classpath refid="test.run.classpath"/>
       <formatter type="plain" usefile="false"/>
       <formatter type="xml" usefile="true"/>

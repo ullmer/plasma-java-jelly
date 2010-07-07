@@ -41,7 +41,6 @@ final class TCPProxyHandler implements Runnable {
             init();
         } catch (IOException e) {
             // TODO: log
-            e.printStackTrace();
             connection.close();
         }
         while (connection.isOpen()) {
@@ -49,16 +48,13 @@ final class TCPProxyHandler implements Runnable {
                 reply(forward(next()));
             } catch (Exception e) {
                 // TODO: log
-                e.printStackTrace();
                 connection.close();
             }
         }
         try {
-            close();
-            socket.close();
+            if (socket.isConnected()) socket.close();
         } catch (Exception e) {
             // TODO: log
-            e.printStackTrace();
         }
     }
 
