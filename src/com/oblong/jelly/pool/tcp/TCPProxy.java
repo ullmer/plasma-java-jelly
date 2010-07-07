@@ -62,7 +62,14 @@ public final class TCPProxy implements Runnable {
         }
     }
 
-    public void exit() { exit = true; }
+    public void exit() {
+        exit = true;
+        try {
+            socket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     private void launchHandler(Socket sock, PoolConnection pc)
         throws IOException {
