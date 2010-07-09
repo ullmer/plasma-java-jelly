@@ -68,20 +68,20 @@ public class HoseTestBase extends PoolServerTestBase {
         assertEquals(defHose.newestIndex(), defHose.index());
     }
 
-    @Test public void waitOne() throws PoolException {
+    @Test public void await() throws PoolException {
         defHose.seekTo(defHose.oldestIndex() - 1);
         for (int i = 0; i < TLEN; ++i) {
             assertEquals(i + "th", DEP_PROTEINS[i],
-                         defHose.next(1, TimeUnit.SECONDS));
+                         defHose.awaitNext(1, TimeUnit.SECONDS));
             assertEquals(i + "th", DEP_PROTEINS[i].index(), defHose.index());
         }
         assertEquals(defHose.newestIndex(), defHose.index());
     }
 
-    @Test public void waitNext() throws PoolException {
+    @Test public void awaitNext() throws PoolException {
         defHose.seekTo(defHose.oldestIndex() - 1);
         for (int i = 0; i < TLEN; ++i) {
-            assertEquals(i + "th", DEP_PROTEINS[i], defHose.waitNext());
+            assertEquals(i + "th", DEP_PROTEINS[i], defHose.awaitNext());
             assertEquals(i + "th", DEP_PROTEINS[i].index(), defHose.index());
         }
         assertEquals(defHose.newestIndex(), defHose.index());

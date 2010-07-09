@@ -116,7 +116,7 @@ final class PoolHose implements Hose {
                                this);
     }
 
-    @Override public Protein next(long t, TimeUnit unit)
+    @Override public Protein awaitNext(long t, TimeUnit unit)
         throws PoolException {
         if (t == 0) return next();
         if (dirtyIndex)
@@ -125,11 +125,11 @@ final class PoolHose implements Hose {
             } catch (NoSuchProteinException e) {
                 cleanIndex(index);
             }
-        return awaitNext(t, unit);
+        return await(t, unit);
     }
 
-    @Override public Protein waitNext() throws PoolException {
-        return next(-1, TimeUnit.SECONDS);
+    @Override public Protein awaitNext() throws PoolException {
+        return awaitNext(-1, TimeUnit.SECONDS);
     }
 
     @Override public Protein previous() throws PoolException {
@@ -157,7 +157,7 @@ final class PoolHose implements Hose {
                                this);
     }
 
-    private Protein awaitNext(long t, TimeUnit u) throws PoolException {
+    private Protein await(long t, TimeUnit u) throws PoolException {
         final Slaw res = Request.AWAIT_NEXT.send(connection, timeSlaw(t, u));
         index = res.nth(3).emitLong();
         return new PoolProtein(res.nth(1).toProtein(),

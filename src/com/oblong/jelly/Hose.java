@@ -37,8 +37,8 @@ public interface Hose {
     Protein current() throws PoolException;
     Protein next() throws PoolException;
     Protein next(Slaw descrip) throws PoolException;
-    Protein next(long period, TimeUnit unit) throws PoolException;
-    Protein waitNext() throws PoolException;
+    Protein awaitNext(long period, TimeUnit unit) throws PoolException;
+    Protein awaitNext() throws PoolException;
     Protein previous() throws PoolException;
     Protein previous(Slaw descrip) throws PoolException;
     Protein nth(long index) throws PoolException;
