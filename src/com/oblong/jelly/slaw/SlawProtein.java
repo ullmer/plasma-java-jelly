@@ -4,6 +4,7 @@ package com.oblong.jelly.slaw;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.concurrent.TimeUnit;
 
 import net.jcip.annotations.Immutable;
 
@@ -33,8 +34,9 @@ final class SlawProtein extends Protein {
         return data.length;
     }
 
-    @Override public long index() { return INVALID_INDEX; }
-    @Override public double timestamp() { return INVALID_TIMESTAMP; }
+    @Override public long index() { return NO_INDEX; }
+    @Override public long timestamp(TimeUnit u) { return NO_TIMESTAMP; }
+    @Override public double timestamp() { return NO_TIMESTAMP; }
     @Override public Hose source() { return null; }
 
     private SlawProtein(Slaw d, Slaw i, byte[] b) {

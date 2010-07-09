@@ -168,7 +168,7 @@ final class PoolHose implements Hose {
 
     private Slaw timeSlaw(long timeout, TimeUnit unit) {
         double poolTimeout =
-            timeout < 0 ? WAIT_FOREVER : ((double)unit.toNanos(timeout))/10e9;
+            timeout < 0 ? WAIT_FOREVER : ((double)unit.toNanos(timeout))/1e9;
         if (version() < FIRST_NEW_WAIT_V) {
             if (poolTimeout == WAIT_FOREVER) poolTimeout = OLD_WAIT;
             else if (poolTimeout == NO_WAIT) poolTimeout = OLD_NO_WAIT;

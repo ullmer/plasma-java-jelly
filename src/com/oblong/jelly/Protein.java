@@ -7,6 +7,7 @@ import java.io.OutputStream;
 import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  *
@@ -15,8 +16,8 @@ import java.util.Map;
  * @author jao
  */
 public abstract class Protein extends Slaw {
-    public static final long INVALID_INDEX = -1;
-    public static final double INVALID_TIMESTAMP = -1;
+    public static final long NO_INDEX = -1;
+    public static final long NO_TIMESTAMP = -1;
 
     public abstract Slaw ingests();
     public abstract Slaw descrips();
@@ -26,6 +27,7 @@ public abstract class Protein extends Slaw {
     public abstract int putData(OutputStream os) throws IOException;
 
     public abstract long index();
+    public abstract long timestamp(TimeUnit unit);
     public abstract double timestamp();
     public abstract Hose source();
 
@@ -74,7 +76,7 @@ public abstract class Protein extends Slaw {
         Protein op = o.toProtein();
 
         boolean eqs = index() == op.index()
-            && timestamp() == op.timestamp()
+            && timestamp() == timestamp()
             && op.dataLength() == dataLength()
             && eqRefs(descrips(), op.descrips())
             && eqRefs(ingests(), op.ingests());
@@ -90,7 +92,7 @@ public abstract class Protein extends Slaw {
         if (ingests() != null) h += 17 * ingests().hashCode();
         for (int i = 0, c = dataLength(); i < c; ++i) h += data(i);
         h += index();
-        h += (int)timestamp();
+        h += (int)timestamp(TimeUnit.NANOSECONDS);
         return h;
     }
 

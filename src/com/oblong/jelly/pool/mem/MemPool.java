@@ -75,7 +75,7 @@ final class MemPool {
         if (p == null && timeout != 0) {
             if (timeout < 0) return waitNext(index);
             synchronized (proteins) {
-                long nanos = (long)(timeout * 10e9);
+                long nanos = (long)(timeout * 1e9);
                 while (nanos > 0 && p == null) {
                     final long start = System.currentTimeMillis();
                     try {

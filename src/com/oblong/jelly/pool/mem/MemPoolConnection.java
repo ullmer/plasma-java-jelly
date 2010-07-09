@@ -42,7 +42,7 @@ final class MemPoolConnection implements PoolConnection {
     public MemPoolConnection(PoolServerAddress addr) {
         address = addr;
         pool = null;
-        index = Protein.INVALID_INDEX;
+        index = Protein.NO_INDEX;
         open = true;
     }
 

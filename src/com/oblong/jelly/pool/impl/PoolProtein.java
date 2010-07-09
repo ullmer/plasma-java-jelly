@@ -4,6 +4,7 @@ package com.oblong.jelly.pool.impl;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.concurrent.TimeUnit;
 
 import net.jcip.annotations.Immutable;
 
@@ -28,7 +29,7 @@ public final class PoolProtein extends Protein {
     }
 
     public Protein bareProtein() { return protein; }
-    
+
     @Override public String debugString() {
         return protein.debugString()
             + "\nIndex: " + index + ", Timestamp: " + stamp;
@@ -45,8 +46,10 @@ public final class PoolProtein extends Protein {
 
     @Override public long index() { return index; }
     @Override public double timestamp() { return stamp; }
+    @Override public long timestamp(TimeUnit unit) {
+        return unit.convert((long)(stamp * 1e9), TimeUnit.NANOSECONDS);
+    }
     @Override public Hose source() { return hose; }
-
 
     private final Protein protein;
     private final long index;
