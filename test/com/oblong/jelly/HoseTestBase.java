@@ -2,9 +2,10 @@
 
 package com.oblong.jelly;
 
+import java.util.concurrent.TimeUnit;
+
 import org.junit.Before;
 import org.junit.Test;
-
 import static org.junit.Assert.*;
 
 import static com.oblong.jelly.Slaw.*;
@@ -61,7 +62,26 @@ public class HoseTestBase extends PoolServerTestBase {
     @Test public void next() throws PoolException {
         defHose.seekTo(defHose.oldestIndex() - 1);
         for (int i = 0; i < TLEN; ++i) {
-            assertEquals(DEP_PROTEINS[i], defHose.next());
+            assertEquals(i + "th", DEP_PROTEINS[i], defHose.next());
+            assertEquals(i + "th", DEP_PROTEINS[i].index(), defHose.index());
+        }
+        assertEquals(defHose.newestIndex(), defHose.index());
+    }
+
+    @Test public void waitOne() throws PoolException {
+        defHose.seekTo(defHose.oldestIndex() - 1);
+        for (int i = 0; i < TLEN; ++i) {
+            assertEquals(i + "th", DEP_PROTEINS[i],
+                         defHose.next(1, TimeUnit.SECONDS));
+            assertEquals(i + "th", DEP_PROTEINS[i].index(), defHose.index());
+        }
+        assertEquals(defHose.newestIndex(), defHose.index());
+    }
+
+    @Test public void waitNext() throws PoolException {
+        defHose.seekTo(defHose.oldestIndex() - 1);
+        for (int i = 0; i < TLEN; ++i) {
+            assertEquals(i + "th", DEP_PROTEINS[i], defHose.waitNext());
             assertEquals(i + "th", DEP_PROTEINS[i].index(), defHose.index());
         }
         assertEquals(defHose.newestIndex(), defHose.index());

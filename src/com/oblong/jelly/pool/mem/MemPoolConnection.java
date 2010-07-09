@@ -168,7 +168,7 @@ final class MemPoolConnection implements PoolConnection {
         final Slaw time = makeStamp(p == null ? 0 : p.timestamp());
         final Slaw prot = p == null ? NULL_PROT : p.bareProtein();
         final Slaw ret = p == null ? NO_SUCH_PROTEIN : OK;
-        if (p != null) index = p.index();
+        index = p.index();
         return makeResponse(prot, time, makeIndex(index), ret);
     }
 

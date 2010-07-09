@@ -22,7 +22,7 @@ final class PoolHose implements Hose {
         factory = conn.factory();
         poolAddress = new PoolAddress(connection.address(), pn);
         setName(null);
-        index = newestIndex();
+        cleanIndex(newestIndex());
     }
 
     @Override public int version() {
@@ -67,12 +67,13 @@ final class PoolHose implements Hose {
         }
     }
 
-    @Override public void seekTo(long index) {
-        this.index = index;
+    @Override public void seekTo(long idx) {
+        index = idx;
+        dirtyIndex = true;
     }
 
     @Override public void seekBy(long offset) {
-        index += offset;
+        seekTo(index + offset);
     }
 
     @Override public void toLast() throws PoolException {
@@ -100,9 +101,8 @@ final class PoolHose implements Hose {
 
     @Override public Protein next() throws PoolException {
         final Slaw res = Request.NEXT.send(connection, indexSlaw(index));
-        index = res.nth(2).emitLong();
         return new PoolProtein(res.nth(0).toProtein(),
-                               index,
+                               cleanIndex(res.nth(2).emitLong()),
                                res.nth(1).emitDouble(),
                                this);
     }
@@ -110,42 +110,40 @@ final class PoolHose implements Hose {
     @Override public Protein next(Slaw descrip) throws PoolException {
         if (descrip == null) throw new NoSuchProteinException(0L);
         final Slaw res = Request.PROBE_FWD.send(connection, descrip);
-        index = res.nth(2).emitLong();
         return new PoolProtein(res.nth(0).toProtein(),
-                               index,
+                               cleanIndex(res.nth(2).emitLong()),
                                res.nth(1).emitDouble(),
                                this);
     }
 
     @Override public Protein next(long t, TimeUnit unit)
         throws PoolException {
-        final Slaw res =
-            Request.AWAIT_NEXT.send(connection, timeoutSlaw(t, unit));
-        index = res.nth(3).emitLong();
-        return new PoolProtein(res.nth(1).toProtein(),
-                               index,
-                               res.nth(2).emitDouble(),
-                               this);
+        if (t == 0) return next();
+        if (dirtyIndex)
+            try {
+                return next();
+            } catch (NoSuchProteinException e) {
+                cleanIndex(index);
+            }
+        return awaitNext(t, unit);
     }
 
     @Override public Protein waitNext() throws PoolException {
-        return next(0, TimeUnit.NANOSECONDS);
+        return next(-1, TimeUnit.SECONDS);
     }
 
     @Override public Protein previous() throws PoolException {
         final Slaw res = Request.PREV.send(connection, indexSlaw(index));
-        index = res.nth(2).emitLong();
         return new PoolProtein(res.nth(0).toProtein(),
-                               index,
+                               cleanIndex(res.nth(2).emitLong()),
                                res.nth(1).emitDouble(),
                                this);
     }
 
     @Override public Protein previous(Slaw descrip) throws PoolException {
         final Slaw res = Request.PROBE_BACK.send(connection, descrip);
-        index = res.nth(2).emitLong();
         return new PoolProtein(res.nth(0).toProtein(),
-                               index,
+                               cleanIndex(res.nth(2).emitLong()),
                                res.nth(1).emitDouble(),
                                this);
     }
@@ -159,7 +157,16 @@ final class PoolHose implements Hose {
                                this);
     }
 
-    private Slaw timeoutSlaw(long timeout, TimeUnit unit) {
+    private Protein awaitNext(long t, TimeUnit u) throws PoolException {
+        final Slaw res = Request.AWAIT_NEXT.send(connection, timeSlaw(t, u));
+        index = res.nth(3).emitLong();
+        return new PoolProtein(res.nth(1).toProtein(),
+                               index,
+                               res.nth(2).emitDouble(),
+                               this);
+    }
+
+    private Slaw timeSlaw(long timeout, TimeUnit unit) {
         double poolTimeout =
             timeout < 0 ? WAIT_FOREVER : ((double)unit.toNanos(timeout))/10e9;
         if (version() < FIRST_NEW_WAIT_V) {
@@ -173,6 +180,11 @@ final class PoolHose implements Hose {
         return factory.number(NumericIlk.INT64, idx);
     }
 
+    private long cleanIndex(long idx) {
+        dirtyIndex = false;
+        return index = idx;
+    }
+
     private static final double WAIT_FOREVER = -1;
     private static final double NO_WAIT = 0;
     private static final double OLD_WAIT = NO_WAIT;
@@ -184,4 +196,5 @@ final class PoolHose implements Hose {
     private final PoolAddress poolAddress;
     private String name;
     long index;
+    boolean dirtyIndex;
 }

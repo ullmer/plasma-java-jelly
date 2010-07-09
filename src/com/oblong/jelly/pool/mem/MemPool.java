@@ -71,25 +71,26 @@ final class MemPool {
     }
 
     public PoolProtein next(long index, double timeout) {
-        if (timeout == 0) return nth(index + 1);
-        if (timeout < 0) return waitNext(index);
-        synchronized (proteins) {
-            final long idx = index + 1;
-            PoolProtein p = nth(idx);
-            if (p != null) return p;
-            long nanos = (long)(timeout * 10e9);
-            while (nanos > 0 && p == null) {
-                final long start = System.currentTimeMillis();
-                try {
-                    proteins.wait(nanos/THOUSAND, (int)(nanos % THOUSAND));
-                } catch (InterruptedException e) {
-                    return null;
+        PoolProtein p = nth(index + 1);
+        if (p == null && timeout != 0) {
+            if (timeout < 0) return waitNext(index);
+            synchronized (proteins) {
+                long nanos = (long)(timeout * 10e9);
+                while (nanos > 0 && p == null) {
+                    final long start = System.currentTimeMillis();
+                    try {
+                        proteins.wait(nanos/THOUSAND,
+                                      (int)(nanos % THOUSAND));
+                    } catch (InterruptedException e) {
+                        return null;
+                    }
+                    p = nth(index + 1);
+                    nanos -= (System.currentTimeMillis() - start) * THOUSAND;
                 }
-                p = nth(idx);
-                nanos -= (System.currentTimeMillis() - start) * THOUSAND;
             }
-            return p;
+            System.out.println("Protein was: " + p);
         }
+        return p;
     }
 
     public PoolProtein waitNext(long index) {
