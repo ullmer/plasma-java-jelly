@@ -77,7 +77,7 @@
 
   <target name="build" depends="compile"
           description="Generate the distribution">
-    <jar jarfile="${pkg}" basedir="${build.classes}"/>
+    <jar jarfile="${build.jar}" basedir="${build.classes.dir}"/>
   </target>
 
   <target name="-test-init">
