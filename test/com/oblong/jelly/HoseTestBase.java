@@ -96,6 +96,13 @@ public class HoseTestBase extends PoolServerTestBase {
         }
     }
 
+    @Test public void current() throws PoolException {
+        for (int i = 0; i < TLEN; i++) {
+            defHose.seekTo(DEP_PROTEINS[i].index());
+            assertEquals(i + "th", DEP_PROTEINS[i], defHose.current());
+        }
+    }
+
     protected static Protein makeProtein(int i) {
         final Slaw desc = list(string("descrips"), int32(i));
         final Slaw ings = map(string("string-key"), string("value"),
