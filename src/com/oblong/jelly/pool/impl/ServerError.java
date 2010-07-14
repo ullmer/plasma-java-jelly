@@ -76,6 +76,7 @@ public enum ServerError {
     }
 
     public static ServerError getError(int v, Slaw retort) {
+        if (!retort.isNumber()) return PROTOCOL_ERROR;
         return getError(v, retort.emitLong());
     }
 

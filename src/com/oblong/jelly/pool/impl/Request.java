@@ -56,17 +56,17 @@ public enum Request {
     },
     NTH_PROTEIN(6, 1, 3) {
         Slaw getRetort(Slaw res, int v) throws ProtocolException {
-            return retort(stamp(protein(res, 0), 1), 2);
+            return retort(stamp(protein(res, 0, 2), 1), 2);
         }
     },
     NEXT(7, 1, 4) {
         Slaw getRetort(Slaw res, int v) throws ProtocolException {
-            return retort(index(stamp(protein(res, 0), 1), 2), 3);
+            return retort(index(stamp(protein(res, 0, 3), 1), 2), 3);
         }
     },
     PROBE_FWD(8, 2, 4) {
         Slaw getRetort(Slaw res, int v) throws ProtocolException {
-            return retort(index(stamp(protein(res, 0), 1), 2), 3);
+            return retort(index(stamp(protein(res, 0, 3), 1), 2), 3);
         }
     },
     NEWEST_INDEX(9, 0, 2) {
@@ -81,17 +81,17 @@ public enum Request {
     },
     AWAIT_NEXT(11, 1, 4) {
         Slaw getRetort(Slaw res, int v) throws ProtocolException {
-            return retort(index(stamp(protein(res, 1), 2), 3), 0);
+            return retort(index(stamp(protein(res, 1, 3), 2), 3), 0);
         }
     },
     ADD_AWAITER(12, 0, 4) {
         Slaw getRetort(Slaw res, int v) throws ProtocolException {
-            return retort(index(stamp(protein(res, 1), 2), 3), 0);
+            return retort(index(stamp(protein(res, 1, 0), 2), 3), 0);
         }
     },
     INFO(15, 1, 2) {
         Slaw getRetort(Slaw res, int v) throws ProtocolException {
-            return retort(protein(res, 1), 0);
+            return retort(protein(res, 1, 0), 0);
         }
     },
     LIST(16, 0, 2) {
@@ -106,12 +106,12 @@ public enum Request {
     },
     PROBE_BACK(18, 2, 4) {
         Slaw getRetort(Slaw res, int v) throws ProtocolException {
-            return retort(index(stamp(protein(res, 0), 1), 2), 3);
+            return retort(index(stamp(protein(res, 0, 3), 1), 2), 3);
         }
     },
     PREV(19, 1, 4) {
         Slaw getRetort(Slaw res, int v) throws ProtocolException {
-            return retort(index(stamp(protein(res, 0), 1), 2), 3);
+            return retort(index(stamp(protein(res, 0, 3), 1), 2), 3);
         }
     };
 
@@ -163,8 +163,11 @@ public enum Request {
         return check(s, p, "int64", s.nth(p).isNumber(NumericIlk.INT64));
     }
 
-    private static Slaw protein(Slaw s, int p) throws ProtocolException {
-        return check(s, p, "protein", s.nth(p).isProtein());
+    private static Slaw protein(Slaw s, int p, int rp)
+        throws ProtocolException {
+        return check(s, p, "protein or nil with error code",
+                     s.nth(p).isProtein()
+                     || (s.nth(p).isNil() && retort(s, rp).emitLong() != 0));
     }
 
     private static Slaw retort(Slaw s, int p) throws ProtocolException {
