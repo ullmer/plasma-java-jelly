@@ -8,6 +8,7 @@ import com.oblong.jelly.Slaw;
 import com.oblong.jelly.pool.CorruptPoolException;
 import com.oblong.jelly.pool.InvalidOperationException;
 import com.oblong.jelly.pool.NoSuchPoolException;
+import com.oblong.jelly.pool.NoSuchProteinException;
 import com.oblong.jelly.pool.PoolExistsException;
 import com.oblong.jelly.pool.ProtocolException;
 import com.oblong.jelly.pool.TimeoutException;
@@ -23,7 +24,7 @@ public enum ServerError {
     },
     NO_SUCH_PROTEIN {
         public PoolException asException(Slaw res, long code) {
-            return new NoSuchPoolException(code);
+            return new NoSuchProteinException(code);
         }
     },
     NO_SUCH_POOL {

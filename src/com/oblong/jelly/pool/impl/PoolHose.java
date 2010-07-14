@@ -11,7 +11,6 @@ import com.oblong.jelly.PoolException;
 import com.oblong.jelly.Protein;
 import com.oblong.jelly.Slaw;
 import com.oblong.jelly.pool.NoSuchProteinException;
-import com.oblong.jelly.pool.ProtocolException;
 import com.oblong.jelly.slaw.SlawFactory;
 
 @NotThreadSafe
@@ -63,16 +62,20 @@ final class PoolHose implements Hose {
     }
 
     @Override public long newestIndex() throws PoolException {
-        final Slaw res = Request.NEWEST_INDEX.send(connection).nth(0);
-        return res.emitLong();
+        try {
+            final Slaw res = Request.NEWEST_INDEX.send(connection).nth(0);
+            return res.emitLong();
+        } catch (NoSuchProteinException e) {
+            return Protein.NO_INDEX;
+        }
     }
 
     @Override public long oldestIndex() throws PoolException {
-        final Slaw res = Request.OLDEST_INDEX.send(connection).nth(0);
         try {
+            final Slaw res = Request.OLDEST_INDEX.send(connection).nth(0);
             return res.emitLong();
-        } catch (UnsupportedOperationException e) {
-            throw new ProtocolException(res, "Invalid argument 0");
+        } catch (NoSuchProteinException e) {
+            return Protein.NO_INDEX;
         }
     }
 
