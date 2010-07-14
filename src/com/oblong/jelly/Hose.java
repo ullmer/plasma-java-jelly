@@ -14,6 +14,7 @@ import java.util.concurrent.TimeUnit;
 public interface Hose {
 
     int version();
+    Slaw info();
 
     String name();
     void setName(String n);

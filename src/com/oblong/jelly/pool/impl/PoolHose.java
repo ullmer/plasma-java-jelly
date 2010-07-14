@@ -29,6 +29,15 @@ final class PoolHose implements Hose {
         return connection.version();
     }
 
+    @Override public Slaw info() {
+        try {
+            final Slaw res = Request.INFO.send(connection, indexSlaw(-1));
+            return res.toProtein().ingests();
+        } catch (Throwable e) {
+            return factory.map();
+        }
+    }
+
     @Override public String name() {
         return name;
     }
