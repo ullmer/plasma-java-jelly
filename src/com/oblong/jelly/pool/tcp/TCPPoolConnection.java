@@ -72,13 +72,12 @@ final class TCPPoolConnection implements PoolConnection {
 
     static byte[] supportedToData(Set<Request> supp) {
         int bits = 0;
-        for (Request r : supp)
-            bits = bits | (1<<(31 - r.code()));
         final byte[] result = new byte[5];
         result[0] = 4;
-        for (int i = 0; i < 4; i++) {
-            result[4 - i] = (byte)(bits & 0xff);
-            bits = bits>>>8;
+        for (Request r : supp) {
+            final int c = r.code();
+            final int bn = 1 + c / 8;
+            result[bn] |= 1<<(c % 8);
         }
         return result;
     }
@@ -95,7 +94,7 @@ final class TCPPoolConnection implements PoolConnection {
         for (Request c : Request.values()) {
             final int code = c.code();
             final int bn = code / 8;
-            if (bn < data.length && (data[bn] & (1<<(7 - code % 8))) != 0)
+            if (bn < data.length && (data[bn] & (1<<(code % 8))) != 0)
                 result.add(c);
         }
         return result;
