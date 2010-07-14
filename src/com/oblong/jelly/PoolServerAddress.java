@@ -16,7 +16,7 @@ import net.jcip.annotations.Immutable;
 @Immutable
 public final class PoolServerAddress {
 
-    public static final int DEFAULT_PORT = 65455;
+    public static final int DEFAULT_PORT = 65456;
     public static final String DEFAULT_SCHEME = "tcp";
     public static final String DEFAULT_HOST = "localhost";
 
