@@ -36,8 +36,8 @@ public class PoolOptions {
         return getLong(INDEX_SIZE_KEY);
     }
 
-    public Slaw toSlaw() {
-        return options;
+    public Protein toProtein() {
+        return Slaw.protein(null, options);
     }
 
     private long getLong(Slaw k) {

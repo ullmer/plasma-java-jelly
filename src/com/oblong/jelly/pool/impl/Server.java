@@ -81,10 +81,10 @@ public final class Server implements PoolServer {
      }
 
     private static final Slaw optSlaw(PoolOptions opts) {
-        return opts == null ? NULL_OPTS : opts.toSlaw();
+        return opts == null ? NULL_OPTS : opts.toProtein();
     }
 
-    private static final Slaw NULL_OPTS = new PoolOptions(null).toSlaw();
+    private static final Slaw NULL_OPTS = new PoolOptions(null).toProtein();
 
     private final PoolServerAddress address;
     private final PoolConnectionFactory connectionFactory;
