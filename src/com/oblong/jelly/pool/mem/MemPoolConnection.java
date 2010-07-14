@@ -153,14 +153,18 @@ final class MemPoolConnection implements PoolConnection {
     }
 
     private Slaw next(long idx, Slaw desc) {
+        idx = Math.max(pool.oldestIndex(), idx);
         final PoolProtein p =
             desc == null ? pool.next(idx, 0) : pool.find(idx, desc, false);
+        if (p != null) index = p.index() + 1;
         return makePTIR(p);
     }
 
     private Slaw prev(long idx, Slaw desc) {
+        idx = Math.min(pool.newestIndex(), idx - 1);
         final PoolProtein p =
-            desc == null ? pool.nth(idx - 1) : pool.find(idx, desc, true);
+            desc == null ? pool.nth(idx) : pool.find(idx, desc, true);
+        if (p != null) index = p.index();
         return makePTIR(p);
     }
 
@@ -168,8 +172,8 @@ final class MemPoolConnection implements PoolConnection {
         final Slaw time = makeStamp(p == null ? 0 : p.timestamp());
         final Slaw prot = p == null ? NULL_PROT : p.bareProtein();
         final Slaw ret = p == null ? NO_SUCH_PROTEIN : OK;
-        index = p.index();
-        return makeResponse(prot, time, makeIndex(index), ret);
+        final long idx = p == null ? Protein.NO_INDEX : p.index();
+        return makeResponse(prot, time, makeIndex(idx), ret);
     }
 
     private Slaw await(double timeout) throws PoolException {
@@ -179,8 +183,9 @@ final class MemPoolConnection implements PoolConnection {
         final Slaw time = makeStamp(p == null ? 0 : p.timestamp());
         final Slaw prot = p == null ? NULL_PROT : p.bareProtein();
         final Slaw ret = p == null ? NO_SUCH_PROTEIN : OK;
-        if (p != null) index = p.index();
-        return makeResponse(ret, prot, time, makeIndex(index));
+        final long idx = p == null ? Protein.NO_INDEX : p.index();
+        if (p != null) index = idx + 1;
+        return makeResponse(ret, prot, time, makeIndex(idx));
     }
 
     private static Slaw makeResponse(Slaw... args) {

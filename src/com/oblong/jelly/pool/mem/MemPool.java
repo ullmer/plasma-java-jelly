@@ -71,7 +71,7 @@ final class MemPool {
     }
 
     public PoolProtein next(long index, double timeout) {
-        PoolProtein p = nth(index + 1);
+        PoolProtein p = nth(index);
         if (p == null && timeout != 0) {
             if (timeout < 0) return waitNext(index);
             synchronized (proteins) {
@@ -84,7 +84,7 @@ final class MemPool {
                     } catch (InterruptedException e) {
                         return null;
                     }
-                    p = nth(index + 1);
+                    p = nth(index);
                     nanos -= (System.currentTimeMillis() - start) * THOUSAND;
                 }
             }
@@ -95,11 +95,11 @@ final class MemPool {
 
     public PoolProtein waitNext(long index) {
         synchronized (proteins) {
-            PoolProtein p = nth(index + 1);
+            PoolProtein p = nth(index);
             while (p == null) {
                 try {
                     proteins.wait();
-                    p = nth(index + 1);
+                    p = nth(index);
                 } catch (InterruptedException e) {
                     return null;
                 }
@@ -133,8 +133,8 @@ final class MemPool {
 
     private PoolProtein findBack(int index, Slaw descrip) {
         synchronized (proteins) {
-            if (index > proteins.size()) index = proteins.size();
-            for (int i = index - 1; i > -1; --i) {
+            if (index >= proteins.size()) index = proteins.size() - 1;
+            for (int i = index; i > -1; --i) {
                 final PoolProtein p = proteins.get(i);
                 if (p.descrips().contains(descrip)) return p;
             }
@@ -144,9 +144,9 @@ final class MemPool {
 
     private PoolProtein findFwd(int index, Slaw descrip) {
         synchronized (proteins) {
-            if (index < 0) index = -1;
+            if (index < 0) index = 0;
             final int last = proteins.size();
-            for (int i = index + 1; i < last; ++i) {
+            for (int i = index; i < last; ++i) {
                 final PoolProtein p = proteins.get(i);
                 if (p.descrips().contains(descrip)) return p;
             }

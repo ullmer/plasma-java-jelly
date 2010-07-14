@@ -60,31 +60,31 @@ public class HoseTestBase extends PoolServerTestBase {
     }
 
     @Test public void next() throws PoolException {
-        defHose.seekTo(defHose.oldestIndex() - 1);
+        defHose.rewind();
         for (int i = 0; i < TLEN; ++i) {
             assertEquals(i + "th", DEP_PROTEINS[i], defHose.next());
-            assertEquals(i + "th", DEP_PROTEINS[i].index(), defHose.index());
+            assertTrue(i + "th", DEP_PROTEINS[i].index() < defHose.index());
         }
-        assertEquals(defHose.newestIndex(), defHose.index());
+        assertEquals(defHose.newestIndex() + 1, defHose.index());
     }
 
     @Test public void await() throws PoolException {
-        defHose.seekTo(defHose.oldestIndex() - 1);
+        defHose.seekTo(defHose.oldestIndex());
         for (int i = 0; i < TLEN; ++i) {
             assertEquals(i + "th", DEP_PROTEINS[i],
                          defHose.awaitNext(1, TimeUnit.SECONDS));
-            assertEquals(i + "th", DEP_PROTEINS[i].index(), defHose.index());
+            assertTrue(i + "th", DEP_PROTEINS[i].index() < defHose.index());
         }
-        assertEquals(defHose.newestIndex(), defHose.index());
+        assertEquals(defHose.newestIndex() + 1, defHose.index());
     }
 
     @Test public void awaitNext() throws PoolException {
-        defHose.seekTo(defHose.oldestIndex() - 1);
+        defHose.seekTo(defHose.oldestIndex());
         for (int i = 0; i < TLEN; ++i) {
             assertEquals(i + "th", DEP_PROTEINS[i], defHose.awaitNext());
-            assertEquals(i + "th", DEP_PROTEINS[i].index(), defHose.index());
+            assertTrue(i + "th", DEP_PROTEINS[i].index() < defHose.index());
         }
-        assertEquals(defHose.newestIndex(), defHose.index());
+        assertEquals(defHose.newestIndex() + 1, defHose.index());
     }
 
     @Test public void previous() throws PoolException {

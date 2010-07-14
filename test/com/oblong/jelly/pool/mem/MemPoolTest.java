@@ -61,10 +61,10 @@ public class MemPoolTest {
         }
         assertEquals(0, pool.oldestIndex());
         assertEquals(PN - 1, pool.newestIndex());
-        for (int i = -1; i < PN - 1; ++i) {
-            assertEquals(deps[i + 1], pool.next(i, 0));
-            assertEquals(deps[i + 1], pool.next(i, 2));
-            assertEquals(deps[i + 1], pool.nth(i + 1));
+        for (int i = 0; i < PN; ++i) {
+            assertEquals(deps[i], pool.next(i, 0));
+            assertEquals(deps[i], pool.next(i, 2));
+            assertEquals(deps[i], pool.nth(i));
         }
     }
 
@@ -81,11 +81,11 @@ public class MemPoolTest {
             assertNotNull(deps[i]);
         }
         for (int i = 0; i < PN; ++i) {
-            assertNull(i + "th", pool.find(i, ds[i], true));
-            assertNull(i + "th", pool.find(i, ds[i], false));
-            for (int j = -1; j < i; ++j)
+            assertNull(i + "th", pool.find(i + 1, ds[i], true));
+            assertNull(i + "th", pool.find(i - 1, ds[i], false));
+            for (int j = 0; j < i; ++j)
                 assertEquals(deps[i], pool.find(j, ds[i], true));
-            for (int j = PN; j > i; --j)
+            for (int j = PN - 1; j >= i; --j)
                 assertEquals(i + "th, " + j,
                              deps[i], pool.find(j, ds[i], false));
         }

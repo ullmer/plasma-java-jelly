@@ -114,7 +114,7 @@ final class PoolHose implements Hose {
     @Override public Protein next() throws PoolException {
         final Slaw res = Request.NEXT.send(connection, indexSlaw(index));
         return new PoolProtein(res.nth(0).toProtein(),
-                               cleanIndex(res.nth(2).emitLong()),
+                               cleanIndex(res.nth(2).emitLong() + 1) - 1,
                                res.nth(1).emitDouble(),
                                this);
     }
@@ -171,9 +171,9 @@ final class PoolHose implements Hose {
 
     private Protein await(long t, TimeUnit u) throws PoolException {
         final Slaw res = Request.AWAIT_NEXT.send(connection, timeSlaw(t, u));
-        index = res.nth(3).emitLong();
+        index = res.nth(3).emitLong() + 1;
         return new PoolProtein(res.nth(1).toProtein(),
-                               index,
+                               index - 1,
                                res.nth(2).emitDouble(),
                                this);
     }
