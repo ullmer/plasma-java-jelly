@@ -131,9 +131,10 @@ public enum Request {
         }
         if (!conn.supportedRequests().contains(this))
             throw new InvalidOperationException("Unsupported op " + this);
-        assert arity == args.length
-            : this + ": expected arity: " + arity
-              + " but got " + args.length + " args";
+        if (arity != args.length)
+            throw new ProtocolException(this + " expects " + arity + " args"
+                                        + ", but was invoked with arg list "
+                                        + Slaw.list(args).debugString());
         return checkResponse(conn.send(this, args), conn.version());
     }
 
@@ -189,7 +190,7 @@ public enum Request {
         throws ProtocolException {
         if (!b)
             throw new ProtocolException(s, kind + " expected at " + p
-                                           + " (was: " + s + ")");
+                                           + " (response was: " + s + ")");
         return s;
     }
 

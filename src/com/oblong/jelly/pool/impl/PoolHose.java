@@ -121,9 +121,10 @@ final class PoolHose implements Hose {
 
     @Override public Protein next(Slaw descrip) throws PoolException {
         if (descrip == null) throw new NoSuchProteinException(0L);
-        final Slaw res = Request.PROBE_FWD.send(connection, descrip);
+        final Slaw res =
+            Request.PROBE_FWD.send(connection, indexSlaw(index), descrip);
         return new PoolProtein(res.nth(0).toProtein(),
-                               cleanIndex(res.nth(2).emitLong()),
+                               cleanIndex(res.nth(2).emitLong() + 1) - 1,
                                res.nth(1).emitDouble(),
                                this);
     }
@@ -153,7 +154,9 @@ final class PoolHose implements Hose {
     }
 
     @Override public Protein previous(Slaw descrip) throws PoolException {
-        final Slaw res = Request.PROBE_BACK.send(connection, descrip);
+        if (descrip == null) throw new NoSuchProteinException(0L);
+        final Slaw res =
+            Request.PROBE_BACK.send(connection, indexSlaw(index), descrip);
         return new PoolProtein(res.nth(0).toProtein(),
                                cleanIndex(res.nth(2).emitLong()),
                                res.nth(1).emitDouble(),
