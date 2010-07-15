@@ -16,7 +16,7 @@ public class PoolOptions {
     public static final PoolOptions HUGE;
 
     public PoolOptions(Slaw options) {
-        this.options = options == null ? Slaw.map() : options;
+        this.options = options == null ? SMALL.options : options;
     }
 
     public PoolOptions(int size) {

@@ -31,7 +31,7 @@ final class PoolHose implements Hose {
     @Override public Slaw info() {
         try {
             final Slaw res = Request.INFO.send(connection, indexSlaw(-1));
-            return res.toProtein().ingests();
+            return res.nth(1).toProtein().ingests();
         } catch (Throwable e) {
             return factory.map();
         }
