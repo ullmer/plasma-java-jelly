@@ -1,0 +1,39 @@
+# jelly clojure bindings and pool shell
+
+A set of bindings for using the jelly API in clojure, and as an
+interactive pool shell.
+
+## Installation
+
+All you need is _leiningen_. Download the script from
+[http://github.com/technomancy/leiningen/raw/master/bin/lein](here),
+make it executable, put it in your path, and invoke:
+
+    lein self-install
+
+After that, you're ready to go: in this directory, get the jars used
+by jelly (include clojure) using:
+
+    lein deps
+
+and compile jelly's java side with:
+
+    lein compile-java
+
+and you can start playing with the REPL with:
+
+    lein repl
+
+or, if you're an emacs-head,
+
+    lein swank
+
+will make your day.
+
+A ready-to-use jar, containing not only jelly but also clojure and all
+other dependencies can be created with
+
+    lein uberjar
+
+You can send the resulting jar to anyone: she will only need a working
+java 1.6 to start the pool shell!
