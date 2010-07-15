@@ -32,6 +32,13 @@ public final class PoolServerAddress {
         private static final long serialVersionUID = -8010793100844536131L;
     }
 
+    public static boolean isRelative(String uri) {
+        Matcher matcher = ADDR_PATT.matcher(uri);
+        return (!matcher.lookingAt()
+                || matcher.group(1) == null
+                || matcher.group(1).isEmpty());
+    }
+
     public static PoolServerAddress fromURI(String uri)
         throws BadAddress {
         Matcher matcher = ADDR_PATT.matcher(uri);
@@ -82,7 +89,7 @@ public final class PoolServerAddress {
     }
 
     static final String ADDR_REGEX =
-        "(?:([\\p{Alpha}]+)://)?(?:([\\p{Alpha}]+)(?::(\\d+))?)?";
+        "(?:([\\p{Alpha}]+)://)?(?:([^ :/]+)(?::(\\d+))?)?";
 
     private static final Pattern ADDR_PATT = Pattern.compile(ADDR_REGEX);
 

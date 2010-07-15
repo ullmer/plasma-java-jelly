@@ -18,18 +18,20 @@ public final class PoolAddress {
 
     public static PoolAddress fromURI(String uri)
         throws PoolException {
-        Matcher matcher = ADDR_PATT.matcher(uri);
-        if (matcher.matches() && matcher.group(1) != null)
-            return new PoolAddress(PoolServerAddress.fromURI(uri),
-                                   matcher.group(4));
-        else
-            return new PoolAddress(null, uri);
+        return new PoolAddress(null, uri);
     }
 
     public PoolAddress(PoolServerAddress addr, String name)
         throws PoolException {
-        serverAddress = addr == null ? new PoolServerAddress(null) : addr;
-        poolName = checkName(name);
+        Matcher matcher = ADDR_PATT.matcher(name);
+        if (!PoolServerAddress.isRelative(name)
+            && matcher.matches() && matcher.group(1) != null) {
+            serverAddress = PoolServerAddress.fromURI(name);
+            poolName = checkName(matcher.group(4));
+        } else {
+            serverAddress = addr == null ? new PoolServerAddress(null) : addr;
+            poolName = checkName(name);
+        }
         stringRep = serverAddress + "/" + poolName;
     }
 

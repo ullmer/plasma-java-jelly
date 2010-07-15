@@ -46,6 +46,14 @@ public class PoolServerAddressTest {
         assertEquals("mem://localhost", addr.toString());
     }
 
+    @Test public void relative() {
+        assertTrue(PoolServerAddress.isRelative("foo"));
+        assertTrue(PoolServerAddress.isRelative("foo/bar"));
+        assertTrue(PoolServerAddress.isRelative("/foo/bar"));
+        assertFalse(PoolServerAddress.isRelative("mem:///foo"));
+        assertFalse(PoolServerAddress.isRelative("tcp://foo/bar"));
+    }
+
     private PoolServerAddress checkSelf(String s, String h, int p)
         throws PoolException {
         PoolServerAddress addr = new PoolServerAddress(s, h, p);
