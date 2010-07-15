@@ -9,6 +9,7 @@ import com.oblong.jelly.PoolException;
 import com.oblong.jelly.Slaw;
 
 import com.oblong.jelly.pool.InvalidOperationException;
+import com.oblong.jelly.pool.InOutException;
 import com.oblong.jelly.pool.ProtocolException;
 
 /**
@@ -126,7 +127,7 @@ public enum Request {
     public Slaw send(PoolConnection conn, Slaw... args)
         throws PoolException {
         if (conn == null || !conn.isOpen()) {
-            throw new ProtocolException("Connection closed");
+            throw new InOutException("Connection closed");
         }
         if (!conn.supportedRequests().contains(this))
             throw new InvalidOperationException("Unsupported op " + this);

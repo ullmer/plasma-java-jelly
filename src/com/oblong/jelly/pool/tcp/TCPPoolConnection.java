@@ -47,7 +47,12 @@ final class TCPPoolConnection implements PoolConnection {
         final Slaw code = factory.number(NumericIlk.INT32, r.code());
         final Slaw ings = factory.map(OP_KEY, code,
                                       ARGS_KEY, factory.list(args));
-        return send(factory.protein(null, ings , null));
+        try {
+            return send(factory.protein(null, ings , null));
+        } catch (InOutException e) {
+            close();
+            throw e;
+        }
     }
 
     @Override public void close() {
