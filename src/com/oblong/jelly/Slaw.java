@@ -183,6 +183,12 @@ public abstract class Slaw {
         return factory.array(i, n, d);
     }
 
+    public static Slaw array(List<Slaw> sx) {
+        Slaw[] ss = new Slaw[sx.size()];
+        for (int i = 0; i < ss.length; ++i) ss[i] = sx.get(i);
+        return array(ss);
+    }
+
     private static final com.oblong.jelly.slaw.SlawFactory factory =
         new com.oblong.jelly.slaw.JavaSlawFactory();
 

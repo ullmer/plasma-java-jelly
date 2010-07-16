@@ -1,8 +1,8 @@
 (ns jelly.slaw
-  (:import (com.oblong.jelly Slaw Protein)
+  (:import (com.oblong.jelly Slaw Protein NumericIlk)
            (com.oblong.jelly.slaw SlawNil SlawBool SlawString SlawNumber
                                   SlawCons SlawComplex SlawList SlawMap
-                                  SlawVector)))
+                                  SlawVector SlawArray)))
 
 ;; Slaw constructors
 (defmulti slaw (fn [& args] (into [] (map class args))))
@@ -13,13 +13,6 @@
 (defmethod slaw [nil] [x] (Slaw/nil))
 (defmethod slaw [Boolean] [b] (Slaw/bool b))
 (defmethod slaw [String] [s] (Slaw/string s))
-
-(defmethod slaw [Byte Boolean] [n u] (if u (Slaw/unt8 n) (Slaw/int8 n)))
-(defmethod slaw [Short Boolean] [n u] (if u (Slaw/unt16 n) (Slaw/int16 n)))
-(defmethod slaw [Integer Boolean] [n u] (if u (Slaw/unt32 n) (Slaw/int32 n)))
-(defmethod slaw [Long Boolean] [n u] (if u (Slaw/unt64 n) (Slaw/int64 n)))
-(defmethod slaw [BigInteger Boolean]
-  [n u] (if u (Slaw/unt64 n) (Slaw/int64 n)))
 
 (defmethod slaw [Float] [n] (Slaw/float32 n))
 (defmethod slaw [Double] [n] (Slaw/float64 n))
@@ -38,23 +31,44 @@
 (derive Number ::nummy)
 (defmethod slaw [::nummy ::nummy] [a b] (Slaw/complex (slaw a) (slaw b)))
 
+(def slaw-ilks {:int8 NumericIlk/INT8
+                :unt8 NumericIlk/UNT8
+                :int16 NumericIlk/INT16
+                :unt16 NumericIlk/UNT16
+                :int32 NumericIlk/INT32
+                :unt32 NumericIlk/UNT32
+                :int64 NumericIlk/INT64
+                :unt64 NumericIlk/UNT64
+                :float32 NumericIlk/FLOAT32
+                :float64 NumericIlk/FLOAT64
+                :float NumericIlk/FLOAT32
+                :double NumericIlk/FLOAT64})
+
+(defmethod slaw [::nummy clojure.lang.Keyword] [n ilk]
+  (if (= ilk :unt64)
+    (Slaw/unt64 (BigInteger/valueOf n))
+    (let [i (ilk slaw-ilks)]
+      (Slaw/number i (if (. i isIntegral) (long n) (double n))))))
+
 (derive Object ::any)
 (defmethod slaw [::any ::any] [a b] (Slaw/cons (slaw a) (slaw b)))
 
 (prefer-method slaw [::nummy ::nummy] [::any ::any])
+(prefer-method slaw [::nummy clojure.lang.Keyword] [::any ::any])
 
 (defmethod slaw [clojure.lang.PersistentList] [v] (Slaw/list (map slaw v)))
-
-(defn slaw-vect
-  ([x y] (Slaw/vector x y))
-  ([x y z] (Slaw/vector x y z))
-  ([x y z w] (Slaw/vector x y z w)))
+(defmethod slaw [clojure.lang.PersistentList$EmptyList] [v] (Slaw/list '()))
 
 (defmethod slaw [clojure.lang.PersistentVector] [v]
-  (apply slaw-vect (map slaw v)))
+  (Slaw/array (map slaw v)))
 
 (defmethod slaw [clojure.lang.PersistentArrayMap] [v]
   (Slaw/map (map slaw (apply concat v))))
+
+(defn slaw-vector
+  ([x y] (Slaw/vector (slaw x) (slaw y)))
+  ([x y z] (Slaw/vector (slaw x) (slaw y) (slaw z)))
+  ([x y z w] (Slaw/vector (slaw x) (slaw y) (slaw z) (slaw w))))
 
 (defn protein [descrips ingests]
   (Slaw/protein (slaw descrips) (slaw ingests)))
@@ -71,9 +85,12 @@
 (defmethod slaw-value SlawBool [b] (.emitBoolean b))
 (defmethod slaw-value SlawString [s] (.emitString s))
 (defmethod slaw-value SlawNumber [n]
-  (if (.. n numericIlk isIntegral)
-    (if (> (.. n numericIlk width) 4) (.emitBigInteger n) (.emitLong n))
-    (.emitDouble n)))
+  (let [ilk (.numericIlk n)]
+    (if (.isIntegral ilk)
+      (if (and (not (.isSigned ilk)) (> (.width ilk) 4))
+        (.emitBigInteger n)
+        (.emitLong n))
+      (.emitDouble n))))
 
 (defn- pair-value [s] (list (slaw-value (.car s)) (slaw-value (.cdr s))))
 (defn- key-value [s] [(slaw-value (.car s)) (slaw-value (.cdr s))])
@@ -84,6 +101,8 @@
 (defmethod slaw-value SlawComplex [s] (pair-value s))
 
 (defmethod slaw-value SlawVector [s] (into [] (list-value s)))
+
+(defmethod slaw-value SlawArray [s] (into [] (list-value s)))
 
 (defmethod slaw-value SlawList [s] (list-value s))
 
