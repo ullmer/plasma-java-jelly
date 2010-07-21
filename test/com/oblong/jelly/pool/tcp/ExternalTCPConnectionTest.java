@@ -6,6 +6,7 @@ import com.oblong.jelly.PoolTestBase;
 import com.oblong.jelly.PoolException;
 
 /**
+ * Unit tests for TCP pool server ops, using an external server.
  *
  * Created: Wed Jul 21 13:30:58 2010
  *

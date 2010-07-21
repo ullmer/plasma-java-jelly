@@ -174,9 +174,8 @@ final class PoolHose implements Hose {
 
     private Protein await(long t, TimeUnit u) throws PoolException {
         final Slaw res = Request.AWAIT_NEXT.send(connection, timeSlaw(t, u));
-        index = res.nth(3).emitLong() + 1;
         return new PoolProtein(res.nth(1).toProtein(),
-                               index - 1,
+                               cleanIndex(res.nth(3).emitLong() + 1) - 1,
                                res.nth(2).emitDouble(),
                                this);
     }
