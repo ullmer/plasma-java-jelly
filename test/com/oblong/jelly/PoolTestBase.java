@@ -26,6 +26,10 @@ public class PoolTestBase extends PoolServerTestBase {
         super(addr);
     }
 
+    protected PoolTestBase(PoolServer s) throws PoolException {
+        super(s);
+    }
+
     @After public void cleanPools() throws PoolException {
         clean();
     }

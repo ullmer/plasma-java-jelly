@@ -126,15 +126,7 @@ public enum Request {
 
     public Slaw send(PoolConnection conn, Slaw... args)
         throws PoolException {
-        if (conn == null || !conn.isOpen()) {
-            throw new InOutException("Connection closed");
-        }
-        if (!conn.supportedRequests().contains(this))
-            throw new InvalidOperationException("Unsupported op " + this);
-        if (arity != args.length)
-            throw new ProtocolException(this + " expects " + arity + " args"
-                                        + ", but was invoked with arg list "
-                                        + Slaw.list(args).debugString());
+        checkRequest(conn, args);
         return checkResponse(conn.send(this, args), conn.version());
     }
 
@@ -148,6 +140,19 @@ public enum Request {
     }
 
     abstract Slaw getRetort(Slaw res, int v) throws ProtocolException;
+
+    private void checkRequest(PoolConnection conn, Slaw... args)
+        throws PoolException {
+        if (conn == null || !conn.isOpen()) {
+            throw new InOutException("Connection closed");
+        }
+        if (!conn.supportedRequests().contains(this))
+            throw new InvalidOperationException("Unsupported op " + this);
+        if (arity != args.length)
+            throw new ProtocolException(this + " expects " + arity + " args"
+                                        + ", but was invoked with arg list "
+                                        + Slaw.list(args).debugString());
+    }
 
     private Slaw checkResponse(Slaw res, int v) throws PoolException {
         if (res.count() < responseArity)

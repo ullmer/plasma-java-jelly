@@ -26,6 +26,7 @@
   <property name="compile.source" value="1.6"/>
   <property name="compile.target" value="1.6"/>
 
+  <property name="test.server" value=""/>
   <property name="test.src.dir" location="test"/>
   <property name="test.build.dir" location="${build.dir}/test"/>
   <property name="test.classes.dir" location="${test.build.dir}/classes"/>
@@ -110,6 +111,7 @@
       <jvmarg value="-Xms256m"/>
       <jvmarg value="-Xmx256m"/>
       <jvmarg value="-server"/>
+      <jvmarg value="-Dcom.oblong.jelly.externalServer=${test.server}"/>
       <classpath refid="test.run.classpath"/>
       <formatter type="plain" usefile="false"/>
       <formatter type="plain" usefile="true"/>
@@ -128,6 +130,7 @@
       <jvmarg value="-Xms256m"/>
       <jvmarg value="-Xmx256m"/>
       <jvmarg value="-server"/>
+      <jvmarg value="-Dcom.oblong.jelly.externalServer=${test.server}"/>
       <classpath refid="test.run.classpath"/>
       <formatter type="plain" usefile="false"/>
       <formatter type="xml" usefile="true"/>

@@ -21,6 +21,10 @@ public class HoseTestBase extends PoolServerTestBase {
     public HoseTestBase() {
     }
 
+    protected HoseTestBase(PoolServer s) throws PoolException {
+        super(s);
+    }
+
     protected HoseTestBase(PoolServerAddress addr) throws PoolException {
         super(addr);
     }

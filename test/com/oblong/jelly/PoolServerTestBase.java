@@ -9,6 +9,7 @@ import org.junit.Before;
 import static org.junit.Assume.*;
 import static org.junit.Assert.*;
 
+import com.oblong.jelly.PoolException;
 
 /**
  * Base class for tests needing a PoolServerInstance.
@@ -21,6 +22,11 @@ public class PoolServerTestBase {
 
     public PoolServerTestBase() {
         server = null;
+    }
+
+    public PoolServerTestBase(PoolServer s) throws PoolException {
+        server = s;
+        clean();
     }
 
     protected PoolServerTestBase(PoolServerAddress addr)
@@ -43,6 +49,20 @@ public class PoolServerTestBase {
 
     protected PoolAddress poolAddress(String name) throws PoolException {
         return new PoolAddress(server.address(), name);
+    }
+
+    protected static PoolServer externalServer() {
+        String uri = System.getProperty("com.oblong.jelly.externalServer");
+        PoolServer s = null;
+        if (uri != null && !uri.isEmpty()) {
+            try {
+                s = PoolServers.get(PoolServerAddress.fromURI(uri));
+            } catch (PoolException e) {
+                fail(e.getMessage());
+            }
+            assertNotNull("URI: " + uri, s);
+        }
+        return s;
     }
 
     protected final PoolServer server;
