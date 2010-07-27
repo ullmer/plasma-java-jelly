@@ -29,10 +29,10 @@ public abstract class AbstractSlawExternalizer implements SlawExternalizer {
         case STRING: return stringExternSize(s);
         case NUMBER: return numberExternSize(s);
         case COMPLEX: return complexExternSize(s);
-        case VECTOR: return vectorExternSize(s);
+        case NUMBER_VECTOR: return vectorExternSize(s);
         case COMPLEX_VECTOR: return complexVectorExternSize(s);
         case MULTI_VECTOR: return multivectorExternSize(s);
-        case ARRAY: return arrayExternSize(s);
+        case NUMBER_ARRAY: return arrayExternSize(s);
         case COMPLEX_ARRAY: return complexArrayExternSize(s);
         case VECTOR_ARRAY: return vectorArrayExternSize(s);
         case COMPLEX_VECTOR_ARRAY: return complexVectorArrayExternSize(s);
@@ -55,10 +55,10 @@ public abstract class AbstractSlawExternalizer implements SlawExternalizer {
         case STRING: externString(s, b); break;
         case NUMBER: externNumber(s, b); break;
         case COMPLEX: externComplex(s, b); break;
-        case VECTOR: externVector(s, b); break;
+        case NUMBER_VECTOR: externVector(s, b); break;
         case COMPLEX_VECTOR: externComplexVector(s, b); break;
         case MULTI_VECTOR: externMultivector(s, b); break;
-        case ARRAY: externArray(s, b); break;
+        case NUMBER_ARRAY: externArray(s, b); break;
         case COMPLEX_ARRAY: externComplexArray(s, b); break;
         case VECTOR_ARRAY: externVectorArray(s, b); break;
         case COMPLEX_VECTOR_ARRAY: externComplexVectorArray(s, b); break;

@@ -13,8 +13,8 @@ import java.util.Set;
 public enum SlawIlk {
 
     NIL, BOOL, STRING, NUMBER, COMPLEX,
-    VECTOR, COMPLEX_VECTOR, MULTI_VECTOR,
-    ARRAY, COMPLEX_ARRAY, VECTOR_ARRAY,
+    NUMBER_VECTOR, COMPLEX_VECTOR, MULTI_VECTOR,
+    NUMBER_ARRAY, COMPLEX_ARRAY, VECTOR_ARRAY,
     COMPLEX_VECTOR_ARRAY, MULTI_VECTOR_ARRAY,
     CONS, LIST, MAP, PROTEIN;
 
@@ -25,7 +25,7 @@ public enum SlawIlk {
     public boolean isComplexNumeric() { return complex.contains(this); }
 
     public boolean isVector() {
-        return this == VECTOR || this == COMPLEX_VECTOR;
+        return this == NUMBER_VECTOR || this == COMPLEX_VECTOR;
     }
 
     public boolean isArray() { return arrays.contains(this); }
@@ -50,13 +50,13 @@ public enum SlawIlk {
         EnumSet.of(NIL, BOOL, STRING, NUMBER);
     private static EnumSet<SlawIlk> numeric =
         EnumSet.of(NUMBER, COMPLEX,
-                   VECTOR, COMPLEX_VECTOR, MULTI_VECTOR,
-                   ARRAY, COMPLEX_ARRAY, VECTOR_ARRAY,
+                   NUMBER_VECTOR, COMPLEX_VECTOR, MULTI_VECTOR,
+                   NUMBER_ARRAY, COMPLEX_ARRAY, VECTOR_ARRAY,
                    COMPLEX_VECTOR_ARRAY, MULTI_VECTOR_ARRAY);
     private static EnumSet<SlawIlk> complex =
         EnumSet.of(COMPLEX, COMPLEX_VECTOR,
                    COMPLEX_ARRAY, COMPLEX_VECTOR_ARRAY);
     private static EnumSet<SlawIlk> arrays =
-        EnumSet.of(ARRAY, COMPLEX_ARRAY, VECTOR_ARRAY,
+        EnumSet.of(NUMBER_ARRAY, COMPLEX_ARRAY, VECTOR_ARRAY,
                    COMPLEX_VECTOR_ARRAY, MULTI_VECTOR_ARRAY);
 }

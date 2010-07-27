@@ -33,9 +33,9 @@ final class SlawArray extends CompositeNumericSlaw {
     static private final Map<SlawIlk,SlawIlk> ilks;
     static {
         ilks = new EnumMap<SlawIlk,SlawIlk>(SlawIlk.class);
-        ilks.put(NUMBER, ARRAY);
+        ilks.put(NUMBER, NUMBER_ARRAY);
         ilks.put(COMPLEX, COMPLEX_ARRAY);
-        ilks.put(VECTOR, VECTOR_ARRAY);
+        ilks.put(NUMBER_VECTOR, VECTOR_ARRAY);
         ilks.put(COMPLEX_VECTOR, COMPLEX_VECTOR_ARRAY);
         ilks.put(MULTI_VECTOR, MULTI_VECTOR_ARRAY);
     }

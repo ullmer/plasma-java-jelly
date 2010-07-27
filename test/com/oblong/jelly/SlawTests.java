@@ -22,6 +22,13 @@ class SlawTests {
             assertNotNull(s.nth(i));
         }
 
+        int k = 0;
+        for (Slaw ss : s) {
+            assertNotNull(ss);
+            assertEquals(s.nth(k++), ss);
+        }
+        assertEquals(s.count(), k);
+
         for (int i = count; i < count + 3; i++) {
             try {
                 s.nth(i);

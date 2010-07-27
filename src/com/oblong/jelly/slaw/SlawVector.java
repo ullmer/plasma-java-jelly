@@ -20,7 +20,7 @@ final class SlawVector extends CompositeNumericSlaw {
     }
 
     @Override public SlawIlk ilk() {
-        return nth(0).isNumber() ? SlawIlk.VECTOR : SlawIlk.COMPLEX_VECTOR;
+        return nth(0).isNumber() ? SlawIlk.NUMBER_VECTOR : SlawIlk.COMPLEX_VECTOR;
     }
 
 

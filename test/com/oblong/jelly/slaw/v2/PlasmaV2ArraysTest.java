@@ -26,7 +26,7 @@ public class PlasmaV2ArraysTest extends SerializationTestBase {
         for (SlawIlk i : SlawIlk.arrayIlks()) {
             for (NumericIlk ni : NumericIlk.values()) {
                 final int minDim =
-                    i == SlawIlk.ARRAY || i == SlawIlk.COMPLEX_ARRAY ? 1 : 2;
+                    i == SlawIlk.NUMBER_ARRAY || i == SlawIlk.COMPLEX_ARRAY ? 1 : 2;
                 final int maxDim = minDim == 1 ?
                     1 : i == SlawIlk.MULTI_VECTOR ? 5 : 4;
                 for (int d = minDim; d <= maxDim; d++) {
@@ -53,7 +53,7 @@ public class PlasmaV2ArraysTest extends SerializationTestBase {
             final byte[] bs = slawToBytes(a);
             final String msg = "Array of " + ni + "/" + arrayStr(bs);
             assertEquals(16, bs.length);
-            checkHeading(msg, bs, SlawIlk.ARRAY, ni, 1, 1);
+            checkHeading(msg, bs, SlawIlk.NUMBER_ARRAY, ni, 1, 1);
             if (ni.isIntegral()) {
                 for (int i = 8, b = 7 + ni.bytes(); i < 16; i++)
                     assertEquals(msg, i == b ? 1 : 0, bs[i]);
@@ -67,7 +67,7 @@ public class PlasmaV2ArraysTest extends SerializationTestBase {
         for (int i = 0; i < 100; i++) ls[i] = unt8(i);
         final Slaw a = array(ls);
         final byte[] ba = slawToBytes(a);
-        checkHeading("Big array", ba, SlawIlk.ARRAY, NumericIlk.UNT8, 1, 100);
+        checkHeading("Big array", ba, SlawIlk.NUMBER_ARRAY, NumericIlk.UNT8, 1, 100);
         for (int i = 0; i < 100; i++)
             assertEquals(i + "th", i, ba[i + 8]);
         checkIntern("", a, ba);

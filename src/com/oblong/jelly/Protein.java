@@ -62,8 +62,13 @@ public abstract class Protein extends Slaw {
         throw new UnsupportedOperationException(ilk() + " not numeric");
     }
 
-    @Override public final Slaw car() { return descrips(); }
-    @Override public final Slaw cdr() { return ingests(); }
+    @Override public final Slaw car() {
+        throw new UnsupportedOperationException(ilk() + " not a pair");
+    }
+
+    @Override public final Slaw cdr() {
+        throw new UnsupportedOperationException(ilk() + " not a pair");
+    }
 
     @Override public final int dimension() { return 0; }
     @Override public final int count() { return 0; }

@@ -4,11 +4,9 @@ package com.oblong.jelly;
 
 import java.util.concurrent.TimeUnit;
 
-import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import com.oblong.jelly.pool.NoSuchProteinException;
 import static com.oblong.jelly.Slaw.*;
 
 /**
@@ -76,7 +74,8 @@ public class AsyncHoseTestBase extends PoolServerTestBase {
         final Awaiter aw = new Awaiter(pa, timeout);
         final Thread th = new Thread(aw);
         th.start();
-        Thread.currentThread().yield();
+        Thread.currentThread();
+        Thread.yield();
         Hose h = Pool.participate(pa);
         Protein p = h.deposit(protein(nil(), list(int8(1))));
         th.join();

@@ -228,7 +228,7 @@ final class Internalizer implements SlawInternalizer {
         final NumericIlk ni = numericIlk(h);
         final boolean c = isComplexNumeric(h);
         SlawIlk i;
-        if (isNumericScalar(h)) i = c ? SlawIlk.COMPLEX_ARRAY : SlawIlk.ARRAY;
+        if (isNumericScalar(h)) i = c ? SlawIlk.COMPLEX_ARRAY : SlawIlk.NUMBER_ARRAY;
         else if (isMultivector(h)) i = SlawIlk.MULTI_VECTOR_ARRAY;
         else i = c ? SlawIlk.COMPLEX_VECTOR_ARRAY : SlawIlk.VECTOR_ARRAY;
         return f.array(i, ni, numericDimension(h));

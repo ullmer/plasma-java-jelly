@@ -76,7 +76,6 @@ final class TCPPoolConnection implements PoolConnection {
     }
 
     static byte[] supportedToData(Set<Request> supp) {
-        int bits = 0;
         final byte[] result = new byte[5];
         result[0] = 4;
         for (Request r : supp) {
