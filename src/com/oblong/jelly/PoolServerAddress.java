@@ -22,11 +22,11 @@ public final class PoolServerAddress {
 
     public static class BadAddress extends PoolException {
 
-        public BadAddress(String i) { super(Code.BAD_ADDRESS, i); }
-        public BadAddress(Throwable e) { super(Code.BAD_ADDRESS, e); }
+        public BadAddress(String i) { super(Kind.BAD_ADDRESS, i); }
+        public BadAddress(Throwable e) { super(Kind.BAD_ADDRESS, e); }
 
         public BadAddress(long sc) {
-            super(Code.BAD_ADDRESS, sc, "Server rejected address");
+            super(Kind.BAD_ADDRESS, sc, "Server rejected address");
         }
 
         private static final long serialVersionUID = -8010793100844536131L;

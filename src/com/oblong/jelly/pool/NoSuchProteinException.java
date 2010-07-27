@@ -8,7 +8,7 @@ import com.oblong.jelly.PoolException;
 public class NoSuchProteinException extends PoolException {
 
     public NoSuchProteinException(long sc) {
-        super(Code.NO_SUCH_PROTEIN, sc, "Server code was " + sc);
+        super(Kind.NO_SUCH_PROTEIN, sc, "Server code was " + sc);
     }
 
     private static final long serialVersionUID = -7648502586498969925L;

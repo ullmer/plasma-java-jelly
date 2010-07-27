@@ -17,17 +17,17 @@ public class ProtocolException extends PoolException {
     }
 
     public ProtocolException(Slaw res, String info) {
-        super(Code.PROTOCOL_ERROR, info);
+        super(Kind.PROTOCOL_ERROR, info);
         response = res;
     }
 
     public ProtocolException(Slaw res, Throwable cause) {
-        super(Code.PROTOCOL_ERROR, cause);
+        super(Kind.PROTOCOL_ERROR, cause);
         response = res;
     }
 
     public ProtocolException(Slaw res, long sc) {
-        super(Code.PROTOCOL_ERROR, sc, "Server rejected request");
+        super(Kind.PROTOCOL_ERROR, sc, "Server rejected request");
         response = res;
     }
 

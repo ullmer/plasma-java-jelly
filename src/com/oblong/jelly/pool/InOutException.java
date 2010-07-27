@@ -15,11 +15,11 @@ import net.jcip.annotations.Immutable;
 public class InOutException extends PoolException {
 
     public InOutException(Exception e) {
-        super(Code.IO_ERROR, e);
+        super(Kind.IO_ERROR, e);
     }
 
     public InOutException(String msg) {
-        super(Code.IO_ERROR, msg);
+        super(Kind.IO_ERROR, msg);
     }
 
     private static final long serialVersionUID = -7864964213407695961L;

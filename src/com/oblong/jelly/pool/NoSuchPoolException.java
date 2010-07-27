@@ -16,7 +16,7 @@ import com.oblong.jelly.PoolException;
 public class NoSuchPoolException extends PoolException {
 
     public NoSuchPoolException(long sc) {
-        super(Code.NO_SUCH_POOL, sc, "Server code was " + sc);
+        super(Kind.NO_SUCH_POOL, sc, "Server code was " + sc);
     }
 
     private static final long serialVersionUID = 1648502586498969925L;

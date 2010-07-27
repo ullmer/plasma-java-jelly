@@ -13,7 +13,7 @@ import net.jcip.annotations.Immutable;
 @Immutable
 public class PoolException extends Exception {
 
-    public static enum Code {
+    public static enum Kind {
         BAD_ADDRESS("Malformed pool address or name"),
         IO_ERROR("I/O error"),
         UNSUPPORTED_OP("Unsupported operation"),
@@ -27,55 +27,55 @@ public class PoolException extends Exception {
         UNCLASSIFIED("Unclassified error"),
         USER("User-defined exception");
 
-        private Code(String desc) {
+        private Kind(String desc) {
             description = desc;
         }
 
         private final String description;
     }
 
-    public final Code code() { return code; }
+    public final Kind kind() { return kind; }
 
     public final long serverCode() { return serverCode; }
 
     @Override public String getMessage() {
-        return code + "(" + code.description + "): " + info;
+        return kind + "(" + kind.description + "): " + info;
     }
 
     public PoolException(String msg) {
-        this(Code.UNCLASSIFIED, msg);
+        this(Kind.UNCLASSIFIED, msg);
     }
 
-    protected PoolException(Code code, String info) {
-        this(code, 0, info);
+    protected PoolException(Kind kind, String info) {
+        this(kind, 0, info);
     }
 
-    protected PoolException(Code code, Throwable cause) {
-        this(code, 0, cause);
+    protected PoolException(Kind kind, Throwable cause) {
+        this(kind, 0, cause);
     }
 
     protected PoolException(long serverCode, String info) {
-        this(Code.SERVER_ERROR, serverCode, info);
+        this(Kind.SERVER_ERROR, serverCode, info);
     }
 
     protected PoolException(long serverCode, Throwable cause) {
-        this(Code.SERVER_ERROR, serverCode, cause);
+        this(Kind.SERVER_ERROR, serverCode, cause);
     }
 
-    protected PoolException(Code code, long sc, String info) {
-        this.code = code;
+    protected PoolException(Kind kind, long sc, String info) {
+        this.kind = kind;
         this.info = info;
         this.serverCode = sc;
     }
 
-    protected PoolException(Code code, long sc, Throwable cause) {
+    protected PoolException(Kind kind, long sc, Throwable cause) {
         super(cause);
-        this.code = code;
+        this.kind = kind;
         info = cause.getMessage();
         this.serverCode = sc;
     }
 
-    private final Code code;
+    private final Kind kind;
     private final String info;
     private final long serverCode;
 

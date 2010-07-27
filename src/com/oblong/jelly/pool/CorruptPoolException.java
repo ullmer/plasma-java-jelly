@@ -16,7 +16,7 @@ import com.oblong.jelly.PoolException;
 public class CorruptPoolException extends PoolException {
 
     public CorruptPoolException(long sc) {
-        super(Code.CORRUPT_POOL, sc, "Server code was " + sc);
+        super(Kind.CORRUPT_POOL, sc, "Server code was " + sc);
     }
 
     private static final long serialVersionUID = 3597921219546342983L;
