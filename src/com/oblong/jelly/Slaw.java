@@ -87,6 +87,10 @@ import static com.oblong.jelly.SlawIlk.*;
  * de-marshal the proteins you obtain, and stick to a more
  * conventional, statically typed style in the rest of your program.
  *
+ * @see SlawIlk
+ * @see NumericIlk
+ * @see Protein
+ *
  * Created: Mon Apr 12 16:46:30 2010
  *
  * @author jao

@@ -7,6 +7,20 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 /**
+ * Enumeration describing the type of values encapsulated by numeric
+ * Slaw.
+ *
+ * When a Slaw's ilk is numeric, we need need to further specify
+ * whether it's an integral or floating point value, as well as its
+ * width and sign. Instances of this enumeration encapsulate that
+ * information and serve to fully specify (when combined with SlawIlk)
+ * the type of values encapsulated by a Slaw instance.
+ *
+ * The order of the members of this enum also serves to define
+ * widening conversions from one numeric ilk to another. This ordering
+ * is used by composite numeric Slaw constructors to allow composition
+ * of Slaw instances with heterogenous numeric ilks.
+ *
  * Created: Fri Apr 23 13:34:13 2010
  *
  * @author jao
@@ -19,25 +33,62 @@ public enum NumericIlk {
     UNT16(false, true, 16), INT16(true, true, 16),
     UNT8(false, true, 8), INT8(true,true, 8);
 
+    /** The number of bits used to represented values of this ilk. */
     public int width() { return width; }
+
+    /** The number of bytes used to represented values of this ilk. */
     public int bytes() { return bsize; }
+
+    /** Whether this ilk representes signed numbers. */
     public boolean isSigned() { return signed; }
+
+    /**
+     * Whether this ilk representes integral (as opposed to
+     * floating-point) numbers.
+     */
     public boolean isIntegral() { return integral; }
+
+    /**
+     * The maximum value representable by values of this ilk.
+     * Makes sense only for integral ilks.
+     */
     public long max() {
         return (1L << (width - (signed ? 1 : 0))) - 1;
     }
+
+    /**
+     * The minimum value representable by values of this ilk.
+     * Makes sense only for integral ilks.
+     */
     public long min() { return signed ? 1 - max() : 0; }
+
+    /**
+     * The maximum value representable by values of this ilk, cast to
+     * a double. For integral ilks, NumericIlk#max is probably what
+     * you want.
+     */
     public double fmax() {
         if (integral) return (double)max();
         if (this == FLOAT32) return (double)Float.MAX_VALUE;
         return Double.MAX_VALUE;
     }
+
+    /**
+     * The minimum value representable by values of this ilk, cast to
+     * a double. For integral ilks, NumericIlk#min will avoid casting
+     * errors.
+     */
     public double fmin() {
         if (integral) return (double)min();
         if (this == FLOAT32) return (double)Float.MIN_VALUE;
         return Double.MIN_VALUE;
     }
 
+    /**
+     * Chooses the ilk able to represent the highest positive value,
+     * among those given. If any of those is null, returns null. If
+     * the list is empty, returns INT8.
+     */
     public static NumericIlk dominantIlk(List<NumericIlk> ilks) {
         try {
             return Collections.min(ilks);
@@ -48,16 +99,25 @@ public enum NumericIlk {
         }
     }
 
+    /** Equivalent to dominantIlk(Arrays.asList(ilks)). */
     public static NumericIlk dominantIlk(NumericIlk... ilks) {
         return dominantIlk(Arrays.asList(ilks));
     }
 
+    /**
+     * Calls NumericIlk#dominantIlk(List<NumericIlk>) on the list of
+     * numeric ilks of the given Slawx.
+     */
     public static NumericIlk dominantIlk(Slaw... nss) {
         List<NumericIlk> is = new ArrayList<NumericIlk>();
         for (Slaw s : nss) is.add(s.numericIlk());
         return dominantIlk(is);
     }
 
+    /**
+     * Calls NumericIlk#dominantIlk(List<NumericIlk>) on the list of
+     * numeric ilks of the given Slawx.
+     */
     public static NumericIlk dominantIlkForList(List<Slaw> nss) {
         List<NumericIlk> is = new ArrayList<NumericIlk>();
         for (Slaw s : nss) is.add(s.numericIlk());

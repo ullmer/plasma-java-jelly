@@ -27,6 +27,8 @@ import java.util.concurrent.TimeUnit;
  * creation using the factory method Slaw#protein. Proteins created
  * used the latter lack deposit metadata.
  *
+ * @see Slaw
+ *
  * Created: Mon May 17 14:25:51 2010
  *
  * @author jao
