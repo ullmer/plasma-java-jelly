@@ -86,8 +86,11 @@ public final class JavaSlawFactory implements SlawFactory {
         if (!ilk.isArray())
             throw new IllegalArgumentException("Expected array ilk");
         if (d <= 0 || d > 5
-            || ((ilk == SlawIlk.NUMBER_ARRAY || ilk == SlawIlk.COMPLEX_ARRAY) && d>1)
-            || (ilk == SlawIlk.VECTOR_ARRAY && (d < 2 || d > 4))
+            || ((ilk == SlawIlk.NUMBER_ARRAY || ilk == SlawIlk.COMPLEX_ARRAY)
+                && d>1)
+            || ((ilk == SlawIlk.VECTOR_ARRAY
+                 || ilk == SlawIlk.COMPLEX_VECTOR_ARRAY)
+                && (d < 2 || d > 4))
             || (ilk == SlawIlk.MULTI_VECTOR_ARRAY && (d < 2 || d > 5)))
             throw new IllegalArgumentException ("Invalid dimension");
         return EmptyArray.valueOf(ilk, ni, d);

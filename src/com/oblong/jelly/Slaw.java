@@ -588,56 +588,291 @@ public abstract class Slaw implements Iterable<Slaw> {
      */
     public static Slaw string(String s) { return factory.string(s); }
 
+    /**
+     * Equivalent to calling <code>Slaw.number(SlawIlk.INT8, n)</code>.
+     */
     public static Slaw int8(int n) { return number(INT8, n); }
+
+    /**
+     * Equivalent to calling <code>Slaw.number(SlawIlk.INT16, n)</code>.
+     */
     public static Slaw int16(int n) { return number(INT16, n); }
+
+    /**
+     * Equivalent to calling <code>Slaw.number(SlawIlk.INT32, n)</code>.
+     */
     public static Slaw int32(int n) { return number(INT32, n); }
+
+    /**
+     * Equivalent to calling <code>Slaw.number(SlawIlk.INT64, n)</code>.
+     */
     public static Slaw int64(long n) { return number(INT64, n); }
+
+    /**
+     * Equivalent to calling <code>Slaw.number(SlawIlk.UNT8, n)</code>.
+     */
     public static Slaw unt8(int n) { return number(UNT8, n); }
+
+    /**
+     * Equivalent to calling <code>Slaw.number(SlawIlk.UNT16, n)</code>.
+     */
     public static Slaw unt16(int n) { return number(UNT16, n); }
+
+    /**
+     * Equivalent to calling <code>Slaw.number(SlawIlk.UNT32, n)</code>.
+     */
     public static Slaw unt32(long n) { return number(UNT32, n); }
+
+    /**
+     * Equivalent to calling <code>Slaw.number(SlawIlk.UNT64, n)</code>.
+     */
     public static Slaw unt64(long n) { return number(UNT64, n); }
+
+    /**
+     * Factory method creating a Slaw with ilk SlawIlk#NUMBER and
+     * numeric ilk NumericIlk#UNT64. Only the 8 less significant bytes
+     * of <code>n</code> are considered, and they're interpreted as
+     * representing a positive number. When your Slaw's value is in
+     * the lower half of UNT64's domain, you can just use
+     * Slaw#unt64(long) instead.
+     */
     public static Slaw unt64(BigInteger n) { return factory.number(n);}
+
+    /**
+     * Equivalent to calling <code>Slaw.number(SlawIlk.FLOAT32, n)</code>.
+     * Note that that means the overload of Slaw#number taking a double
+     * as second argument.
+     */
     public static Slaw float32(float n) { return number(FLOAT32, n); }
+
+    /**
+     * Equivalent to calling <code>Slaw.number(SlawIlk.FLOAT64, n)</code>.
+     * Note that that means the overload of Slaw#number taking a double
+     * as second argument.
+     */
     public static Slaw float64(double n) { return number(FLOAT64, n);}
-    public static Slaw number(NumericIlk ilk, long value) {
-        return factory.number(ilk, value);
-    }
-    public static Slaw number(NumericIlk ilk, double value) {
-        return factory.number(ilk, value);
+
+    /**
+     * Factoring method constructing a Slaw with ilk SlawIlk#NUMBER
+     * and the given numeric ilk and value. If n is the width, in
+     * bytes, of the requested numeric ilk (as returned by
+     * <code>ni.width()</code>), only the n less significant bytes of
+     * <code>value</code> are used. When <code>ni</code> is signed,
+     * those bytes' bits are interpreted as a 2-complement bit
+     * pattern, and the other way around: passing a negative value
+     * when constructing an unsigned ilk will reinterpret the value's
+     * 2-complement bits as denoting a positive value. All that just
+     * means that, as long as you pass an integer value to this method
+     * which is within the range of the desired numeric ilk, things
+     * will work as expected.
+     *
+     * The numeric ilk NumericIlk#UNT64 is a corner case, because to
+     * represent the upper half of its domanin using Java long values
+     * you need to use negative values and keep in mind their actual
+     * bit representation. An alternative is to use
+     * Slaw#unt64(BigInteger), which will be less error-prone in
+     * exchange of a bit of performance.
+     *
+     * If you want to construct a number of a non-integral numeric
+     * ilk, you should be using the overload of this method that takes
+     * a double as second argument, to avoid the loss of precision
+     * involved in converting from long to double.
+     */
+    public static Slaw number(NumericIlk ni, long value) {
+        return factory.number(ni, value);
     }
 
+    /**
+     * Factoring method constructing a Slaw with ilk SlawIlk#NUMBER
+     * and the given numeric ilk and value. Althought you can call
+     * this method with any numeric ilk, the common case will be to
+     * use it when creating Slaw number with numeric ilk
+     * NumericIlk#FLOAT32 or NumericIlk#FLOAT64. When called with an
+     * integral ilk as its first argument, this method behaves as
+     * <code>number(ni, (long)value)</code>, and you'll need to care
+     * about the possible rounding errors that the cast can produce.
+     */
+    public static Slaw number(NumericIlk ni, double value) {
+        return factory.number(ni, value);
+    }
+
+    /**
+     * Factory method constructing a Slaw with ilk SlawIlk#COMPLEX out
+     * of its real and imaginary parts. Both arguments must be
+     * non-null and have ilk SlawIlk#NUMBER; otherwise, an
+     * IllegalArgumentException is thrown. They don't need to have the
+     * same numeric ilk, though. When the numeric ilks of the real and
+     * imaginary parts differ, the numeric ilk of the result is the
+     * one returned by NumericIlk#dominantIlk, which see (basically,
+     * a widening numerical conversion one is used).
+     *
+     * For instance, the result of calling <code>complex(int8(1),
+     * float32(2))</code> will be a complex Slaw with numeric ilk
+     * FLOAT32.
+     */
     public static Slaw complex(Slaw re, Slaw im) {
         return factory.complex(re, im);
     }
 
+    /**
+     * Factory method constructing a 2-dimensional vector Slaw out of
+     * its components. Both arguments must be non-null and have ilk
+     * the same ilk, which must be either SlawIlk#NUMBER or
+     * SlawIlk#COMPLEX; otherwise, an IllegalArgumentException is
+     * thrown. The ilk of the resulting vector will be either
+     * SlawIlk#NUMBER_VECTOR or SlawIlk#COMPLEX_VECTOR.
+     *
+     * They arguments don't need to have the same numeric ilk, though.
+     * When the numeric ilks of the given components differ, the
+     * numeric ilk of the result is the one returned by
+     * NumericIlk#dominantIlk, which see (basically, a widening
+     * numerical conversion one is used).
+     *
+     * For instance, the result of calling
+     * <pre>
+     *   vector(complex(int8(1), float32(2)),
+     *          complex(int16(3), unt16(4)))
+     * </pre>
+     * will be a vector Slaw with ilk SlawIlk#COMPLEX_VECTOR and
+     * numeric ilk NumericIlk#FLOAT32.
+     */
     public static Slaw vector(Slaw x, Slaw y) {
         return factory.vector(x, y);
     }
+
+    /**
+     * Factory method constructing a 3-dimensional vector Slaw out of
+     * its components. The semantics and constraints on its arguments
+     * as the same as those of Slaw#vector(Slaw,Slaw), which see.
+     */
     public static Slaw vector(Slaw x, Slaw y, Slaw z) {
         return factory.vector(x, y, z);
     }
+
+    /**
+     * Factory method constructing a 4-dimensional vector Slaw out of
+     * its components. The semantics and constraints on its arguments
+     * as the same as those of Slaw#vector(Slaw,Slaw), which see.
+     */
     public static Slaw vector(Slaw x, Slaw y, Slaw z, Slaw w) {
         return factory.vector(x, y, z, w);
     }
 
+    /**
+     * Factory method constructing a Slaw multivector out of its
+     * components. The number of arguments must be 4, 8, 16 or 32 (for
+     * a multivector of dimension 2, 3, 4 or 5), and all must be
+     * non-null and have ilk SlawIlk#NUMBER; otherwise an
+     * IllegalArgumentException is thrown.
+     *
+     * The arguments don't need to have the same numeric ilk, though.
+     * When the numeric ilks of the given components differ, the
+     * numeric ilk of the result is the one returned by
+     * NumericIlk#dominantIlk, which see (basically, a widening
+     * numerical conversion one is used).
+     */
     public static Slaw multivector(Slaw... cs) {
         return factory.multivector(cs);
     }
 
+    /**
+     * Factory method constructing a non-empty numeric Slaw array out
+     * of its components. The given array must have at least one
+     * non-null element; otherwise, an IllegalArgumentException is
+     * thrown.
+     *
+     * Calling this method is equivalent to calling
+     * <code>array(sx[0],sx[1],...sx[sx.length - 1])</code>. See
+     * Slaw#array(Slaw,Slaw...) for details.
+     */
     public static Slaw array(Slaw[] sx) { return factory.array(sx); }
 
+    /**
+     * Factory method constructing a non-empty numeric Slaw array out
+     * of its components. At least one of the arguments must be
+     * non-null (nulls are skipped), and all non-null arguments must
+     * have the same ilk (otherwise an IllegalArgumentException is
+     * thrown). That common ilk must be numeric (i.e., return true for
+     * SlawIlk#isNumeric) but not an array ilk (i.e. return false for
+     * SlawIlk#isArray). The ilk of the resulting array is derived
+     * from that that of its components in the natural way, and can
+     * therefore be any of the array ilks (as defined by the predicate
+     * SlawIlk#isArray).
+     *
+     * As is the case with all other composite numeric Slaw
+     * constructors, the arguments don't need to have the same numeric
+     * ilk, though. When the numeric ilks of the given components
+     * differ, the numeric ilk of the result is the one returned by
+     * NumericIlk#dominantIlk, which see (basically, a widening
+     * numerical conversion one is used).
+     */
     public static Slaw array(Slaw n, Slaw... ns) {
         return factory.array(n, ns);
     }
 
-    public static Slaw array(SlawIlk i, NumericIlk n, int d) {
-        return factory.array(i, n, d);
-    }
-
-    public static Slaw array(List<Slaw> sx) {
+    /**
+     * Factory method constructing a non-empty numeric Slaw array out
+     * of its components. At least one of the elements of the given
+     * list must be non-null (nulls are skipped), and all non-null
+     * arguments must have the same ilk (otherwise an
+     * IllegalArgumentException is thrown). See the two other array
+     * constructors for further restrictions on those elements, if
+     * any.
+     */
+     public static Slaw array(List<Slaw> sx) {
         Slaw[] ss = new Slaw[sx.size()];
         for (int i = 0; i < ss.length; ++i) ss[i] = sx.get(i);
         return array(ss);
+    }
+
+    /**
+     * Returns a new empty array with ilk SlawIlk#NUMBER_ARRAY and
+     * the given numeric ilk.
+     */
+    public static Slaw emptyNumberArray(NumericIlk ni) {
+        return factory.array(NUMBER_ARRAY, ni, 1);
+    }
+
+    /**
+     * Returns a new empty array with ilk SlawIlk#COMPLEX_ARRAY and
+     * the given numeric ilk.
+     */
+    public static Slaw emptyComplexArray(NumericIlk ni) {
+        return factory.array(COMPLEX_ARRAY, ni, 1);
+    }
+
+    /**
+     * Returns a new empty array with ilk SlawIlk#VECTOR_ARRAY and the
+     * given numeric ilk and dimension, which must be between 2 and 4.
+     */
+    public static Slaw emptyVectorArray(NumericIlk ni, int dim) {
+        return factory.array(VECTOR_ARRAY, ni, dim);
+    }
+
+    /**
+     * Returns a new empty array with ilk SlawIlk#COMPLEX_VECTOR_ARRAY
+     * and the given numeric ilk and dimension, which must be between
+     * 2 and 4.
+     */
+    public static Slaw emptyComplexVectorArray(NumericIlk ni, int dim) {
+        return factory.array(COMPLEX_VECTOR_ARRAY, ni, dim);
+    }
+
+    /**
+     * Returns a new empty array with ilk SlawIlk#MULTI_VECTOR_ARRAY
+     * and the given numeric ilk and dimension, which must be between
+     * 2 and 5.
+     */
+    public static Slaw emptyMultiVectoryArray(NumericIlk ni, int dim) {
+        return factory.array(MULTI_VECTOR_ARRAY, ni, dim);
+    }
+
+    /**
+     * Generic empty array constructor. The ilk must be of kind array,
+     * and the dimension one of the accepted values for the given ilk.
+     */
+    public static Slaw array(SlawIlk ilk, NumericIlk ni, int dimension) {
+        return factory.array(ilk, ni, dimension);
     }
 
     private static final com.oblong.jelly.slaw.SlawFactory factory =
