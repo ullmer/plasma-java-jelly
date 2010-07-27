@@ -528,19 +528,64 @@ public abstract class Slaw implements Iterable<Slaw> {
      */
     public static Slaw list(List<Slaw> s) { return factory.list(s); }
 
+    /**
+     * Factory method constructing a Slaw with ilk SlawIlk#MAP from a
+     * a explicit list of Slawx. The arguments are interpreted as
+     * alternating keys and values. If any of the Slawx in a key/value
+     * pair is null, the whole pair is skipped.
+     */
     public static Slaw map(Slaw... kvs) { return factory.map(kvs); }
-    public static Slaw map(List<Slaw> s) { return factory.map(s); }
+
+    /**
+     * Factory method constructing a Slaw with ilk SlawIlk#LIST from a
+     * native Java map. If any of the Slawx in a key/value pair is
+     * null, the whole pair is skipped. When <code>m</code> is null,
+     * an empty Slaw map is returned.
+     */
     public static Slaw map(Map<Slaw,Slaw> m) { return factory.map(m); }
 
+    /**
+     * Factory method creating a Protein. Calling this method is
+     * equivalent to calling <code>protein(descrips, ingests,
+     * null)</code> (i.e., it constructs a protein without raw data).
+     */
     public static Protein protein(Slaw descrips, Slaw ingests) {
         return factory.protein(descrips, ingests, null);
     }
+
+    /**
+     * Factory method constructing a Slaw with ilk SlawIlk#PROTEIN out
+     * of its three components: descrips, ingests and raw data. Any
+     * argument can be null, denoting, respectively, a protein without
+     * descrips, ingests or raw data. There are no restrictions on the
+     * ilk of descrips and ingests.
+     */
     public static Protein protein(Slaw descrips, Slaw ingests, byte[] data) {
         return factory.protein(descrips, ingests, data);
     }
 
+    /**
+     * Factory method creating a Slaw with ilk SlawIlk#NIL. All nil
+     * slawx are equal under the Slaw#equals predicate, but no
+     * guarantees are made regarding the equality, under
+     * <code>==</code>, of the instances returned by different calls
+     * to this method.
+     */
     public static Slaw nil() { return factory.nil(); }
+
+    /**
+     * Factory method creating a Slaw with ilk SlawIlk#BOOL. All true
+     * slawx are equal under the Slaw#equals predicate, as are all
+     * false ones, but no guarantees are made regarding the equality,
+     * under <code>==</code>, of the instances returned by different
+     * calls to this method.
+     */
     public static Slaw bool(boolean v) { return factory.bool(v); }
+
+    /**
+     * Factory method creating a Slaw with ilk SlawIlk#STRING. When
+     * serialized, Slaw strings are always encoded using UTF-8.
+     */
     public static Slaw string(String s) { return factory.string(s); }
 
     public static Slaw int8(int n) { return number(INT8, n); }

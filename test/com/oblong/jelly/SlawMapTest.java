@@ -83,7 +83,6 @@ public class SlawMapTest {
         Map<Slaw,Slaw> map = m.emitMap();
         List<Slaw> conses = m.emitList();
         assertEquals(m, map(map));
-        assertEquals(m, map(conses));
         assertEquals(m.count(), map.size());
         assertEquals(m.count(), conses.size());
         for (int i = 0, c = m.count(); i < c; i++) {
