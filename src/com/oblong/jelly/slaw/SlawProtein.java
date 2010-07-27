@@ -26,7 +26,7 @@ final class SlawProtein extends Protein {
 
     @Override public Slaw descrips() { return descrips; }
     @Override public Slaw ingests() { return ingests; }
-    @Override public byte data(int n) { return data[n]; }
+    @Override public byte datum(int n) { return data[n]; }
     @Override public int dataLength() { return data.length; }
 
     @Override public int putData(OutputStream os) throws IOException {

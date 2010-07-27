@@ -10,46 +10,130 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * Proteins are a kind of composite Slaw (with ilk SlawIlk#PROTEIN)
+ * that constitute the units of information exchange between pools and
+ * user programs. Besides other Slawx (as ingests and descrips), the
+ * can contain raw data (in the form of a byte array), and have
+ * associated metadata related to the pool they came from. The latter
+ * consists of a time stamp (when they were deposited in the pool) and
+ * an index (where in the pool they're to be found, pools being
+ * essentially a sequential arrangement of proteins).
+ *
+ * This class specializes the Slaw interface for proteins, and extends
+ * it to provide access to that additional data and metadata.
+ *
+ * Protein instances are immutable, and they come into being either by
+ * retrieval from a pool (via the Hose interface), or by explicit
+ * creation using the factory method Slaw#protein. Proteins created
+ * used the latter lack deposit metadata.
  *
  * Created: Mon May 17 14:25:51 2010
  *
  * @author jao
  */
 public abstract class Protein extends Slaw {
+    /**
+     * Proteins that have not yet been deposited in a Pool will return
+     * this value as their index.
+     */
     public static final long NO_INDEX = -1;
+
+    /**
+     * Proteins that have not yet been deposited in a Pool will return
+     * this value as their timestamp.
+     */
     public static final long NO_TIMESTAMP = -1;
 
+    /**
+     * As a composite Slaw, Proteins are made of ingests and descrips.
+     * This methods gives access to the former. Since both of those
+     * components are optional, the return value of this method can be
+     * null.
+     */
     public abstract Slaw ingests();
+
+    /**
+     * As a composite Slaw, Proteins are made of ingests and descrips.
+     * This methods gives access to the latter. Since both of those
+     * components are optional, this method will return null for
+     * proteins without descrips.
+     */
     public abstract Slaw descrips();
 
-    public abstract byte data(int n);
+    /** Number of bytes of raw data that this protein contains */
     public abstract int dataLength();
+
+    /**
+     * Accessor to individual bytes of raw data in this Protein.
+     * Throws an IndexOutOfBoundsException if n is not in the range
+     * [0, dataLenth()).
+     */
+    public abstract byte datum(int n);
+
+    /**
+     * Writes this protein's raw data to the given output stream, and
+     * returns the number of bytes written, which should be equal to
+     * the value returned by Protein#dataLength. This method does not
+     * return until all the raw data has been accepted by the stream,
+     * or an I/O error occurs, in which case an IOException (possibly
+     * thrown by the given output stream) is thrown.
+     */
     public abstract int putData(OutputStream os) throws IOException;
 
+    /**
+     * The index of this protein in the pool it was retrieved from, or
+     * NO_INDEX if this protein did not come from a pool.
+     */
     public abstract long index();
+
+    /**
+     * The time, in the given units, when this Protein was deposited
+     * in its source pool, or NO_TIMESTAMP if this protein does not
+     * come from a pool.
+     */
     public abstract long timestamp(TimeUnit unit);
+
+    /**
+     * The time, in seconds, when this Protein was deposited in its
+     * source pool, or NO_TIMESTAMP if this protein does not come from
+     * a pool.
+     */
     public abstract double timestamp();
+
+    /**
+     * For proteins obtained by means of a Hose, this method returns a
+     * reference to the source Hose instance. For proteins created by
+     * other means, this method returns null.
+     */
     public abstract Hose source();
 
+    /** Returns SlawIlk#PROTEIN. */
     @Override public final SlawIlk ilk() { return SlawIlk.PROTEIN; }
+
+    /** Returns null. */
     @Override public final NumericIlk numericIlk() { return null; }
 
+    /** Throws an UnsupportedOperationException. */
     @Override public final boolean emitBoolean() {
         throw new UnsupportedOperationException(ilk() + " as boolean");
     }
 
+    /** Throws an UnsupportedOperationException. */
     @Override public final String emitString() {
         throw new UnsupportedOperationException(ilk() + " as string");
     }
 
+    /** Throws an UnsupportedOperationException. */
     @Override public final long emitLong() {
         throw new UnsupportedOperationException(ilk() + " as long");
     }
 
+    /** Throws an UnsupportedOperationException. */
     @Override public final double emitDouble() {
         throw new UnsupportedOperationException(ilk() + " as double");
     }
 
+    /** Throws an UnsupportedOperationException. */
     @Override public final BigInteger emitBigInteger() {
         throw new UnsupportedOperationException(ilk() + " as big integer");
     }
@@ -58,23 +142,33 @@ public abstract class Protein extends Slaw {
         return new HashMap<Slaw,Slaw>();
     }
 
+    /** Throws an UnsupportedOperationException. */
     @Override public final Slaw withNumericIlk(NumericIlk ilk) {
         throw new UnsupportedOperationException(ilk() + " not numeric");
     }
 
+    /** Throws an UnsupportedOperationException. */
     @Override public final Slaw car() {
         throw new UnsupportedOperationException(ilk() + " not a pair");
     }
 
+    /** Throws an UnsupportedOperationException. */
     @Override public final Slaw cdr() {
         throw new UnsupportedOperationException(ilk() + " not a pair");
     }
 
+    /** Returns 0. */
     @Override public final int dimension() { return 0; }
+
+    /** Returns 0 (proteins are not traversable as lists). */
     @Override public final int count() { return 0; }
+
+    /** Throws an UnsupportedOperationException. */
     @Override public final Slaw nth(int n) {
         throw new UnsupportedOperationException("Not a list");
     }
+
+    /** Returns null (proteins are not translatable to maps). */
     @Override public final Slaw find(Slaw e) { return null; }
 
     @Override public final boolean slawEquals(Slaw o) {
@@ -87,7 +181,7 @@ public abstract class Protein extends Slaw {
             && eqRefs(ingests(), op.ingests());
 
         for (int i = 0, c = dataLength(); eqs && i < c; ++i)
-            eqs = data(i) == op.data(i);
+            eqs = datum(i) == op.datum(i);
         return eqs;
     }
 
@@ -95,7 +189,7 @@ public abstract class Protein extends Slaw {
         int h = 5;
         if (descrips() != null) h += 13 * descrips().hashCode();
         if (ingests() != null) h += 17 * ingests().hashCode();
-        for (int i = 0, c = dataLength(); i < c; ++i) h += data(i);
+        for (int i = 0, c = dataLength(); i < c; ++i) h += datum(i);
         h += index();
         h += (int)timestamp(TimeUnit.NANOSECONDS);
         return h;

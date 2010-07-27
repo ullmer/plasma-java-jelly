@@ -37,7 +37,7 @@ public final class PoolProtein extends Protein {
 
     @Override public Slaw descrips() { return protein.descrips(); }
     @Override public Slaw ingests() { return protein.ingests(); }
-    @Override public byte data(int n) { return protein.data(n); }
+    @Override public byte datum(int n) { return protein.datum(n); }
     @Override public int dataLength() { return protein.dataLength(); }
 
     @Override public int putData(OutputStream os) throws IOException {
