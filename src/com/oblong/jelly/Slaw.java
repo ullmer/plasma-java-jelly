@@ -128,8 +128,13 @@ public abstract class Slaw implements Iterable<Slaw> {
     /** Just the negation of isAtomic() */
     public final boolean isComposite() { return !isAtomic(); }
 
+    /** Checks whether this Slaw's ilk is SlawIlk#NIL */
     public final boolean isNil() { return is(NIL); }
+
+    /** Checks whether this Slaw's ilk is SlawIlk#BOOL */
     public final boolean isBoolean() { return is(BOOL); }
+
+    /** Checks whether this Slaw's ilk is SlawIlk#STRING */
     public final boolean isString() { return is(STRING); }
 
     /**
@@ -164,6 +169,7 @@ public abstract class Slaw implements Iterable<Slaw> {
         return isNumber() && numericIlk() == ni;
     }
 
+    /** Checks whether this Slaw's ilk is SlawIlk#COMPLEX */
     public final boolean isComplex() { return is(COMPLEX); }
 
     /**
@@ -178,8 +184,13 @@ public abstract class Slaw implements Iterable<Slaw> {
      */
     public final boolean isVector() { return ilk().isVector(); }
 
+    /** Checks whether this Slaw's ilk is SlawIlk#NUMBER_VECTOR */
     public final boolean isNumberVector() { return is(NUMBER_VECTOR); }
+
+    /** Checks whether this Slaw's ilk is SlawIlk#COMPLEX_VECTOR */
     public final boolean isComplexVector() { return is(COMPLEX_VECTOR); }
+
+    /** Checks whether this Slaw's ilk is SlawIlk#MULTI_VECTOR */
     public final boolean isMultivector() { return is(MULTI_VECTOR); }
 
     /**
@@ -192,19 +203,38 @@ public abstract class Slaw implements Iterable<Slaw> {
      */
     public final boolean isArray() { return ilk().isArray(); }
 
+    /** Checks whether this Slaw's ilk is SlawIlk#NUMBER_ARRAY */
     public final boolean isNumberArray() { return is(NUMBER_ARRAY); }
+
+    /** Checks whether this Slaw's ilk is SlawIlk#COMPLEX_ARRAY */
     public final boolean isComplexArray() { return is(COMPLEX_ARRAY); }
+
+    /** Checks whether this Slaw's ilk is SlawIlk#VECTOR_ARRAY */
     public final boolean isNumberVectorArray() { return is(VECTOR_ARRAY); }
+
+    /** Checks whether this Slaw's ilk is SlawIlk#COMPLEX_VECTOR_ARRAY */
     public final boolean isComplexVectorArray() {
         return is(COMPLEX_VECTOR_ARRAY);
     }
+
+    /** Checks whether this Slaw's ilk is SlawIlk#MULTI_VECTOR_ARRAY */
     public final boolean isMultivectorArray() {
         return is(MULTI_VECTOR_ARRAY);
     }
 
+    /** Checks whether this Slaw's ilk is SlawIlk#CONS */
     public final boolean isCons() { return is(CONS); }
+
+    /** Checks whether this Slaw's ilk is SlawIlk#LIST */
     public final boolean isList() { return is(LIST); }
+
+    /** Checks whether this Slaw's ilk is SlawIlk#MAP */
     public final boolean isMap() { return is(MAP); }
+
+    /**
+     * Checks whether this Slaw's ilk is SlawIlk#PROTEIN. Slawx with
+     * this ilk can be down-casted to Protein using Slaw#toProtein.
+     */
     public final boolean isProtein() { return is(PROTEIN); }
 
     /**
