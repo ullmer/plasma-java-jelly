@@ -5,6 +5,8 @@ package com.oblong.jelly;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.oblong.jelly.pool.BadAddressException;
+
 import net.jcip.annotations.Immutable;
 
 /**
@@ -59,7 +61,7 @@ public final class PoolAddress {
 
     private static final String checkName(String name) throws PoolException {
         if (name == null || name.isEmpty())
-            throw new PoolServerAddress.BadAddress("Empty pool name");
+            throw new BadAddressException("Empty pool name");
         // we leave any further checking to the pool server
         return name;
     }

@@ -3,8 +3,8 @@ package com.oblong.jelly.pool.impl;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.oblong.jelly.PoolException;
-import com.oblong.jelly.PoolServerAddress.BadAddress;
 import com.oblong.jelly.Slaw;
+import com.oblong.jelly.pool.BadAddressException;
 import com.oblong.jelly.pool.CorruptPoolException;
 import com.oblong.jelly.pool.InvalidOperationException;
 import com.oblong.jelly.pool.NoSuchPoolException;
@@ -49,7 +49,7 @@ public enum ServerError {
     },
     BAD_NAME {
         public PoolException asException(Slaw res, long code) {
-            return new BadAddress(code);
+            return new BadAddressException(code);
         }
     },
     NO_OP {
