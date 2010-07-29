@@ -8,6 +8,9 @@
   <property name="jelly.version.minor" value="1"/>
   <property name="jelly.version"
             value="${jelly.version.major}.${jelly.version.minor}"/>
+  <property name="jelly.title" value="${jelly.basename} ${jelly.version}"/>
+  <property name="jelly.blurb"
+            value="${jelly.title} - Copyright 2010 Oblong Industries"/>
 
   <property name="src.dir" location="src"/>
   <property name="lib.dir" location="lib"/>
@@ -158,9 +161,20 @@
   <target name="rebuild" depends="clean, build" description="Rebuild">
   </target>
 
-  <target name="javadoc" depends="init" description="Create java doc">
-    <javadoc destdir="${doc.dir}">
+  <target name="javadoc" depends="init" description="Create javadoc">
+    <javadoc destdir="${doc.dir}"
+             author="no"
+             access="public"
+             bottom="${jelly.blurb}"
+             header="${jelly.blurb}"
+             footer="${jelly.blurb}"
+             windowtitle="${jelly.title}"
+             doctitle="${jelly.title}">
       <classpath refid="compile.classpath"/>
+      <packageset dir="${src.dir}" defaultexcludes="yes">
+        <include name="com/oblong/jelly"/>
+        <include name="com/oblong/jelly/pool"/>
+      </packageset>
     </javadoc>
   </target>
 
