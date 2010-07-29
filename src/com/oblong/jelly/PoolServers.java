@@ -30,7 +30,6 @@ import net.jcip.annotations.ThreadSafe;
  */
 @ThreadSafe
 public final class PoolServers {
-
     /**
      * Provides an object implementing PoolServer given its address.
      *
@@ -38,9 +37,12 @@ public final class PoolServers {
      * which acts in this respect as a URI. This method actually
      * returns the same object when called repeatedly with the same
      * argument.
+     *
+     * <p> If there's no PoolServer with the given address (for
+     * instance, because its protocol is not registered), this method
+     * returns null.
      */
-    public static PoolServer get(PoolServerAddress address)
-        throws PoolException {
+    public static PoolServer get(PoolServerAddress address) {
         PoolServer server = servers.get(address);
         if (server == null) {
             final String scheme = address.scheme();
@@ -61,7 +63,7 @@ public final class PoolServers {
      * this interface.
      */
     public interface Factory {
-        PoolServer get(PoolServerAddress address) throws PoolException;
+        PoolServer get(PoolServerAddress address);
     }
 
     /**

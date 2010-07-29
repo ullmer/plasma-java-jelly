@@ -4,7 +4,6 @@ package com.oblong.jelly.pool.tcp;
 
 import net.jcip.annotations.Immutable;
 
-import com.oblong.jelly.PoolException;
 import com.oblong.jelly.PoolServer;
 import com.oblong.jelly.PoolServers;
 import com.oblong.jelly.PoolServerAddress;
@@ -20,8 +19,7 @@ import com.oblong.jelly.pool.Server;
 @Immutable
 public final class TCPServerFactory implements PoolServers.Factory {
 
-    @Override public PoolServer get(PoolServerAddress address)
-        throws PoolException {
+    @Override public PoolServer get(PoolServerAddress address) {
         return new Server(factory, address);
     }
 

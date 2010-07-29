@@ -25,8 +25,7 @@ import com.oblong.jelly.slaw.SlawFactory;
 @ThreadSafe
 public final class Server implements PoolServer {
 
-    public Server(PoolConnectionFactory cf, PoolServerAddress addr)
-        throws PoolException {
+    public Server(PoolConnectionFactory cf, PoolServerAddress addr) {
         address = addr;
         connectionFactory = cf;
     }
