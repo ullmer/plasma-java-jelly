@@ -13,21 +13,23 @@ import java.util.concurrent.TimeUnit;
 import net.jcip.annotations.Immutable;
 
 /**
- * Proteins are a kind of composite Slaw that constitute the units of
- * information exchange between pools and user programs. Besides other
- * Slawx (as ingests and descrips), the can contain raw data (in the
- * form of a byte array), and have associated metadata related to the
- * pool they came from. The latter consists of a time stamp (when they
- * were deposited in the pool) and an index (where in the pool they're
- * to be found, pools being essentially a sequential arrangement of
- * proteins).
- * <p>
- * This class specializes {@link Slaw}'s interface for proteins, and
- * extends it to provide access to that additional data and metadata.
- * <p>
- * Protein instances are immutable, and they come into being either by
- * retrieval from a pool (via the {@link Hose} interface), or by
- * explicit creation using the factory method {@link
+ * Proteins constitute the units of information exchange between pools
+ * and user programs.
+ *
+ * <p> Besides other Slawx (as ingests and descrips), the can contain
+ * raw data (in the form of a byte array), and have associated
+ * metadata related to the pool they came from. The latter consists of
+ * a time stamp (when they were deposited in the pool) and an index
+ * (where in the pool they're to be found, pools being essentially a
+ * sequential arrangement of proteins).
+ *
+ * <p> This class specializes {@link Slaw}'s interface for proteins,
+ * and extends it to provide access to that additional data and
+ * metadata.
+ *
+ * <p> Protein instances are immutable, and they come into being
+ * either by retrieval from a pool (via the {@link Hose} interface),
+ * or by explicit creation using the factory method {@link
  * Slaw#protein(Slaw,Slaw)}. Proteins created used the latter lack
  * deposit metadata.
  *

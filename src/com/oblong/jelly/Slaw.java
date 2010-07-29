@@ -16,16 +16,20 @@ import static com.oblong.jelly.NumericIlk.*;
 import static com.oblong.jelly.SlawIlk.*;
 
 /**
- * Slaw instances constitute the components of Proteins and, as such,
- * represent a value serializable to and from pools and having one of
- * the types enumerated by SlawIlk. The class interface includes a
- * family of predicates to check for the concrete type (or, as we'll
- * call it, ilk) of the Slaw instance at hand. Once you know its ilk,
- * you can access the actual value wrapped by a Slaw (in the form of a
- * Java native value) using one of the emit methods in this class.
- * Each of these methods is applicable, in general, only to a subset
- * of the possible Slaw ilks (e.g. emitBoolean() makes no sense when
- * applied to a Slaw with ilk MAP), and will throw an (unchecked)
+ * Slaw instances constitute the components of Proteins and wrap
+ * strongly typed data values.
+ *
+ * <p> As we'll see, the type of the value hold by a Slaw is fully
+ * determined by its ilk (as enumerated by {@link SlawIlk} and, when
+ * applicable, its numeric ilk (enumerated by {@link NumericIlk}. The
+ * class interface includes a family of predicates to check for the
+ * concrete type (or, as we'll call it, ilk) of the Slaw instance at
+ * hand. Once you know its ilk, you can access the actual value
+ * wrapped by a Slaw (in the form of a Java native value) using one of
+ * the emit methods in this class. Each of these methods is
+ * applicable, in general, only to a subset of the possible Slaw ilks
+ * (e.g. {@code emitBoolean()} makes no sense when applied to a Slaw
+ * with ilk {@code MAP}), and will throw an (unchecked)
  * UnsupportedOperationException if called on the wrong Slaw instance;
  * thus, the recommended pattern is either to guard their usage by a
  * call to the corresponding type predicate, as in
@@ -42,24 +46,24 @@ import static com.oblong.jelly.SlawIlk.*;
  * documentation below details, for each of the potentially illegal
  * operations, the safe ilk subsets, as well as the type tests that
  * can be used as guards.
- * <p>
- * Several of the available Slaw ilks represent composite types. You
- * can access the components of a Slaw instance in a traditional index
- * based fashion by means of nth and count. But Slaw also also
+ *
+ * <p> Several of the available Slaw ilks represent composite types.
+ * You can access the components of a Slaw instance in a traditional
+ * index based fashion by means of nth and count. But Slaw also also
  * implements {@code Iterable<Slaw>}, so that you can iterate over the
  * sub-slawx using new-style for loops or the {@code Iterator<Slaw>}
  * interface. Since Slaw instances are immutable, the latter does not
  * support the remove operation.
- * <p>
- * As a convenience, using the sub-slaw traversal APIs on atomic Slaw
- * instances is supported: with regard to those methods, an atomic
- * Slaw is considered as a container with one element, which is
+ *
+ * <p> As a convenience, using the sub-slaw traversal APIs on atomic
+ * Slaw instances is supported: with regard to those methods, an
+ * atomic Slaw is considered as a container with one element, which is
  * itself. This convenience comes with the risk of introducing
  * infinite loops in your programs if you happen to recursively
  * iterate over sub-slawx: such iterations should always be guarded by
  * a call to {@link #isComposite()}.
- * <p>
- * Since this is an abstract class, a host of factory methods is
+ *
+ * <p> Since this is an abstract class, a host of factory methods is
  * provided to let you construct new Slaw instances out of native Java
  * values and/or other slawx. In the case of non-atomic numeric Slaw
  * (complex numbers, vectors and multivectors) constructors taking
@@ -73,17 +77,17 @@ import static com.oblong.jelly.SlawIlk.*;
  * numeric ilk from {@code INT8} up to {@code FLOAT64}, and that
  * coercion is applied by the factory methods of composite numeric
  * slawx.
- * <p>
- * So, strictly speaking, the real type of a Slaw instance is
+ *
+ * <p> So, strictly speaking, the real type of a Slaw instance is
  * determined by its ilk <i>and</i> its numeric ilk. Composite numeric
  * slawx inherit their numeric ilk from that of their components
  * (which will always be the same: the factory methods will take care
  * of that). Non-numeric slawx have <code>null</code> as their
  * NumericIlk.
- * <p>
- * The use of Slaw instead of native Java data types will be
- * conductive to a dynamic style in your programs, with the
- * flexibility (and drawbacks) offered by run-time checks and late
+ *
+ * <p> The use of Slaw instead of native Java data
+ * types will be conductive to a dynamic style in your programs, with
+ * the flexibility (and drawbacks) offered by run-time checks and late
  * binding. Alternatively, you can use Slaw simply as a serialization
  * format to communicate and exchange data with pools, quickly
  * de-marshal the proteins you obtain, and stick to a more
