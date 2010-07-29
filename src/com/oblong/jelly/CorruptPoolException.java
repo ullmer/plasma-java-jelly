@@ -1,13 +1,19 @@
 // Copyright (c) 2010 Oblong Industries
+// Created: Sat Jun 26 00:44:33 2010
 
 package com.oblong.jelly;
 
 import net.jcip.annotations.Immutable;
 
-
 /**
+ * A PoolException denoting a server-reported error accessing a pool.
  *
- * Created: Sat Jun 26 00:44:33 2010
+ * <p> The originator of this error condition will almost always be a
+ * pool server, having trouble accessing a pool locally. There's
+ * generally little one can do on the client side, except using {@link
+ * #serverCode} as additional log info.
+ *
+ * <p> It has kind {@code CORRUPT_POOL}.
  *
  * @author jao
  */

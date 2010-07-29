@@ -1,8 +1,20 @@
+// Copyright (c) 2010 Oblong Industries
+
 package com.oblong.jelly;
 
 import net.jcip.annotations.Immutable;
 
-
+/**
+ * A PoolException denoting a generic server-originated error.
+ *
+ * <p> It has kind {@code SERVER_ERROR}.
+ *
+ * <p> Every now and then, a pool server will report a problem that
+ * doesn't fit in our error classification. Such errors are reported
+ * using this exception type.
+ *
+ * @author jao
+ */
 @Immutable
 public class ServerException extends PoolException {
 

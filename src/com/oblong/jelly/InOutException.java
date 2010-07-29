@@ -1,12 +1,18 @@
 // Copyright (c) 2010 Oblong Industries
+// Created: Tue Jun 22 17:18:12 2010
 
 package com.oblong.jelly;
 
 import net.jcip.annotations.Immutable;
 
 /**
+ * A PoolException denoting I/O errors when communicating with a server.
  *
- * Created: Tue Jun 22 17:18:12 2010
+ * <p>When the remote server is being accessed through the network,
+ * this problem will be often caused by glitches in the communication
+ * link.
+ *
+ * <p> It has kind {@code IO_ERROR}.
  *
  * @author jao
  */

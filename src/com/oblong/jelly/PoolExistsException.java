@@ -1,13 +1,15 @@
 // Copyright (c) 2010 Oblong Industries
+// Created: Mon Jun 28 16:10:28 2010
 
 package com.oblong.jelly;
 
 import net.jcip.annotations.Immutable;
 
-
 /**
+ * A PoolException denoting the failure to create a pool that already
+ * exists.
  *
- * Created: Mon Jun 28 16:10:28 2010
+ * <p> It has kind {@code POOL_EXISTS}.
  *
  * @author jao
  */

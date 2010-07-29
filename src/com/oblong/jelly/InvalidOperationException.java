@@ -1,13 +1,24 @@
+// Copyright (c) 2010 Oblong Industries
+
 package com.oblong.jelly;
 
 import net.jcip.annotations.Immutable;
 
-
+/**
+ * A PoolException denoting an operation unaccepted by a server.
+ *
+ * <p> This error will arise when you try to perform an operation that
+ * the pool server does not support.
+ *
+ * <p> It has kind {@code UNSUPPORTED_OP}.
+ *
+ * @author jao
+ */
 @Immutable
 public class InvalidOperationException extends PoolException {
 
-    public InvalidOperationException(String info) { 
-        super(Kind.UNSUPPORTED_OP, info); 
+    public InvalidOperationException(String info) {
+        super(Kind.UNSUPPORTED_OP, info);
     }
 
     public InvalidOperationException(long code) {
