@@ -1,6 +1,5 @@
-package com.oblong.jelly.pool;
+package com.oblong.jelly;
 
-import com.oblong.jelly.PoolException;
 import net.jcip.annotations.Immutable;
 
 

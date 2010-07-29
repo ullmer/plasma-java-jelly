@@ -1,16 +1,16 @@
-package com.oblong.jelly.pool.impl;
+package com.oblong.jelly.pool;
 
 import java.util.concurrent.TimeUnit;
 
 import net.jcip.annotations.NotThreadSafe;
 
 import com.oblong.jelly.Hose;
+import com.oblong.jelly.NoSuchProteinException;
 import com.oblong.jelly.NumericIlk;
 import com.oblong.jelly.PoolAddress;
 import com.oblong.jelly.PoolException;
 import com.oblong.jelly.Protein;
 import com.oblong.jelly.Slaw;
-import com.oblong.jelly.pool.NoSuchProteinException;
 import com.oblong.jelly.slaw.SlawFactory;
 
 @NotThreadSafe

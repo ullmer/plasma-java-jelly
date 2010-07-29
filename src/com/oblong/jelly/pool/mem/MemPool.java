@@ -9,7 +9,7 @@ import net.jcip.annotations.ThreadSafe;
 
 import com.oblong.jelly.Protein;
 import com.oblong.jelly.Slaw;
-import com.oblong.jelly.pool.impl.PoolProtein;
+import com.oblong.jelly.pool.PoolProtein;
 
 /**
  *

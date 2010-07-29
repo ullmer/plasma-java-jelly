@@ -8,8 +8,6 @@ import org.junit.Test;
 import org.junit.After;
 import static org.junit.Assert.*;
 
-import com.oblong.jelly.pool.PoolExistsException;
-import com.oblong.jelly.pool.NoSuchPoolException;
 
 /**
  * Base class defining PoolServer and Pool-related tests.

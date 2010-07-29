@@ -1,9 +1,7 @@
-package com.oblong.jelly.pool;
+package com.oblong.jelly;
 
 import net.jcip.annotations.Immutable;
 
-import com.oblong.jelly.PoolException;
-import com.oblong.jelly.Slaw;
 
 @Immutable
 public class ProtocolException extends PoolException {

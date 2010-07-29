@@ -46,10 +46,9 @@ public final class Pool {
      *
      * @throws PoolException Possible error kinds include (but are not
      * limited to) {@link PoolException.Kind#POOL_EXISTS} (catchable
-     * as a {@link com.oblong.jelly.pool.PoolExistsException}), and
-     * {@link PoolException.Kind#BAD_ADDRESS} ({@link
-     * com.oblong.jelly.pool.BadAddressException}), with the obvious
-     * meanings.
+     * as a {@link PoolExistsException}), and {@link
+     * PoolException.Kind#BAD_ADDRESS} ({@link BadAddressException}),
+     * with the obvious meanings.
      */
     public static void create(String uri, PoolOptions opts)
         throws PoolException {
@@ -71,10 +70,9 @@ public final class Pool {
      *
      * @throws PoolException Possible error kinds include (but are not
      * limited to) {@link PoolException.Kind#NO_SUCH_POOL} (catchable
-     * as a {@link com.oblong.jelly.pool.NoSuchPoolException}), and
-     * {@link PoolException.Kind#BAD_ADDRESS} ({@link
-     * com.oblong.jelly.pool.BadAddressException}), with the obvious
-     * meanings.
+     * as a {@link NoSuchPoolException}), and {@link
+     * PoolException.Kind#BAD_ADDRESS} ({@link BadAddressException}),
+     * with the obvious meanings.
      */
     public static void dispose(String uri) throws PoolException {
         dispose(PoolAddress.fromURI(uri));
@@ -95,7 +93,7 @@ public final class Pool {
      *
      * @throws PoolException In particular, a PoolException of kind
      * {@link PoolException.Kind#NO_SUCH_POOL} (catchable as a {@link
-     * com.oblong.jelly.pool.NoSuchPoolException}) will be thrown if
+     * NoSuchPoolException}) will be thrown if
      * the requested pool does not exist.
      */
     public static Hose participate(String uri) throws PoolException {

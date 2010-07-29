@@ -9,24 +9,24 @@ import java.net.Socket;
 import java.util.EnumSet;
 import java.util.Set;
 
+import com.oblong.jelly.InOutException;
+import com.oblong.jelly.InvalidOperationException;
 import com.oblong.jelly.NumericIlk;
 import com.oblong.jelly.PoolServerAddress;
 import com.oblong.jelly.PoolException;
 import com.oblong.jelly.Protein;
 import com.oblong.jelly.Slaw;
 
-import com.oblong.jelly.pool.InOutException;
-import com.oblong.jelly.pool.InvalidOperationException;
-import com.oblong.jelly.pool.impl.Request;
-import com.oblong.jelly.pool.impl.PoolConnection;
-import com.oblong.jelly.pool.impl.PoolConnectionFactory;
+import com.oblong.jelly.pool.PoolConnection;
+import com.oblong.jelly.pool.PoolConnectionFactory;
+import com.oblong.jelly.pool.Request;
 
 import com.oblong.jelly.slaw.SlawExternalizer;
 import com.oblong.jelly.slaw.SlawFactory;
 import com.oblong.jelly.slaw.SlawInternalizer;
 import com.oblong.jelly.util.ByteReader;
 
-import static com.oblong.jelly.pool.impl.Request.*;
+import static com.oblong.jelly.pool.Request.*;
 
 /**
  *

@@ -1,19 +1,20 @@
-package com.oblong.jelly.pool.impl;
+package com.oblong.jelly.pool;
 
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.oblong.jelly.BadAddressException;
+import com.oblong.jelly.CorruptPoolException;
+import com.oblong.jelly.InvalidOperationException;
+import com.oblong.jelly.NoSuchPoolException;
+import com.oblong.jelly.NoSuchProteinException;
 import com.oblong.jelly.PoolException;
+import com.oblong.jelly.PoolExistsException;
+import com.oblong.jelly.ProtocolException;
 import com.oblong.jelly.Slaw;
-import com.oblong.jelly.pool.BadAddressException;
-import com.oblong.jelly.pool.CorruptPoolException;
-import com.oblong.jelly.pool.InvalidOperationException;
-import com.oblong.jelly.pool.NoSuchPoolException;
-import com.oblong.jelly.pool.NoSuchProteinException;
-import com.oblong.jelly.pool.PoolExistsException;
-import com.oblong.jelly.pool.ProtocolException;
-import com.oblong.jelly.pool.TimeoutException;
+import com.oblong.jelly.TimeoutException;
 
-import static com.oblong.jelly.pool.impl.ServerErrorCode.*;
+import static com.oblong.jelly.pool.ServerErrorCode.*;
+
 import com.oblong.util.Pair;
 
 public enum ServerError {

@@ -14,8 +14,10 @@ import static org.junit.Assert.*;
 
 import com.oblong.jelly.PoolException;
 import com.oblong.jelly.PoolTestBase;
-import com.oblong.jelly.pool.impl.Request;
-import static com.oblong.jelly.pool.impl.Request.*;
+import com.oblong.jelly.pool.Request;
+
+import static com.oblong.jelly.pool.Request.*;
+
 import com.oblong.jelly.pool.mem.TCPMemProxy;
 
 /**

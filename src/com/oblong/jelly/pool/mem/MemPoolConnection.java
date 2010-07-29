@@ -12,15 +12,16 @@ import com.oblong.jelly.PoolException;
 import com.oblong.jelly.PoolServerAddress;
 import com.oblong.jelly.Protein;
 import com.oblong.jelly.Slaw;
-import com.oblong.jelly.pool.TimeoutException;
-import com.oblong.jelly.pool.impl.Request;
-import static com.oblong.jelly.pool.impl.Request.*;
-import static com.oblong.jelly.pool.impl.ServerErrorCode.*;
+import com.oblong.jelly.TimeoutException;
+import com.oblong.jelly.pool.PoolConnection;
+import com.oblong.jelly.pool.PoolConnectionFactory;
+import com.oblong.jelly.pool.PoolProtein;
+import com.oblong.jelly.pool.Request;
+import com.oblong.jelly.pool.ServerErrorCode;
 
-import com.oblong.jelly.pool.impl.PoolProtein;
-import com.oblong.jelly.pool.impl.PoolConnection;
-import com.oblong.jelly.pool.impl.PoolConnectionFactory;
-import com.oblong.jelly.pool.impl.ServerErrorCode;
+import static com.oblong.jelly.pool.Request.*;
+import static com.oblong.jelly.pool.ServerErrorCode.*;
+
 import com.oblong.jelly.slaw.SlawFactory;
 
 

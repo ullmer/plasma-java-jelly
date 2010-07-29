@@ -5,7 +5,6 @@ package com.oblong.jelly;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.oblong.jelly.pool.BadAddressException;
 
 import net.jcip.annotations.Immutable;
 

@@ -1,8 +1,7 @@
 // Copyright (c) 2010 Oblong Industries
 
-package com.oblong.jelly.pool;
+package com.oblong.jelly;
 
-import com.oblong.jelly.PoolException;
 
 public class BadAddressException extends PoolException {
 

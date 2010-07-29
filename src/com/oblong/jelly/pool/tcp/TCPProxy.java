@@ -10,8 +10,8 @@ import java.util.List;
 
 import com.oblong.jelly.PoolException;
 import com.oblong.jelly.PoolServerAddress;
-import com.oblong.jelly.pool.impl.PoolConnection;
-import com.oblong.jelly.pool.impl.PoolConnectionFactory;
+import com.oblong.jelly.pool.PoolConnection;
+import com.oblong.jelly.pool.PoolConnectionFactory;
 
 
 /**

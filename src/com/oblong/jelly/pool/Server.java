@@ -1,6 +1,6 @@
 // Copyright (c) 2010 Oblong Industries
 
-package com.oblong.jelly.pool.impl;
+package com.oblong.jelly.pool;
 
 
 import java.util.HashSet;

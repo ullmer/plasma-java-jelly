@@ -1,16 +1,16 @@
 // Copyright (c) 2010 Oblong Industries
 
-package com.oblong.jelly.pool.impl;
+package com.oblong.jelly.pool;
 
 import java.util.HashMap;
 
+import com.oblong.jelly.InOutException;
+import com.oblong.jelly.InvalidOperationException;
 import com.oblong.jelly.NumericIlk;
 import com.oblong.jelly.PoolException;
+import com.oblong.jelly.ProtocolException;
 import com.oblong.jelly.Slaw;
 
-import com.oblong.jelly.pool.InvalidOperationException;
-import com.oblong.jelly.pool.InOutException;
-import com.oblong.jelly.pool.ProtocolException;
 
 /**
  *
