@@ -1,3 +1,6 @@
+// Copyright (c) 2010 Oblong Industries
+// Created: Fri Apr 23 13:34:13 2010
+
 package com.oblong.jelly;
 
 import java.util.ArrayList;
@@ -9,19 +12,17 @@ import java.util.NoSuchElementException;
 /**
  * Enumeration describing the type of values encapsulated by numeric
  * Slaw.
- *
+ * <p>
  * When a Slaw's ilk is numeric, we need need to further specify
  * whether it's an integral or floating point value, as well as its
  * width and sign. Instances of this enumeration encapsulate that
- * information and serve to fully specify (when combined with SlawIlk)
- * the type of values encapsulated by a Slaw instance.
- *
+ * information and serve to fully specify (when combined with {@link
+ * SlawIlk}) the type of values encapsulated by a Slaw instance.
+ * <p>
  * The order of the members of this enum also serves to define
  * widening conversions from one numeric ilk to another. This ordering
  * is used by composite numeric Slaw constructors to allow composition
- * of Slaw instances with heterogenous numeric ilks.
- *
- * Created: Fri Apr 23 13:34:13 2010
+ * of {@link Slaw} instances with heterogenous numeric ilks.
  *
  * @author jao
  */
@@ -64,7 +65,7 @@ public enum NumericIlk {
 
     /**
      * The maximum value representable by values of this ilk, cast to
-     * a double. For integral ilks, NumericIlk#max is probably what
+     * a double. For integral ilks, {@link #max} is probably what
      * you want.
      */
     public double fmax() {
@@ -75,7 +76,7 @@ public enum NumericIlk {
 
     /**
      * The minimum value representable by values of this ilk, cast to
-     * a double. For integral ilks, NumericIlk#min will avoid casting
+     * a double. For integral ilks, {@link #min} will avoid casting
      * errors.
      */
     public double fmin() {
@@ -99,13 +100,13 @@ public enum NumericIlk {
         }
     }
 
-    /** Equivalent to dominantIlk(Arrays.asList(ilks)). */
+    /** Equivalent to {@code dominantIlk(Arrays.asList(ilks))}. */
     public static NumericIlk dominantIlk(NumericIlk... ilks) {
         return dominantIlk(Arrays.asList(ilks));
     }
 
     /**
-     * Calls NumericIlk#dominantIlk(List<NumericIlk>) on the list of
+     * Calls {@link #dominantIlk(List)} on the list of
      * numeric ilks of the given Slawx.
      */
     public static NumericIlk dominantIlk(Slaw... nss) {
@@ -115,7 +116,7 @@ public enum NumericIlk {
     }
 
     /**
-     * Calls NumericIlk#dominantIlk(List<NumericIlk>) on the list of
+     * Calls {@link #dominantIlk(List)} on the list of
      * numeric ilks of the given Slawx.
      */
     public static NumericIlk dominantIlkForList(List<Slaw> nss) {

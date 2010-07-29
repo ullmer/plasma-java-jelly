@@ -1,4 +1,5 @@
 // Copyright (c) 2010 Oblong Industries
+// Created: Thu Jun 10 20:56:49 2010
 
 package com.oblong.jelly;
 
@@ -6,11 +7,9 @@ import net.jcip.annotations.Immutable;
 
 /**
  * Options for newly created pools.
- *
+ * <p>
  * This class lets you specify creation options for new pools. It also
  * defines several pre-cooked instances with typical parameter values.
- *
- * Created: Thu Jun 10 20:56:49 2010
  *
  * @author jao
  */
@@ -42,7 +41,7 @@ public class PoolOptions {
     public static final PoolOptions HUGE;
 
     /**
-     * For Pool implementers defining a new pool type or server
+     * For pool implementers defining a new pool type or server
      * protocol.
      */
     public PoolOptions(Slaw options) {

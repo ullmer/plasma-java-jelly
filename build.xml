@@ -163,11 +163,12 @@
 
   <target name="javadoc" depends="init" description="Create javadoc">
     <javadoc destdir="${doc.dir}"
+             source="1.6"
              author="no"
              access="public"
              bottom="${jelly.blurb}"
-             header="${jelly.blurb}"
-             footer="${jelly.blurb}"
+             header=""
+             footer=""
              windowtitle="${jelly.title}"
              doctitle="${jelly.title}">
       <classpath refid="compile.classpath"/>

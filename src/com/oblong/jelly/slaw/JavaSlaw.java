@@ -52,5 +52,4 @@ abstract class JavaSlaw extends Slaw {
     @Override public Slaw withNumericIlk(NumericIlk ilk) {
         throw new UnsupportedOperationException(ilk() + " not numeric");
     }
-
 }

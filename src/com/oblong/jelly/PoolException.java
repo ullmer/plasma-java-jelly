@@ -1,4 +1,5 @@
 // Copyright (c) 2010 Oblong Industries
+// Created: Wed Jun  9 16:27:19 2010
 
 package com.oblong.jelly;
 
@@ -56,8 +57,6 @@ import net.jcip.annotations.Immutable;
  * accessing some piece of information you're interested in, and
  * you'll probably favour the second style in those cases.
  *
- * Created: Wed Jun  9 16:27:19 2010
- *
  * @author jao
  */
 @Immutable
@@ -65,9 +64,8 @@ public class PoolException extends Exception {
 
     /**
      * Each PoolException has a kind, which describes the type of the
-     * error relates it to its actual Java type, to be found in the
-     * com.oblong.jelly.pool package.
-     *
+     * error. The kind also relates to the instance's actual Java
+     * type, to be found in the {@link com.oblong.jelly.pool} package.
      */
     public static enum Kind {
         /**

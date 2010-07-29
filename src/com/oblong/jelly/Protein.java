@@ -1,4 +1,5 @@
 // Copyright (c) 2010 Oblong Industries
+// Created: Mon May 17 14:25:51 2010
 
 package com.oblong.jelly;
 
@@ -9,45 +10,47 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import net.jcip.annotations.Immutable;
+
 /**
- * Proteins are a kind of composite Slaw (with ilk SlawIlk#PROTEIN)
- * that constitute the units of information exchange between pools and
- * user programs. Besides other Slawx (as ingests and descrips), the
- * can contain raw data (in the form of a byte array), and have
- * associated metadata related to the pool they came from. The latter
- * consists of a time stamp (when they were deposited in the pool) and
- * an index (where in the pool they're to be found, pools being
- * essentially a sequential arrangement of proteins).
- *
- * This class specializes the Slaw interface for proteins, and extends
- * it to provide access to that additional data and metadata.
- *
+ * Proteins are a kind of composite Slaw that constitute the units of
+ * information exchange between pools and user programs. Besides other
+ * Slawx (as ingests and descrips), the can contain raw data (in the
+ * form of a byte array), and have associated metadata related to the
+ * pool they came from. The latter consists of a time stamp (when they
+ * were deposited in the pool) and an index (where in the pool they're
+ * to be found, pools being essentially a sequential arrangement of
+ * proteins).
+ * <p>
+ * This class specializes {@link Slaw}'s interface for proteins, and
+ * extends it to provide access to that additional data and metadata.
+ * <p>
  * Protein instances are immutable, and they come into being either by
- * retrieval from a pool (via the Hose interface), or by explicit
- * creation using the factory method Slaw#protein. Proteins created
- * used the latter lack deposit metadata.
+ * retrieval from a pool (via the {@link Hose} interface), or by
+ * explicit creation using the factory method {@link
+ * Slaw#protein(Slaw,Slaw)}. Proteins created used the latter lack
+ * deposit metadata.
  *
  * @see Slaw
  *
- * Created: Mon May 17 14:25:51 2010
- *
  * @author jao
  */
+@Immutable
 public abstract class Protein extends Slaw {
     /**
-     * Proteins that have not yet been deposited in a Pool will return
+     * Proteins that have not yet been deposited in a pool will return
      * this value as their index.
      */
     public static final long NO_INDEX = -1;
 
     /**
-     * Proteins that have not yet been deposited in a Pool will return
+     * Proteins that have not yet been deposited in a pool will return
      * this value as their timestamp.
      */
     public static final long NO_TIMESTAMP = -1;
 
     /**
-     * As a composite Slaw, Proteins are made of ingests and descrips.
+     * As a composite Slaw, proteins are made of ingests and descrips.
      * This methods gives access to the former. Since both of those
      * components are optional, the return value of this method can be
      * null.
@@ -55,7 +58,7 @@ public abstract class Protein extends Slaw {
     public abstract Slaw ingests();
 
     /**
-     * As a composite Slaw, Proteins are made of ingests and descrips.
+     * As a composite Slaw, proteins are made of ingests and descrips.
      * This methods gives access to the latter. Since both of those
      * components are optional, this method will return null for
      * proteins without descrips.
@@ -67,38 +70,38 @@ public abstract class Protein extends Slaw {
 
     /**
      * Accessor to individual bytes of raw data in this Protein.
-     * Throws an IndexOutOfBoundsException if n is not in the range
-     * [0, dataLenth()).
+     * Throws an {@code IndexOutOfBoundsException} if n is not in the
+     * range {@code [0, dataLenth())}.
      */
     public abstract byte datum(int n);
 
     /**
      * Writes this protein's raw data to the given output stream, and
      * returns the number of bytes written, which should be equal to
-     * the value returned by Protein#dataLength. This method does not
+     * the value returned by {@link #dataLength}. This method does not
      * return until all the raw data has been accepted by the stream,
-     * or an I/O error occurs, in which case an IOException (possibly
-     * thrown by the given output stream) is thrown.
+     * or an I/O error occurs, in which case an {@code IOException}
+     * (possibly thrown by the given output stream) is thrown.
      */
     public abstract int putData(OutputStream os) throws IOException;
 
     /**
      * The index of this protein in the pool it was retrieved from, or
-     * NO_INDEX if this protein did not come from a pool.
+     * {@code NO_INDEX} if this protein did not come from a pool.
      */
     public abstract long index();
 
     /**
      * The time, in the given units, when this Protein was deposited
-     * in its source pool, or NO_TIMESTAMP if this protein does not
-     * come from a pool.
+     * in its source pool, or {@code NO_TIMESTAMP} if this protein
+     * does not come from a pool.
      */
     public abstract long timestamp(TimeUnit unit);
 
     /**
      * The time, in seconds, when this Protein was deposited in its
-     * source pool, or NO_TIMESTAMP if this protein does not come from
-     * a pool.
+     * source pool, or {@code NO_TIMESTAMP} (cast to a double) if this
+     * protein does not come from a pool.
      */
     public abstract double timestamp();
 
@@ -109,33 +112,33 @@ public abstract class Protein extends Slaw {
      */
     public abstract Hose source();
 
-    /** Returns SlawIlk#PROTEIN. */
+    /** Returns {@link SlawIlk#PROTEIN}. */
     @Override public final SlawIlk ilk() { return SlawIlk.PROTEIN; }
 
     /** Returns null. */
     @Override public final NumericIlk numericIlk() { return null; }
 
-    /** Throws an UnsupportedOperationException. */
+    /** Throws an {@code UnsupportedOperationException}. */
     @Override public final boolean emitBoolean() {
         throw new UnsupportedOperationException(ilk() + " as boolean");
     }
 
-    /** Throws an UnsupportedOperationException. */
+    /** Throws an {@code UnsupportedOperationException}. */
     @Override public final String emitString() {
         throw new UnsupportedOperationException(ilk() + " as string");
     }
 
-    /** Throws an UnsupportedOperationException. */
+    /** Throws an {@code UnsupportedOperationException}. */
     @Override public final long emitLong() {
         throw new UnsupportedOperationException(ilk() + " as long");
     }
 
-    /** Throws an UnsupportedOperationException. */
+    /** Throws an {@code UnsupportedOperationException}. */
     @Override public final double emitDouble() {
         throw new UnsupportedOperationException(ilk() + " as double");
     }
 
-    /** Throws an UnsupportedOperationException. */
+    /** Throws an {@code UnsupportedOperationException}. */
     @Override public final BigInteger emitBigInteger() {
         throw new UnsupportedOperationException(ilk() + " as big integer");
     }
@@ -144,17 +147,17 @@ public abstract class Protein extends Slaw {
         return new HashMap<Slaw,Slaw>();
     }
 
-    /** Throws an UnsupportedOperationException. */
+    /** Throws an {@code UnsupportedOperationException}. */
     @Override public final Slaw withNumericIlk(NumericIlk ilk) {
         throw new UnsupportedOperationException(ilk() + " not numeric");
     }
 
-    /** Throws an UnsupportedOperationException. */
+    /** Throws an {@code UnsupportedOperationException}. */
     @Override public final Slaw car() {
         throw new UnsupportedOperationException(ilk() + " not a pair");
     }
 
-    /** Throws an UnsupportedOperationException. */
+    /** Throws an {@code UnsupportedOperationException}. */
     @Override public final Slaw cdr() {
         throw new UnsupportedOperationException(ilk() + " not a pair");
     }
@@ -165,7 +168,7 @@ public abstract class Protein extends Slaw {
     /** Returns 0 (proteins are not traversable as lists). */
     @Override public final int count() { return 0; }
 
-    /** Throws an UnsupportedOperationException. */
+    /** Throws an {@code UnsupportedOperationException}. */
     @Override public final Slaw nth(int n) {
         throw new UnsupportedOperationException("Not a list");
     }
@@ -196,6 +199,8 @@ public abstract class Protein extends Slaw {
         h += (int)timestamp(TimeUnit.NANOSECONDS);
         return h;
     }
+
+    protected Protein() {}
 
     private static boolean eqRefs(Object a, Object b) {
         return a == null ? b == null : a.equals(b);
