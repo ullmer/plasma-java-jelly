@@ -53,8 +53,13 @@ final class PoolHose implements Hose {
         return connection.isOpen();
     }
 
-    @Override public void withdraw() throws PoolException {
-        Request.WITHDRAW.sendAndClose(connection);
+    @Override public void withdraw() {
+        try {
+            if (isConnected()) Request.WITHDRAW.sendAndClose(connection);
+        } catch (PoolException e) {
+            // TODO Add proper logging
+            e.printStackTrace();
+        }
     }
 
     @Override public long index() {
