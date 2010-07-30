@@ -32,12 +32,18 @@ import net.jcip.annotations.NotThreadSafe;
  * the network connection.
  *
  * <p> The presence of mutable state, coupled with the fact that Hose
- * instances provide no built-in synchronization, makes them
+ * instances use no built-in synchronization mechanisms, makes them
  * non-thread-safe.
  *
  * <p> It is also important to keep in mind that the network resources
  * consumed by a Hose should be explicitly released (using {@link
  * #withdraw}), to ensure their proper and timely management.
+ *
+ * <p> Regarding error reporting, this interfaces follows the usual
+ * policy with pool errors in jelly: methods have a throws
+ * PoolException clause and will throw all the appropiate subtypes,
+ * that can be caught specifically if you so desire (see discussion
+ * {@link PoolException here}).
  *
  * @author jao
  */
@@ -92,7 +98,7 @@ public interface Hose {
      *
      * <p> After calling this method, any other operation involving
      * the remote end of the connection will fail with a {@link
-     * ProtocolException}.
+     * InOutException}.
      *
      * <p> As stressed before, explicitly calling this method in
      * client code is of the essence for correct resource management
@@ -184,14 +190,178 @@ public interface Hose {
      */
     void rewind() throws PoolException;
 
+    /**
+     * Tries to deposit the give protein at the end of the pool.
+     *
+     * <p> If the operation succeeds, the returned protein will be the
+     * same as {@code p} <i>cum</i> Slaw, but its timestamp and index
+     * will correspond to those reported by the server. Remember that
+     * Protein instances are immutable, so that {@code p} won't
+     * (can't) be modified.
+     *
+     * <p> Since any error during the deposit will be reported by
+     * throwing a PoolException, you're guaranteed that the returned
+     * Protein will always be non-null. If you're not interested in
+     * the index or timestamp of the deposited protein, you can just
+     * ignore that return value.
+     *
+     * <pre>
+     *    try {
+     *      Protein dep = hose.deposit(p);
+     *      System.out.println("Deposited with index " + dep.index()
+     *                          + " and stamp " + dep.timestamp());
+     *      letsMoveOn();
+     *   } catch (PoolException e) {
+     *      System.out.println("Ooops: " + e.getMessage());
+     *   }
+     * </pre>
+     *
+     * <p> Note that the index and timestamp of {@code p} are ignored,
+     * as is the local index of the Hose.
+     */
     Protein deposit(Protein p) throws PoolException;
 
-    Protein current() throws PoolException;
-    Protein next() throws PoolException;
-    Protein next(Slaw descrip) throws PoolException;
-    Protein awaitNext(long period, TimeUnit unit) throws PoolException;
-    Protein awaitNext() throws PoolException;
-    Protein previous() throws PoolException;
-    Protein previous(Slaw descrip) throws PoolException;
+    /**
+     * Fetches the protein located at the given index value.
+     *
+     * <p> Calling this method does not modify the local index and, if
+     * the invocation succeeds, the return value is guaranteed to be
+     * non-null.
+     *
+     * @throws PoolException If no protein with the requested {@code
+     * index} exists, the PoolException will be of type {@link
+     * NoSuchProteinException}. Other kinds, possibly related to
+     * communication problems or conditions encountered by the pool
+     * server, may also arise.
+     *
+     */
     Protein nth(long index) throws PoolException;
+
+    /**
+     * Retrieves the Protein located at the current value of the index.
+     *
+     * <p> Calling this method does not modify the local index and, if
+     * the invocation succeeds, the return value is guaranteed to be
+     * non-null. Successive calls to {@code current} will return the
+     * same protein over and over unless and until the pool fills up
+     * and wraps around, but note that each one will imply a
+     * connection to the server and could still fail.
+     *
+     * @throws PoolException Since the Hose's index can be set to
+     * arbitrary values on the client side (and, moreover, proteins in
+     * the pool can be overwritten when no space is left in it), a
+     * possible outcome of this method is a {@link
+     * NoSuchProteinException}. All other kinds of PoolException
+     * describing problems when talking with a pool server can also
+     * occur.
+     */
+    Protein current() throws PoolException;
+
+    /**
+     * Retrieves the next Protein in the pool with index equal or greater
+     * than this Hose's local index, and advances the latter.
+     *
+     * <p> Thus, successive calls to {@code next} will sequentially
+     * traverse the sequence of proteins in the pool. Since the
+     * absence of a next protein (when reaching the end of the pool)
+     * is signalled by means of a {@code PoolException} (of type
+     * {@code NoSuchProteinException}), the return value of this
+     * method is always non-null. Moreover, after each call, the value
+     * returned by {@code index()} will be equal to the index of the
+     * returned protein plus one.
+     *
+     * <p> If no protein is available at call time, this method will
+     * fail immediately. Use {@link #awaitNext()} or {@link
+     * #awaitNext(long, TimeUnit)} if you're willing to wait.
+     */
+    Protein next() throws PoolException;
+
+    /**
+     * Looks for the next protein in the pool whose descrips match
+     * the given one.
+     *
+     * <p> The search will start at the current index, and proceed
+     * forward until a protein matching (see below) the given descrip
+     * is found, or no more proteins are available, in which case a
+     * {@code PoolException} with kind {@link
+     * PoolException.Kind#NO_SUCH_PROTEIN} (and, therefore, type
+     * {@link NoSuchProteinException}) will be thrown.
+     *
+     * <p> If {@code descrip} is not a Slaw list, any protein
+     * containing it among its descrips will match. If {@code descrip}
+     * is a list, all of its elements must be present in the protein's
+     * descrip list, possibly with intervening gaps. As you can see,
+     * matching can only happen for proteins whose descrips are a Slaw
+     * list.
+     */
+    Protein next(Slaw descrip) throws PoolException;
+
+    /**
+     * Like {@link #next()}, but blocking (with a timeout) if no
+     * proteins are available.
+     *
+     * <p> Whe a next protein is already available, this method
+     * behaves just like next. Otherwise, it will wait for a new
+     * protein to appear in the pool (with an index equal or greater
+     * than the current one) for the specified amount of time.
+     *
+     * <p> When {@code period} is 0, this method behaves like {@link
+     * #next()} (i.e., it doesn't wait), while if {@code period} is
+     * negative, it behaves linke {@link #awaitNext()} (i.e., it waits
+     * forever).
+     *
+     * <p> Note that, if you have moved forward the local index past
+     * the end of the pool (i.e., to a value greater than {@code
+     * newestIndex() + 1}, it may be the case that more than one
+     * protein must be added to the pool by other participants before
+     * this call returns.
+     *
+     * @throws PoolException In particular, failure to retrieve the
+     * next protein is reported as a timeout ({@link
+     * PoolException.Kind#TIMEOUT} or {@link TimeoutException}) rather
+     * than as {@code NoSuchProteinException}, as was the case for
+     * {@link #next}.
+     */
+    Protein awaitNext(long period, TimeUnit unit) throws PoolException;
+
+    /**
+     * Like {@link #next()}, but blocking indefinitely if no proteins
+     * are available.
+     *
+     * <p> This method will return only when a protein is available,
+     * or an error accessing the server occurs. In the latter case, no
+     * attempts to regain communication with the server is made, and
+     * the error is reporting by throwing a PoolException of the
+     * appropriate type.
+     */
+    Protein awaitNext() throws PoolException;
+
+    /**
+     * Retrieves the next Protein in the pool with index strictly less
+     * than this Hose's local index, and decreases the latter.
+     *
+     * <p> If there are no proteins with an index lesser than the
+     * current local index, a {@link NoSuchProteinException} is
+     * thrown, and the local index is not modified.
+     *
+     * <p> Since indexes in a pool are assigned in a strictly
+     * increasing sequence, there's no possibility of waiting for a
+     * previous protein.
+     *
+     * <p> Successive calls to {@code previous} will allow you to move
+     * sequentially through the protein stream, back to its beginning.
+     * After each successful call to {@code previous}, the local hose
+     * index will be equal to that of the returned protein.
+     */
+    Protein previous() throws PoolException;
+
+    /**
+     * Looks for the next protein in the pool whose descrips match
+     * the given one.
+     *
+     * <p> This method works like {@link #next(Slaw)}, but searching
+     * backwards instead of forwards. The local index is modified as
+     * in {@link #previous()}.
+     */
+    Protein previous(Slaw descrip) throws PoolException;
 }

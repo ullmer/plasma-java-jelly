@@ -8,9 +8,12 @@ import net.jcip.annotations.Immutable;
 /**
  * A PoolException denoting I/O errors when communicating with a server.
  *
- * <p>When the remote server is being accessed through the network,
+ * <p> When the remote server is being accessed through the network,
  * this problem will be often caused by glitches in the communication
  * link.
+ *
+ * <p> This error will also arise whenever you try to use a withdrawn
+ * {@link Hose} (cf. {@link Hose#withdraw}).
  *
  * <p> It has kind {@code IO_ERROR}.
  *
