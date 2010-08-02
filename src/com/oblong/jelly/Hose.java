@@ -109,7 +109,7 @@ public interface Hose {
      * <pre>
      *    Hose hose = null;
      *    try {
-     *       hose = Pool.participate("tcp://mithrandir/brandiwine");
+     *       hose = Pool.participate("tcp://imladris/brandywine");
      *       playWithThisHose(hose);
      *    } catch (PoolException e) {
      *       // ...
