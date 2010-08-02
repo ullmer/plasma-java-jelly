@@ -163,6 +163,7 @@
  *    Hose h = Pool.participate("mem:///a-mem-pool", null);
  *    Proteins[] proteins = gimmeProts();
  *    for (Protein p : proteins) h.deposit(p);
+ *    h.withdraw();
  * </pre>
  *
  * where we have used the two-arguments version of {@code
