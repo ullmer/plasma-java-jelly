@@ -23,6 +23,10 @@ public final class TCPServerFactory implements PoolServers.Factory {
         return new Server(factory, address);
     }
 
+    public static void register() {
+        PoolServers.register("tcp", new TCPServerFactory());
+    }
+
     private static final PoolConnectionFactory factory =
         new TCPPoolConnection.Factory();
 }

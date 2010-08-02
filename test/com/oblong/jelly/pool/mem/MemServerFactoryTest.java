@@ -3,7 +3,6 @@
 package com.oblong.jelly.pool.mem;
 
 import org.junit.Test;
-import org.junit.BeforeClass;
 import static org.junit.Assert.*;
 
 import com.oblong.jelly.PoolServersTestBase;
@@ -17,10 +16,6 @@ import com.oblong.jelly.PoolServersTestBase;
  * @author jao
  */
 public class MemServerFactoryTest extends PoolServersTestBase {
-
-    @BeforeClass public static void setup() {
-        MemServerFactory.register();
-    }
 
     public MemServerFactoryTest() {
         super("mem");

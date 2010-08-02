@@ -17,8 +17,4 @@ public class MemHoseTest extends HoseTestBase {
     public MemHoseTest() throws PoolException {
         super(PoolServerAddress.fromURI("mem://localhost"));
     }
-
-    static {
-        MemServerFactory.register();
-    }
 }

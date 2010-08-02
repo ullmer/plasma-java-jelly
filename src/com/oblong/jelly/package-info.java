@@ -150,5 +150,37 @@
  * individually, if that's the (perhaps more idiomatic) style that you
  * favour. The {@link com.oblong.jelly.PoolException documentation of
  * PoolException} explains how to work with our exception system.
+ *
+ * <h3>Other kinds of pool: in-memory pools</h3>
+ *
+ * <p> TCP is not the only supported scheme. You can also use a
+ * pseudo-pool server local to the running JVM that store their
+ * proteins in memory. Their URI scheme is "mem". The following code
+ * creates a 'mem-pool', opens a connection and writes some proteins
+ * to it:
+ *
+ * <pre>
+ *    Hose h = Pool.participate("mem:///a-mem-pool", null);
+ *    Proteins[] proteins = gimmeProts();
+ *    for (Protein p : proteins) h.deposit(p);
+ * </pre>
+ *
+ * where we have used the two-arguments version of {@code
+ * participate}, which creates the pool if it doesn't already exist.
+ * After the code above is executed, the proteins in the array will be
+ * stored in memory and accessable by any other hose using the
+ * standard Hose interface. Note that we use an empty hostname (the
+ * library will then use "localhost" as a default); you can use any
+ * other hostname you want, as long as you use the same URI later on
+ * to access the pool. Also, in the current version of jelly,
+ * in-memory pools accept ignore any creation options (that's why the
+ * second argument in the call to participate is null).
+ *
+ * <p> In-memory pools come in handy for testing your applications
+ * without needing to establish network connections, but can also help
+ * providing local sources of proteins to protein sinks that can be
+ * coded abstracting away from the real nature of the server providing
+ * the proteins (i.e., taking either a Hose or a URI as inputs).
+ *
  */
 package com.oblong.jelly;

@@ -82,7 +82,8 @@ public final class PoolServers {
         new ConcurrentHashMap<String, Factory>();
 
     static {
-        register("tcp", new com.oblong.jelly.pool.tcp.TCPServerFactory());
+        com.oblong.jelly.pool.tcp.TCPServerFactory.register();
+        com.oblong.jelly.pool.mem.MemServerFactory.register();
     }
 
     private static ConcurrentHashMap<PoolServerAddress, PoolServer> servers =

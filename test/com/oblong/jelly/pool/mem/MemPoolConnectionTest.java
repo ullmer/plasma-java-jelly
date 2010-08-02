@@ -20,8 +20,4 @@ public class MemPoolConnectionTest extends PoolTestBase {
     public MemPoolConnectionTest() throws PoolException {
         super(PoolServerAddress.fromURI("mem://localhost"));
     }
-
-    static {
-        MemServerFactory.register();
-    }
 }
