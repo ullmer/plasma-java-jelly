@@ -1,3 +1,5 @@
+// Copyright (c) 2010 Oblong Industries
+
 package com.oblong.jelly.slaw;
 
 import java.math.BigInteger;
