@@ -74,6 +74,11 @@
   </target>
 
   <target name="compile" depends="init" description="Compile the source">
+    <depend srcdir="${src.dir}"
+            destdir="${build.classes.dir}"
+            cache="${build.dir}/dependencies"
+            closure="true">
+    </depend>
     <javac srcdir="${src.dir}"
            classpathref="compile.classpath"
            destdir="${build.classes.dir}"

@@ -93,7 +93,7 @@ public final class JavaSlawFactory implements SlawFactory {
                 && (d < 2 || d > 4))
             || (ilk == SlawIlk.MULTI_VECTOR_ARRAY && (d < 2 || d > 5)))
             throw new IllegalArgumentException ("Invalid dimension");
-        return EmptyArray.valueOf(ilk, ni, d);
+        return SlawEmptyArray.valueOf(ilk, ni, d);
     }
 
     @Override public Slaw array(Slaw n, Slaw... ns) {
