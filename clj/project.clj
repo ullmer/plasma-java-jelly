@@ -12,9 +12,7 @@
 
   :disable-implicit-clean true
 
-  :java-source-path "../src"
-  :javac-fork "true"
-  :javac-target "1.6"
-  :javac-debug "true"
+  :java-source-path "../core/src"
+  :java-options {:debug "true" :fork "true" :target "1.6"}
 
   :main jelly.main)
