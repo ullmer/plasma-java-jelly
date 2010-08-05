@@ -17,10 +17,12 @@
 
   <property name="build.dir" location="build"/>
   <property name="build.classes.dir" location="${build.dir}/classes"/>
-  <property name="build.jar"
-            location="${build.dir}/${jelly.basename}-${jelly.version}.jar"/>
 
-  <property name="doc.dir" location="${build.dir}/docs"/>
+  <property name="dist.dir" location="dist"/>
+  <property name="dist.jar"
+            location="${dist.dir}/${jelly.basename}-${jelly.version}.jar"/>
+
+  <property name="build.javadoc.dir" location="${build.dir}/docs"/>
 
   <property name="compile.debug" value="true"/>
   <property name="compile.encoding" value=""/>
@@ -37,6 +39,11 @@
   <property name="test.reports.dir" location="${test.build.dir}/reports"/>
   <property name="test.reports.format" value="frames"/>
 
+  <tstamp>
+    <format property="timestamp.isoformat"
+            pattern="yyyy-mm-dd'T'HH:mm:ss" locale="en"/>
+  </tstamp>
+
   <fileset id="test.fileset"
            dir="${test.classes.dir}" includes="**/*Test.class"/>
 
@@ -48,12 +55,12 @@
 
   <path id="test.compile.classpath">
     <path refid="compile.classpath"/>
-    <pathelement path="${build.classes.dir}"/>
+    <pathelement location="${dist.jar}"/>
   </path>
 
   <path id="test.run.classpath">
     <path refid="test.compile.classpath"/>
-    <pathelement path="${test.classes.dir}"/>
+    <path path="${test.classes.dir}"/>
   </path>
 
   <target name="properties" description="Show build properties">
@@ -62,7 +69,8 @@
 
   <target name="init">
     <mkdir dir="${build.classes.dir}"/>
-    <mkdir dir="${doc.dir}"/>
+    <mkdir dir="${build.javadoc.dir}"/>
+    <mkdir dir="${dist.dir}"/>
   </target>
 
   <target name="compile" depends="init" description="Compile the source">
@@ -81,7 +89,16 @@
 
   <target name="build" depends="compile"
           description="Generate the distribution">
-    <jar jarfile="${build.jar}" basedir="${build.classes.dir}"/>
+    <property name="manifest.mf" location="${build.dir}/manifest.mf" />
+    <manifest file="${manifest.mf}" >
+      <attribute name="Built-By" value="${user.name}"/>
+      <attribute name="Sealed" value="false"/>
+      <attribute name="Built-On" value="${timestamp.isoformat}"/>
+    </manifest>
+    <jar jarfile="${dist.jar}"
+         duplicate="fail"
+         basedir="${build.classes.dir}"
+         manifest="${manifest.mf}"/>
   </target>
 
   <target name="-test-init">
@@ -92,7 +109,7 @@
     <mkdir dir="${test.reports.dir}"/>
   </target>
 
-  <target name="compile-tests" depends="compile,-test-init"
+  <target name="compile-tests" depends="build,-test-init"
           description="Compile the test classes">
     <javac sourcepath="" srcdir="${test.src.dir}"
            classpathref="test.compile.classpath"
@@ -156,13 +173,14 @@
 
   <target name="clean" description="Clean up" >
     <delete dir="${build.dir}"/>
+    <delete dir="${dist.dir}"/>
   </target>
 
   <target name="rebuild" depends="clean, build" description="Rebuild">
   </target>
 
   <target name="javadoc" depends="init" description="Create javadoc">
-    <javadoc destdir="${doc.dir}"
+    <javadoc destdir="${build.javadoc.dir}"
              source="1.6"
              author="no"
              access="public"
