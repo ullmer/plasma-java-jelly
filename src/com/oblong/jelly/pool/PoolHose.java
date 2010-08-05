@@ -4,6 +4,9 @@ import java.util.concurrent.TimeUnit;
 
 import net.jcip.annotations.NotThreadSafe;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.oblong.jelly.Hose;
 import com.oblong.jelly.NoSuchProteinException;
 import com.oblong.jelly.NumericIlk;
@@ -57,8 +60,9 @@ final class PoolHose implements Hose {
         try {
             if (isConnected()) Request.WITHDRAW.sendAndClose(connection);
         } catch (PoolException e) {
-            // TODO Add proper logging
-            e.printStackTrace();
+            final Logger log = LoggerFactory.getLogger(Hose.class);
+            log.warn("Error withdrawing Hose '{}'", name());
+            log.warn("Exception was:", e);
         }
     }
 

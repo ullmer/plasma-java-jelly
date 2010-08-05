@@ -8,6 +8,9 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.util.Arrays;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.oblong.jelly.NumericIlk;
 import com.oblong.jelly.PoolException;
 import com.oblong.jelly.Protein;
@@ -40,21 +43,23 @@ final class TCPProxyHandler implements Runnable {
         try {
             init();
         } catch (IOException e) {
-            // TODO: log
+            log.warn("IO error initialising pool handler", e);
+            log.warn("Closing handler");
             connection.close();
         }
         while (connection.isOpen()) {
             try {
                 reply(forward(next()));
             } catch (Exception e) {
-                // TODO: log
+                log.warn("Exception talking with server", e);
+                log.warn("Closing handler");
                 connection.close();
             }
         }
         try {
             if (socket.isConnected()) socket.close();
         } catch (Exception e) {
-            // TODO: log
+            log.warn("Exception closing socket (ignored)", e);
         }
     }
 
@@ -86,8 +91,7 @@ final class TCPProxyHandler implements Runnable {
         try {
             return internalizer.internProtein(socket.getInputStream(),factory);
         } catch (SlawParseError e) {
-            // TODO: log
-            e.printStackTrace();
+            log.warn("Error parsing protein from server", e);
             return null;
         }
     }
@@ -148,4 +152,6 @@ final class TCPProxyHandler implements Runnable {
         new Internalizer();
     private static final SlawExternalizer externalizer =
         new Externalizer();
+
+    private final Logger log = LoggerFactory.getLogger(getClass());
 }
