@@ -116,6 +116,12 @@
 
   <target name="compile-tests" depends="build,-test-init"
           description="Compile the test classes">
+    <depend srcdir="${test.src.dir}"
+            destdir="${test.classes.dir}"
+            cache="${build.dir}/test-dependencies"
+            closure="true">
+      <classpath refid="compile.classpath"/>
+    </depend>
     <javac sourcepath="" srcdir="${test.src.dir}"
            classpathref="test.compile.classpath"
            destdir="${test.classes.dir}"
