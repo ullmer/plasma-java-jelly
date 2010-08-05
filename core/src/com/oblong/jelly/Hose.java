@@ -21,7 +21,7 @@ import net.jcip.annotations.NotThreadSafe;
  * it. Most notable, and index which denotes the position on the
  * pool's protein stream. This position (returned by {@link #index})
  * is used implicitly by protein retrieval methods that do not specify
- * a explicty position in the stream.
+ * a explicitly position in the stream.
  *
  * <p> A second piece of local state is a free form name that client
  * code can assign, and mutate at any time. This name can be used in
@@ -41,7 +41,7 @@ import net.jcip.annotations.NotThreadSafe;
  *
  * <p> Regarding error reporting, this interfaces follows the usual
  * policy with pool errors in jelly: methods have a throws
- * PoolException clause and will throw all the appropiate subtypes,
+ * PoolException clause and will throw all the appropriate subtypes,
  * that can be caught specifically if you so desire (see discussion
  * {@link PoolException here}).
  *
@@ -264,7 +264,7 @@ public interface Hose {
      * <p> Thus, successive calls to {@code next} will sequentially
      * traverse the sequence of proteins in the pool. Since the
      * absence of a next protein (when reaching the end of the pool)
-     * is signalled by means of a {@code PoolException} (of type
+     * is signaled by means of a {@code PoolException} (of type
      * {@code NoSuchProteinException}), the return value of this
      * method is always non-null. Moreover, after each call, the value
      * returned by {@code index()} will be equal to the index of the
@@ -307,7 +307,7 @@ public interface Hose {
      *
      * <p> When {@code period} is 0, this method behaves like {@link
      * #next()} (i.e., it doesn't wait), while if {@code period} is
-     * negative, it behaves linke {@link #awaitNext()} (i.e., it waits
+     * negative, it behaves like {@link #awaitNext()} (i.e., it waits
      * forever).
      *
      * <p> Note that, if you have moved forward the local index past

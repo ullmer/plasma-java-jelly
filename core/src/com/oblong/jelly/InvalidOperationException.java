@@ -5,7 +5,7 @@ package com.oblong.jelly;
 import net.jcip.annotations.Immutable;
 
 /**
- * A PoolException denoting an operation unaccepted by a server.
+ * A PoolException denoting an operation not accepted by a server.
  *
  * <p> This error will arise when you try to perform an operation that
  * the pool server does not support.

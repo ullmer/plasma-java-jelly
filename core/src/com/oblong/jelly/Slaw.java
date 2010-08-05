@@ -206,7 +206,7 @@ public abstract class Slaw implements Iterable<Slaw> {
     /**
      * Checks whether this Slaw's ilk corresponds to an array,
      * regardless of its components' kind. Components are numeric
-     * (number, complex or vectorial) and homogeneous, both in ilk and
+     * (number, complex or vectors) and homogeneous, both in ilk and
      * numeric ilk.
      *
      * @see SlawIlk#isArray

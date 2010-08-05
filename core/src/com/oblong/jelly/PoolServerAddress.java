@@ -126,7 +126,7 @@ public final class PoolServerAddress {
     }
 
     /**
-     * Auxliarily function to help determine whether a URI is contains
+     * Auxiliary function to help determine whether a URI is contains
      * a pool address part or should be considered just a pool name.
      * Client code probably won't use this method at all.
      */

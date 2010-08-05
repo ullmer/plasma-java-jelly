@@ -4,7 +4,7 @@ package com.oblong.jelly;
 import net.jcip.annotations.Immutable;
 
 /**
- * A PoolException signalling the failure to retrieve a protein.
+ * A PoolException signaling the failure to retrieve a protein.
  *
  * <p> Errors of this kind ({@code NO_SUCH_PROTEIN)} will occur when
  * asking for proteins either because their number is exhausted or

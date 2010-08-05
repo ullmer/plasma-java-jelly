@@ -94,7 +94,7 @@ public enum SlawIlk {
 
     /**
      * The set of ilks for slawx that represent a numeric value, or an
-     * aggreate of them. This set is composed of {@code NUMBER},
+     * aggregate of them. This set is composed of {@code NUMBER},
      * {@code COMPLEX}, {@code NUMBER_VECTOR}, {@code COMPLEX_VECTOR},
      * {@code MULTI_VECTOR} and all the array ilks (contained in the
      * set returned by {@link #arrayIlks}).

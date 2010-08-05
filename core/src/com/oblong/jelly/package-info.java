@@ -1,6 +1,6 @@
 /**
  * Jelly's public API to interact with remote pools is contained, in
- * its totallity, in this package.
+ * its totality, in this package.
  *
  * <p> As a matter of fact, you can build a fully functional jelly
  * application by using {@link com.oblong.jelly.Pool Pool}'s methods
@@ -169,7 +169,7 @@
  * where we have used the two-arguments version of {@code
  * participate}, which creates the pool if it doesn't already exist.
  * After the code above is executed, the proteins in the array will be
- * stored in memory and accessable by any other hose using the
+ * stored in memory and accessible by any other hose using the
  * standard Hose interface. Note that we use an empty hostname (the
  * library will then use "localhost" as a default); you can use any
  * other hostname you want, as long as you use the same URI later on

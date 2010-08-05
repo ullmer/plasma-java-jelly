@@ -57,7 +57,7 @@ public final class PoolServers {
     }
 
     /**
-     * Inteface for implementors of new pool server types.
+     * Interface for implementors of new pool server types.
      *
      * User code accessing just TCP pool servers can safely ignore
      * this interface.

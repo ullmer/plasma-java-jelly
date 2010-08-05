@@ -5,7 +5,7 @@ package com.oblong.jelly;
 import net.jcip.annotations.Immutable;
 
 /**
- * A PoolException signalling a misunderstanding between clean and server.
+ * A PoolException signaling a misunderstanding between clean and server.
  *
  * <p> It has kind {@code PROTOCOL_ERROR}.
  *

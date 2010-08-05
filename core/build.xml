@@ -13,7 +13,7 @@
             value="${jelly.title} - Copyright 2010 Oblong Industries"/>
 
   <property name="src.dir" location="src"/>
-  <property name="lib.dir" location="lib"/>
+  <property name="lib.dir" location="../lib"/>
 
   <property name="build.dir" location="build"/>
   <property name="build.classes.dir" location="${build.dir}/classes"/>

@@ -22,7 +22,7 @@ import java.util.NoSuchElementException;
  * The order of the members of this enum also serves to define
  * widening conversions from one numeric ilk to another. This ordering
  * is used by composite numeric Slaw constructors to allow composition
- * of {@link Slaw} instances with heterogenous numeric ilks.
+ * of {@link Slaw} instances with heterogeneous numeric ilks.
  *
  * @author jao
  */
@@ -40,11 +40,11 @@ public enum NumericIlk {
     /** The number of bytes used to represented values of this ilk. */
     public int bytes() { return bsize; }
 
-    /** Whether this ilk representes signed numbers. */
+    /** Whether this ilk represents signed numbers. */
     public boolean isSigned() { return signed; }
 
     /**
-     * Whether this ilk representes integral (as opposed to
+     * Whether this ilk represents integral (as opposed to
      * floating-point) numbers.
      */
     public boolean isIntegral() { return integral; }
