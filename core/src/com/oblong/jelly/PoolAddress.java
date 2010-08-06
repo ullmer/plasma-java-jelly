@@ -37,7 +37,13 @@ import net.jcip.annotations.Immutable;
 @Immutable
 public final class PoolAddress {
 
-    /** Constructs a PoolAddress object from its string representation. */
+    /**
+     * Constructs a PoolAddress object from its string representation.
+     * {@code uri} must be a full pool URI, including a scheme (e.g.
+     * "tcp://"), optional hostname and port followed by a slash, and
+     * a pool name (whose validity will be checked by the pool server
+     * upon connection).
+     */
     public static PoolAddress fromURI(String uri)
         throws BadAddressException {
         return new PoolAddress(null, uri);
@@ -58,7 +64,7 @@ public final class PoolAddress {
      *
      * <p> If {@code addr} is null, a default server address (as
      * constructed by {@code new PoolServerAddress(null)}, i.e.,
-     * {@code "tcp://localhost"} will be used.
+     * {@code "tcp://localhost:65456"} will be used.
      *
      * @throws BadAddressException if {@code name} is not a valid pool
      * name or URI. Note, however, that the lack of an error when
@@ -68,8 +74,7 @@ public final class PoolAddress {
     public PoolAddress(PoolServerAddress addr, String name)
         throws BadAddressException {
         Matcher matcher = ADDR_PATT.matcher(name);
-        if (!PoolServerAddress.isRelative(name)
-            && matcher.matches() && matcher.group(1) != null) {
+        if (!PoolServerAddress.isRelative(name) && matcher.matches()) {
             serverAddress = PoolServerAddress.fromURI(name);
             poolName = checkName(matcher.group(4));
         } else {

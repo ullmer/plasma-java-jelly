@@ -38,9 +38,7 @@ public class PoolServerAddressTest {
     }
 
     @Test public void fromUri() throws PoolException {
-        PoolServerAddress addr = PoolServerAddress.fromURI("host");
-        assertEquals("tcp://host", addr.toString());
-        addr = PoolServerAddress.fromURI("mem://foo");
+        PoolServerAddress addr = PoolServerAddress.fromURI("mem://foo");
         assertEquals("mem://foo", addr.toString());
         addr = PoolServerAddress.fromURI("mem://");
         assertEquals("mem://localhost", addr.toString());

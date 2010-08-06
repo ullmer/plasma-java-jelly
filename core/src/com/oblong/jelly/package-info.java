@@ -3,40 +3,40 @@
  * its totallity, in this package.
  *
  * <p> As a matter of fact, you can build a fully functional jelly
- * application by using {@link com.oblong.jelly.Pool Pool}'s methods
- * to connect to pools and obtain {@link com.oblong.jelly.Hose Hose}
- * instances allowing you to exchange {@link com.oblong.jelly.Protein
- * Protein} objects with remote servers. Proteins can be deconstructed
- * into their constituent {@link com.oblong.jelly.Slaw Slawx}, from
- * which you can obtain native java objects. Besides the classes
- * above, you'll probably need to take a look at a couple of
- * enumerations, {@link com.oblong.jelly.SlawIlk SlawIlk} and {@link
- * com.oblong.jelly.NumericIlk NumericIlk}, to properly handle the
- * many Slaw kinds, and to {@link com.oblong.jelly.PoolException
- * PoolException} to deal with errors.
+ * application by using {@link com.oblong.jelly.Pool}'s methods to
+ * connect to pools and obtain {@link com.oblong.jelly.Hose} instances
+ * allowing you to exchange {@link com.oblong.jelly.Protein} objects
+ * with remote servers. Proteins can be deconstructed into their
+ * constituent {@link com.oblong.jelly.Slaw}, from which you can
+ * obtain native java objects. Besides the classes above, you'll
+ * probably need to take a look at a couple of enumerations, {@link
+ * com.oblong.jelly.SlawIlk SlawIlk} and {@link
+ * com.oblong.jelly.NumericIlk}, to properly handle the many Slaw
+ * kinds, and to {@link com.oblong.jelly.PoolException} to deal with
+ * errors.
  *
  * <p> In some cases, you might find useful a more structured approach
- * to pool addressing (using {@link com.oblong.jelly.PoolAddress
- * PoolAddress} and {@link com.oblong.jelly.PoolServerAddress
- * PoolServerAddress}), and the reification of pool servers, which can
- * be accomplished (via the creation of objects implementing {@link
- * com.oblong.jelly.PoolServer PoolServer} interface) using the {@link
- * com.oblong.jelly.PoolServers PoolServers} factory class.
+ * to pool addressing (using {@link com.oblong.jelly.PoolAddress} and
+ * {@link com.oblong.jelly.PoolServerAddress}), and the reification of
+ * pool servers, which can be accomplished (via the creation of
+ * objects implementing {@link com.oblong.jelly.PoolServer} interface)
+ * using the {@link com.oblong.jelly.PoolServers PoolServers} factory
+ * class.
  *
  * <p> It's also possible to treat errors in a finer-grained way by
  * means of the host of exception classes defined in the library, all
- * of them deriving from {@link com.oblong.jelly.PoolException
- * PoolException}.
+ * of them deriving from {@link com.oblong.jelly.PoolException}.
  *
  * <h3>Addressing, and connecting to, pools</h3>
  *
  * A pool location if fully given by its URI, a string formed by a
- * scheme, a host name, a port, and a pool name. Most of the time, the
- * scheme will be "tcp", and it can be omitted if no ambiguity
- * results. Thus, "tcp://hostname:1234/the/name/of a pool", denotes a
- * pool named "the/name/of a pool" accessed through a pool server
- * listening at "hostname"'s port 1234, and it can be shortened to
- * "hostname:1234/the/name/of pool".
+ * scheme, an optional host name, an optional port, and a pool name.
+ * When no host name is provided (as in, e.g., "tcp:///a-pool"),
+ * "localhost" is used, while 65456 is the default port (thus, the
+ * previous URI is equivalent to "tcp://localhost:65456/a-pool").
+ * Note, however, that the scheme part (e.g. "tcp://" or "mem://") is
+ * always mandatory, and that you need to specify a host name if you
+ * want to include a port number.
  *
  * <p> Once you know its URI, you can connect to a pool using {@link
  * com.oblong.jelly.Pool#participate(String) Pool's participate}
@@ -51,18 +51,17 @@
  * <p> If you prefer to to treat pool URIs in a safer way, {@link
  * com.oblong.jelly.PoolAddress PoolAddress} objects encapsulate and
  * parse them, and allow you to separate the server part of the
- * address as a {@link com.oblong.jelly.PoolServerAddress
- * PoolServerAddress} instance. The latter can be used, in turn, to
- * obtain instances of {@link com.oblong.jelly.PoolServer PoolServer},
- * a class reifying pool servers. As noticed before, usage of these
- * classes is optional: you can perform all required operations on
- * pools via string URIs and the static methods in {@link
- * com.oblong.jelly.Pool Pool}.
+ * address as a {@link com.oblong.jelly.PoolServerAddress} instance.
+ * The latter can be used, in turn, to obtain instances of {@link
+ * com.oblong.jelly.PoolServer}, a class reifying pool servers. As
+ * noticed before, usage of these classes is optional: you can perform
+ * all required operations on pools via string URIs and the static
+ * methods in {@link com.oblong.jelly.Pool}.
  *
  * <h3>Reading and writing proteins</h3>
  *
- * Once you get a {@link com.oblong.jelly.Hose Hose} instance from
- * either {@link com.oblong.jelly.Pool Pool} or a {@link
+ * Once you get a {@link com.oblong.jelly.Hose} instance from either
+ * {@link com.oblong.jelly.Pool} or a {@link
  * com.oblong.jelly.PoolServer}, exchanging proteins with a pool is
  * just a matter of using Hose's interface.
  *
@@ -110,7 +109,7 @@
  * (using, for instance, {@link com.oblong.jelly.Hose#next()} or
  * {@link com.oblong.jelly.Hose#nth(long)}) or explicitly constructed
  * from other slawx using the factory method {@link
- * com.oblong.jelly.Slaw#protein(Slaw,Slaw, byte[])}.
+ * com.oblong.jelly.Slaw#protein(Slaw, Slaw, byte[])}.
  *
  * <p> {@link com.oblong.jelly.Slaw} encompasses all the data types a
  * Slaw can represent (with {@link com.oblong.jelly.SlawIlk} and

@@ -16,10 +16,6 @@ import net.jcip.annotations.Immutable;
  * be specified in one shot as a string, but sometimes it's handy to
  * use a more structured data. PoolServerAddress offers the latter.
  *
- * <p> Most of the time, the scheme for the pool servers you use will
- * be {@code "tcp"}, so you may use most of this class API taking that
- * as a default.
- *
  * @author jao
  */
 @Immutable
@@ -37,19 +33,23 @@ public final class PoolServerAddress {
     /**
      * Creates a pool address by parsing the given string.
      *
-     * <p> If any of the three components in a server address (scheme,
-     * host, port) is missing, default values are provided.
+     * <p> If either the hostname or the port are missing, default
+     * values ({@link #DEFAULT_HOST} and {@link #DEFAULT_PORT},
+     * respectively) are used. Thus, "tcp://", "tcp://localhost" and
+     * "tcp://localhost:65456" represent the same pool address.
      *
      * <p> The expected format and parsing rules are, for the most
-     * part, those used for the server part of URLs.
+     * part, those used for the server part of URLs. Note that the
+     * URI's scheme part is mandatory.
      *
-     * @throws BadAddressException {@code uri} is not a valid pool
-     * name or URI.
+     * @throws BadAddressException if {@code uri} is not a valid
+     * server URI.
      */
     public static PoolServerAddress fromURI(String uri)
         throws BadAddressException {
         Matcher matcher = ADDR_PATT.matcher(uri);
-        if (!matcher.lookingAt()) return null;
+        if (!matcher.lookingAt())
+            throw new BadAddressException("Malformed server URI: " + uri);
         final String scheme = matcher.group(1);
         final String host = matcher.group(2);
         final String port = matcher.group(3);
@@ -135,14 +135,11 @@ public final class PoolServerAddress {
      * Client code probably won't use this method at all.
      */
     public static boolean isRelative(String uri) {
-        Matcher matcher = ADDR_PATT.matcher(uri);
-        return (!matcher.lookingAt()
-                || matcher.group(1) == null
-                || matcher.group(1).isEmpty());
+        return !ADDR_PATT.matcher(uri).lookingAt();
     }
 
     static final String ADDR_REGEX =
-        "(?:([\\p{Alpha}]+)://)?(?:([^ :/]+)(?::(\\d+))?)?";
+        "(?:([\\p{Alpha}]+)://)(?:([^ :/]+)(?::(\\d+))?)?";
 
     private static final Pattern ADDR_PATT = Pattern.compile(ADDR_REGEX);
 
