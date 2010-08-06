@@ -110,14 +110,9 @@ final class TCPPoolConnection implements PoolConnection {
     private TCPPoolConnection(PoolServerAddress addr) throws PoolException {
         try {
             address = addr;
-            Socket socket = new Socket(addr.host(), addr.port());
+            socket = new Socket(addr.host(), addr.port());
             sendPreamble(socket.getOutputStream());
             version = readVersions(socket.getInputStream());
-            if (0 == version) {
-                socket.close();
-                socket = new Socket(addr.host(), addr.port());
-            }
-            this.socket = socket;
             supported = readSupported(socket.getInputStream(), version);
             externalizer = defaultExternalizer;
             internalizer = defaultInternalizer;
@@ -199,7 +194,7 @@ final class TCPPoolConnection implements PoolConnection {
 
     private static final int MIN_SLAW_VERSION = 2;
     private static final int MAX_SLAW_VERSION = 2;
-    private static final int MIN_TCP_VERSION = 0;
+    private static final int MIN_TCP_VERSION = 1;
     private static final int MAX_TCP_VERSION = 3;
 
     static final Slaw OP_KEY = factory.string("op");
