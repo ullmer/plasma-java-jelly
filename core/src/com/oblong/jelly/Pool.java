@@ -57,6 +57,8 @@ public final class Pool {
 
     /**
      * Equivalent to {@code Pool.create(addr.toString(), opts)}.
+     *
+     * @see #create(String, PoolOptions)
      */
     public static void create(PoolAddress addr, PoolOptions opts)
         throws PoolException {
@@ -80,6 +82,8 @@ public final class Pool {
 
     /**
      * Equivalent to {@code Pool.dispose(addr.toString())}.
+     *
+     * @see #dispose(String)
      */
     public static void dispose(PoolAddress addr) throws PoolException {
         PoolServers.get(addr.serverAddress()).dispose(addr.poolName());
@@ -102,6 +106,8 @@ public final class Pool {
 
     /**
      * Equivalent to {@code Pool.participate(addr.toString())}.
+     *
+     * @see #participate(String)
      */
     public static Hose participate(PoolAddress addr) throws PoolException {
         return PoolServers.get(addr.serverAddress())
@@ -127,6 +133,8 @@ public final class Pool {
 
     /**
      * Equivalent to {@code Pool.participate(addr.toString(), opts)}.
+     *
+     * @see #participate(String, PoolOptions)
      */
     public static Hose participate(PoolAddress addr, PoolOptions opts)
         throws PoolException {
@@ -137,6 +145,8 @@ public final class Pool {
     /**
      * Equivalent to {@code
      * Pool.pools(PoolServerAddress.fromURI(serverURI))}.
+     *
+     * @see #pools(PoolServerAddress)
      */
     public static Set<String> pools(String serverURI) throws PoolException {
         return pools(PoolServerAddress.fromURI(serverURI));

@@ -84,6 +84,8 @@ public final class PoolServerAddress {
     /**
      * Equivalent to {@code PoolServerAddress(DEFAULT_SCHEME, host,
      * port)}.
+     *
+     * @see #PoolServerAddress(String, String, int)
      */
     public PoolServerAddress(String host, int port)
         throws BadAddressException {
@@ -93,6 +95,8 @@ public final class PoolServerAddress {
     /**
      * Equivalent to {@code PoolServerAddress(DEFAULT_SCHEME, host,
      * DEFAULT_PORT)}.
+     *
+     * @see #PoolServerAddress(String, String, int)
      */
     public PoolServerAddress(String host) throws BadAddressException {
         this("", host, -1);
@@ -126,7 +130,7 @@ public final class PoolServerAddress {
     }
 
     /**
-     * Auxiliary function to help determine whether a URI is contains
+     * Auxliarily function to help determine whether a URI is contains
      * a pool address part or should be considered just a pool name.
      * Client code probably won't use this method at all.
      */
