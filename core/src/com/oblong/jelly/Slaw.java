@@ -336,8 +336,10 @@ public abstract class Slaw implements Iterable<Slaw> {
      * When this Slaw has ilk {@link SlawIlk#CONS}, {@link
      * SlawIlk#COMPLEX} or {@link SlawIlk#LIST} (and, in the latter
      * case, corresponds to a non-empty list), the second component of
-     * the Slaw is returned. Otherwise, an {@code
-     * UnsupportedOperationException} is thrown.
+     * the Slaw is returned (where, in the case of lists, the 'second
+     * component' here means the list of all elements except the first
+     * one). Otherwise, an {@code UnsupportedOperationException} is
+     * thrown.
      *
      * <p> When supported, this operation returns the same value as
      * {@code nth(1)} for conses and complex numbers, and a list

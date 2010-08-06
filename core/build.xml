@@ -120,7 +120,7 @@
             destdir="${test.classes.dir}"
             cache="${build.dir}/test-dependencies"
             closure="true">
-      <classpath refid="compile.classpath"/>
+      <classpath refid="test.compile.classpath"/>
     </depend>
     <javac sourcepath="" srcdir="${test.src.dir}"
            classpathref="test.compile.classpath"
