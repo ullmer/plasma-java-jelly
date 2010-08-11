@@ -192,7 +192,7 @@
 
   <target name="javadoc" depends="init" description="Create javadoc">
     <javadoc destdir="${build.javadoc.dir}"
-             source="1.6"
+             source="${compile.source}"
              author="no"
              access="public"
              bottom="${jelly.blurb}"
