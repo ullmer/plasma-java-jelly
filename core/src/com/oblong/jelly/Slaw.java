@@ -417,7 +417,7 @@ public abstract class Slaw implements Iterable<Slaw> {
 
     /**
      * Creates a list with all of the sub-slawx of this Slaw. This
-     * method uses {@link #nth} to construct the list, so a non-null
+     * method uses {@link #nth()} to construct the list, so a non-null
      * value will always be returned (albeit in some occasions it may
      * be an empty List), even if this Slaw is not of ilk {@link
      * SlawIlk#LIST}.
@@ -428,7 +428,7 @@ public abstract class Slaw implements Iterable<Slaw> {
      * Returns a slice of the list constructed by {@link #emitList()}.
      *
      * <p> The slice contains elements beginning at index
-     * <code>begin<code> and ending at either <code>end-1</code> or
+     * <code>begin</code> and ending at either <code>end-1</code> or
      * <code>count()-1</code> if <code>end>count()</code>. If
      * <code>end<=begin</code>, an empty list is returned. Negative
      * end or begin values are transformed to positive values by
