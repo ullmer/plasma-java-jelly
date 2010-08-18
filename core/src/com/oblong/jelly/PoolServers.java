@@ -8,7 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import net.jcip.annotations.ThreadSafe;
 
 /**
- * Factory of PoolServer instances.
+ * A factory of PoolServer instances.
  *
  * <p> This is a factory for PoolServer instances, obtainable given
  * the corresponding pool address.

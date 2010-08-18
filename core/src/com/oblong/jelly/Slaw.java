@@ -566,7 +566,7 @@ public abstract class Slaw implements Iterable<Slaw> {
     public abstract String debugString();
 
     /**
-     * Factory method constructing a Slaw with ilk {@link
+     * A factory method constructing a Slaw with ilk {@link
      * SlawIlk#CONS} out of its two components. Both arguments must be
      * non-null; otherwise, an <code>IllegalArgumentException</code>
      * is thrown.
@@ -576,7 +576,7 @@ public abstract class Slaw implements Iterable<Slaw> {
     }
 
     /**
-     * %Factory method constructing a Slaw with ilk {@link
+     * A factory method constructing a Slaw with ilk {@link
      * SlawIlk#LIST} out of its components. Null arguments are
      * discarded. Thus, <code>Slaw.list(null)</code> returns an empty
      * Slaw list, as does <code>Slaw.list()</code>.
@@ -584,7 +584,7 @@ public abstract class Slaw implements Iterable<Slaw> {
     public static Slaw list(Slaw... s) { return factory.list(s); }
 
     /**
-     * Factory method constructing a Slaw with ilk {@link
+     * A factory method constructing a Slaw with ilk {@link
      * SlawIlk#LIST} from a native Java list. Null elements of
      * <code>s</code> are discarded. If its argument is null, it
      * returns an empty Slaw list.
@@ -592,7 +592,7 @@ public abstract class Slaw implements Iterable<Slaw> {
     public static Slaw list(List<Slaw> s) { return factory.list(s); }
 
     /**
-     * Factory method constructing a Slaw with ilk {@link SlawIlk#MAP}
+     * A factory method constructing a Slaw with ilk {@link SlawIlk#MAP}
      * from a a explicit list of slawx. The arguments are interpreted
      * as alternating keys and values. If any of the slawx in a
      * key/value pair is null, the whole pair is skipped.
@@ -600,7 +600,7 @@ public abstract class Slaw implements Iterable<Slaw> {
     public static Slaw map(Slaw... kvs) { return factory.map(kvs); }
 
     /**
-     * Factory method constructing a Slaw with ilk {@link
+     * A factory method constructing a Slaw with ilk {@link
      * SlawIlk#LIST} from a native Java map. If any of the slawx in a
      * key/value pair is null, the whole pair is skipped. When
      * <code>m</code> is null, an empty Slaw map is returned.
@@ -608,7 +608,7 @@ public abstract class Slaw implements Iterable<Slaw> {
     public static Slaw map(Map<Slaw,Slaw> m) { return factory.map(m); }
 
     /**
-     * Factory method creating a Protein. Calling this method is
+     * A factory method creating a Protein. Calling this method is
      * equivalent to calling <code>protein(descrips, ingests, null)</code>
      * (i.e., it constructs a protein without raw data).
      */
@@ -617,7 +617,7 @@ public abstract class Slaw implements Iterable<Slaw> {
     }
 
     /**
-     * Factory method constructing a Slaw with ilk {@link
+     * A factory method constructing a Slaw with ilk {@link
      * SlawIlk#PROTEIN} out of its three components: descrips, ingests
      * and raw data. Any argument can be null, denoting, respectively,
      * a protein without descrips, ingests or raw data. There are no
@@ -628,7 +628,7 @@ public abstract class Slaw implements Iterable<Slaw> {
     }
 
     /**
-     * Factory method creating a Slaw with ilk {@link SlawIlk#NIL}.
+     * A factory method creating a Slaw with ilk {@link SlawIlk#NIL}.
      * All nil slawx are equal under the {@link #equals} predicate,
      * but no guarantees are made regarding the equality, under
      * <code>==</code>, of the instances returned by different calls
@@ -637,7 +637,7 @@ public abstract class Slaw implements Iterable<Slaw> {
     public static Slaw nil() { return factory.nil(); }
 
     /**
-     * Factory method creating a Slaw with ilk {@link SlawIlk#BOOL}.
+     * A factory method creating a Slaw with ilk {@link SlawIlk#BOOL}.
      * All true slawx are equal under the {@link #equals} predicate,
      * as are all false ones, but no guarantees are made regarding the
      * equality, under <code>==</code>, of the instances returned by
@@ -646,7 +646,7 @@ public abstract class Slaw implements Iterable<Slaw> {
     public static Slaw bool(boolean v) { return factory.bool(v); }
 
     /**
-     * Factory method creating a Slaw with ilk {@link SlawIlk#STRING}.
+     * A factory method creating a Slaw with ilk {@link SlawIlk#STRING}.
      * When serialized, Slaw strings are always encoded using UTF-8.
      */
     public static Slaw string(String s) { return factory.string(s); }
@@ -692,7 +692,7 @@ public abstract class Slaw implements Iterable<Slaw> {
     public static Slaw unt64(long n) { return number(UNT64, n); }
 
     /**
-     * %Factory method creating a Slaw with ilk {@link SlawIlk#NUMBER}
+     * A factory method creating a Slaw with ilk {@link SlawIlk#NUMBER}
      * and numeric ilk {@link NumericIlk#UNT64}. Only the 8 less
      * significant bytes of <code>n</code> are considered, and they're
      * interpreted as representing a positive number. When your Slaw's
@@ -761,7 +761,7 @@ public abstract class Slaw implements Iterable<Slaw> {
     }
 
     /**
-     * Factory method constructing a Slaw with ilk {@link
+     * A factory method constructing a Slaw with ilk {@link
      * SlawIlk#COMPLEX} out of its real and imaginary parts. Both
      * arguments must be non-null and have ilk {@link SlawIlk#NUMBER};
      * otherwise, an <code>IllegalArgumentException</code> is thrown.
@@ -780,7 +780,7 @@ public abstract class Slaw implements Iterable<Slaw> {
     }
 
     /**
-     * Factory method constructing a 2-dimensional vector Slaw out of
+     * A factory method constructing a 2-dimensional vector Slaw out of
      * its components. Both arguments must be non-null and have ilk
      * the same ilk, which must be either {@link SlawIlk#NUMBER} or
      * {@link SlawIlk#COMPLEX}; otherwise, an
@@ -808,7 +808,7 @@ public abstract class Slaw implements Iterable<Slaw> {
     }
 
     /**
-     * Factory method constructing a 3-dimensional vector Slaw out of
+     * A factory method constructing a 3-dimensional vector Slaw out of
      * its components. The semantics and constraints on its arguments
      * as the same as those of {@link #vector(Slaw,Slaw)}, which see.
      */
@@ -817,7 +817,7 @@ public abstract class Slaw implements Iterable<Slaw> {
     }
 
     /**
-     * Factory method constructing a 4-dimensional vector Slaw out of
+     * A factory method constructing a 4-dimensional vector Slaw out of
      * its components. The semantics and constraints on its arguments
      * as the same as those of {@link #vector(Slaw,Slaw)}, which see.
      */
@@ -826,7 +826,7 @@ public abstract class Slaw implements Iterable<Slaw> {
     }
 
     /**
-     * Factory method constructing a Slaw multivector out of its
+     * A factory method constructing a Slaw multivector out of its
      * components. The number of arguments must be 4, 8, 16 or 32 (for
      * a multivector of dimension 2, 3, 4 or 5), and all must be
      * non-null and have ilk {@link SlawIlk#NUMBER}; otherwise an
@@ -843,7 +843,7 @@ public abstract class Slaw implements Iterable<Slaw> {
     }
 
     /**
-     * Factory method constructing a non-empty numeric Slaw array out
+     * A factory method constructing a non-empty numeric Slaw array out
      * of its components. The given array must have at least one
      * non-null element; otherwise, an
      * <code>IllegalArgumentException</code> is thrown.
@@ -855,7 +855,7 @@ public abstract class Slaw implements Iterable<Slaw> {
     public static Slaw array(Slaw[] sx) { return factory.array(sx); }
 
     /**
-     * Factory method constructing a non-empty numeric Slaw array out
+     * A factory method constructing a non-empty numeric Slaw array out
      * of its components. At least one of the arguments must be
      * non-null (nulls are skipped), and all non-null arguments must
      * have the same ilk (otherwise an
@@ -879,7 +879,7 @@ public abstract class Slaw implements Iterable<Slaw> {
     }
 
     /**
-     * Factory method constructing a non-empty numeric Slaw array out
+     * A factory method constructing a non-empty numeric Slaw array out
      * of its components. At least one of the elements of the given
      * list must be non-null (nulls are skipped), and all non-null
      * arguments must have the same ilk (otherwise an
