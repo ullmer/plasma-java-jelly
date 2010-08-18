@@ -28,8 +28,8 @@ import static com.oblong.jelly.SlawIlk.*;
  * wrapped by a Slaw (in the form of a Java native value) using one of
  * the emit methods in this class. Each of these methods is
  * applicable, in general, only to a subset of the possible Slaw ilks
- * (e.g. {@code emitBoolean()} makes no sense when applied to a Slaw
- * with ilk {@code MAP}), and will throw an (unchecked)
+ * (e.g. <code>emitBoolean()</code> makes no sense when applied to a
+ * Slaw with ilk <code>MAP</code>), and will throw an (unchecked)
  * UnsupportedOperationException if called on the wrong Slaw instance;
  * thus, the recommended pattern is either to guard their usage by a
  * call to the corresponding type predicate, as in
@@ -50,10 +50,10 @@ import static com.oblong.jelly.SlawIlk.*;
  * <p> Several of the available Slaw ilks represent composite types.
  * You can access the components of a Slaw instance in a traditional
  * index based fashion by means of nth and count. But Slaw also also
- * implements {@code Iterable<Slaw>}, so that you can iterate over the
- * sub-slawx using new-style for loops or the {@code Iterator<Slaw>}
- * interface. Since Slaw instances are immutable, the latter does not
- * support the remove operation.
+ * implements <code>Iterable<Slaw></code>, so that you can iterate
+ * over the sub-slawx using new-style for loops or the
+ * <code>Iterator<Slaw></code> interface. Since Slaw instances are
+ * immutable, the latter does not support the remove operation.
  *
  * <p> As a convenience, using the sub-slaw traversal APIs on atomic
  * Slaw instances is supported: with regard to those methods, an
@@ -70,13 +70,13 @@ import static com.oblong.jelly.SlawIlk.*;
  * generic Slaw arguments, the latter must be of a numeric ilk;
  * otherwise, a non-checked exception will be thrown. So it pays to
  * make sure that arguments passed to those methods are of the correct
- * ilk. Note that all atomic numeric Slaw share a common ilk, {@code
- * NUMBER}, which is further refined (in terms of signedness and
- * width) by an associated NumericIlk: there's a well defined notion
- * of coercion between Slaw numbers, given by an ordering of their
- * numeric ilk from {@code INT8} up to {@code FLOAT64}, and that
- * coercion is applied by the factory methods of composite numeric
- * slawx.
+ * ilk. Note that all atomic numeric Slaw share a common ilk,
+ * <code>NUMBER</code>, which is further refined (in terms of
+ * signedness and width) by an associated NumericIlk: there's a well
+ * defined notion of coercion between Slaw numbers, given by an
+ * ordering of their numeric ilk from <code>INT8</code> up to
+ * <code>FLOAT64</code>, and that coercion is applied by the factory
+ * methods of composite numeric slawx.
  *
  * <p> So, strictly speaking, the real type of a Slaw instance is
  * determined by its ilk <i>and</i> its numeric ilk. Composite numeric
@@ -112,9 +112,8 @@ public abstract class Slaw implements Iterable<Slaw> {
      * For Slaw instances whose ilk is numeric (i.e., those for which
      * {@link SlawIlk#isNumeric} returns <code>true</code>), this
      * method will return its numeric ilk. The real type of a numeric
-     * Slaw is determined by both its ilk and its numeric ilk.
-     * <p>
-     * For non-numeric slawx, this method returns <code>null</code>.
+     * Slaw is determined by both its ilk and its numeric ilk. <p> For
+     * non-numeric slawx, this method returns <code>null</code>.
      *
      * @see Slaw#isNumeric
      */
@@ -165,15 +164,16 @@ public abstract class Slaw implements Iterable<Slaw> {
     public final boolean isNumeric() { return ilk().isNumeric(); }
 
     /**
-     * Checks whether this Slaw's ilk is equal to {@code NUMBER}. Note
-     * that {@code isNumber()} implies {@link #isNumeric()}, but that
-     * not all numeric slawx are numbers.
+     * Checks whether this Slaw's ilk is equal to <code>NUMBER</code>.
+     * Note that <code>isNumber()</code> implies {@link #isNumeric()},
+     * but that not all numeric slawx are numbers.
      */
     public final boolean isNumber() { return is(NUMBER); }
 
     /**
-     * Checks whether this Slaw is a number (using {@code isNumber()})
-     * and that its numeric ilk equals <code>ni</code>.
+     * Checks whether this Slaw is a number (using
+     * <code>isNumber()</code>) and that its numeric ilk equals
+     * <code>ni</code>.
      */
     public final boolean isNumber(NumericIlk ni) {
         return isNumber() && numericIlk() == ni;
@@ -257,7 +257,7 @@ public abstract class Slaw implements Iterable<Slaw> {
     /**
      * When this Slaw has ilk {@link SlawIlk#BOOL}, emits the
      * corresponding boolean value it encapsulates. Otherwise, an
-     * {@code UnsupportedOperationException} is thrown.
+     * <code>UnsupportedOperationException</code> is thrown.
      */
     public abstract boolean emitBoolean();
 
@@ -271,7 +271,7 @@ public abstract class Slaw implements Iterable<Slaw> {
     /**
      * When this Slaw has ilk {@link SlawIlk#NUMBER}, emits the
      * corresponding value it encapsulates, cast to a long. Otherwise,
-     * an {@code UnsupportedOperationException} is thrown.
+     * an <code>UnsupportedOperationException</code> is thrown.
      *
      * <p> If the numeric ilk of this Slaw is either {@link
      * NumericIlk#FLOAT32} or {@link NumericIlk#FLOAT64}, a loss of
@@ -283,15 +283,16 @@ public abstract class Slaw implements Iterable<Slaw> {
      * NumericIlk#UNT64}, the eight bytes representing its value will
      * be interpreted as the 2-complement representation of the
      * returned long; thus, unless you're sure that this Slaw's value
-     * is below {@code Long.MAX_VALUE}, it is safer to use {@link
-     * #emitBigInteger} for {@code UNT64} numbers.
+     * is below <code>Long.MAX_VALUE</code>, it is safer to use {@link
+     * #emitBigInteger} for <code>UNT64</code> numbers.
      */
     public abstract long emitLong();
 
     /**
      * When this Slaw has ilk {@link SlawIlk#NUMBER}, emits the
      * corresponding value it encapsulates, cast to a double.
-     * Otherwise, an {@code UnsupportedOperationException} is thrown.
+     * Otherwise, an <code>UnsupportedOperationException</code> is
+     * thrown.
      *
      * <p> If the numeric ilk of this Slaw corresponds to an integral
      * numeric type, a loss of precision may occurr, equivalent to the
@@ -303,8 +304,8 @@ public abstract class Slaw implements Iterable<Slaw> {
 
     /**
      * When this Slaw has ilk {@link SlawIlk#NUMBER}, emits the
-     * corresponding value it encapsulates, cast to a {@code
-     * BigInteger}. Otherwise, an {@link
+     * corresponding value it encapsulates, cast to a
+     * <code>BigInteger</code>. Otherwise, an {@link
      * UnsupportedOperationException} is thrown.
      *
      * <p> If the numeric ilk of this Slaw corresponds to an integral
@@ -322,11 +323,11 @@ public abstract class Slaw implements Iterable<Slaw> {
      * When this Slaw has ilk {@link SlawIlk#CONS}, {@link
      * SlawIlk#COMPLEX} or {@link SlawIlk#LIST} (and, in the latter
      * case, corresponds to a non-empty list), the first component of
-     * the Slaw is returned. Otherwise, an {@code
-     * UnsupportedOperationException} is thrown.
+     * the Slaw is returned. Otherwise, an
+     * <code>UnsupportedOperationException</code> is thrown.
      *
      * <p> When supported, this operation returns the same value as
-     * {@code nth(0)}.
+     * <code>nth(0)</code>.
      *
      * @see Slaw#cdr
      */
@@ -338,11 +339,11 @@ public abstract class Slaw implements Iterable<Slaw> {
      * case, corresponds to a non-empty list), the second component of
      * the Slaw is returned (where, in the case of lists, the 'second
      * component' here means the list of all elements except the first
-     * one). Otherwise, an {@code UnsupportedOperationException} is
-     * thrown.
+     * one). Otherwise, an <code>UnsupportedOperationException</code>
+     * is thrown.
      *
      * <p> When supported, this operation returns the same value as
-     * {@code nth(1)} for conses and complex numbers, and a list
+     * <code>nth(1)</code> for conses and complex numbers, and a list
      * consisting of all elements but the first when this Slaw is a
      * list.
      *
@@ -374,14 +375,15 @@ public abstract class Slaw implements Iterable<Slaw> {
      * <code>n</code> is a zero-based index. This method is guaranteed
      * to succeed and return a non-null value provided <code>n</code>
      * is less than the value returned by count(). If that's not the
-     * case, an (unchecked) {@code IndexOutOfBoundsException} is thrown.
+     * case, an (unchecked) <code>IndexOutOfBoundsException</code> is
+     * thrown.
      *
-     * <p> For complex numbers and conses, {@code nth(0)} and @{code
-     * nth(1)} are equivalent to {@link #car()} and {@link #cdr()},
-     * respectively. For vectors and multivectors, it returns the
-     * corresponding component, while for lists it acessess the nth
-     * element. If this Slaw is a map, the returning Slaw is a cons
-     * composed of the nth key and value.
+     * <p> For complex numbers and conses, <code>nth(0)</code> and
+     * <code>nth(1)</code> are equivalent to {@link #car()} and {@link
+     * #cdr()}, respectively. For vectors and multivectors, it returns
+     * the corresponding component, while for lists it acessess the
+     * nth element. If this Slaw is a map, the returning Slaw is a
+     * cons composed of the nth key and value.
      *
      * <p> Proteins have no sub-slaw.
      *
@@ -397,8 +399,8 @@ public abstract class Slaw implements Iterable<Slaw> {
      * instance, using {@link #equals} as equality test. It returns
      * the index of <code>elem</code>, when found, or -1 otherwise.
      * Thus, it is always the case that the return value is less that
-     * {@code count()}, and that, whenever this methods returns a
-     * non-negative value, {@code e.equals(indexOf(e))} is true.
+     * <code>count()</code>, and that, whenever this methods returns a
+     * non-negative value, <code>e.equals(indexOf(e))</code> is true.
      */
     public final int indexOf(Slaw elem) {
         for (int i = 0, c = count(); i < c; i++)
@@ -425,11 +427,12 @@ public abstract class Slaw implements Iterable<Slaw> {
     /**
      * Returns a slice of the list constructed by {@link #emitList()}.
      *
-     * <p> The slice contains elements beginning at index {@code
-     * begin} and ending at either {@code end-1} or {@code count()-1}
-     * if {@code end>count()}. If {@code end<=begin}, an empty list is
-     * returned. Negative end or begin values are transformed to
-     * positive values by substracting them from {@code count()}.
+     * <p> The slice contains elements beginning at index
+     * <code>begin<code> and ending at either <code>end-1</code> or
+     * <code>count()-1</code> if <code>end>count()</code>. If
+     * <code>end<=begin</code>, an empty list is returned. Negative
+     * end or begin values are transformed to positive values by
+     * substracting them from <code>count()</code>.
      */
     public final List<Slaw> emitList(int begin, int end) {
         final int c = count();
@@ -446,8 +449,8 @@ public abstract class Slaw implements Iterable<Slaw> {
     /**
      * An iterator traversing this Slaw's subslawx sequentially, using
      * {@link #nth}. This method makes Slaw an implementation of
-     * {@code Iterable<Slaw>}, and allows you to rewrite old-style
-     * loops of the form:
+     * <code>Iterable<Slaw></code>, and allows you to rewrite
+     * old-style loops of the form:
      *
      * <pre>
      *   for (int i = 0; i < s.count(); ++i) f(s.nth(i));
@@ -460,9 +463,9 @@ public abstract class Slaw implements Iterable<Slaw> {
      * </pre>
      *
      * And of course you can also use Iterator's interface on the the
-     * returned value, which, however, does not support the {@code
-     * Iterator.remove} operation (because Slaw instances are
-     * immutable).
+     * returned value, which, however, does not support the
+     * <code>Iterator.remove</code> operation (because Slaw instances
+     * are immutable).
      *
      */
     public final Iterator<Slaw> iterator() {
@@ -495,15 +498,15 @@ public abstract class Slaw implements Iterable<Slaw> {
     public abstract Map<Slaw,Slaw> emitMap();
 
     /**
-     * This method is equivalent to calling {@code get(key)} on the
-     * map returned by {@link #emitMap()}, which see.
+     * This method is equivalent to calling <code>get(key)</code> on
+     * the map returned by {@link #emitMap()}, which see.
      */
     public abstract Slaw find(Slaw key);
 
     /**
      * Convenience method down-casting this Slaw to a Protein
      * instance. If this slaw's ilk is not {@link SlawIlk#PROTEIN}, an
-     * {@code UnsupportedOperationException} is thrown.
+     * <code>UnsupportedOperationException</code> is thrown.
      */
     public final Protein toProtein() {
         if (!isProtein())
@@ -551,8 +554,8 @@ public abstract class Slaw implements Iterable<Slaw> {
      * If this Slaw is numeric, returns a copy of it with all its
      * components coerced to the provided numeric ilk. For non-number
      * Slaw instances (i.e., those that answer false to the predicate
-     * {@link #isNumeric}), this method throws an {@code
-     * UnsupportedOperationException}.
+     * {@link #isNumeric}), this method throws an
+     * <code>UnsupportedOperationException</code>.
      */
     public abstract Slaw withNumericIlk(NumericIlk ilk);
 
@@ -565,25 +568,25 @@ public abstract class Slaw implements Iterable<Slaw> {
     /**
      * Factory method constructing a Slaw with ilk {@link
      * SlawIlk#CONS} out of its two components. Both arguments must be
-     * non-null; otherwise, an {@code IllegalArgumentException} is
-     * thrown.
+     * non-null; otherwise, an <code>IllegalArgumentException</code>
+     * is thrown.
      */
     public static Slaw cons(Slaw car, Slaw cdr) {
         return factory.cons(car, cdr);
     }
 
     /**
-     * Factory method constructing a Slaw with ilk {@link
+     * %Factory method constructing a Slaw with ilk {@link
      * SlawIlk#LIST} out of its components. Null arguments are
-     * discarded. Thus, {@code Slaw.list(null)} returns an empty Slaw
-     * list, as does {@code Slaw.list()}.
+     * discarded. Thus, <code>Slaw.list(null)</code> returns an empty
+     * Slaw list, as does <code>Slaw.list()</code>.
      */
     public static Slaw list(Slaw... s) { return factory.list(s); }
 
     /**
      * Factory method constructing a Slaw with ilk {@link
      * SlawIlk#LIST} from a native Java list. Null elements of
-     * {@code s} are discarded. If its argument is null, it
+     * <code>s</code> are discarded. If its argument is null, it
      * returns an empty Slaw list.
      */
     public static Slaw list(List<Slaw> s) { return factory.list(s); }
@@ -599,14 +602,14 @@ public abstract class Slaw implements Iterable<Slaw> {
     /**
      * Factory method constructing a Slaw with ilk {@link
      * SlawIlk#LIST} from a native Java map. If any of the slawx in a
-     * key/value pair is null, the whole pair is skipped. When {@code
-     * m} is null, an empty Slaw map is returned.
+     * key/value pair is null, the whole pair is skipped. When
+     * <code>m</code> is null, an empty Slaw map is returned.
      */
     public static Slaw map(Map<Slaw,Slaw> m) { return factory.map(m); }
 
     /**
      * Factory method creating a Protein. Calling this method is
-     * equivalent to calling {@code protein(descrips, ingests, null)}
+     * equivalent to calling <code>protein(descrips, ingests, null)</code>
      * (i.e., it constructs a protein without raw data).
      */
     public static Protein protein(Slaw descrips, Slaw ingests) {
@@ -627,9 +630,9 @@ public abstract class Slaw implements Iterable<Slaw> {
     /**
      * Factory method creating a Slaw with ilk {@link SlawIlk#NIL}.
      * All nil slawx are equal under the {@link #equals} predicate,
-     * but no guarantees are made regarding the equality, under {@code
-     * ==}, of the instances returned by different calls to this
-     * method.
+     * but no guarantees are made regarding the equality, under
+     * <code>==</code>, of the instances returned by different calls
+     * to this method.
      */
     public static Slaw nil() { return factory.nil(); }
 
@@ -637,7 +640,7 @@ public abstract class Slaw implements Iterable<Slaw> {
      * Factory method creating a Slaw with ilk {@link SlawIlk#BOOL}.
      * All true slawx are equal under the {@link #equals} predicate,
      * as are all false ones, but no guarantees are made regarding the
-     * equality, under {@code ==}, of the instances returned by
+     * equality, under <code>==</code>, of the instances returned by
      * different calls to this method.
      */
     public static Slaw bool(boolean v) { return factory.bool(v); }
@@ -649,49 +652,49 @@ public abstract class Slaw implements Iterable<Slaw> {
     public static Slaw string(String s) { return factory.string(s); }
 
     /**
-     * Equivalent to calling {@code Slaw.number(SlawIlk.INT8, n)}.
+     * Equivalent to calling <code>Slaw.number(SlawIlk.INT8, n)</code>.
      */
     public static Slaw int8(int n) { return number(INT8, n); }
 
     /**
-     * Equivalent to calling {@code Slaw.number(SlawIlk.INT16, n)}.
+     * Equivalent to calling <code>Slaw.number(SlawIlk.INT16, n)</code>.
      */
     public static Slaw int16(int n) { return number(INT16, n); }
 
     /**
-     * Equivalent to calling {@code Slaw.number(SlawIlk.INT32, n)}.
+     * Equivalent to calling <code>Slaw.number(SlawIlk.INT32, n)</code>.
      */
     public static Slaw int32(int n) { return number(INT32, n); }
 
     /**
-     * Equivalent to calling {@code Slaw.number(SlawIlk.INT64, n)}.
+     * Equivalent to calling <code>Slaw.number(SlawIlk.INT64, n)</code>.
      */
     public static Slaw int64(long n) { return number(INT64, n); }
 
     /**
-     * Equivalent to calling {@code Slaw.number(SlawIlk.UNT8, n)}.
+     * Equivalent to calling <code>Slaw.number(SlawIlk.UNT8, n)</code>.
      */
     public static Slaw unt8(int n) { return number(UNT8, n); }
 
     /**
-     * Equivalent to calling {@code Slaw.number(SlawIlk.UNT16, n)}.
+     * Equivalent to calling <code>Slaw.number(SlawIlk.UNT16, n)</code>.
      */
     public static Slaw unt16(int n) { return number(UNT16, n); }
 
     /**
-     * Equivalent to calling {@code Slaw.number(SlawIlk.UNT32, n)}.
+     * Equivalent to calling <code>Slaw.number(SlawIlk.UNT32, n)</code>.
      */
     public static Slaw unt32(long n) { return number(UNT32, n); }
 
     /**
-     * Equivalent to calling {@code Slaw.number(SlawIlk.UNT64, n)}.
+     * Equivalent to calling <code>Slaw.number(SlawIlk.UNT64, n)</code>.
      */
     public static Slaw unt64(long n) { return number(UNT64, n); }
 
     /**
-     * Factory method creating a Slaw with ilk {@link SlawIlk#NUMBER}
+     * %Factory method creating a Slaw with ilk {@link SlawIlk#NUMBER}
      * and numeric ilk {@link NumericIlk#UNT64}. Only the 8 less
-     * significant bytes of {@code n} are considered, and they're
+     * significant bytes of <code>n</code> are considered, and they're
      * interpreted as representing a positive number. When your Slaw's
      * value is in the lower half of UNT64's domain, you can just use
      * {@link #unt64(long)} instead.
@@ -699,15 +702,15 @@ public abstract class Slaw implements Iterable<Slaw> {
     public static Slaw unt64(BigInteger n) { return factory.number(n);}
 
     /**
-     * Equivalent to calling {@code Slaw.number(SlawIlk.FLOAT32, n)}.
-     * Note that that means the overload of {@code Slaw.number} taking
+     * Equivalent to calling <code>Slaw.number(SlawIlk.FLOAT32, n)</code>.
+     * Note that that means the overload of <code>Slaw.number</code> taking
      * a double as second argument.
      */
     public static Slaw float32(float n) { return number(FLOAT32, n); }
 
     /**
-     * Equivalent to calling {@code Slaw.number(SlawIlk.FLOAT64, n)}.
-     * Note that that means the overload of {@code Slaw.number} taking
+     * Equivalent to calling <code>Slaw.number(SlawIlk.FLOAT64, n)</code>.
+     * Note that that means the overload of <code>Slaw.number</code> taking
      * a double as second argument.
      */
     public static Slaw float64(double n) { return number(FLOAT64, n);}
@@ -716,14 +719,15 @@ public abstract class Slaw implements Iterable<Slaw> {
      * Factoring method constructing a Slaw with ilk {@link
      * SlawIlk#NUMBER} and the given numeric ilk and value. If n is
      * the width, in bytes, of the requested numeric ilk (as returned
-     * by {@code ni.width()}), only the n less significant bytes of
-     * {@code value} are used. When {@code ni} is signed, those bytes'
-     * bits are interpreted as a 2-complement bit pattern, and the
-     * other way around: passing a negative value when constructing an
-     * unsigned ilk will reinterpret the value's 2-complement bits as
-     * denoting a positive value. All that just means that, as long as
-     * you pass an integer value to this method which is within the
-     * range of the desired numeric ilk, things will work as expected.
+     * by <code>ni.width()</code>), only the n less significant bytes
+     * of <code>value</code> are used. When <code>ni</code> is signed,
+     * those bytes' bits are interpreted as a 2-complement bit
+     * pattern, and the other way around: passing a negative value
+     * when constructing an unsigned ilk will reinterpret the value's
+     * 2-complement bits as denoting a positive value. All that just
+     * means that, as long as you pass an integer value to this method
+     * which is within the range of the desired numeric ilk, things
+     * will work as expected.
      *
      * <p> The numeric ilk {@link NumericIlk#UNT64} is a corner case,
      * because to represent the upper half of its domanin using Java
@@ -748,9 +752,9 @@ public abstract class Slaw implements Iterable<Slaw> {
      * will be to use it when creating Slaw number with numeric ilk
      * {@link NumericIlk#FLOAT32} or {@link NumericIlk#FLOAT64}. When
      * called with an integral ilk as its first argument, this method
-     * behaves as {@code number(ni, (long)value)}, and you'll need to
-     * care about the possible rounding errors that the cast can
-     * produce.
+     * behaves as <code>number(ni, (long)value)</code>, and you'll
+     * need to care about the possible rounding errors that the cast
+     * can produce.
      */
     public static Slaw number(NumericIlk ni, double value) {
         return factory.number(ni, value);
@@ -760,16 +764,16 @@ public abstract class Slaw implements Iterable<Slaw> {
      * Factory method constructing a Slaw with ilk {@link
      * SlawIlk#COMPLEX} out of its real and imaginary parts. Both
      * arguments must be non-null and have ilk {@link SlawIlk#NUMBER};
-     * otherwise, an {@code IllegalArgumentException} is thrown. They
-     * don't need to have the same numeric ilk, though. When the
+     * otherwise, an <code>IllegalArgumentException</code> is thrown.
+     * They don't need to have the same numeric ilk, though. When the
      * numeric ilks of the real and imaginary parts differ, the
      * numeric ilk of the result is the one returned by {@link
      * NumericIlk#dominantIlk}, which see (basically, a widening
      * numerical conversion one is used).
      *
-     * <p> For instance, the result of calling {@code complex(int8(1),
-     * float32(2))} will be a complex Slaw with numeric ilk {@code
-     * FLOAT32}.
+     * <p> For instance, the result of calling
+     * <code>complex(int8(1), float32(2))</code> will be a complex Slaw
+     * with numeric ilk <code>FLOAT32</code>.
      */
     public static Slaw complex(Slaw re, Slaw im) {
         return factory.complex(re, im);
@@ -779,10 +783,10 @@ public abstract class Slaw implements Iterable<Slaw> {
      * Factory method constructing a 2-dimensional vector Slaw out of
      * its components. Both arguments must be non-null and have ilk
      * the same ilk, which must be either {@link SlawIlk#NUMBER} or
-     * {@link SlawIlk#COMPLEX}; otherwise, an {@code
-     * IllegalArgumentException} is thrown. The ilk of the resulting
-     * vector will be either {@link SlawIlk#NUMBER_VECTOR} or {@link
-     * SlawIlk#COMPLEX_VECTOR}.
+     * {@link SlawIlk#COMPLEX}; otherwise, an
+     * <code>IllegalArgumentException</code> is thrown. The ilk of the
+     * resulting vector will be either {@link SlawIlk#NUMBER_VECTOR}
+     * or {@link SlawIlk#COMPLEX_VECTOR}.
      *
      * <p> They arguments don't need to have the same numeric ilk,
      * though. When the numeric ilks of the given components differ,
@@ -826,7 +830,7 @@ public abstract class Slaw implements Iterable<Slaw> {
      * components. The number of arguments must be 4, 8, 16 or 32 (for
      * a multivector of dimension 2, 3, 4 or 5), and all must be
      * non-null and have ilk {@link SlawIlk#NUMBER}; otherwise an
-     * {@code IllegalArgumentException} is thrown.
+     * <code>IllegalArgumentException</code> is thrown.
      *
      * <p> The arguments don't need to have the same numeric ilk,
      * though. When the numeric ilks of the given components differ,
@@ -841,12 +845,12 @@ public abstract class Slaw implements Iterable<Slaw> {
     /**
      * Factory method constructing a non-empty numeric Slaw array out
      * of its components. The given array must have at least one
-     * non-null element; otherwise, an {@code
-     * IllegalArgumentException} is thrown.
+     * non-null element; otherwise, an
+     * <code>IllegalArgumentException</code> is thrown.
      *
-     * <p> Calling this method is equivalent to calling {@code
-     * array(sx[0],sx[1],...sx[sx.length - 1])}. See {@link
-     * #array(Slaw,Slaw...)} for details.
+     * <p> Calling this method is equivalent to calling
+     * <code>array(sx[0],sx[1],...sx[sx.length - 1])</code>. See
+     * {@link #array(Slaw,Slaw...)} for details.
      */
     public static Slaw array(Slaw[] sx) { return factory.array(sx); }
 
@@ -854,14 +858,14 @@ public abstract class Slaw implements Iterable<Slaw> {
      * Factory method constructing a non-empty numeric Slaw array out
      * of its components. At least one of the arguments must be
      * non-null (nulls are skipped), and all non-null arguments must
-     * have the same ilk (otherwise an {@code
-     * IllegalArgumentException} is thrown). That common ilk must be
-     * numeric (i.e., return true for {@link SlawIlk#isNumeric}) but
-     * not an array ilk (i.e. return false for {@link
-     * SlawIlk#isArray}). The ilk of the resulting array is derived
-     * from that that of its components in the natural way, and can
-     * therefore be any of the array ilks (as defined by the predicate
-     * {@link SlawIlk#isArray}).
+     * have the same ilk (otherwise an
+     * <code>IllegalArgumentException</code> is thrown). That common
+     * ilk must be numeric (i.e., return true for {@link
+     * SlawIlk#isNumeric}) but not an array ilk (i.e. return false for
+     * {@link SlawIlk#isArray}). The ilk of the resulting array is
+     * derived from that that of its components in the natural way,
+     * and can therefore be any of the array ilks (as defined by the
+     * predicate {@link SlawIlk#isArray}).
      *
      * <p> As is the case with all other composite numeric Slaw
      * constructors, the arguments don't need to have the same numeric
@@ -878,10 +882,10 @@ public abstract class Slaw implements Iterable<Slaw> {
      * Factory method constructing a non-empty numeric Slaw array out
      * of its components. At least one of the elements of the given
      * list must be non-null (nulls are skipped), and all non-null
-     * arguments must have the same ilk (otherwise an {@code
-     * IllegalArgumentException} is thrown). See the two other array
-     * constructors for further restrictions on those elements, if
-     * any.
+     * arguments must have the same ilk (otherwise an
+     * <code>IllegalArgumentException</code> is thrown). See the two
+     * other array constructors for further restrictions on those
+     * elements, if any.
      */
      public static Slaw array(List<Slaw> sx) {
         Slaw[] ss = new Slaw[sx.size()];

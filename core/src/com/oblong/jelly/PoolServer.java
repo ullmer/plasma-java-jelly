@@ -44,7 +44,7 @@ public interface PoolServer {
      * Creates a new pool, with the given name and options, in this
      * server.
      *
-     * <p> Note that {@code name} should refer to the pool name
+     * <p> Note that <code>name</code> should refer to the pool name
      * <i>sans</i> its server part, i.e., be a relative, rather than
      * absolute URI.
      *
@@ -62,7 +62,7 @@ public interface PoolServer {
     /**
      * Removes the given pool from this server.
      *
-     * <p> Note that {@code name} should refer to the pool name
+     * <p> Note that <code>name</code> should refer to the pool name
      * <i>sans</i> its server part, i.e., be a relative, rather than
      * absolute URI.
      *
@@ -80,7 +80,7 @@ public interface PoolServer {
     /**
      * Establishes a connection with the pool denoted by the given name.
      *
-     * <p> Note that {@code name} should refer to the pool name
+     * <p> Note that <code>name</code> should refer to the pool name
      * <i>sans</i> its server part, i.e., be a relative, rather than
      * absolute URI.
      *
@@ -99,13 +99,13 @@ public interface PoolServer {
 
     /**
      * Tries to establish a connection with the pool denoted by the
-     * given name. If the pool exists, {@code opts} is ignored;
+     * given name. If the pool exists, <code>opts</code> is ignored;
      * otherwise, they'll be used to create a new pool with the given
      * options. Either way, you'll get back a Hose connected to the
-     * pool, with the same guarantees as with
-     * {@link #participate(String)}.
+     * pool, with the same guarantees as with {@link
+     * #participate(String)}.
      *
-     * <p> Note that {@code name} should refer to the pool name
+     * <p> Note that <code>name</code> should refer to the pool name
      * <i>sans</i> its server part, i.e., be a relative, rather than
      * absolute URI.
      *

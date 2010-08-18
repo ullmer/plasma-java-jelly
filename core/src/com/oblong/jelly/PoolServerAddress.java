@@ -21,13 +21,13 @@ import net.jcip.annotations.Immutable;
 @Immutable
 public final class PoolServerAddress {
 
-    /** Default connection port for server addresses ({@value}). */
+    /** Default connection port for server addresses (65456). */
     public static final int DEFAULT_PORT = 65456;
 
-    /** Default scheme for server addresses ({@value}). */
+    /** Default scheme for server addresses (tcp). */
     public static final String DEFAULT_SCHEME = "tcp";
 
-    /** Default host for server addresses ({@value}). */
+    /** Default host for server addresses (localhost). */
     public static final String DEFAULT_HOST = "localhost";
 
     /**
@@ -42,7 +42,7 @@ public final class PoolServerAddress {
      * part, those used for the server part of URLs. Note that the
      * URI's scheme part is mandatory.
      *
-     * @throws BadAddressException if {@code uri} is not a valid
+     * @throws BadAddressException if <code>uri</code> is not a valid
      * server URI.
      */
     public static PoolServerAddress fromURI(String uri)
@@ -60,16 +60,16 @@ public final class PoolServerAddress {
     /**
      * Constructs a new server address out of its three components.
      * Any of its first two arguments can be null, in which case the
-     * default values given by {@code DEFAULT_SCHEME} and {@code
-     * DEFAULT_HOST} are used. If {@code port} is negative, {@code
-     * DEFAULT_PORT} is used instead.
+     * default values given by <code>DEFAULT_SCHEME</code> and
+     * <code>DEFAULT_HOST</code> are used. If <code>port</code> is
+     * negative, <code>DEFAULT_PORT</code> is used instead.
      *
-     * <p> {@code host} can be either a human readable hostname or a
-     * string representation of an IP address (for schemes, such as
-     * TCP, using that addressing protocol).
+     * <p> <code>host</code> can be either a human readable hostname
+     * or a string representation of an IP address (for schemes, such
+     * as TCP, using that addressing protocol).
      *
-     * @throws BadAddressException {@code uri} is {@code host} is not
-     * a valid host name.
+     * @throws BadAddressException <code>uri</code> is
+     * <code>host</code> is not a valid host name.
      */
     public PoolServerAddress(String scheme, String host, int port)
         throws BadAddressException {
@@ -82,8 +82,8 @@ public final class PoolServerAddress {
     }
 
     /**
-     * Equivalent to {@code PoolServerAddress(DEFAULT_SCHEME, host,
-     * port)}.
+     * Equivalent to
+     * <code>PoolServerAddress(DEFAULT_SCHEME, host, port)</code>.
      *
      * @see #PoolServerAddress(String, String, int)
      */
@@ -93,8 +93,8 @@ public final class PoolServerAddress {
     }
 
     /**
-     * Equivalent to {@code PoolServerAddress(DEFAULT_SCHEME, host,
-     * DEFAULT_PORT)}.
+     * Equivalent to
+     * <code>PoolServerAddress(DEFAULT_SCHEME, host, DEFAULT_PORT)</code>.
      *
      * @see #PoolServerAddress(String, String, int)
      */
@@ -108,12 +108,18 @@ public final class PoolServerAddress {
 
     public int port() { return port; }
 
+    /**
+     * Two addresses are equal if the same normalized URI. That is,
+     * when they have the same scheme, host and port, taking into
+     * account default values.
+     */
     @Override public boolean equals(Object o) {
         if (!(o instanceof PoolServerAddress)) return false;
         final PoolServerAddress oa = (PoolServerAddress)o;
         return stringRep.equals(oa.stringRep);
     }
 
+    /** The address hash is that of its normalized URI. */
     @Override public int hashCode() {
         return toString().hashCode();
     }

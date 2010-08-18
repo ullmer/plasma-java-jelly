@@ -72,8 +72,8 @@ public abstract class Protein extends Slaw {
 
     /**
      * Accessor to individual bytes of raw data in this Protein.
-     * Throws an {@code IndexOutOfBoundsException} if n is not in the
-     * range {@code [0, dataLenth())}.
+     * Throws an <code>IndexOutOfBoundsException</code> if n is not in
+     * the range <code>[0, dataLenth())</code>.
      */
     public abstract byte datum(int n);
 
@@ -82,28 +82,29 @@ public abstract class Protein extends Slaw {
      * returns the number of bytes written, which should be equal to
      * the value returned by {@link #dataLength}. This method does not
      * return until all the raw data has been accepted by the stream,
-     * or an I/O error occurs, in which case an {@code IOException}
-     * (possibly thrown by the given output stream) is thrown.
+     * or an I/O error occurs, in which case an
+     * <code>IOException</code> (possibly thrown by the given output
+     * stream) is thrown.
      */
     public abstract int putData(OutputStream os) throws IOException;
 
     /**
      * The index of this protein in the pool it was retrieved from, or
-     * {@code NO_INDEX} if this protein did not come from a pool.
+     * <code>NO_INDEX</code> if this protein did not come from a pool.
      */
     public abstract long index();
 
     /**
      * The time, in the given units, when this Protein was deposited
-     * in its source pool, or {@code NO_TIMESTAMP} if this protein
-     * does not come from a pool.
+     * in its source pool, or <code>NO_TIMESTAMP</code> if this
+     * protein does not come from a pool.
      */
     public abstract long timestamp(TimeUnit unit);
 
     /**
      * The time, in seconds, when this Protein was deposited in its
-     * source pool, or {@code NO_TIMESTAMP} (cast to a double) if this
-     * protein does not come from a pool.
+     * source pool, or <code>NO_TIMESTAMP</code> (cast to a double) if
+     * this protein does not come from a pool.
      */
     public abstract double timestamp();
 
@@ -120,27 +121,27 @@ public abstract class Protein extends Slaw {
     /** Returns null. */
     @Override public final NumericIlk numericIlk() { return null; }
 
-    /** Throws an {@code UnsupportedOperationException}. */
+    /** Throws an <code>UnsupportedOperationException</code>. */
     @Override public final boolean emitBoolean() {
         throw new UnsupportedOperationException(ilk() + " as boolean");
     }
 
-    /** Throws an {@code UnsupportedOperationException}. */
+    /** Throws an <code>UnsupportedOperationException</code>. */
     @Override public final String emitString() {
         throw new UnsupportedOperationException(ilk() + " as string");
     }
 
-    /** Throws an {@code UnsupportedOperationException}. */
+    /** Throws an <code>UnsupportedOperationException</code>. */
     @Override public final long emitLong() {
         throw new UnsupportedOperationException(ilk() + " as long");
     }
 
-    /** Throws an {@code UnsupportedOperationException}. */
+    /** Throws an <code>UnsupportedOperationException</code>. */
     @Override public final double emitDouble() {
         throw new UnsupportedOperationException(ilk() + " as double");
     }
 
-    /** Throws an {@code UnsupportedOperationException}. */
+    /** Throws an <code>UnsupportedOperationException</code>. */
     @Override public final BigInteger emitBigInteger() {
         throw new UnsupportedOperationException(ilk() + " as big integer");
     }
@@ -149,17 +150,17 @@ public abstract class Protein extends Slaw {
         return new HashMap<Slaw,Slaw>();
     }
 
-    /** Throws an {@code UnsupportedOperationException}. */
+    /** Throws an <code>UnsupportedOperationException</code>. */
     @Override public final Slaw withNumericIlk(NumericIlk ilk) {
         throw new UnsupportedOperationException(ilk() + " not numeric");
     }
 
-    /** Throws an {@code UnsupportedOperationException}. */
+    /** Throws an <code>UnsupportedOperationException</code>. */
     @Override public final Slaw car() {
         throw new UnsupportedOperationException(ilk() + " not a pair");
     }
 
-    /** Throws an {@code UnsupportedOperationException}. */
+    /** Throws an <code>UnsupportedOperationException</code>. */
     @Override public final Slaw cdr() {
         throw new UnsupportedOperationException(ilk() + " not a pair");
     }
@@ -170,7 +171,7 @@ public abstract class Protein extends Slaw {
     /** Returns 0 (proteins are not traversable as lists). */
     @Override public final int count() { return 0; }
 
-    /** Throws an {@code UnsupportedOperationException}. */
+    /** Throws an <code>UnsupportedOperationException</code>. */
     @Override public final Slaw nth(int n) {
         throw new UnsupportedOperationException("Not a list");
     }

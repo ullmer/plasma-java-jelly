@@ -7,7 +7,7 @@ import net.jcip.annotations.Immutable;
 /**
  * A PoolException denoting a generic server-originated error.
  *
- * <p> It has kind {@code SERVER_ERROR}.
+ * <p> It has kind <code>SERVER_ERROR</code>.
  *
  * <p> Every now and then, a pool server will report a problem that
  * doesn't fit in our error classification. Such errors are reported

@@ -6,9 +6,9 @@ import net.jcip.annotations.Immutable;
 /**
  * A PoolException signaling the failure to retrieve a protein.
  *
- * <p> Errors of this kind ({@code NO_SUCH_PROTEIN)} will occur when
- * asking for proteins either because their number is exhausted or
- * because the remaining ones do not match the specified criterium.
+ * <p> Errors of this kind (<code>NO_SUCH_PROTEIN)</code> will occur
+ * when asking for proteins either because their number is exhausted
+ * or because the remaining ones do not match the specified criterium.
  *
  * @author jao
  */

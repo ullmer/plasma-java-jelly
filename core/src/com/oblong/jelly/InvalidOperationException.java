@@ -10,7 +10,7 @@ import net.jcip.annotations.Immutable;
  * <p> This error will arise when you try to perform an operation that
  * the pool server does not support.
  *
- * <p> It has kind {@code UNSUPPORTED_OP}.
+ * <p> It has kind <code>UNSUPPORTED_OP</code>.
  *
  * @author jao
  */

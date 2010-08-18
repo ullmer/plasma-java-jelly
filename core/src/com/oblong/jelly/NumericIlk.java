@@ -12,14 +12,14 @@ import java.util.NoSuchElementException;
 /**
  * Enumeration describing the type of values encapsulated by numeric
  * Slaw.
- * <p>
- * When a Slaw's ilk is numeric, we need need to further specify
+ *
+ * <p> When a Slaw's ilk is numeric, we need need to further specify
  * whether it's an integral or floating point value, as well as its
  * width and sign. Instances of this enumeration encapsulate that
  * information and serve to fully specify (when combined with {@link
  * SlawIlk}) the type of values encapsulated by a Slaw instance.
- * <p>
- * The order of the members of this enum also serves to define
+ *
+ * <p> The order of the members of this enum also serves to define
  * widening conversions from one numeric ilk to another. This ordering
  * is used by composite numeric Slaw constructors to allow composition
  * of {@link Slaw} instances with heterogenous numeric ilks.
@@ -28,11 +28,26 @@ import java.util.NoSuchElementException;
  */
 public enum NumericIlk {
 
-    FLOAT64(true, false, 64), FLOAT32(true, false, 32),
-    UNT64(false, true, 64), INT64(true, true, 64),
-    UNT32(false, true, 32), INT32(true, true, 32),
-    UNT16(false, true, 16), INT16(true, true, 16),
-    UNT8(false, true, 8), INT8(true,true, 8);
+    /** A 64-bits floating point number, or composite thereof */
+    FLOAT64(true, false, 64),
+    /** A 32-bits floating point number, or composite thereof */
+    FLOAT32(true, false, 32),
+    /** A 64-bits unsigned integral, or composite thereof */
+    UNT64(false, true, 64),
+    /** A 64-bits signed integral, or composite thereof */
+    INT64(true, true, 64),
+    /** A 32-bits unsigned integral, or composite thereof */
+    UNT32(false, true, 32),
+    /** A 64-bits signed integral, or composite thereof */
+    INT32(true, true, 32),
+    /** A 16-bits unsigned integral, or composite thereof */
+    UNT16(false, true, 16),
+    /** A 16-bits signed integral, or composite thereof */
+    INT16(true, true, 16),
+    /** An 8-bits unsigned integral, or composite thereof */
+    UNT8(false, true, 8),
+    /** An 8-bits signed integral, or composite thereof */
+    INT8(true,true, 8);
 
     /** The number of bits used to represented values of this ilk. */
     public int width() { return width; }
@@ -101,7 +116,7 @@ public enum NumericIlk {
     }
 
     /**
-     * Equivalent to {@code dominantIlk(Arrays.asList(ilks))}.
+     * Equivalent to <code>dominantIlk(Arrays.asList(ilks))</code>.
      *
      * @see #dominantIlk(List)
      */

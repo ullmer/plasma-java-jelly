@@ -7,7 +7,7 @@ import net.jcip.annotations.Immutable;
 /**
  * A PoolException denoting the expiration of a timeout.
  *
- * <p> It has kind {@code TIMEOUT}.
+ * <p> It has kind <code>TIMEOUT</code>.
  *
  * <p> This error will be thrown when waiting for a protein does not
  * succeed before the specified time.

@@ -16,22 +16,22 @@ import java.util.Set;
  * obtain a {@link Hose} in one shot. The methods in this class allow
  * you to do precisely that, and to ignore the PoolServer API if you
  * wish to.
- * <p>
- * Half of these functions take a string URI to denote the pool they
+ *
+ * <p> Half of these functions take a string URI to denote the pool they
  * act upon. Using them you can also be oblivious of PoolAddress and
  * PoolServerAddress if you're so inclined. On the other hand, using
  * instances of this classes instead of strings can help when the rest
  * of your application needs a more robust handling of pool addresses.
- * <p>
- * All the methods in this class are declared as throwing
+ *
+ * <p> All the methods in this class are declared as throwing
  * PoolException, and, since talking with a remote server is involved
  * in all of them, you can expect any kind (meaning, any {@link
- * PoolException.Kind}) of error, with the exception of {@code
- * UNCLASSIFIED} and {@code USER}, and other obvious cases depending
- * on context (e.g., a call to participate won't throw a {@code
- * POOL_EXISTS} error).
- * <p>
- * This is a utility class: you're not expected to (and, actually,
+ * PoolException.Kind}) of error, with the exception of
+ * <code>UNCLASSIFIED</code> and <code>USER</code>, and other obvious
+ * cases depending on context (e.g., a call to participate won't throw
+ * a <code>POOL_EXISTS</code> error).
+ *
+ * <p> This is a utility class: you're not expected to (and, actually,
  * cannot) create instances of this type.
  *
  * @author jao
@@ -56,7 +56,7 @@ public final class Pool {
     }
 
     /**
-     * Equivalent to {@code Pool.create(addr.toString(), opts)}.
+     * Equivalent to <code>Pool.create(addr.toString(), opts)</code>.
      *
      * @see #create(String, PoolOptions)
      */
@@ -81,7 +81,7 @@ public final class Pool {
     }
 
     /**
-     * Equivalent to {@code Pool.dispose(addr.toString())}.
+     * Equivalent to <code>Pool.dispose(addr.toString())</code>.
      *
      * @see #dispose(String)
      */
@@ -105,7 +105,7 @@ public final class Pool {
     }
 
     /**
-     * Equivalent to {@code Pool.participate(addr.toString())}.
+     * Equivalent to <code>Pool.participate(addr.toString())</code>.
      *
      * @see #participate(String)
      */
@@ -116,11 +116,11 @@ public final class Pool {
 
     /**
      * Tries to establish a connection with the pool denoted by the
-     * given URI. If the pool exists, {@code opts} is ignored;
+     * given URI. If the pool exists, <code>opts</code> is ignored;
      * otherwise, they'll be used to create a new pool with the given
      * options. Either way, you'll get back a Hose connected to the
-     * pool, with the same guarantees as with
-     * {@link #participate(String)}.
+     * pool, with the same guarantees as with {@link
+     * #participate(String)}.
      *
      * @throws PoolException No errors of kind {@link
      * PoolException.Kind#POOL_EXISTS} or {@link
@@ -132,7 +132,7 @@ public final class Pool {
     }
 
     /**
-     * Equivalent to {@code Pool.participate(addr.toString(), opts)}.
+     * Equivalent to <code>Pool.participate(addr.toString(), opts)</code>.
      *
      * @see #participate(String, PoolOptions)
      */
@@ -143,8 +143,8 @@ public final class Pool {
     }
 
     /**
-     * Equivalent to {@code
-     * Pool.pools(PoolServerAddress.fromURI(serverURI))}.
+     * Equivalent to
+     * <code>Pool.pools(PoolServerAddress.fromURI(serverURI))</code>.
      *
      * @see #pools(PoolServerAddress)
      */

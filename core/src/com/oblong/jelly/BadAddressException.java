@@ -7,7 +7,7 @@ import net.jcip.annotations.Immutable;
 /**
  * A PoolException denoting a malformed pool or server address.
  *
- * <p> It has kind {@code BAD_ADDRESS}.
+ * <p> It has kind <code>BAD_ADDRESS</code>.
  *
  */
 @Immutable

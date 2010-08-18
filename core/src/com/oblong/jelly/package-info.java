@@ -104,12 +104,13 @@
  * {@link com.oblong.jelly.Protein} constitutes the exchange coin with
  * pools. Its a kind of {@link com.oblong.jelly.Slaw} with attached
  * metadata (an index and timestamp, for instance) and two methods,
- * {@code ingests()} and {@code descrips()} giving you access to its
- * constituent slawx. Proteins can be either obtained from hoses
- * (using, for instance, {@link com.oblong.jelly.Hose#next()} or
- * {@link com.oblong.jelly.Hose#nth(long)}) or explicitly constructed
- * from other slawx using the factory method {@link
- * com.oblong.jelly.Slaw#protein(Slaw, Slaw, byte[])}.
+ * <code>ingests()</code> and <code>descrips()</code> giving you
+ * access to its constituent slawx. Proteins can be either obtained
+ * from hoses (using, for instance, {@link
+ * com.oblong.jelly.Hose#next()} or {@link
+ * com.oblong.jelly.Hose#nth(long)}) or explicitly constructed from
+ * other slawx using the factory method {@link
+ * com.oblong.jelly.Slaw#protein(Slaw,Slaw)}.
  *
  * <p> {@link com.oblong.jelly.Slaw} encompasses all the data types a
  * Slaw can represent (with {@link com.oblong.jelly.SlawIlk} and
@@ -125,11 +126,12 @@
 
  * <p> We have chosen to flag errors caused by calling unsupported
  * operations on Slaw instances by means of an <i>unchecked</i>
- * exception, {@code UnsupportedOperationException}. The rationale is
- * that you can always avoid those errors by checking for the Slaw's
- * actual ilk, and there will be many places in your programs where
- * you know the ilk of a given Slaw instance (e.g., by construction),
- * and forcing a try/catch block in such cases seemed unnecessary.
+ * exception, <code>UnsupportedOperationException</code>. The
+ * rationale is that you can always avoid those errors by checking for
+ * the Slaw's actual ilk, and there will be many places in your
+ * programs where you know the ilk of a given Slaw instance (e.g., by
+ * construction), and forcing a try/catch block in such cases seemed
+ * unnecessary.
  *
  * <p> The price of that convenience is of course that you must use
  * Slaw's methods carefully to avoid run-time errors.
@@ -143,8 +145,8 @@
  * Errors in pool operations are reported by means of exceptions of a
  * type always deriving from {@link com.oblong.jelly.PoolException}.
  * That allows to write simple try/catch clauses with a single catcher
- * for {@code PoolException}, using {@link
- * com.oblong.jelly.PoolException#kind} to discover the error's
+ * for <code>PoolException</code>, using {@link
+ * com.oblong.jelly.PoolException#kind()} to discover the error's
  * nature. But you can also catch the different exception types
  * individually, if that's the (perhaps more idiomatic) style that you
  * favour. The {@link com.oblong.jelly.PoolException documentation of
@@ -165,16 +167,16 @@
  *    h.withdraw();
  * </pre>
  *
- * where we have used the two-arguments version of {@code
- * participate}, which creates the pool if it doesn't already exist.
- * After the code above is executed, the proteins in the array will be
- * stored in memory and accessable by any other hose using the
- * standard Hose interface. Note that we use an empty hostname (the
- * library will then use "localhost" as a default); you can use any
- * other hostname you want, as long as you use the same URI later on
- * to access the pool. Also, in the current version of jelly,
- * in-memory pools accept ignore any creation options (that's why the
- * second argument in the call to participate is null).
+ * where we have used the two-arguments version of
+ * <code>participate</code>, which creates the pool if it doesn't
+ * already exist. After the code above is executed, the proteins in
+ * the array will be stored in memory and accessable by any other hose
+ * using the standard Hose interface. Note that we use an empty
+ * hostname (the library will then use "localhost" as a default); you
+ * can use any other hostname you want, as long as you use the same
+ * URI later on to access the pool. Also, in the current version of
+ * jelly, in-memory pools accept ignore any creation options (that's
+ * why the second argument in the call to participate is null).
  *
  * <p> In-memory pools come in handy for testing your applications
  * without needing to establish network connections, but can also help

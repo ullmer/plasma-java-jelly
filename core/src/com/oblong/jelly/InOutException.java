@@ -15,7 +15,7 @@ import net.jcip.annotations.Immutable;
  * <p> This error will also arise whenever you try to use a withdrawn
  * {@link Hose} (cf. {@link Hose#withdraw}).
  *
- * <p> It has kind {@code IO_ERROR}.
+ * <p> It has kind <code>IO_ERROR</code>.
  *
  * @author jao
  */

@@ -11,9 +11,9 @@ import net.jcip.annotations.Immutable;
  * <p> The originator of this error condition will almost always be a
  * pool server, having trouble accessing a pool locally. There's
  * generally little one can do on the client side, except using {@link
- * #serverCode} as additional log info.
+ * #serverCode()} as additional log info.
  *
- * <p> It has kind {@code CORRUPT_POOL}.
+ * <p> It has kind <code>CORRUPT_POOL</code>.
  *
  * @author jao
  */

@@ -9,7 +9,7 @@ import net.jcip.annotations.Immutable;
  * A PoolException denoting the failure to create a pool that already
  * exists.
  *
- * <p> It has kind {@code POOL_EXISTS}.
+ * <p> It has kind <code>POOL_EXISTS</code>.
  *
  * @author jao
  */

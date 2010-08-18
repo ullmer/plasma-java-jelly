@@ -7,7 +7,7 @@ import net.jcip.annotations.Immutable;
 /**
  * A PoolException signaling a misunderstanding between clean and server.
  *
- * <p> It has kind {@code PROTOCOL_ERROR}.
+ * <p> It has kind <code>PROTOCOL_ERROR</code>.
  *
  * <p> The reason for this error will usually be a message from the
  * server that the client cannot parse, or has unexpected fields.
@@ -17,7 +17,7 @@ import net.jcip.annotations.Immutable;
  *
  * <p> When the cause of the error is an unexpected response from the
  * server, you can access said response, as a Slaw, using {@link
- * #response}.
+ * #response()}.
  *
  * @author jao
  */

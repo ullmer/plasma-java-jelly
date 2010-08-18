@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="jelly" default="compile" basedir=".">
+<project name="jelly" default="compile"
+         basedir=".">
 
   <property file="build.properties"/>
 
@@ -22,7 +23,11 @@
   <property name="dist.jar"
             location="${dist.dir}/${jelly.basename}-${jelly.version}.jar"/>
 
-  <property name="build.javadoc.dir" location="${build.dir}/docs"/>
+  <property name="build.javadoc.dir" location="${build.dir}/javadoc"/>
+  <property name="build.doc.dir" location="${build.dir}/doc"/>
+
+  <property name="doxygen.bin" value="doxygen"/>
+  <property name="doxygen.cfg" location="etc/doxygen.cfg"/>
 
   <property name="compile.debug" value="true"/>
   <property name="compile.encoding" value=""/>
@@ -205,6 +210,13 @@
         <include name="com/oblong/jelly"/>
       </packageset>
     </javadoc>
+  </target>
+
+  <target name="doc" depends="init"
+          description="Create documentation using Doxygen.">
+    <exec executable="${doxygen.bin}">
+      <arg value="${doxygen.cfg}"/>
+    </exec>
   </target>
 
 </project>

@@ -39,10 +39,10 @@ public final class PoolAddress {
 
     /**
      * Constructs a PoolAddress object from its string representation.
-     * {@code uri} must be a full pool URI, including a scheme (e.g.
-     * "tcp://"), optional hostname and port followed by a slash, and
-     * a pool name (whose validity will be checked by the pool server
-     * upon connection).
+     * <code>uri</code> must be a full pool URI, including a scheme
+     * (e.g. "tcp://"), optional hostname and port followed by a
+     * slash, and a pool name (whose validity will be checked by the
+     * pool server upon connection).
      */
     public static PoolAddress fromURI(String uri)
         throws BadAddressException {
@@ -52,22 +52,22 @@ public final class PoolAddress {
     /**
      * Combines a server address and a pool name to create a PoolAddress.
      *
-     * <p> {@code name} will usually be a path relative to the server
-     * address (e.g. {@code "pname"} or {@code "rel/path/name of a
-     * pool"}), and this constructor will combine the two to yield the
-     * final pool address.
+     * <p> <code>name</code> will usually be a path relative to the
+     * server address (e.g. <code>"pname"</code> or
+     * <code>"rel/path/name of a pool"</code>), and this constructor
+     * will combine the two to yield the final pool address.
      *
-     * <p> But, if {@code name} happens to be a fully qualified pool
-     * URI (e.g. {@code "tcp://there/a-pool"}, {@code addr} will be
-     * ignored, and the new PoolAddress will be equal to one created
-     * using {@code fromURI(name)}.
+     * <p> But, if <code>name</code> happens to be a fully qualified
+     * pool URI (e.g. <code>"tcp://there/a-pool"</code>,
+     * <code>addr</code> will be ignored, and the new PoolAddress will
+     * be equal to one created using <code>fromURI(name)</code>.
      *
-     * <p> If {@code addr} is null, a default server address (as
-     * constructed by {@code new PoolServerAddress(null)}, i.e.,
-     * {@code "tcp://localhost:65456"} will be used.
+     * <p> If <code>addr</code> is null, a default server address (as
+     * constructed by <code>new PoolServerAddress(null)</code>, i.e.,
+     * <code>"tcp://localhost:65456"</code> will be used.
      *
-     * @throws BadAddressException if {@code name} is not a valid pool
-     * name or URI. Note, however, that the lack of an error when
+     * @throws BadAddressException if <code>name</code> is not a valid
+     * pool name or URI. Note, however, that the lack of an error when
      * constructing an address on the client side doesn't guarantee
      * that the server will accept the pool name as a valid one.
      */
@@ -100,6 +100,10 @@ public final class PoolAddress {
         return stringRep;
     }
 
+    /**
+     * Two addresses are equal if the have the same PoolServerAddress and
+     * name. In other words, the same normalized URI.
+     */
     @Override public boolean equals(Object o) {
         if (!(o instanceof PoolAddress)) return false;
         final PoolAddress oa = (PoolAddress)o;

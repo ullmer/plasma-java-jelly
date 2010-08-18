@@ -11,7 +11,7 @@ import net.jcip.annotations.Immutable;
  * <p> This problem will arise when asking for connection to a
  * non-existing pool.
  *
- * <p> It has kind {@code NO_SUCH_POOL}.
+ * <p> It has kind <code>NO_SUCH_POOL</code>.
  *
  * @author jao
  */
