@@ -13,6 +13,8 @@ final class SlawInt16 extends SlawNumber {
 
     @Override public NumericIlk numericIlk() { return NumericIlk.INT16; }
     @Override public long emitLong() { return value; }
+    @Override public int emitInt() { return value; }
+    @Override public short emitShort() { return value; }
 
     private short value;
 }

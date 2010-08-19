@@ -34,7 +34,7 @@ public class SlawComplexTest {
 
     @Test public void complexes() {
         Slaw[] sx = {
-            int8(1), unt8(23), int16(-23), unt16(2034),
+            int8(1), unt8(23), int16(-23), unt16(2034), int32(-234), unt32(12222),
             int64(-232343245), unt64(32), float32(3.141592F), float64(1)
         };
         for (Slaw r : sx) {

@@ -289,6 +289,48 @@ public abstract class Slaw implements Iterable<Slaw> {
     public abstract long emitLong();
 
     /**
+     * Equivalent to downcasting the result of {@link #emitLong} to
+     * <code>int</code>. If the numerick ilk of this Slaw corresponds
+     * to an integral 64-bit type, or a floating point, there's a risk
+     * of losing precision due to the coercion. There's also a
+     * potential coercion problem for {@link NumericIlk#UNT32}, in
+     * that the bit pattern of the unsigned int will be reinterpreted
+     * as a signed value.
+     *
+     * <p> If this Slaw is not a number, an
+     * <code>UnsupportedOperationException</code> is thrown.
+     */
+    public abstract int emitInt();
+
+    /**
+     * Equivalent to downcasting the result of {@link #emitLong} to
+     * <code>short</code>. If the numerick ilk of this Slaw
+     * corresponds to an integral 64-bit or 32-bit type, or a floating
+     * point, there's a risk of losing precision due to the coercion.
+     * There's also a potential coercion problem for {@link
+     * NumericIlk#UNT16}, in that the bit pattern of the unsigned int
+     * will be reinterpreted as a signed value.
+     *
+     * <p> If this Slaw is not a number, an
+     * <code>UnsupportedOperationException</code> is thrown.
+     */
+    public abstract short emitShort();
+
+    /**
+     * Equivalent to downcasting the result of {@link #emitLong} to
+     * <code>byte</code>. If the numerick ilk of this Slaw corresponds
+     * to an integer wider than 8 bits, or a floating point, there's a
+     * risk of losing precision due to the coercion. There's also a
+     * potential coercion problem for {@link NumericIlk#UNT8}, in that
+     * the bit pattern of the unsigned int will be reinterpreted as a
+     * signed value.
+     *
+     * <p> If this Slaw is not a number, an
+     * <code>UnsupportedOperationException</code> is thrown.
+     */
+    public abstract byte emitByte();
+
+    /**
      * When this Slaw has ilk {@link SlawIlk#NUMBER}, emits the
      * corresponding value it encapsulates, cast to a double.
      * Otherwise, an <code>UnsupportedOperationException</code> is
@@ -301,6 +343,18 @@ public abstract class Slaw implements Iterable<Slaw> {
      * {@link #emitLong} or {@link #emitBigInteger} instead.
      */
     public abstract double emitDouble();
+
+
+    /**
+     * Equivalent to downcasting the result of {@link #emitDouble} to a
+     * <code>float</code>. There's a risk of losing precision if this
+     * Slaw's numeric ilk is {@link NumericIlk#FLOAT64} or any
+     * integral ilk.
+     *
+     * <p> If this Slaw is not a number, an
+     * <code>UnsupportedOperationException</code> is thrown.
+     */
+    public abstract float emitFloat();
 
     /**
      * When this Slaw has ilk {@link SlawIlk#NUMBER}, emits the
@@ -417,7 +471,7 @@ public abstract class Slaw implements Iterable<Slaw> {
 
     /**
      * Creates a list with all of the sub-slawx of this Slaw. This
-     * method uses {@link #nth()} to construct the list, so a non-null
+     * method uses {@link #nth} to construct the list, so a non-null
      * value will always be returned (albeit in some occasions it may
      * be an empty List), even if this Slaw is not of ilk {@link
      * SlawIlk#LIST}.

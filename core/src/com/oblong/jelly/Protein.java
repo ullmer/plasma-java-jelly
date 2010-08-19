@@ -137,8 +137,28 @@ public abstract class Protein extends Slaw {
     }
 
     /** Throws an <code>UnsupportedOperationException</code>. */
+    @Override public final int emitInt() {
+        throw new UnsupportedOperationException(ilk() + " as int");
+    }
+
+    /** Throws an <code>UnsupportedOperationException</code>. */
+    @Override public final short emitShort() {
+        throw new UnsupportedOperationException(ilk() + " as short");
+    }
+
+    /** Throws an <code>UnsupportedOperationException</code>. */
+    @Override public final byte emitByte() {
+        throw new UnsupportedOperationException(ilk() + " as byte");
+    }
+
+    /** Throws an <code>UnsupportedOperationException</code>. */
     @Override public final double emitDouble() {
         throw new UnsupportedOperationException(ilk() + " as double");
+    }
+
+    /** Throws an <code>UnsupportedOperationException</code>. */
+    @Override public final float emitFloat() {
+        throw new UnsupportedOperationException(ilk() + " as float");
     }
 
     /** Throws an <code>UnsupportedOperationException</code>. */

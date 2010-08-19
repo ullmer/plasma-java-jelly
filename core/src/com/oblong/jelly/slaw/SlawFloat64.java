@@ -13,8 +13,8 @@ final class SlawFloat64 extends SlawNumber {
     }
 
     @Override public NumericIlk numericIlk() { return NumericIlk.FLOAT64; }
-    @Override public long emitLong() { return (long)value; }
     @Override public double emitDouble() { return value; }
+    @Override public long emitLong() { return (long)value; }
     @Override public String debugString() { return "" + emitDouble(); }
 
     private double value;

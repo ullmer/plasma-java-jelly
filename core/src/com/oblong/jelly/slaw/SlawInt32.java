@@ -13,6 +13,7 @@ final class SlawInt32 extends SlawNumber {
 
     @Override public NumericIlk numericIlk() { return NumericIlk.INT32; }
     @Override public long emitLong() { return value; }
+    @Override public int emitInt() { return value; }
 
     static final SlawInt32 ZERO = new SlawInt32(0);
 

@@ -29,8 +29,24 @@ abstract class JavaSlaw extends Slaw {
         throw new UnsupportedOperationException(ilk() + " as long");
     }
 
+    @Override public int emitInt() {
+        throw new UnsupportedOperationException(ilk() + " as int");
+    }
+
+    @Override public short emitShort() {
+        throw new UnsupportedOperationException(ilk() + " as short");
+    }
+
+    @Override public byte emitByte() {
+        throw new UnsupportedOperationException(ilk() + " as byte");
+    }
+
     @Override public double emitDouble() {
         throw new UnsupportedOperationException(ilk() + " as double");
+    }
+
+    @Override public float emitFloat() {
+        throw new UnsupportedOperationException(ilk() + " as float");
     }
 
     @Override public BigInteger emitBigInteger() {

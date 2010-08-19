@@ -45,6 +45,11 @@ abstract class SlawNumber extends AtomicSlaw {
     @Override public final SlawIlk ilk() { return SlawIlk.NUMBER; }
 
     @Override public double emitDouble() { return (double)emitLong(); }
+    @Override public float emitFloat() { return (float)emitDouble(); }
+    @Override public int emitInt() { return (int)emitLong(); }
+    @Override public short emitShort() { return (short)emitLong(); }
+    @Override public byte emitByte() { return (byte)emitLong(); }
+
     @Override public BigInteger emitBigInteger() {
         return BigInteger.valueOf(emitLong());
     }
