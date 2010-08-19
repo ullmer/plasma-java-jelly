@@ -24,7 +24,6 @@
             location="${dist.dir}/${jelly.basename}-${jelly.version}.jar"/>
 
   <property name="build.javadoc.dir" location="${build.dir}/javadoc"/>
-  <property name="build.doc.dir" location="${build.dir}/doc"/>
 
   <property name="doxygen.bin" value="doxygen"/>
   <property name="doxygen.cfg" location="etc/doxygen.cfg"/>
@@ -212,7 +211,7 @@
     </javadoc>
   </target>
 
-  <target name="doc" depends="init"
+  <target name="doxygen" depends="init"
           description="Create documentation using Doxygen.">
     <exec executable="${doxygen.bin}">
       <arg value="${doxygen.cfg}"/>
