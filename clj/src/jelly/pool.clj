@@ -12,7 +12,7 @@
         (instance? PoolAddress svr) (PoolServers/get (.serverAddress svr))
         (instance? PoolServer svr) svr))
 
-(def *current-server* (get-server "localhost:65456"))
+(def *current-server* (get-server "tcp://localhost:65456"))
 
 (defmacro with-server [s & body]
   `(binding [*current-server* (get-server ~s)]
