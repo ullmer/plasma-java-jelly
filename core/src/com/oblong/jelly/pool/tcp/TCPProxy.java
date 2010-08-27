@@ -7,9 +7,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.logging.Logger;
 
 import com.oblong.jelly.PoolException;
 import com.oblong.jelly.PoolServerAddress;
@@ -48,7 +46,7 @@ public final class TCPProxy implements Runnable {
                 launchHandler(socket.accept(), factory.get(address));
             } catch (Exception e) {
                 if (!socket.isClosed())
-                    log.error("Exception launching handler", e);
+                    log.severe("Exception launching handler: " + e.getMessage());
             }
         }
         closeHandlers();
@@ -69,7 +67,7 @@ public final class TCPProxy implements Runnable {
         try {
             socket.close();
         } catch (IOException e) {
-            log.warn("Exception closing socket", e);
+            log.warning("Exception closing socket: " + e.getMessage());
         }
     }
 
@@ -98,5 +96,5 @@ public final class TCPProxy implements Runnable {
     private final List<Thread> threads;
     private volatile boolean exit;
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
+    private final Logger log = Logger.getLogger(getClass().toString());
 }

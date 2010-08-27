@@ -8,9 +8,7 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.util.EnumSet;
 import java.util.Set;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.logging.Logger;
 
 import com.oblong.jelly.InOutException;
 import com.oblong.jelly.InvalidOperationException;
@@ -62,8 +60,8 @@ final class TCPPoolConnection implements PoolConnection {
         try {
             socket.close();
         } catch (IOException e) {
-            final Logger log = LoggerFactory.getLogger(getClass());
-            log.warn("Error closing socket (ignored)", e);
+            final Logger log = Logger.getLogger(getClass().getName());
+            log.warning("Error closing socket (ignored): " + e.getMessage());
         }
     }
 

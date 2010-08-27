@@ -7,9 +7,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.util.Arrays;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.logging.Logger;
 
 import com.oblong.jelly.NumericIlk;
 import com.oblong.jelly.PoolException;
@@ -43,23 +41,23 @@ final class TCPProxyHandler implements Runnable {
         try {
             init();
         } catch (IOException e) {
-            log.warn("IO error initialising pool handler", e);
-            log.warn("Closing handler");
+            log.warning("IO error initialising pool handler: " + e.getMessage());
+            log.warning("Closing handler");
             connection.close();
         }
         while (connection.isOpen()) {
             try {
                 reply(forward(next()));
             } catch (Exception e) {
-                log.warn("Exception talking with server", e);
-                log.warn("Closing handler");
+                log.warning("Exception talking with server: " + e.getMessage());
+                log.warning("Closing handler");
                 connection.close();
             }
         }
         try {
             if (socket.isConnected()) socket.close();
         } catch (Exception e) {
-            log.warn("Exception closing socket (ignored)", e);
+            log.warning("Exception closing socket (ignored): " + e.getMessage());
         }
     }
 
@@ -91,7 +89,7 @@ final class TCPProxyHandler implements Runnable {
         try {
             return internalizer.internProtein(socket.getInputStream(),factory);
         } catch (SlawParseError e) {
-            log.warn("Error parsing protein from server", e);
+            log.warning("Error parsing protein from server: " + e.getMessage());
             return null;
         }
     }
@@ -153,5 +151,5 @@ final class TCPProxyHandler implements Runnable {
     private static final SlawExternalizer externalizer =
         new Externalizer();
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
+    private final Logger log = Logger.getLogger(getClass().getName());
 }
