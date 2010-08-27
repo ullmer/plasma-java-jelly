@@ -344,7 +344,6 @@ public abstract class Slaw implements Iterable<Slaw> {
      */
     public abstract double emitDouble();
 
-
     /**
      * Equivalent to downcasting the result of {@link #emitDouble} to a
      * <code>float</code>. There's a risk of losing precision if this
