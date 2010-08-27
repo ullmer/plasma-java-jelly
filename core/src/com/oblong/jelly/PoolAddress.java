@@ -121,7 +121,7 @@ public final class PoolAddress {
 
     private static final String checkName(String name)
         throws BadAddressException {
-        if (name == null || name.isEmpty())
+        if (name == null || name.length() == 0)
             throw new BadAddressException("Empty pool name");
         // we leave any further checking to the pool server
         return name;

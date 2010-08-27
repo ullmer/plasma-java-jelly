@@ -77,7 +77,7 @@ public final class PoolServerAddress {
          this.host = checkHost(host);
          this.port = port < 0 ? DEFAULT_PORT : port;
          stringRep = this.scheme
-             + (this.host.isEmpty() ? "" : ("://" + this.host))
+             + (this.host.length() == 0 ? "" : ("://" + this.host))
              + (this.port == DEFAULT_PORT ? "" : ":" + this.port);
     }
 
@@ -150,14 +150,14 @@ public final class PoolServerAddress {
     private static final Pattern ADDR_PATT = Pattern.compile(ADDR_REGEX);
 
     private static String checkScheme(String scm) throws BadAddressException {
-        if (scm == null || scm.isEmpty()) return DEFAULT_SCHEME;
+        if (scm == null || scm.length() == 0) return DEFAULT_SCHEME;
         if (scm.indexOf(':') > 0 || scm.indexOf('/') > 0)
             throw new BadAddressException("Scheme cannot contain ' or /");
         return scm;
     }
 
     private static String checkHost(String host) throws BadAddressException {
-        if (host == null || host.isEmpty()) return DEFAULT_HOST;
+        if (host == null || host.length() == 0) return DEFAULT_HOST;
         if (host.indexOf(':') > 0 || host.indexOf('/') > 0)
             throw new BadAddressException("Host cannot contain `:' or `/'");
         return host;
