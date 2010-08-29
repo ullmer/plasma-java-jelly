@@ -3,9 +3,7 @@
 
   :dependencies [[org.clojure/clojure "1.2.0"]
                  [org.clojure/clojure-contrib "1.2.0"]
-                 [net.jcip/jcip-annotations "1.0"]
-                 [org.slf4j/slf4j-api "1.6.1"]
-                 [org.slf4j/slf4j-jdk14 "1.6.1"]]
+                 [net.jcip/jcip-annotations "1.0"]]
 
   :dev-dependencies [[swank-clojure "1.2.1"]
                      [lein-javac "1.2.1-SNAPSHOT"]]
@@ -14,5 +12,6 @@
 
   :java-source-path "../core/src"
   :java-options {:debug "true" :fork "true" :target "1.6"}
+  :hooks [leiningen.hooks.javac]
 
   :main jelly.main)

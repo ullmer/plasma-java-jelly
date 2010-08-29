@@ -18,7 +18,7 @@ by jelly (include clojure) using:
 
 and compile jelly's java side with:
 
-    lein compile-java
+    lein javac
 
 and you can start playing with the REPL with:
 
@@ -36,4 +36,6 @@ other dependencies can be created with
     lein uberjar
 
 You can send the resulting jar to anyone: she will only need a working
-java 1.6 to start the pool shell!
+java 1.6 to start the pool shell using:
+
+    java -jar jelly-standalone.jar
