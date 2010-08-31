@@ -1,8 +1,8 @@
 (ns jelly.main
-  (:use [clojure main]
-        [jelly slaw pool])
+  (:require [clojure.main])
+  (:use [jelly slaw pool])
   (:gen-class))
 
 (defn -main [& args]
   (println "Welcome to jelly's shell")
-  (repl :init #(in-ns 'jelly.main)))
+  (clojure.main/repl :init #(in-ns 'jelly.main)))
