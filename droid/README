@@ -1,0 +1,23 @@
+* Directory contents
+
+  This folder contains Oblong's Android apps using Jelly.
+
+  - core: shared code, in the form of an android library. You don't
+    need to compile it individually.
+  - ponder: a pond, i mean, pool monitor.
+
+* App build instructions
+
+*** Using Ant to build apps
+
+    You'll need ant 1.6 or better.
+
+    In each application folder you want to create, a file called
+    local.properities must be created, containing the location of
+    your android installation directory; e.g.
+
+       sdk.dir=/home/jao/lib/java/android-sdk-linux_86
+
+    That's it. Use ant
+
+*** Using Eclipse

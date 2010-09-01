@@ -1,0 +1,12 @@
+* Directory contents
+
+  Welcome to the top directory of Jelly, our collections of Java
+  components implementing (parts of) the plasma world.
+
+  In this folder:
+
+  - core: core jelly library, for use with vanilla java applications
+  - lib: libraries used by other components (or their tests)
+  - doc: non-generated documents relevant to all components
+  - droid: libraries and applications for the android platform
+  - clj: clojure bindings for jelly core and clojure apps

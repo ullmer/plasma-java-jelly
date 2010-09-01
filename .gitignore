@@ -1,0 +1,7 @@
+/droid/core/local.properties
+/droid/core/gen/
+/droid/core/build/
+/droid/ponder/local.properties
+/droid/ponder/gen/
+/droid/ponder/build/
+/droid/ponder/.jde.el
