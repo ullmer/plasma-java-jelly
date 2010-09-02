@@ -3,7 +3,10 @@
   This folder contains Oblong's Android apps using Jelly.
 
   - core: shared code, in the form of an android library. You don't
-    need to compile it individually.
+    need to compile it individually: each application compiles it.
+
+  - imagine: a demo sending images to a remote pool.
+
   - ponder: a pond, i mean, pool monitor.
 
 * App build instructions
@@ -12,12 +15,20 @@
 
     You'll need ant 1.6 or better.
 
-    In each application folder you want to create, a file called
-    local.properities must be created, containing the location of
-    your android installation directory; e.g.
+    In each application you want to build, a file called
+    `local.properties' must be created, containing the location of
+    your android installation directory. The easiest way to create it
+    is by is via the command:
 
-       sdk.dir=/home/jao/lib/java/android-sdk-linux_86
+       $ android update project -p $PWD
 
-    That's it. Use ant
+    run inside the app directory. That's it: you can use ant to
+    compile and install the application. Use `ant help' for a list
+    of targets.
 
 *** Using Eclipse
+
+    After installing the ADT plugin, just create a new Android
+    project, and direct the wizard to use existing sources, pointing
+    to the app directory.
+
