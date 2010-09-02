@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-      package="com.oblong.android.ponder"
+      package="com.oblong.android.imagine"
       android:versionCode="1"
       android:versionName="1.0">
-    <application android:label="@string/app_name" android:icon="@drawable/icon">
-        <activity android:name="PonderActivity"
+
+    <application android:label="@string/app_name"
+                 android:icon="@drawable/icon"
+                 android:debuggable="true">
+        <activity android:name="Imagine"
                   android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -12,5 +15,12 @@
             </intent-filter>
         </activity>
     </application>
+
     <uses-sdk android:minSdkVersion="8" />
-</manifest> 
+
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+
+</manifest>
+
