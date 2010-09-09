@@ -5,17 +5,15 @@
               android:layout_height="match_parent"
               android:padding="1dp" >
 
-  <view class="com.oblong.android.imagine.CameraView"
-        android:id="@+id/camera_view"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:padding="1dp" />
+  <ImageView android:id="@+id/pic_view"
+             android:layout_width="match_parent"
+             android:layout_height="0dp"
+             android:layout_weight="1"
+             android:padding="1dp" />
 
-  <Button android:id="@+id/take_snapshot"
+  <Button android:id="@+id/send_image"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:text="Snapshot" />
+          android:text="Send" />
 
 </LinearLayout>
-

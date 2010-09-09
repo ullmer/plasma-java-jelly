@@ -2,8 +2,9 @@
 
 package com.oblong.android.imagine;
 
-import java.util.List;
+
 import java.io.IOException;
+import java.util.List;
 
 import android.content.Context;
 import android.hardware.Camera;
@@ -18,41 +19,85 @@ import android.view.SurfaceView;
  *
  * @author jao
  */
-public class CameraView 
-	extends SurfaceView  implements SurfaceHolder.Callback {
+public class CameraView extends SurfaceView
+    implements SurfaceHolder.Callback,
+               Camera.ShutterCallback,
+               Camera.PictureCallback {
 
     public CameraView(Context context, AttributeSet attr) {
-        super(context);
+        super(context, attr);
 
         // Install a SurfaceHolder.Callback so we get notified when the
         // underlying surface is created and destroyed.
-        mHolder = getHolder();
-        mHolder.addCallback(this);
-        mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+        surfaceHolder = getHolder();
+        surfaceHolder.addCallback(this);
+        surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
     }
 
-    public void surfaceCreated(SurfaceHolder holder) {
+    @Override public void surfaceCreated(SurfaceHolder holder) {
         // The Surface has been created, acquire the camera and tell it where
         // to draw.
-        mCamera = Camera.open();
         try {
-            mCamera.setPreviewDisplay(holder);
+            camera = Camera.open();
+            camera.setDisplayOrientation(90);
+            camera.setPreviewDisplay(holder);
         } catch (IOException exception) {
-            mCamera.release();
-            mCamera = null;
-            // TODO: add more exception handling logic here
+            camera.release();
+            camera = null;
+        } catch (RuntimeException e) {
+            // TODO: Log
         }
     }
 
-    public void surfaceDestroyed(SurfaceHolder holder) {
-        // Surface will be destroyed when we return, so stop the preview.
-        // Because the CameraDevice object is not a shared resource, it's very
-        // important to release it when the activity is paused.
-        mCamera.stopPreview();
-        mCamera.release();
-        mCamera = null;
+    @Override public void surfaceDestroyed(SurfaceHolder holder) {
+        // Surface will be destroyed when we return, so stop the
+        // preview. Because the CameraDevice object is not a shared
+        // resource, it's very important to release it when the
+        // activity is paused.
+        if (camera != null) {
+            camera.stopPreview();
+            camera.release();
+            camera = null;
+        }
     }
 
+
+    @Override public void surfaceChanged(SurfaceHolder holder,
+                                         int format, int w, int h) {
+        // Now that the size is known, set up the camera parameters and begin
+        // the preview.
+        if (camera != null) {
+            Camera.Parameters parameters = camera.getParameters();
+
+            List<Size> sizes = parameters.getSupportedPreviewSizes();
+            Size optimalSize = getOptimalPreviewSize(sizes, w, h);
+            parameters.setPreviewSize(optimalSize.width, optimalSize.height);
+
+            camera.setParameters(parameters);
+            camera.startPreview();
+        } else {
+            displayErrorImage(holder, format, w, h);
+        }
+    }
+
+    // ShutterCallback
+    @Override public void onShutter() {}
+
+    // PictureCallback
+    @Override public void onPictureTaken(byte[] jpeg, Camera camera) {
+        if (pictHandler != null && jpeg != null) {
+            pictHandler.handleImage(jpeg);
+        }
+    }
+
+    void takePicture(PictureHandler next) {
+        if (next != null) pictHandler = next;
+        if (camera != null) camera.takePicture(this, null, this);
+    }
+
+    void restartPreview() {
+        if (camera != null) camera.startPreview();
+    }
 
     private Size getOptimalPreviewSize(List<Size> sizes, int w, int h) {
         final double ASPECT_TOLERANCE = 0.05;
@@ -87,21 +132,12 @@ public class CameraView
         return optimalSize;
     }
 
-    public void surfaceChanged(SurfaceHolder holder,
-                               int format, int w, int h) {
-        // Now that the size is known, set up the camera parameters and begin
-        // the preview.
-        Camera.Parameters parameters = mCamera.getParameters();
-
-        List<Size> sizes = parameters.getSupportedPreviewSizes();
-        Size optimalSize = getOptimalPreviewSize(sizes, w, h);
-        parameters.setPreviewSize(optimalSize.width, optimalSize.height);
-
-        mCamera.setParameters(parameters);
-        mCamera.startPreview();
+    private void displayErrorImage(SurfaceHolder holder,
+                                   int format, int w, int h) {
+        // TODO
     }
 
-
-    SurfaceHolder mHolder;
-    Camera mCamera;
+    private SurfaceHolder surfaceHolder;
+    private Camera camera;
+    private PictureHandler pictHandler;
 }
