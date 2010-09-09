@@ -1,5 +1,8 @@
+// Copyright (c) 2010 Oblong Industries
+
 package com.oblong.android.imagine;
 
+import java.io.FileOutputStream;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -10,7 +13,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import java.io.FileOutputStream;
 
 public class Imagine extends Activity
     implements View.OnClickListener, PictureHandler {
@@ -71,7 +73,6 @@ public class Imagine extends Activity
             } catch (Exception e) {
                 Log.v("Imagine", "Exception writing data");
                 Log.v("Imagine", e.getMessage());
-                return false;
             }
         }
         return false;

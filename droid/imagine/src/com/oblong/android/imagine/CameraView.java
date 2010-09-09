@@ -2,7 +2,6 @@
 
 package com.oblong.android.imagine;
 
-
 import java.io.IOException;
 import java.util.List;
 
@@ -60,7 +59,6 @@ public class CameraView extends SurfaceView
             camera = null;
         }
     }
-
 
     @Override public void surfaceChanged(SurfaceHolder holder,
                                          int format, int w, int h) {

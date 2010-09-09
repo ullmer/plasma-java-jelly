@@ -2,12 +2,9 @@
 
 package com.oblong.android.imagine;
 
-
 import java.io.FileInputStream;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -28,43 +25,41 @@ public class Sender extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sender);
         view = (ImageView) findViewById(R.id.pic_view);
-        //        progressDlg = new ProgressDialog(this);
-        //        progressDlg.setMessage("Snapshotting. Please wait...");
     }
 
     @Override public void onStart() {
     	super.onStart();
-        extractImage();
+        final int len = getIntent().getIntExtra(IMAGE_LEN, 0);
+        imageData = readImageData(IMAGE_FILE, len);
+        if (imageData != null) makeBitmap(imageData, imageData.length);
     }
 
     static final String IMAGE_FILE = "Image.file";
     static final String IMAGE_LEN = "Image.length";
 
-    private void extractImage() {
+    private byte[] readImageData(String fileName, int size) {
         try {
-            final FileInputStream is = openFileInput(IMAGE_FILE);
-            final int size = getIntent().getIntExtra(IMAGE_LEN, 0);
-            byte[] image = new byte[size];
+            final FileInputStream is = openFileInput(fileName);
+            byte[] buffer = new byte[size];
             int offset = 0;
             int rem = size;
             while (rem > 0) {
-                int read = is.read(image, offset, size - offset);
-                if (read > 0) {
-                    offset += read;
-                    rem -= read;
-                } else {
-                    rem = 0;
-                }
+                int read = is.read(buffer, offset, size - offset);
+                if (read < 0) return null;
+                offset += read;
+                rem -= read;
             };
             is.close();
-            setImage (image, offset);
+            return buffer;
         } catch (Exception e) {
-            Log.v("Sender", "Oh my god");
+            Log.v("Sender", "Error reading image data");
+            Log.v("Sender", e.getMessage());
+            return null;
         }
     }
 
-    private void setImage(byte[] image, int len) {
-        Bitmap bmp = BitmapFactory.decodeByteArray(image, 0, len, null);
+    private void makeBitmap(byte[] data, int len) {
+        Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, len, null);
         if (bmp != null) {
             int w = bmp.getWidth();
             int h = bmp.getHeight();
@@ -78,5 +73,5 @@ public class Sender extends Activity {
     }
 
     private ImageView view;
-    // private ProgressDialog progressDlg;
+    private byte[] imageData;
 }
