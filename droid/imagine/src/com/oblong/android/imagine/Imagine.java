@@ -31,10 +31,6 @@ public class Imagine extends Activity
         progressDialog.dismiss();
     }
 
-    @Override public void onClick(View button) {
-        cameraView.takePicture(this);
-    }
-
     @Override public Dialog onCreateDialog(int d) {
         Dialog dlg = null;
         if (d == NO_IMAGE_DLG) {
@@ -46,20 +42,20 @@ public class Imagine extends Activity
         return dlg;
     }
 
+    @Override public void onClick(View button) {
+        cameraView.takePicture(this);
+    }
+
     @Override public void handleImage(byte[] jpg) {
+        progressDialog.show();
         if (saveImageData(jpg)) {
-            startSender(jpg.length);
+            Intent i = new Intent(this, Sender.class);
+            startActivity(i.putExtra(Sender.IMAGE_LEN, jpg.length));
         } else {
+            progressDialog.dismiss();
             cameraView.restartPreview();
             showDialog(NO_IMAGE_DLG);
         }
-    }
-
-    private void startSender(int len) {
-        Intent i =
-            new Intent(this, Sender.class).putExtra(Sender.IMAGE_LEN, len);
-        progressDialog.show();
-        startActivity(i);
     }
 
     private boolean saveImageData(byte[] jpg) {
@@ -71,8 +67,8 @@ public class Imagine extends Activity
                 os.close();
                 return true;
             } catch (Exception e) {
-                Log.v("Imagine", "Exception writing data");
-                Log.v("Imagine", e.getMessage());
+                Log.e("Imagine", "Exception writing data");
+                Log.e("Imagine", e.getMessage());
             }
         }
         return false;

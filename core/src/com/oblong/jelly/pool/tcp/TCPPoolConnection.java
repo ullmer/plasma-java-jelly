@@ -116,6 +116,8 @@ final class TCPPoolConnection implements PoolConnection {
             internalizer = defaultInternalizer;
         } catch (IOException e) {
             throw new InOutException(e);
+        } catch (IllegalArgumentException e) {
+            throw new InOutException(e);
         }
     }
 

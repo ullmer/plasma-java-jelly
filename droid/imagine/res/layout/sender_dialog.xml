@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/layout_root"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+    <TextView
+        android:id="@+id/hostname_label"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:gravity="center_horizontal"
+        android:text="Hostname (or IP address) and port" />
+    <EditText
+        android:id="@+id/port_entry"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:drawable/editbox_background"
+        android:layout_below="@id/hostname_label"
+        android:layout_alignRight="@id/hostname_label"
+        android:padding="5dp"
+        android:numeric="decimal"
+        android:maxLength="5"
+        android:singleLine="true"
+        android:text="65456" />
+    <EditText
+        android:id="@+id/hostname_entry"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:background="@android:drawable/editbox_background"
+        android:layout_below="@id/hostname_label"
+        android:layout_toLeftOf="@id/port_entry"
+        android:padding="5dp"
+        android:singleLine="true"
+        android:text="192.168.1.33" />
+    <TextView
+        android:id="@+id/pool_label"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:layout_below="@id/hostname_entry"
+        android:gravity="center_horizontal"
+        android:text="Pool name" />
+    <EditText
+        android:id="@+id/pool_entry"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:drawable/editbox_background"
+        android:layout_below="@id/pool_label"
+        android:padding="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:singleLine="true"
+        android:text="imagine" />
+</RelativeLayout>
