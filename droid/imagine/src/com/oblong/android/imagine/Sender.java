@@ -120,7 +120,7 @@ public class Sender extends Activity implements View.OnClickListener {
                 h = Pool.participate(address);
                 h.deposit(Sender.this.ensureProtein());
             } catch (PoolException e) {
-                Log.e("SenderThread", e.getMessage());
+                Log.e("SenderThread", "Error depositing protein", e);
                 dlg = SENT_DLG_KO;
             } finally {
                 if (h != null) h.withdraw();
@@ -148,7 +148,7 @@ public class Sender extends Activity implements View.OnClickListener {
             }
             return buffer;
         } catch (Exception e) {
-            Log.e("Sender", e.getMessage());
+            Log.e("Sender", "Error reading image file", e);
             return null;
         }
     }

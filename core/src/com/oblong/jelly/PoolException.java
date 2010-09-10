@@ -141,7 +141,8 @@ public class PoolException extends Exception {
     public final long serverCode() { return serverCode; }
 
     @Override public String getMessage() {
-        return kind + "(" + kind.description + "): " + info;
+        return kind + " (" + kind.description + ", server code " +
+            serverCode + "): " + info;
     }
 
     protected PoolException(String msg) {

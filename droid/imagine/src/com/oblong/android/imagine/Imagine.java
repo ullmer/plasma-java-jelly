@@ -67,8 +67,7 @@ public class Imagine extends Activity
                 os.close();
                 return true;
             } catch (Exception e) {
-                Log.e("Imagine", "Exception writing data");
-                Log.e("Imagine", e.getMessage());
+                Log.e("Imagine", "Error writing image file", e);
             }
         }
         return false;
