@@ -18,7 +18,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 
 import com.oblong.jelly.Hose;
@@ -40,8 +39,7 @@ public class Sender extends Activity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sender);
         view = (ImageView) findViewById(R.id.pic_view);
-        sendButton = (Button) findViewById(R.id.send_image);
-        sendButton.setOnClickListener(this);
+        findViewById(R.id.send_image).setOnClickListener(this);
         senderDialog = new SenderDialog(this);
     }
 
@@ -177,7 +175,6 @@ public class Sender extends Activity implements View.OnClickListener {
     }
 
     private ImageView view;
-    private Button sendButton;
     private SenderDialog senderDialog;
     private byte[] imageData;
     private Protein protein;
