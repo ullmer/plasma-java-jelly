@@ -5,6 +5,7 @@ package com.oblong.android.imagine;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +26,8 @@ final class SenderDialog implements DialogInterface.OnClickListener,
 
     SenderDialog(Sender parent) {
         this.parent = parent;
-        createDialog(parent);
+        createDialog();
+        readPreferences();
     }
 
 
@@ -48,7 +50,8 @@ final class SenderDialog implements DialogInterface.OnClickListener,
 
     @Override public void onDismiss(DialogInterface dlg) {
         if (address != null) {
-            parent.send(address);
+        	savePreferences();
+        	parent.send(address);
             address = null;
         }
     }
@@ -65,7 +68,7 @@ final class SenderDialog implements DialogInterface.OnClickListener,
         }
     }
 
-    private void createDialog(Sender parent) {
+    private void createDialog() {
         LayoutInflater inflater = (LayoutInflater)
             parent.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
@@ -87,11 +90,31 @@ final class SenderDialog implements DialogInterface.OnClickListener,
         dialog = builder.create();
         dialog.setOnDismissListener(this);
     }
+    
+    private void readPreferences() {
+    	final SharedPreferences prefs = parent.getPreferences(0);
+    	host.setText(prefs.getString(PREF_HOST, "192.168.1.1"));
+    	port.setText(prefs.getString(PREF_PORT, "65456"));
+    	pool.setText(prefs.getString(PREF_POOL, "imagine"));
+    }
 
+    private void savePreferences() {
+    	final SharedPreferences prefs = parent.getPreferences(0);
+    	final SharedPreferences.Editor ed = prefs.edit();
+    	ed.putString(PREF_HOST, host.getText().toString());
+    	ed.putString(PREF_PORT, port.getText().toString());
+    	ed.putString(PREF_POOL, pool.getText().toString());
+    	ed.commit();
+    }
+    
     private final Sender parent;
     private AlertDialog dialog;
     private EditText host;
     private EditText port;
     private EditText pool;
     private PoolAddress address;
+    
+    private static final String PREF_HOST = "host";
+    private static final String PREF_PORT = "port";
+    private static final String PREF_POOL = "pool";
 }
