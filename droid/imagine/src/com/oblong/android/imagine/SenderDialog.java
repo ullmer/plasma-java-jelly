@@ -2,11 +2,9 @@
 
 package com.oblong.android.imagine;
 
-import android.app.AlertDialog.Builder;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import static android.content.DialogInterface.*;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
