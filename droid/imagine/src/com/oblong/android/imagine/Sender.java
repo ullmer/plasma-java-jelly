@@ -122,6 +122,8 @@ public class Sender extends Activity implements View.OnClickListener {
             } catch (PoolException e) {
                 Log.e("SenderThread", "Error depositing protein", e);
                 dlg = SENT_DLG_KO;
+                SENT_DLG_MSGS[SENT_DLG_KO] = 
+                	"Error connecting to pool:\n" + e.getMessage(); 
             } finally {
                 if (h != null) h.withdraw();
             }
@@ -187,7 +189,7 @@ public class Sender extends Activity implements View.OnClickListener {
     private static final int SENT_DLG_BAD_ADDR = 2;
     private static final String[] SENT_DLG_MSGS = {
         "Image sent",
-        "Sorry, could not connect to pool",
+        "Could not connect to pool",
         "The pool address is incorrect"
     };
 }

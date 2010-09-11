@@ -2,13 +2,13 @@
 
 package com.oblong.android.imagine;
 
-import java.io.IOException;
 import java.util.List;
 
 import android.content.Context;
 import android.hardware.Camera;
 import android.hardware.Camera.Size;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -40,11 +40,10 @@ public class CameraView extends SurfaceView
             camera = Camera.open();
             camera.setDisplayOrientation(90);
             camera.setPreviewDisplay(holder);
-        } catch (IOException exception) {
-            camera.release();
+        } catch (Throwable e) {
+            if (camera != null) camera.release();
             camera = null;
-        } catch (RuntimeException e) {
-            // TODO: Log
+            Log.e("CameraView", "Error accessing camera", e);
         }
     }
 
@@ -73,8 +72,6 @@ public class CameraView extends SurfaceView
 
             camera.setParameters(parameters);
             camera.startPreview();
-        } else {
-            displayErrorImage(holder, format, w, h);
         }
     }
 
@@ -128,11 +125,6 @@ public class CameraView extends SurfaceView
             }
         }
         return optimalSize;
-    }
-
-    private void displayErrorImage(SurfaceHolder holder,
-                                   int format, int w, int h) {
-        // TODO
     }
 
     private SurfaceHolder surfaceHolder;
