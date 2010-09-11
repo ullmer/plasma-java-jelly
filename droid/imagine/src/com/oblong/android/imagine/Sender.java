@@ -122,8 +122,8 @@ public class Sender extends Activity implements View.OnClickListener {
             } catch (PoolException e) {
                 Log.e("SenderThread", "Error depositing protein", e);
                 dlg = SENT_DLG_KO;
-                SENT_DLG_MSGS[SENT_DLG_KO] = 
-                	"Error connecting to pool:\n" + e.getMessage(); 
+                SENT_DLG_MSGS[SENT_DLG_KO] =
+                    "Error connecting to pool:\n" + e.getMessage();
             } finally {
                 if (h != null) h.withdraw();
             }
@@ -132,7 +132,7 @@ public class Sender extends Activity implements View.OnClickListener {
 
         private final PoolAddress address;
         private final Handler handler;
-    };
+    }
 
     private byte[] readImageData(final String fileName, final int size) {
         try {

@@ -11,6 +11,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 
@@ -47,30 +49,48 @@ public class Imagine extends Activity
     }
 
     @Override public void handleImage(byte[] jpg) {
+        final Handler h = new Handler() {
+                public void handleMessage(Message m) {
+                    if (m.what == 0) {
+                        Intent i = new Intent(Imagine.this, Sender.class);
+                        startActivity(i.putExtra(Sender.IMAGE_LEN, m.arg1));
+                    } else {
+                        progressDialog.dismiss();
+                        cameraView.restartPreview();
+                        showDialog(NO_IMAGE_DLG);
+                    }
+                }
+            };
         progressDialog.show();
-        if (saveImageData(jpg)) {
-            Intent i = new Intent(this, Sender.class);
-            startActivity(i.putExtra(Sender.IMAGE_LEN, jpg.length));
-        } else {
-            progressDialog.dismiss();
-            cameraView.restartPreview();
-            showDialog(NO_IMAGE_DLG);
-        }
+        new Saver(jpg, h).start();
     }
 
-    private boolean saveImageData(byte[] jpg) {
-        if (jpg != null) {
-            try {
-                FileOutputStream os =
-                    openFileOutput(Sender.IMAGE_FILE, Context.MODE_PRIVATE);
-                os.write(jpg);
-                os.close();
-                return true;
-            } catch (Exception e) {
-                Log.e("Imagine", "Error writing image file", e);
-            }
+    private class Saver extends Thread {
+        Saver(byte[] jpg, Handler h) {
+            data = jpg;
+            handler = h;
         }
-        return false;
+
+        public void run() {
+            Message result = Message.obtain(handler, 0, 0, 0);
+            if (data != null) {
+                try {
+                    FileOutputStream os =
+                        openFileOutput(Sender.IMAGE_FILE,
+                                       Context.MODE_PRIVATE);
+                    os.write(data);
+                    os.close();
+                    result.arg1 = data.length;
+                } catch (Exception e) {
+                    Log.e("Imagine", "Error writing image file", e);
+                    result.what = 1;
+                }
+            }
+            handler.sendMessage(result);
+        }
+
+        private final byte[] data;
+        private final Handler handler;
     }
 
     private CameraView cameraView;
