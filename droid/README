@@ -30,5 +30,11 @@
 
     After installing the ADT plugin, just create a new Android
     project, and direct the wizard to use existing sources, pointing
-    to the app directory.
+    to the app directory (e.g., <top>/droid/imagine).
+
+    You also need to add a new source directory, using Project
+    properties > Java Build Path > Source > Link source, pointing to
+    <top>/core/src (name it jelly-src, say), and add all the libraries
+    in <top>/core/lib to your android app project (using Project
+    properties > Java Build Path > Libraries > Add External Jars.
 
