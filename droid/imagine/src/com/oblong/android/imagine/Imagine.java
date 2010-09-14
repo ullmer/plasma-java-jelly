@@ -53,7 +53,7 @@ public class Imagine extends Activity
                 public void handleMessage(Message m) {
                     if (m.what == 0) {
                         Intent i = new Intent(Imagine.this, Sender.class);
-                        startActivity(i.putExtra(Sender.IMAGE_LEN, m.arg1));
+                        startActivity(i);
                     } else {
                         progressDialog.dismiss();
                         cameraView.restartPreview();

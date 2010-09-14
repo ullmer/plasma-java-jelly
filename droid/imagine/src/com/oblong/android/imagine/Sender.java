@@ -3,6 +3,7 @@
 package com.oblong.android.imagine;
 
 import java.io.FileInputStream;
+import java.io.ByteArrayOutputStream;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -45,9 +46,7 @@ public class Sender extends Activity implements View.OnClickListener {
 
     @Override public void onStart() {
     	super.onStart();
-        final int len = getIntent().getIntExtra(IMAGE_LEN, 0);
-        imageData = readImageData(IMAGE_FILE, len);
-        if (imageData != null) setBitmap(imageData, imageData.length);
+        readImage();
     }
 
     @Override public void onClick(View button) {
@@ -89,7 +88,6 @@ public class Sender extends Activity implements View.OnClickListener {
     }
 
     static final String IMAGE_FILE = "Image.file";
-    static final String IMAGE_LEN = "Image.length";
 
     void send(PoolAddress addr) {
         if (addr != null) {
@@ -132,51 +130,44 @@ public class Sender extends Activity implements View.OnClickListener {
         private final Handler handler;
     }
 
-    private byte[] readImageData(final String fileName, final int size) {
+    private void readImage() {
         try {
-            final FileInputStream is = openFileInput(fileName);
-            final byte[] buffer = new byte[size];
-            int offset = 0;
+            final FileInputStream is = openFileInput(IMAGE_FILE);
             try {
-                while (size > offset) {
-                    int read = is.read(buffer, offset, size - offset);
-                    if (read < 0) return null;
-                    offset += read;
-                };
+                setBitmap(BitmapFactory.decodeStream(is));
             } finally {
                 is.close();
             }
-            return buffer;
         } catch (Exception e) {
             Log.e("Sender", "Error reading image file", e);
-            return null;
         }
     }
 
-    private void setBitmap(byte[] data, int len) {
-        Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, len, null);
+    private void setBitmap(Bitmap bmp) {
         if (bmp != null) {
             int w = bmp.getWidth();
             int h = bmp.getHeight();
             Matrix mtx = new Matrix();
             mtx.postRotate(90);
-            Bitmap rotatedBMP =
-                Bitmap.createBitmap(bmp, 0, 0, w, h, mtx, true);
-            BitmapDrawable bmd = new BitmapDrawable(rotatedBMP);
+            bitmap = Bitmap.createBitmap(bmp, 0, 0, w, h, mtx, true);
+            BitmapDrawable bmd = new BitmapDrawable(bitmap);
             view.setImageDrawable(bmd);
         }
     }
 
 
     private Protein ensureProtein() {
-        if (protein == null)
-            protein = Slaw.protein(DESCRIPS, null, imageData);
+        if (protein == null && bitmap != null) {
+            ByteArrayOutputStream data = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.PNG, 0, data);
+            protein = Slaw.protein(DESCRIPS, null, data.toByteArray());
+        }
         return protein;
     }
 
     private ImageView view;
     private SenderDialog senderDialog;
-    private byte[] imageData;
+    private Bitmap bitmap;
     private Protein protein;
 
     private static final Slaw DESCRIPS = Slaw.list(Slaw.string("imagine"));
