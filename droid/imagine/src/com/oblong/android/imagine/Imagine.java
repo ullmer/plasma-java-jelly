@@ -34,14 +34,13 @@ public class Imagine extends Activity
     }
 
     @Override public Dialog onCreateDialog(int d) {
-        Dialog dlg = null;
         if (d == NO_IMAGE_DLG) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage("Sorry, could not get a snapshot")
                    .setCancelable(true);
-            dlg = builder.create();
+            return builder.create();
         }
-        return dlg;
+        return super.onCreateDialog(d);
     }
 
     @Override public void onClick(View button) {

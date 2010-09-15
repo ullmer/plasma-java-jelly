@@ -49,6 +49,12 @@ public class Sender extends Activity implements View.OnClickListener {
         readImage();
     }
 
+    @Override public void onStop() {
+        super.onStop();
+        protein = null;
+        bitmap = null;
+    }
+
     @Override public void onClick(View button) {
         senderDialog.show();
     }
@@ -161,8 +167,10 @@ public class Sender extends Activity implements View.OnClickListener {
     private Protein ensureProtein() {
         if (protein == null && bitmap != null) {
             ByteArrayOutputStream data = new ByteArrayOutputStream();
-            if (bitmap.compress(Bitmap.CompressFormat.PNG, 0, data))
+            if (bitmap.compress(Bitmap.CompressFormat.PNG, 0, data)) {
                 protein = Slaw.protein(DESCRIPS, null, data.toByteArray());
+                bitmap = null;
+            }
         }
         return protein;
     }
