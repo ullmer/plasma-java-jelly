@@ -16,14 +16,19 @@ import android.graphics.BitmapFactory;
 class ImageStore {
 
     static void storeImage(byte[] jpg) {
+        clear();
         imageData = jpg;
     }
 
     static void clear() {
         imageData = null;
+        if (bitmap != null) {
+            bitmap.recycle();
+            bitmap = null;
+        }
     }
 
-    static byte[] imageData() {
+    static byte[] toJPG() {
         return imageData;
     }
 
@@ -32,20 +37,26 @@ class ImageStore {
     }
 
     static Bitmap imageBitmap() {
-        return BitmapFactory.decodeByteArray(imageData, 0, imageData.length);
+        if (bitmap == null && imageData != null) {
+            bitmap =
+                BitmapFactory.decodeByteArray(imageData, 0, imageData.length);
+        }
+        return bitmap;
     }
 
-    static byte[] toData(Bitmap orig, Bitmap.CompressFormat fmt) {
-        ByteArrayOutputStream data = new ByteArrayOutputStream();
-        if (orig.compress(fmt, 0, data)) orig.recycle();
+    static byte[] toPNG() {
+        final ByteArrayOutputStream data = new ByteArrayOutputStream();
+        final Bitmap bmp = imageBitmap();
+        if (bmp != null && bmp.compress(Bitmap.CompressFormat.PNG, 0, data))
+            {
+                bitmap.recycle();
+                bitmap = null;
+            }
         return data.toByteArray();
     }
 
-    static byte[] toPNG(Bitmap orig) {
-        return toData(orig, Bitmap.CompressFormat.PNG);
-    }
-
     private static byte[] imageData = null;
+    private static Bitmap bitmap = null;
 
 
     private ImageStore() { }

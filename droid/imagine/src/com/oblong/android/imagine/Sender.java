@@ -54,12 +54,12 @@ public class Sender extends Activity implements View.OnClickListener {
 
     @Override public void onPause() {
         super.onPause();
-        recycleBitmap();
+        ImageStore.clear();
     }
 
     @Override public void onStop() {
         super.onStop();
-        recycleBitmap();
+        ImageStore.clear();
     }
 
     @Override public void onClick(View button) {
@@ -99,8 +99,6 @@ public class Sender extends Activity implements View.OnClickListener {
         result.setMessage("Sending image...");
         return result;
     }
-
-    static final String IMAGE_FILE = "Image.file";
 
     void send(PoolAddress addr) {
         if (addr != null) {
@@ -144,10 +142,8 @@ public class Sender extends Activity implements View.OnClickListener {
     }
 
     private void readImage() {
-        recycleBitmap();
         try {
-            bitmap = ImageStore.imageBitmap();
-            view.setImageBitmap(bitmap);
+            view.setImageBitmap(ImageStore.imageBitmap());
             // If you're sending JPG, uncomment the line below:
             // recycleBitmap();
         } catch (Throwable e) {
@@ -160,12 +156,12 @@ public class Sender extends Activity implements View.OnClickListener {
         if (protein == null) {
             try {
                 protein =
-                    Slaw.protein(DESCRIPS, null, ImageStore.toPNG(bitmap));
-                recycleBitmap();
-                // To send JPG comment out the previous assignment to pro
+                    Slaw.protein(DESCRIPS, null, ImageStore.toPNG());
+                // To send JPG comment out the previous assignment to
                 // protein, and uncomment the assignment below:
                 // protein =
-                //     Slaw.protein(DESCRIPS, null, ImageStore.imageData());
+                //     Slaw.protein(DESCRIPS, null, ImageStore.toJPG());
+                ImageStore.clear();
             } catch (Throwable e) {
                 Log.e("Sender", "Error converting image", e);
                 return null;
@@ -174,16 +170,8 @@ public class Sender extends Activity implements View.OnClickListener {
         return protein;
     }
 
-    private void recycleBitmap() {
-        if (bitmap != null) {
-            bitmap.recycle();
-            bitmap = null;
-        }
-    }
-
     private ImageView view;
     private SenderDialog senderDialog;
-    private Bitmap bitmap;
     private Protein protein;
 
     private static final Slaw DESCRIPS = Slaw.list(Slaw.string("imagine"));
