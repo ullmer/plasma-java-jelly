@@ -39,8 +39,10 @@ public class Sender extends Activity implements View.OnClickListener {
     @Override public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sender);
+
         view = (ImageView) findViewById(R.id.pic_view);
         findViewById(R.id.send_image).setOnClickListener(this);
+
         senderDialog = new SenderDialog(this);
     }
 
@@ -49,10 +51,19 @@ public class Sender extends Activity implements View.OnClickListener {
         readImage();
     }
 
+    @Override public void onResume() {
+    	super.onResume();
+        readImage();
+    }
+
+    @Override public void onPause() {
+        super.onPause();
+        recycleBitmap();
+    }
+
     @Override public void onStop() {
         super.onStop();
-        protein = null;
-        bitmap = null;
+        recycleBitmap();
     }
 
     @Override public void onClick(View button) {
@@ -137,42 +148,33 @@ public class Sender extends Activity implements View.OnClickListener {
     }
 
     private void readImage() {
+        recycleBitmap();
         try {
             final FileInputStream is = openFileInput(IMAGE_FILE);
-            try {
-                setBitmap(BitmapFactory.decodeStream(is));
-            } finally {
-                is.close();
-                deleteFile(IMAGE_FILE);
-            }
+            bitmap = BitmapFactory.decodeStream(is);
+            is.close();
+            view.setImageBitmap(bitmap);
         } catch (Exception e) {
             Log.e("Sender", "Error reading image file", e);
         }
     }
 
-    private void setBitmap(Bitmap bmp) {
-        if (bmp != null) {
-            bitmap = bmp;
-            int w = bmp.getWidth();
-            int h = bmp.getHeight();
-            Matrix mtx = new Matrix();
-            mtx.postRotate(90);
-            bmp = Bitmap.createBitmap(bmp, 0, 0, w, h, mtx, true);
-            BitmapDrawable bmd = new BitmapDrawable(bmp);
-            view.setImageDrawable(bmd);
-        }
-    }
-
-
     private Protein ensureProtein() {
         if (protein == null && bitmap != null) {
             ByteArrayOutputStream data = new ByteArrayOutputStream();
             if (bitmap.compress(Bitmap.CompressFormat.PNG, 0, data)) {
+                recycleBitmap();
                 protein = Slaw.protein(DESCRIPS, null, data.toByteArray());
-                bitmap = null;
             }
         }
         return protein;
+    }
+
+    private void recycleBitmap() {
+        if (bitmap != null) {
+            bitmap.recycle();
+            bitmap = null;
+        }
     }
 
     private ImageView view;

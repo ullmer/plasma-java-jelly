@@ -19,9 +19,7 @@ import android.view.SurfaceView;
  * @author jao
  */
 public class CameraView extends SurfaceView
-    implements SurfaceHolder.Callback,
-               Camera.ShutterCallback,
-               Camera.PictureCallback {
+    implements SurfaceHolder.Callback, Camera.PictureCallback {
 
     public CameraView(Context context, AttributeSet attr) {
         super(context, attr);
@@ -69,14 +67,12 @@ public class CameraView extends SurfaceView
             List<Size> sizes = parameters.getSupportedPreviewSizes();
             Size optimalSize = getOptimalPreviewSize(sizes, w, h);
             parameters.setPreviewSize(optimalSize.width, optimalSize.height);
+            parameters.set("rotation", 90);
 
             camera.setParameters(parameters);
             camera.startPreview();
         }
     }
-
-    // ShutterCallback
-    @Override public void onShutter() {}
 
     // PictureCallback
     @Override public void onPictureTaken(byte[] jpeg, Camera camera) {
@@ -87,7 +83,7 @@ public class CameraView extends SurfaceView
 
     void takePicture(PictureHandler next) {
         if (next != null) pictHandler = next;
-        if (camera != null) camera.takePicture(this, null, this);
+        if (camera != null) camera.takePicture(null, null, this);
     }
 
     void restartPreview() {
