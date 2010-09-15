@@ -148,15 +148,22 @@ public class Sender extends Activity implements View.OnClickListener {
         try {
             bitmap = ImageStore.imageBitmap();
             view.setImageBitmap(bitmap);
-        } catch (Exception e) {
+        } catch (Throwable e) {
             Log.e("Sender", "Error reading image file", e);
+            finish();
         }
     }
 
     private Protein ensureProtein() {
         if (protein == null && bitmap != null) {
-            protein = Slaw.protein(DESCRIPS, null, ImageStore.toPNG(bitmap));
-            recycleBitmap();
+            try {
+                protein =
+                    Slaw.protein(DESCRIPS, null, ImageStore.toPNG(bitmap));
+                recycleBitmap();
+            } catch (Throwable e) {
+                Log.e("Sender", "Error converting image", e);
+                return null;
+            }4
         }
         return protein;
     }
