@@ -137,6 +137,7 @@ public class Sender extends Activity implements View.OnClickListener {
                 setBitmap(BitmapFactory.decodeStream(is));
             } finally {
                 is.close();
+                deleteFile(IMAGE_FILE);
             }
         } catch (Exception e) {
             Log.e("Sender", "Error reading image file", e);
@@ -145,12 +146,13 @@ public class Sender extends Activity implements View.OnClickListener {
 
     private void setBitmap(Bitmap bmp) {
         if (bmp != null) {
+            bitmap = bmp;
             int w = bmp.getWidth();
             int h = bmp.getHeight();
             Matrix mtx = new Matrix();
             mtx.postRotate(90);
-            bitmap = Bitmap.createBitmap(bmp, 0, 0, w, h, mtx, true);
-            BitmapDrawable bmd = new BitmapDrawable(bitmap);
+            bmp = Bitmap.createBitmap(bmp, 0, 0, w, h, mtx, true);
+            BitmapDrawable bmd = new BitmapDrawable(bmp);
             view.setImageDrawable(bmd);
         }
     }
@@ -159,8 +161,8 @@ public class Sender extends Activity implements View.OnClickListener {
     private Protein ensureProtein() {
         if (protein == null && bitmap != null) {
             ByteArrayOutputStream data = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.PNG, 0, data);
-            protein = Slaw.protein(DESCRIPS, null, data.toByteArray());
+            if (bitmap.compress(Bitmap.CompressFormat.PNG, 0, data))
+                protein = Slaw.protein(DESCRIPS, null, data.toByteArray());
         }
         return protein;
     }

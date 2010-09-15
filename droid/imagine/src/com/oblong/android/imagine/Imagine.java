@@ -80,7 +80,6 @@ public class Imagine extends Activity
                                        Context.MODE_PRIVATE);
                     os.write(data);
                     os.close();
-                    result.arg1 = data.length;
                 } catch (Exception e) {
                     Log.e("Imagine", "Error writing image file", e);
                     result.what = 1;
