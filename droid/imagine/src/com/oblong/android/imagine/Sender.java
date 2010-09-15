@@ -148,6 +148,8 @@ public class Sender extends Activity implements View.OnClickListener {
         try {
             bitmap = ImageStore.imageBitmap();
             view.setImageBitmap(bitmap);
+            // If you're sending JPG, uncomment the line below:
+            // recycleBitmap();
         } catch (Throwable e) {
             Log.e("Sender", "Error reading image file", e);
             finish();
@@ -155,15 +157,19 @@ public class Sender extends Activity implements View.OnClickListener {
     }
 
     private Protein ensureProtein() {
-        if (protein == null && bitmap != null) {
+        if (protein == null) {
             try {
                 protein =
                     Slaw.protein(DESCRIPS, null, ImageStore.toPNG(bitmap));
                 recycleBitmap();
+                // To send JPG comment out the previous assignment to pro
+                // protein, and uncomment the assignment below:
+                // protein =
+                //     Slaw.protein(DESCRIPS, null, ImageStore.imageData());
             } catch (Throwable e) {
                 Log.e("Sender", "Error converting image", e);
                 return null;
-            }4
+            }
         }
         return protein;
     }
