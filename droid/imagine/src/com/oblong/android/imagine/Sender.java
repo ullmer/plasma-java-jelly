@@ -144,8 +144,6 @@ public class Sender extends Activity implements View.OnClickListener {
     private void readImage() {
         try {
             view.setImageBitmap(ImageStore.imageBitmap());
-            // If you're sending JPG, uncomment the line below:
-            // recycleBitmap();
         } catch (Throwable e) {
             Log.e("Sender", "Error reading image file", e);
             finish();
