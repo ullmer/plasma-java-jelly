@@ -3,7 +3,6 @@
 package com.oblong.android.imagine;
 
 import java.io.FileInputStream;
-import java.io.ByteArrayOutputStream;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -11,9 +10,6 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -150,9 +146,7 @@ public class Sender extends Activity implements View.OnClickListener {
     private void readImage() {
         recycleBitmap();
         try {
-            final FileInputStream is = openFileInput(IMAGE_FILE);
-            bitmap = BitmapFactory.decodeStream(is);
-            is.close();
+            bitmap = ImageStore.imageBitmap();
             view.setImageBitmap(bitmap);
         } catch (Exception e) {
             Log.e("Sender", "Error reading image file", e);
@@ -161,11 +155,8 @@ public class Sender extends Activity implements View.OnClickListener {
 
     private Protein ensureProtein() {
         if (protein == null && bitmap != null) {
-            ByteArrayOutputStream data = new ByteArrayOutputStream();
-            if (bitmap.compress(Bitmap.CompressFormat.PNG, 0, data)) {
-                recycleBitmap();
-                protein = Slaw.protein(DESCRIPS, null, data.toByteArray());
-            }
+            protein = Slaw.protein(DESCRIPS, null, ImageStore.toPNG(bitmap));
+            recycleBitmap();
         }
         return protein;
     }

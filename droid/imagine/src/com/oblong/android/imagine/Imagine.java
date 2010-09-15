@@ -26,11 +26,13 @@ public class Imagine extends Activity
         findViewById(R.id.take_snapshot).setOnClickListener(this);
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Snapshotting...");
+        ImageStore.clear();
     }
 
     @Override public void onResume() {
         super.onResume();
         progressDialog.dismiss();
+        ImageStore.clear();
     }
 
     @Override public Dialog onCreateDialog(int d) {
@@ -48,47 +50,14 @@ public class Imagine extends Activity
     }
 
     @Override public void handleImage(byte[] jpg) {
-        final Handler h = new Handler() {
-                public void handleMessage(Message m) {
-                    if (m.what == 0) {
-                        Intent i = new Intent(Imagine.this, Sender.class);
-                        startActivity(i);
-                    } else {
-                        progressDialog.dismiss();
-                        cameraView.restartPreview();
-                        showDialog(NO_IMAGE_DLG);
-                    }
-                }
-            };
-        progressDialog.show();
-        new Saver(jpg, h).start();
-    }
-
-    private class Saver extends Thread {
-        Saver(byte[] jpg, Handler h) {
-            data = jpg;
-            handler = h;
+        if (jpg != null) {
+            ImageStore.storeImage(jpg);
+            progressDialog.show();
+            startActivity(new Intent(Imagine.this, Sender.class));
+        } else {
+            cameraView.restartPreview();
+            showDialog(NO_IMAGE_DLG);
         }
-
-        public void run() {
-            Message result = Message.obtain(handler, 0, 0, 0);
-            if (data != null) {
-                try {
-                    FileOutputStream os =
-                        openFileOutput(Sender.IMAGE_FILE,
-                                       Context.MODE_PRIVATE);
-                    os.write(data);
-                    os.close();
-                } catch (Exception e) {
-                    Log.e("Imagine", "Error writing image file", e);
-                    result.what = 1;
-                }
-            }
-            handler.sendMessage(result);
-        }
-
-        private final byte[] data;
-        private final Handler handler;
     }
 
     private CameraView cameraView;
