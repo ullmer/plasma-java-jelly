@@ -1,0 +1,65 @@
+This directory contains the core jelly library.
+
+Jelly's public interface lives in the package com.oblong.jelly. All
+other packages found under it are implementation details.
+
+* Requirements
+
+  Jelly compiles with any Java 1.6 or 1.5 JDK, and uses no OS specific
+  APIs.
+
+  It's been tested with Sun's JDK/JRE 1.6 and 1.5 under GNU/Linux and
+  Mac OS X 10.6, and with OpenJDK 1.6 under GNU/Linux.
+
+*** Library dependencies
+
+    Jelly has no run time dependencies on external libraries. The jars
+    in '../lib' are used for unit tests (JUnit) and compile-time
+    annotations, and are only relevant during building and testing.
+
+* Building
+
+  To build jelly you need Ant 1.7 or better, or Eclipse. All other
+  dependencies are included in the '../lib' folder.
+
+*** Ant targets
+
+    - =ant compile= will compile the library's source, with output to
+      build/classes.
+    =- ant build= generates the jelly jar file, inside the dist folder.
+    - =ant test= runs the test suite, writing plain text reports inside
+      build/test/data.
+    - =ant test-reporting= works as =ant test=, but also creates HTML
+      reports in build/test/reports.
+    - =ant javadoc= generates the library javadoc and puts it in
+      build/javadoc.
+    - =ant doxygen= generates the documentation using doxygen, inside
+      build/doxygen. Doxygen has some problems recognizing Java enums
+      and some other constructs: using javadoc is recommended.
+
+    Use =ant -p= for a complete list of targets.
+
+*** Configurable options
+
+    Running =ant properties= will list all properties used by the build
+    scripts. You can override any of them either by using ant's -D
+    flag or by creating a properties file called build.properties.
+
+*** Building for Java 1.5
+
+    Of particular interest are the build properties compile.source and
+    compile.target. By default, they are set to 1.6. You can create a
+    1.5 jar with the following incantation:
+
+         ant clean
+         ant -Dcompile.source=1.5 -Dcompile.target=1.5 build
+
+*** Using Eclipse
+
+    Just create a new project from existing sources, pointing to this
+    directory. Sources are under 'src' and, for tests, under 'test'.
+    You'll also need to add to the project's classpath all jar files
+    under 'lib'.
+
+    Alternatively, you can create an ant-based project in Eclipse,
+    pointing it to build.xml in this directory.
