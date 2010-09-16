@@ -5,6 +5,7 @@ package com.oblong.jelly;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.ByteArrayOutputStream;
 import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
@@ -87,6 +88,16 @@ public abstract class Protein extends Slaw {
      * stream) is thrown.
      */
     public abstract int putData(OutputStream os) throws IOException;
+
+    /**
+     * Returns a copy of this protein's raw data as a byte array.
+     */
+    public final byte[] copyData() throws IOException {
+        final ByteArrayOutputStream s =
+            new ByteArrayOutputStream(dataLength());
+        putData(s);
+        return s.toByteArray();
+    }
 
     /**
      * The index of this protein in the pool it was retrieved from, or

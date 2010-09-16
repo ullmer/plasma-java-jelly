@@ -1,5 +1,6 @@
 (ns jelly.slaw
-  (:import (com.oblong.jelly Slaw Protein NumericIlk)
+  (:import (java.io FileOutputStream)
+           (com.oblong.jelly Slaw Protein NumericIlk)
            (com.oblong.jelly.slaw SlawNil SlawBool SlawString SlawNumber
                                   SlawCons SlawComplex SlawList SlawMap
                                   SlawVector SlawArray)))
@@ -74,10 +75,16 @@
   (Slaw/protein (slaw descrips) (slaw ingests)))
 
 (defn index [p] (.index p))
-(defn stamp [p] (and (instance? Protein p) (.timestamp p)))
+(defn stamp [p] (.timestamp p))
 
-(defn ingests [p] (and (instance? Protein p) (.ingests p)))
-(defn descrips [p] (and (instance? Protein p) (.descrips p)))
+(defn ingests [p] (.ingests p))
+(defn descrips [p] (.descrips p))
+
+(defn rogue-datum [p n] (.datum p n))
+(defn rogue-data [p] (.copyData p))
+(defn rogue-data-len [p] (.dataLength p))
+(defn save-rogue-data [p f]
+  (with-open [os (FileOutputStream. f)] (.write os (rogue-data p))))
 
 (defmulti slaw-value class)
 
