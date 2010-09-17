@@ -1,0 +1,66 @@
+* Initial screen:
++---------------+
+| Servers      	| Clickable icons
+|  	       	|
+| Bookmarks    	|
++---------------+
+
+* Servers:
++---------------+
+| s1   	       	| List of registered servers
+| s2 	  	| Clicking goes to pool display
+| .............	|
+| ............. |
+| Add 	  	| Menu (or buttons)
+| Remove  	|
+| Bookmark	|
++---------------+
+
+* Pools:
++---------------+
+| pool1       	| List of pools in server
+| pool2	       	| Clicking goes to pool inspector
+| ......  	|
+| Remove       	| Menu (or buttons)
+| Bookmark	|
++---------------+
+
+* Pool inspector:
++------------------+
+| Pool name	   |  Pool metadata
+| Meta info:	   |
+|  max/min index   |
+|  used/free size  |
+|  .......	   |
+|+---------------+ |
+||p1         10k | |  Abbreviated list
+||p2 	    212k | |  of last proteins in the pool.
+||p3 	      3M | |  Scrollable and clickable,
+|| ..		 | |  bringing the protein inspector.
+|+---------------+ |
++------------------+  In the menu: set alarm
+
+To properly implement the abbreviated list of proteins, bug #534 needs
+to be fixed (it's a feature request for plasma that Patrick has agreed
+on) and the functionality added to jelly (shouldn't be difficult).
+
+* Protein inspector:
+TBD: we need to think of ways of representing different data types,
+separate descrips from ingests, what to do with rogue data, etc.  .
+Depending of how ambitious we're here, additional hacking time
+will be required.
+
+* Bookmarks:
+Two scroll lists: pool servers and pools.
+Each bookmark can be given a nick name.
+
+In future versions one can get fancy here: sorting criteria, icon
+view, adding a bookmark to the phone's home as an icon.
+
+* Set Alarm: 
+For a given pool, we can introduce a descrip (initially limiting
+ourselves to strings), and a notification icon will appear in the
+phone's notification area. There are some subtleties involved, like
+reconnecting to the pool (or not) when the connection is lost. Making
+this functionality robuts may take some additional work that we can
+defer for later.
