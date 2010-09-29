@@ -1,6 +1,6 @@
 // Copyright (c) 2010 Oblong Industries
 
-package com.oblong.jelly.slaw;
+package com.oblong.jelly.slaw.v2;
 
 
 import java.io.ByteArrayInputStream;
@@ -11,6 +11,7 @@ import org.junit.Test;
 
 import com.oblong.jelly.*;
 import static com.oblong.jelly.Slaw.*;
+import com.oblong.jelly.slaw.*;
 
 /**
  * Unit test for PlasmaV2 serialization: proteins.
@@ -22,7 +23,7 @@ import static com.oblong.jelly.Slaw.*;
 public class PlasmaV2ProteinsTest extends SerializationTestBase {
 
     public PlasmaV2ProteinsTest() {
-        super(new V2Externalizer(), new V2Internalizer());
+        super(new Externalizer(), new Internalizer());
     }
 
     @Test public void empty() {

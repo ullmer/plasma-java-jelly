@@ -1,4 +1,4 @@
-package com.oblong.jelly.slaw;
+package com.oblong.jelly.slaw.v2;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -7,13 +7,13 @@ import net.jcip.annotations.Immutable;
 
 import com.oblong.jelly.Protein;
 import com.oblong.jelly.Slaw;
-
-import static com.oblong.jelly.slaw.V2Protocol.*;
+import com.oblong.jelly.slaw.AbstractSlawExternalizer;
+import static com.oblong.jelly.slaw.v2.Protocol.*;
 
 import com.oblong.jelly.util.ByteWriter;
 
 @Immutable
-public final class V2Externalizer extends AbstractSlawExternalizer {
+public final class Externalizer extends AbstractSlawExternalizer {
 
     @Override protected int nilExternSize(Slaw s) { return OCT_LEN; }
 

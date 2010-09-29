@@ -1,11 +1,12 @@
 // Copyright (c) 2010 Oblong Industries
 
-package com.oblong.jelly.slaw;
+package com.oblong.jelly.slaw.v2;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
 
 import com.oblong.jelly.*;
+import com.oblong.jelly.slaw.*;
 import static com.oblong.jelly.Slaw.*;
 
 /**
@@ -18,7 +19,7 @@ import static com.oblong.jelly.Slaw.*;
 public class PlasmaV2ArraysTest extends SerializationTestBase {
 
     public PlasmaV2ArraysTest() {
-        super(new V2Externalizer(), new V2Internalizer());
+        super(new Externalizer(), new Internalizer());
     }
 
     @Test public void empty() {
@@ -90,7 +91,7 @@ public class PlasmaV2ArraysTest extends SerializationTestBase {
                                   complex(number(ni, 3L), number(ni, 4L)));
             final byte[] bs = slawToBytes(ca);
             final String msg = "Array of " + ni + "/" + arrayStr(bs);
-            assertEquals(V2Protocol.roundUp(8 + 4 * ni.bytes()), bs.length);
+            assertEquals(Protocol.roundUp(8 + 4 * ni.bytes()), bs.length);
             checkHeading(msg, bs, SlawIlk.COMPLEX_ARRAY, ni, 1, 2);
             if (ni.isIntegral()) {
                 for (int j = 0; j < 4; j++) {
@@ -109,7 +110,7 @@ public class PlasmaV2ArraysTest extends SerializationTestBase {
                                    vector(number(ni, 3L), number(ni, 4L)));
             final byte[] b22 = slawToBytes(v22);
             final String msg = "Array of " + ni + "/" + arrayStr(b22);
-            assertEquals(V2Protocol.roundUp(8 + 4 * ni.bytes()), b22.length);
+            assertEquals(Protocol.roundUp(8 + 4 * ni.bytes()), b22.length);
             checkHeading(msg, b22, SlawIlk.VECTOR_ARRAY, ni, 2, 2);
             if (ni.isIntegral()) {
                 for (int j = 0; j < 4; j++) {

@@ -1,10 +1,11 @@
 // Copyright (c) 2010 Oblong Industries
 
-package com.oblong.jelly.slaw;
+package com.oblong.jelly.slaw.v2;
 
 import org.junit.Test;
 
 import com.oblong.jelly.*;
+import com.oblong.jelly.slaw.*;
 import static com.oblong.jelly.Slaw.*;
 
 /**
@@ -17,7 +18,7 @@ import static com.oblong.jelly.Slaw.*;
 public class PlasmaV2ComplexTest extends SerializationTestBase {
 
     public PlasmaV2ComplexTest() {
-        super(new V2Externalizer(), new V2Internalizer());
+        super(new Externalizer(), new Internalizer());
     }
 
     @Test public void weeComplexes() {
