@@ -2,18 +2,12 @@
 
 package com.oblong.android.imagine;
 
-import java.io.FileOutputStream;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.util.Log;
 import android.view.View;
 
 public class Imagine extends Activity
