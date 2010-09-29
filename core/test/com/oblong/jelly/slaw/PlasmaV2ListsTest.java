@@ -1,6 +1,6 @@
 // Copyright (c) 2010 Oblong Industries
 
-package com.oblong.jelly.slaw.v2;
+package com.oblong.jelly.slaw;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -10,7 +10,6 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 import com.oblong.jelly.*;
-import com.oblong.jelly.slaw.*;
 import static com.oblong.jelly.Slaw.*;
 
 /**
@@ -23,7 +22,7 @@ import static com.oblong.jelly.Slaw.*;
 public class PlasmaV2ListsTest extends SerializationTestBase {
 
     public PlasmaV2ListsTest() {
-        super(new Externalizer(), new Internalizer());
+        super(new V2Externalizer(), new V2Internalizer());
     }
 
     @Test public void lists() {
@@ -55,7 +54,7 @@ public class PlasmaV2ListsTest extends SerializationTestBase {
     }
 
     private void checkHeading(String msg, ByteBuffer b, long count) {
-        final long octs = Protocol.octs(b.remaining());
+        final long octs = V2Protocol.octs(b.remaining());
         final long h = b.getLong();
         assertEquals(msg, 4, h>>>60);
         assertEquals(msg, octs, h & (~(0xff<<56)));

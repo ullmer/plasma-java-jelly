@@ -16,13 +16,13 @@ import com.oblong.jelly.Slaw;
 import com.oblong.jelly.pool.PoolConnection;
 import com.oblong.jelly.pool.Request;
 import com.oblong.jelly.pool.ServerErrorCode;
+import com.oblong.jelly.slaw.V2Externalizer;
+import com.oblong.jelly.slaw.V2Internalizer;
 import com.oblong.jelly.slaw.JavaSlawFactory;
 import com.oblong.jelly.slaw.SlawExternalizer;
 import com.oblong.jelly.slaw.SlawFactory;
 import com.oblong.jelly.slaw.SlawInternalizer;
 import com.oblong.jelly.slaw.SlawParseError;
-import com.oblong.jelly.slaw.v2.Externalizer;
-import com.oblong.jelly.slaw.v2.Internalizer;
 import com.oblong.jelly.util.ByteReader;
 
 /**
@@ -147,9 +147,9 @@ final class TCPProxyHandler implements Runnable {
     private final Socket socket;
     private final PoolConnection connection;
     private static final SlawInternalizer internalizer =
-        new Internalizer();
+        new V2Internalizer();
     private static final SlawExternalizer externalizer =
-        new Externalizer();
+        new V2Externalizer();
 
     private final Logger log = Logger.getLogger(getClass().getName());
 }

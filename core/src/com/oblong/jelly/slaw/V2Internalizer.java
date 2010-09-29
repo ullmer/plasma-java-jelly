@@ -1,6 +1,6 @@
 // Copyright (c) 2010 Oblong Industries
 
-package com.oblong.jelly.slaw.v2;
+package com.oblong.jelly.slaw;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,16 +14,13 @@ import com.oblong.jelly.NumericIlk;
 import com.oblong.jelly.Protein;
 import com.oblong.jelly.Slaw;
 import com.oblong.jelly.SlawIlk;
-import com.oblong.jelly.slaw.SlawFactory;
-import com.oblong.jelly.slaw.SlawInternalizer;
-import com.oblong.jelly.slaw.SlawParseError;
 import com.oblong.jelly.util.ByteReader;
 
-import static com.oblong.jelly.slaw.v2.Protocol.*;
+import static com.oblong.jelly.slaw.V2Protocol.*;
 
 @Immutable
 public
-final class Internalizer implements SlawInternalizer {
+final class V2Internalizer implements SlawInternalizer {
 
     @Override public Protein internProtein(InputStream s, SlawFactory f)
         throws SlawParseError, IOException {

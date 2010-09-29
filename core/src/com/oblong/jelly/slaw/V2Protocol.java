@@ -1,6 +1,6 @@
 // Copyright (c) 2010 Oblong Industries
 
-package com.oblong.jelly.slaw.v2;
+package com.oblong.jelly.slaw;
 
 
 import java.util.EnumMap;
@@ -16,7 +16,7 @@ import static com.oblong.jelly.NumericIlk.*;
 import static com.oblong.jelly.SlawIlk.*;
 
 @Immutable
-final class Protocol {
+final class V2Protocol {
 
     static final byte NUL = 0;
     static final int OCT_LEN = 8;
@@ -278,5 +278,5 @@ final class Protocol {
         COMPOSITE_BYTE.put(MAP, MAP_NIBBLE<<4);
     }
 
-    private Protocol() {}
+    private V2Protocol() {}
 }
