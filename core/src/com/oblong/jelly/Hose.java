@@ -59,9 +59,10 @@ public interface Hose {
 
     /**
      * Returns a map with keyed pieces of information on the backing
-     * pool. Keys are (Slaw) strings and include: size, size-used,
-     * index-capacity, index-count, index-count, mmap-pool-version,
-     * type, and terminal.
+     * pool. Keys are (Slaw) strings and include size, size-used,
+     * index-capacity, index-count, mmap-pool-version, type, and
+     * terminal. Additional information may be available, depending on
+     * the target server's version.
      */
     Slaw info();
 

@@ -10,7 +10,7 @@ import java.nio.ByteBuffer;
  *
  * @author jao
  */
-public class SlawParseError extends Exception {
+public final class SlawParseError extends Exception {
 
     public SlawParseError(int pos, String msg) {
         super("Error: " + msg + " at position " + pos);
