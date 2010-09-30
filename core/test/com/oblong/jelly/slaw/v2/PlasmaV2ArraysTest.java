@@ -19,7 +19,7 @@ import static com.oblong.jelly.Slaw.*;
 public class PlasmaV2ArraysTest extends SerializationTestBase {
 
     public PlasmaV2ArraysTest() {
-        super(new Externalizer(), new Internalizer());
+        super(new BinaryExternalizer(), new BinaryInternalizer());
     }
 
     @Test public void empty() {

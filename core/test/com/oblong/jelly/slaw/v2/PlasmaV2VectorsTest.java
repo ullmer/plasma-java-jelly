@@ -18,7 +18,7 @@ import static com.oblong.jelly.Slaw.*;
 public class PlasmaV2VectorsTest extends SerializationTestBase {
 
     public PlasmaV2VectorsTest() {
-        super(new Externalizer(), new Internalizer());
+        super(new BinaryExternalizer(), new BinaryInternalizer());
     }
 
     @Test public void vector8() {

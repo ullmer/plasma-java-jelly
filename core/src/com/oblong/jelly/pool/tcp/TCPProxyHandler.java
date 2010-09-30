@@ -21,8 +21,8 @@ import com.oblong.jelly.slaw.SlawExternalizer;
 import com.oblong.jelly.slaw.SlawFactory;
 import com.oblong.jelly.slaw.SlawInternalizer;
 import com.oblong.jelly.slaw.SlawParseError;
-import com.oblong.jelly.slaw.v2.Externalizer;
-import com.oblong.jelly.slaw.v2.Internalizer;
+import com.oblong.jelly.slaw.v2.BinaryExternalizer;
+import com.oblong.jelly.slaw.v2.BinaryInternalizer;
 import com.oblong.jelly.util.ByteReader;
 
 /**
@@ -147,9 +147,9 @@ final class TCPProxyHandler implements Runnable {
     private final Socket socket;
     private final PoolConnection connection;
     private static final SlawInternalizer internalizer =
-        new Internalizer();
+        new BinaryInternalizer();
     private static final SlawExternalizer externalizer =
-        new Externalizer();
+        new BinaryExternalizer();
 
     private final Logger log = Logger.getLogger(getClass().getName());
 }

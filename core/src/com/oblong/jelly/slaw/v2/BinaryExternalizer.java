@@ -13,7 +13,7 @@ import static com.oblong.jelly.slaw.v2.Protocol.*;
 import com.oblong.jelly.util.ByteWriter;
 
 @Immutable
-public final class Externalizer extends AbstractSlawExternalizer {
+public final class BinaryExternalizer extends AbstractSlawExternalizer {
 
     @Override protected int nilExternSize(Slaw s) { return OCT_LEN; }
 

@@ -23,7 +23,7 @@ import com.oblong.jelly.slaw.*;
 public class PlasmaV2ProteinsTest extends SerializationTestBase {
 
     public PlasmaV2ProteinsTest() {
-        super(new Externalizer(), new Internalizer());
+        super(new BinaryExternalizer(), new BinaryInternalizer());
     }
 
     @Test public void empty() {

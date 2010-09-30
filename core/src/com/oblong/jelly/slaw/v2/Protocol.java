@@ -2,7 +2,6 @@
 
 package com.oblong.jelly.slaw.v2;
 
-
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;

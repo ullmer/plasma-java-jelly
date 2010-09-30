@@ -22,8 +22,7 @@ import com.oblong.jelly.util.ByteReader;
 import static com.oblong.jelly.slaw.v2.Protocol.*;
 
 @Immutable
-public
-final class Internalizer implements SlawInternalizer {
+public final class BinaryInternalizer implements SlawInternalizer {
 
     @Override public Protein internProtein(InputStream s, SlawFactory f)
         throws SlawParseError, IOException {
@@ -39,7 +38,15 @@ final class Internalizer implements SlawInternalizer {
 
     @Override public Slaw internSlaw(InputStream s, SlawFactory f)
         throws SlawParseError, IOException {
+        return internSlaw(s, f, true);
+    }
+
+    @Override public Slaw internSlaw(InputStream s,
+                                     SlawFactory f,
+                                     boolean nativeOrder)
+        throws SlawParseError, IOException {
         ByteReader b = new ByteReader(s, OCT_LEN);
+        if (!nativeOrder) b.setLittleEndian();
         return internSlaw(b, f);
     }
 
@@ -128,7 +135,7 @@ final class Internalizer implements SlawInternalizer {
         final int len = stringLength(h) - 1;
         final byte[] bs = new byte[len];
         b.get(bs, len);
-        b.get(); // consuming trailing null 
+        b.get(); // consuming trailing null
         return f.string(makeString(bs));
     }
 
@@ -228,7 +235,8 @@ final class Internalizer implements SlawInternalizer {
         final NumericIlk ni = numericIlk(h);
         final boolean c = isComplexNumeric(h);
         SlawIlk i;
-        if (isNumericScalar(h)) i = c ? SlawIlk.COMPLEX_ARRAY : SlawIlk.NUMBER_ARRAY;
+        if (isNumericScalar(h))
+            i = c ? SlawIlk.COMPLEX_ARRAY : SlawIlk.NUMBER_ARRAY;
         else if (isMultivector(h)) i = SlawIlk.MULTI_VECTOR_ARRAY;
         else i = c ? SlawIlk.COMPLEX_VECTOR_ARRAY : SlawIlk.VECTOR_ARRAY;
         return f.array(i, ni, numericDimension(h));

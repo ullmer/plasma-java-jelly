@@ -18,7 +18,7 @@ import static com.oblong.jelly.Slaw.*;
 public class PlasmaV2AtomsTest extends SerializationTestBase {
 
     public PlasmaV2AtomsTest() {
-        super(new Externalizer(), new Internalizer());
+        super(new BinaryExternalizer(), new BinaryInternalizer());
     }
 
     @Test public void nils() {

@@ -17,7 +17,11 @@ public interface SlawInternalizer {
 
     Protein internProtein(InputStream s, SlawFactory f)
         throws SlawParseError, IOException;
+
     Slaw internSlaw(InputStream s, SlawFactory f)
+        throws SlawParseError, IOException;
+
+    Slaw internSlaw(InputStream s, SlawFactory f, boolean nativeOrder)
         throws SlawParseError, IOException;
 
 }
