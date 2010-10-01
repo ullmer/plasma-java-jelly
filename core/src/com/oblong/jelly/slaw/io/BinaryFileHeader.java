@@ -6,15 +6,18 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PushbackInputStream;
 
+import net.jcip.annotations.Immutable;
+
 /**
  *
  * Created: Thu Sep 30 16:26:00 2010
  *
  * @author jao
  */
-final class BinaryHeader {
+@Immutable
+final class BinaryFileHeader {
 
-    static BinaryHeader read(PushbackInputStream is) throws IOException {
+    static BinaryFileHeader read(PushbackInputStream is) throws IOException {
         for (int i = 0; i < HEADER.length; ++i) {
             final int c = is.read();
             if (c != HEADER[i]) {
@@ -27,10 +30,10 @@ final class BinaryHeader {
         final int t = is.read();
         final int hf = is.read();
         final int lf = is.read();
-        return new BinaryHeader(v, t, hf, lf);
+        return new BinaryFileHeader(v, t, hf, lf);
     }
 
-    BinaryHeader() {
+    BinaryFileHeader() {
         this(VERSION, TYPE, HFLAGS, LFLAGS);
     }
 
@@ -46,7 +49,7 @@ final class BinaryHeader {
         return (lflags & BIG_ENDIAN_FLAG) == 1;
     }
 
-    private BinaryHeader(int v, int t, int hf, int lf) {
+    private BinaryFileHeader(int v, int t, int hf, int lf) {
         version = v;
         type = t;
         hflags = hf;

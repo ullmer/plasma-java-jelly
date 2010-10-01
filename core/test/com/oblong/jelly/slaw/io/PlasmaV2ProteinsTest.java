@@ -1,6 +1,6 @@
 // Copyright (c) 2010 Oblong Industries
 
-package com.oblong.jelly.slaw.v2;
+package com.oblong.jelly.slaw.io;
 
 
 import java.io.ByteArrayInputStream;
@@ -12,6 +12,8 @@ import org.junit.Test;
 import com.oblong.jelly.*;
 import static com.oblong.jelly.Slaw.*;
 import com.oblong.jelly.slaw.*;
+import com.oblong.jelly.slaw.io.BinaryExternalizer;
+import com.oblong.jelly.slaw.io.BinaryInternalizer;
 
 /**
  * Unit test for PlasmaV2 serialization: proteins.

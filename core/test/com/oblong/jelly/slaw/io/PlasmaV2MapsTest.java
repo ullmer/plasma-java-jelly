@@ -1,6 +1,6 @@
 // Copyright (c) 2010 Oblong Industries
 
-package com.oblong.jelly.slaw.v2;
+package com.oblong.jelly.slaw.io;
 
 import java.nio.ByteBuffer;
 import java.util.Map;
@@ -11,6 +11,10 @@ import org.junit.Test;
 
 import com.oblong.jelly.*;
 import com.oblong.jelly.slaw.*;
+import com.oblong.jelly.slaw.io.BinaryExternalizer;
+import com.oblong.jelly.slaw.io.BinaryInternalizer;
+import com.oblong.jelly.slaw.io.BinaryProtocol;
+
 import static com.oblong.jelly.Slaw.*;
 
 /**
@@ -53,7 +57,7 @@ public class PlasmaV2MapsTest extends SerializationTestBase {
     }
 
     private void checkHeading(String msg, ByteBuffer b, long count) {
-        final long octs = Protocol.octs(b.remaining());
+        final long octs = BinaryProtocol.octs(b.remaining());
         final long h = b.getLong();
         assertEquals(msg, 5, h>>>60);
         assertEquals(msg, octs, h & (~(0xff<<56)));

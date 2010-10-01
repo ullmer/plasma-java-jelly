@@ -1,11 +1,14 @@
 // Copyright (c) 2010 Oblong Industries
 
-package com.oblong.jelly.slaw.v2;
+package com.oblong.jelly.slaw.io;
 
 import org.junit.Test;
 
 import com.oblong.jelly.*;
 import com.oblong.jelly.slaw.*;
+import com.oblong.jelly.slaw.io.BinaryExternalizer;
+import com.oblong.jelly.slaw.io.BinaryInternalizer;
+
 import static com.oblong.jelly.Slaw.*;
 
 /**

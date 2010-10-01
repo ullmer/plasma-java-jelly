@@ -16,7 +16,7 @@ import com.oblong.jelly.slaw.SlawExternalizer;
  *
  * @author jao
  */
-final class Writer implements SlawWriter {
+final class StreamWriter implements SlawWriter {
 
     @Override public final boolean write(Slaw s) {
         if (s == null) return false;
@@ -40,7 +40,7 @@ final class Writer implements SlawWriter {
 
     @Override public final SlawIO.Format format() { return format; }
 
-    Writer(OutputStream os, SlawIO.Format fmt, SlawExternalizer ext) {
+    StreamWriter(OutputStream os, SlawIO.Format fmt, SlawExternalizer ext) {
         stream = os;
         format = fmt;
         externalizer = ext;

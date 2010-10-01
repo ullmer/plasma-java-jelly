@@ -18,7 +18,7 @@ import com.oblong.jelly.slaw.SlawFactory;
  *
  * @author jao
  */
-final class Reader implements SlawReader {
+final class StreamReader implements SlawReader {
 
     @Override public Slaw next() {
         final Slaw result = hasNext() ? next : null;
@@ -47,7 +47,7 @@ final class Reader implements SlawReader {
 
     @Override public Format format() { return format; }
 
-    Reader(InputStream is, SlawInternalizer in, boolean le, Format fmt) {
+    StreamReader(InputStream is, SlawInternalizer in, boolean le, Format fmt) {
         stream = is;
         internalizer = in;
         format = fmt;

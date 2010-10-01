@@ -1,6 +1,6 @@
 // Copyright (c) 2010 Oblong Industries
 
-package com.oblong.jelly.slaw.v2;
+package com.oblong.jelly.slaw.io;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,7 +19,7 @@ import com.oblong.jelly.slaw.SlawInternalizer;
 import com.oblong.jelly.slaw.SlawParseError;
 import com.oblong.jelly.util.ByteReader;
 
-import static com.oblong.jelly.slaw.v2.Protocol.*;
+import static com.oblong.jelly.slaw.io.BinaryProtocol.*;
 
 @Immutable
 public final class BinaryInternalizer implements SlawInternalizer {

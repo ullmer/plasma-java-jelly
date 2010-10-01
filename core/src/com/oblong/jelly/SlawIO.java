@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.EnumSet;
 import java.util.Set;
 
-import com.oblong.jelly.slaw.io.Factory;
+import com.oblong.jelly.slaw.io.FileIO;
 
 /**
  * Factory class defining methods for creating SlawReader and SlawWriter
@@ -54,7 +54,7 @@ public final class SlawIO {
      * @see SlawReader
      */
     public static SlawReader reader(String fileName) throws IOException {
-        return Factory.reader(fileName);
+        return FileIO.reader(fileName);
     }
 
     /**
@@ -64,7 +64,7 @@ public final class SlawIO {
         throws IOException {
         switch (format) {
         case BINARY:
-            return Factory.binaryWriter(fileName);
+            return FileIO.binaryWriter(fileName);
         case YAML:
             return writer(fileName, YamlOptions.DEFAULTS);
         }

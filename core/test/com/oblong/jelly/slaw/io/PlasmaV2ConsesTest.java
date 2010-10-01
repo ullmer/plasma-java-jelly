@@ -1,6 +1,6 @@
 // Copyright (c) 2010 Oblong Industries
 
-package com.oblong.jelly.slaw.v2;
+package com.oblong.jelly.slaw.io;
 
 import java.nio.ByteBuffer;
 
@@ -9,6 +9,10 @@ import static org.junit.Assert.*;
 
 import com.oblong.jelly.*;
 import com.oblong.jelly.slaw.*;
+import com.oblong.jelly.slaw.io.BinaryExternalizer;
+import com.oblong.jelly.slaw.io.BinaryInternalizer;
+import com.oblong.jelly.slaw.io.BinaryProtocol;
+
 import static com.oblong.jelly.Slaw.*;
 
 /**
@@ -41,7 +45,7 @@ public class PlasmaV2ConsesTest extends SerializationTestBase {
     }
 
     private void checkHeading(String msg, ByteBuffer b) {
-        final long octs = Protocol.octs(b.remaining());
+        final long octs = BinaryProtocol.octs(b.remaining());
         final long h = b.getLong();
         assertEquals(msg, 0x62, h>>>56);
         assertEquals(msg, octs, h & (~(0xff<<56)));

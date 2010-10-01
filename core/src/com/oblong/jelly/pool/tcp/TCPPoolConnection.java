@@ -182,9 +182,9 @@ final class TCPPoolConnection implements PoolConnection {
     private static final SlawFactory factory =
         new com.oblong.jelly.slaw.JavaSlawFactory();
     private static final SlawExternalizer defaultExternalizer =
-        new com.oblong.jelly.slaw.v2.BinaryExternalizer();
+        new com.oblong.jelly.slaw.io.BinaryExternalizer();
     private static final SlawInternalizer defaultInternalizer =
-        new com.oblong.jelly.slaw.v2.BinaryInternalizer();
+        new com.oblong.jelly.slaw.io.BinaryInternalizer();
 
     static final Set<Request> defaultSupported =
         EnumSet.of(CREATE, DISPOSE, PARTICIPATE, PARTICIPATE_C,

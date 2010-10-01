@@ -1,4 +1,4 @@
-package com.oblong.jelly.slaw.v2;
+package com.oblong.jelly.slaw.io;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -8,7 +8,8 @@ import net.jcip.annotations.Immutable;
 import com.oblong.jelly.Protein;
 import com.oblong.jelly.Slaw;
 import com.oblong.jelly.slaw.AbstractSlawExternalizer;
-import static com.oblong.jelly.slaw.v2.Protocol.*;
+
+import static com.oblong.jelly.slaw.io.BinaryProtocol.*;
 
 import com.oblong.jelly.util.ByteWriter;
 
