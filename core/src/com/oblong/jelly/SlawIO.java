@@ -27,11 +27,11 @@ public final class SlawIO {
      * Flags for customizing YAML output.
      */
     public enum YamlOptions {
-        /** Don't emit tags for numbers */
+        /** Don't emit tags for numbers. */
         NO_TAGS,
-        /** Don't emit directives */
+        /** Don't emit YAML directives. */
         NO_DIRECTIVES,
-        /** Don't order maps */
+        /** Don't order maps (i.e., use !!map instead of !!omap). */
         UNORDERED_MAPS;
 
         /**
@@ -58,7 +58,17 @@ public final class SlawIO {
     }
 
     /**
+     * Factory method creating a writer associated with the given
+     * file.
      *
+     * <p> The file will be created or, if it exists, truncated to
+     * zero length. If the given format is YAML, none of the options
+     * available in {@link YamlOptions} will be used.
+     *
+     * @throws IOException when the file cannot be created or written
+     * to.
+     *
+     * @see SlawWriter
      */
     public static SlawWriter writer(String fileName, Format format)
         throws IOException {
