@@ -8,6 +8,8 @@ import java.io.InputStream;
 import java.io.PushbackInputStream;
 import java.io.IOException;
 
+import net.jcip.annotations.Immutable;
+
 import com.oblong.jelly.SlawIO.Format;
 import com.oblong.jelly.SlawReader;
 import com.oblong.jelly.SlawWriter;
@@ -18,6 +20,7 @@ import com.oblong.jelly.SlawWriter;
  *
  * @author jao
  */
+@Immutable
 public final class FileIO {
 
     public static SlawReader reader(String fileName) throws IOException {

@@ -5,6 +5,8 @@ package com.oblong.jelly.slaw.io;
 import java.io.OutputStream;
 import java.util.logging.Logger;
 
+import net.jcip.annotations.NotThreadSafe;
+
 import com.oblong.jelly.Slaw;
 import com.oblong.jelly.SlawIO;
 import com.oblong.jelly.SlawWriter;
@@ -16,6 +18,7 @@ import com.oblong.jelly.slaw.SlawExternalizer;
  *
  * @author jao
  */
+@NotThreadSafe
 final class StreamWriter implements SlawWriter {
 
     @Override public final boolean write(Slaw s) {

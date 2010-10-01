@@ -5,6 +5,8 @@ package com.oblong.jelly.slaw.io;
 import java.io.InputStream;
 import java.util.logging.Logger;
 
+import net.jcip.annotations.NotThreadSafe;
+
 import com.oblong.jelly.Slaw;
 import com.oblong.jelly.SlawIO.Format;
 import com.oblong.jelly.SlawReader;
@@ -18,6 +20,7 @@ import com.oblong.jelly.slaw.SlawFactory;
  *
  * @author jao
  */
+@NotThreadSafe
 final class StreamReader implements SlawReader {
 
     @Override public Slaw next() {
