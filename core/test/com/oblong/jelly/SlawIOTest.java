@@ -4,6 +4,7 @@ package com.oblong.jelly;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import static org.junit.Assert.*;
 import org.junit.After;
@@ -47,6 +48,14 @@ public class SlawIOTest {
         assertEquals(fmt, writer.format());
         for (Slaw s : slawx) assertTrue(writer.write(s));
         assertTrue(writer.close());
+        checkReader(fmt, slawx);
+
+        assertTrue(SlawIO.write(slawx, defFileName, fmt));
+        checkReader(fmt, slawx);
+    }
+
+    private final void checkReader(Format fmt, Slaw[] slawx)
+        throws IOException {
         final SlawReader reader = SlawIO.reader(defFileName);
         assertEquals(fmt, reader.format());
         for (int i = 0; i < slawx.length; ++i) {
@@ -56,8 +65,10 @@ public class SlawIOTest {
         assertFalse(reader.hasNext());
         assertNull(reader.next());
         assertTrue(reader.close());
-    }
 
+        List<Slaw> slawx2 = SlawIO.read(defFileName);
+        assertArrayEquals(slawx, slawx2.toArray());
+    }
 
     private static File defFile;
     private static String defFileName;

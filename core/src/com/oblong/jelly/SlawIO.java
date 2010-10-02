@@ -5,13 +5,24 @@ package com.oblong.jelly;
 
 import java.io.IOException;
 import java.util.EnumSet;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.Set;
 
 import com.oblong.jelly.slaw.io.FileIO;
 
 /**
- * Factory class defining methods for creating SlawReader and SlawWriter
- * instances.
+ * Utilities for serializing Slaw instances to files.
+ *
+ * <p> Serialization can be piecemeal, via a {@link SlawWriter}
+ * instance, or performed in a single, atomic operation using {@link
+ * #write}. Reading the resulting files can be accomplished via a Slaw
+ * iterator, i.e., an instance of {@link SlawReader}. It's also
+ * possible to read all slawx in one shot using {@link #read}.
+ *
+ * <p> Slawx can be serialized in any of the formats enumerated by
+ * {@link SlawIO.Format}, which will be automatically recognised by
+ * readers.
  *
  * @author jao
  */
@@ -51,10 +62,29 @@ public final class SlawIO {
      * @throws IOException is the requested file does not exist or
      * cannot be read for any other reason.
      *
+     * @see #read for atomically reading all slawx in a file.
+     *
      * @see SlawReader
      */
     public static SlawReader reader(String fileName) throws IOException {
         return FileIO.reader(fileName);
+    }
+
+    /**
+     * Convenience method reading all slawx in the given file and
+     * returning them as a list. If the file does not contain any Slaw
+     * or is not in a recognisable format, the returned list will be
+     * empty.
+     *
+     * @throws IOException is the requested file does not exist or
+     * cannot be read for any other reason.
+     */
+    public static List<Slaw> read(String fileName) throws IOException {
+        final SlawReader reader = reader(fileName);
+        final List<Slaw> result = new ArrayList<Slaw>();
+        while (reader.hasNext()) result.add(reader.next());
+        reader.close();
+        return result;
     }
 
     /**
@@ -67,6 +97,9 @@ public final class SlawIO {
      *
      * @throws IOException when the file cannot be created or written
      * to.
+     *
+     * @see #write for atomically writing an array of Slawx without
+     * using an intermediate writer.
      *
      * @see SlawWriter
      */
@@ -84,6 +117,42 @@ public final class SlawIO {
     public static SlawWriter writer(String fileName, Set<YamlOptions> opts)
         throws IOException {
         return null;
+    }
+
+    /**
+     * Convenience method writing an array of slawx in one shot. If
+     * the given file exists, it'll be overwritten.
+     *
+     * @throws IOException when the file cannot be created or written
+     * to. Otherwise, the return value indicates whether all slawx
+     * were written.
+     */
+    public static boolean write(Slaw[] slawx, String fileName, Format format)
+        throws IOException {
+        return write(slawx, writer(fileName, format));
+    }
+
+    /**
+     * Convenience method writing an array of slawx in one shot, in
+     * YAML format, with the specified options. If the given file
+     * exists, it'll be overwritten.
+     *
+     * @throws IOException when the file cannot be created or written
+     * to. Otherwise, the return value indicates whether all slawx
+     * were written.
+     */
+    public static boolean write(
+        Slaw[] slawx, String fileName, Set<YamlOptions> opts)
+        throws IOException {
+        return write(slawx, writer(fileName, opts));
+    }
+
+
+    private static boolean write(Slaw[] slawx, SlawWriter writer) {
+        boolean result = true;
+        for (Slaw s : slawx) result= writer.write(s) && result;
+        result = writer.close() && result;
+        return result;
     }
 
     private SlawIO() {}
