@@ -29,8 +29,8 @@ public class PlasmaV2ArraysTest extends SerializationTestBase {
     @Test public void empty() {
         for (SlawIlk i : SlawIlk.arrayIlks()) {
             for (NumericIlk ni : NumericIlk.values()) {
-                final int minDim =
-                    i == SlawIlk.NUMBER_ARRAY || i == SlawIlk.COMPLEX_ARRAY ? 1 : 2;
+                final int minDim = i == SlawIlk.NUMBER_ARRAY
+                    || i == SlawIlk.COMPLEX_ARRAY ? 1 : 2;
                 final int maxDim = minDim == 1 ?
                     1 : i == SlawIlk.MULTI_VECTOR ? 5 : 4;
                 for (int d = minDim; d <= maxDim; d++) {

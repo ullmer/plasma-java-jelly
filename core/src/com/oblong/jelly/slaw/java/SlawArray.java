@@ -1,6 +1,6 @@
 // Copyright (c) 2010 Oblong Industries
 
-package com.oblong.jelly.slaw;
+package com.oblong.jelly.slaw.java;
 
 import java.util.EnumMap;
 import java.util.List;

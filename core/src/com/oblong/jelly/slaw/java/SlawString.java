@@ -1,4 +1,4 @@
-package com.oblong.jelly.slaw;
+package com.oblong.jelly.slaw.java;
 
 import net.jcip.annotations.Immutable;
 

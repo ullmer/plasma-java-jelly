@@ -1,6 +1,6 @@
 // Copyright (c) 2010 Oblong Industries
 
-package com.oblong.jelly.slaw;
+package com.oblong.jelly.slaw.java;
 
 import com.oblong.jelly.NumericIlk;
 import com.oblong.jelly.Slaw;

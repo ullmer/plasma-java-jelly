@@ -1,6 +1,6 @@
 // Copyright (c) 2010 Oblong Industries
 
-package com.oblong.jelly.slaw;
+package com.oblong.jelly.slaw.java;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -12,6 +12,7 @@ import com.oblong.jelly.NumericIlk;
 import com.oblong.jelly.Protein;
 import com.oblong.jelly.Slaw;
 import com.oblong.jelly.SlawIlk;
+import com.oblong.jelly.slaw.SlawFactory;
 
 import net.jcip.annotations.Immutable;
 

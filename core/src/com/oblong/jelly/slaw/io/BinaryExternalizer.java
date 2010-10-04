@@ -7,14 +7,14 @@ import net.jcip.annotations.Immutable;
 
 import com.oblong.jelly.Protein;
 import com.oblong.jelly.Slaw;
-import com.oblong.jelly.slaw.AbstractSlawExternalizer;
+import com.oblong.jelly.slaw.AbstractBinaryExternalizer;
 
 import static com.oblong.jelly.slaw.io.BinaryProtocol.*;
 
 import com.oblong.jelly.util.ByteWriter;
 
 @Immutable
-public final class BinaryExternalizer extends AbstractSlawExternalizer {
+public final class BinaryExternalizer extends AbstractBinaryExternalizer {
 
     @Override protected int nilExternSize(Slaw s) { return OCT_LEN; }
 

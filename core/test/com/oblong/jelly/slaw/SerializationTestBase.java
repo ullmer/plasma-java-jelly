@@ -11,20 +11,21 @@ import com.oblong.jelly.*;
 import static org.junit.Assert.*;
 
 public class SerializationTestBase {
-    protected SerializationTestBase(SlawExternalizer e) {
+    protected SerializationTestBase(AbstractBinaryExternalizer e) {
         externalizer = e;
         internalizer = null;
     }
 
-    protected SerializationTestBase(SlawExternalizer e, SlawInternalizer i) {
+    protected SerializationTestBase(AbstractBinaryExternalizer e,
+                                    SlawInternalizer i) {
         externalizer = e;
         internalizer = i;
     }
 
-    protected SlawExternalizer externalizer;
+    protected AbstractBinaryExternalizer externalizer;
     protected SlawInternalizer internalizer;
     protected SlawFactory factory =
-        new com.oblong.jelly.slaw.JavaSlawFactory();
+        new com.oblong.jelly.slaw.java.JavaSlawFactory();
 
     protected final String arrayStr(byte[] bs) {
         StringBuilder buf = new StringBuilder ("{ ");
@@ -56,7 +57,7 @@ public class SerializationTestBase {
             checkIntern(msg, s, b);
         }
     }
-    
+
     protected final void checkExtern(String msg, Slaw s, byte[] b) {
         if (externalizer != null) {
             final byte[] sb = slawToBytes(s);

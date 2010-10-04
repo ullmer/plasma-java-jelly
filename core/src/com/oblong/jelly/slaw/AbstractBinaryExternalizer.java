@@ -12,7 +12,7 @@ import com.oblong.jelly.util.ByteWriter;
 
 import static com.oblong.jelly.SlawIlk.*;
 
-public abstract class AbstractSlawExternalizer implements SlawExternalizer {
+public abstract class AbstractBinaryExternalizer implements SlawExternalizer {
 
     @Override public final long extern(Slaw s, OutputStream os)
         throws IOException {
@@ -21,8 +21,9 @@ public abstract class AbstractSlawExternalizer implements SlawExternalizer {
         return b.bytesWritten();
     }
 
-    @Override public final int externSize(Slaw s) {
+    public final int externSize(Slaw s) {
         if (s == null) return 0;
+        // Ugly, but shorter than an EnumMap and anonymous classes
         switch (s.ilk()) {
         case PROTEIN: return proteinExternSize(s.toProtein());
         case BOOL: return boolExternSize(s);
@@ -48,7 +49,6 @@ public abstract class AbstractSlawExternalizer implements SlawExternalizer {
 
     protected final void extern(Slaw s, ByteWriter b) throws IOException {
         prepareBuffer(b, s);
-        // Ugly, but shorter than an EnumMap and anonymous classes
         switch (s.ilk()) {
         case PROTEIN: externProtein(s.toProtein(), b); break;
         case BOOL: externBool(s, b); break;

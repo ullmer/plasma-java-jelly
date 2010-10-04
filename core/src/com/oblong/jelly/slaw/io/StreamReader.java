@@ -10,9 +10,9 @@ import net.jcip.annotations.NotThreadSafe;
 import com.oblong.jelly.Slaw;
 import com.oblong.jelly.SlawIO.Format;
 import com.oblong.jelly.SlawReader;
-import com.oblong.jelly.slaw.JavaSlawFactory;
 import com.oblong.jelly.slaw.SlawInternalizer;
 import com.oblong.jelly.slaw.SlawFactory;
+import com.oblong.jelly.slaw.java.JavaSlawFactory;
 
 /**
  *

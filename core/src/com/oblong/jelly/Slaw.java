@@ -1000,6 +1000,6 @@ public abstract class Slaw implements Iterable<Slaw> {
     protected Slaw() {}
 
     private static final com.oblong.jelly.slaw.SlawFactory factory =
-        new com.oblong.jelly.slaw.JavaSlawFactory();
+        new com.oblong.jelly.slaw.java.JavaSlawFactory();
 
 }

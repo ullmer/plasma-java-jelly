@@ -180,7 +180,7 @@ final class TCPPoolConnection implements PoolConnection {
     private final SlawInternalizer internalizer;
 
     private static final SlawFactory factory =
-        new com.oblong.jelly.slaw.JavaSlawFactory();
+        new com.oblong.jelly.slaw.java.JavaSlawFactory();
     private static final SlawExternalizer defaultExternalizer =
         new com.oblong.jelly.slaw.io.BinaryExternalizer();
     private static final SlawInternalizer defaultInternalizer =

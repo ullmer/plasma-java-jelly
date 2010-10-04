@@ -15,5 +15,5 @@ import com.oblong.jelly.Slaw;
 public interface SlawExternalizer {
 
     long extern(Slaw s, OutputStream os) throws IOException;
-    int externSize(Slaw s);
+
 }

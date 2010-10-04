@@ -211,7 +211,7 @@ final class MemPoolConnection implements PoolConnection {
     private boolean open;
 
     private static final com.oblong.jelly.slaw.SlawFactory factory =
-        new com.oblong.jelly.slaw.JavaSlawFactory();
+        new com.oblong.jelly.slaw.java.JavaSlawFactory();
     private static final Slaw OK = makeRet(POOL_SPLEND);
     private static final Slaw NOP = makeRet(POOL_UNSUPPORTED_OPERATION);
     private static final Slaw NO_SUCH_POOL = makeRet(POOL_NO_SUCH_POOL);

@@ -16,13 +16,13 @@ import com.oblong.jelly.Slaw;
 import com.oblong.jelly.pool.PoolConnection;
 import com.oblong.jelly.pool.Request;
 import com.oblong.jelly.pool.ServerErrorCode;
-import com.oblong.jelly.slaw.JavaSlawFactory;
 import com.oblong.jelly.slaw.SlawExternalizer;
 import com.oblong.jelly.slaw.SlawFactory;
 import com.oblong.jelly.slaw.SlawInternalizer;
 import com.oblong.jelly.slaw.SlawParseError;
 import com.oblong.jelly.slaw.io.BinaryExternalizer;
 import com.oblong.jelly.slaw.io.BinaryInternalizer;
+import com.oblong.jelly.slaw.java.JavaSlawFactory;
 import com.oblong.jelly.util.ByteReader;
 
 /**
