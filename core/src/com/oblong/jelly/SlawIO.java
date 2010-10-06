@@ -114,9 +114,23 @@ public final class SlawIO {
         return null;
     }
 
+    /**
+     * Factory method creating a writer with output to the given file
+     * and YAML format. The second argument allows fine tunning of the
+     * output, and can be safely null to use the default options.
+     *
+     * @throws IOException when the file cannot be created or written
+     * to.
+     *
+     * @see #write for atomically writing an array of Slawx without
+     * using an intermediate writer.
+     *
+     * @see SlawWriter
+     */
     public static SlawWriter writer(String fileName, Set<YamlOptions> opts)
         throws IOException {
-        return FileIO.yamlWriter(fileName, opts);
+        return FileIO.yamlWriter(fileName,
+                                 opts == null ? YamlOptions.DEFAULTS : opts);
     }
 
     /**
