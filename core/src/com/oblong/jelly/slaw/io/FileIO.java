@@ -7,10 +7,12 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.PushbackInputStream;
 import java.io.IOException;
+import java.util.Set;
 
 import net.jcip.annotations.Immutable;
 
 import com.oblong.jelly.SlawIO.Format;
+import com.oblong.jelly.SlawIO.YamlOptions;
 import com.oblong.jelly.SlawReader;
 import com.oblong.jelly.SlawWriter;
 
@@ -35,6 +37,13 @@ public final class FileIO {
         final FileOutputStream os = new FileOutputStream(fileName);
         HEADER.write(os);
         return new StreamWriter(os, Format.BINARY, new BinaryExternalizer());
+    }
+
+    public static SlawWriter yamlWriter(String fileName,
+                                        Set<YamlOptions> opts)
+        throws IOException {
+        return new StreamWriter(new FileOutputStream(fileName),
+                                Format.YAML, new YamlExternalizer(opts));
     }
 
     private static SlawReader yamlReader(InputStream is) {

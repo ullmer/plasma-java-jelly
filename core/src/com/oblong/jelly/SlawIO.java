@@ -39,11 +39,11 @@ public final class SlawIO {
      */
     public enum YamlOptions {
         /** Don't emit tags for numbers. */
-        NO_TAGS,
+        NO_NUMBER_TAGS,
         /** Don't emit YAML directives. */
-        NO_DIRECTIVES,
-        /** Don't order maps (i.e., use !!map instead of !!omap). */
-        UNORDERED_MAPS;
+        NO_DIRECTIVES;
+        // /* Don't order maps (i.e., use !!map instead of !!omap). */
+        // UNORDERED_MAPS;
 
         /**
          * Default option set, containing none of the flags above.
@@ -116,7 +116,7 @@ public final class SlawIO {
 
     public static SlawWriter writer(String fileName, Set<YamlOptions> opts)
         throws IOException {
-        return null;
+        return FileIO.yamlWriter(fileName, opts);
     }
 
     /**

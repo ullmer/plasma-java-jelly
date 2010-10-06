@@ -24,7 +24,8 @@ final class StreamWriter implements SlawWriter {
     @Override public final boolean write(Slaw s) {
         if (s == null) return false;
         try {
-            return externalizer.extern(s, stream) > 0;
+            externalizer.extern(s, stream);
+            return true;
         } catch (Exception e) {
             logWarning("Error serializing slaw: ", e);
             return false;

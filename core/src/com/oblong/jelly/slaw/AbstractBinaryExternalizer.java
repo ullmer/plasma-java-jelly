@@ -14,11 +14,10 @@ import static com.oblong.jelly.SlawIlk.*;
 
 public abstract class AbstractBinaryExternalizer implements SlawExternalizer {
 
-    @Override public final long extern(Slaw s, OutputStream os)
+    @Override public final void extern(Slaw s, OutputStream os)
         throws IOException {
         final ByteWriter b = new ByteWriter(os);
         extern(s, b);
-        return b.bytesWritten();
     }
 
     public final int externSize(Slaw s) {

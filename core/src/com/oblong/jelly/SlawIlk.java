@@ -68,20 +68,20 @@ public enum SlawIlk {
      * components have the same NumericIlk, which is also the vector's
      * numeric ilk.
      */
-    NUMBER_VECTOR,
+    NUMBER_VECTOR(2, 4),
     /**
      * A vector of COMPLEX slawx. It can have dimension 2 to 4, and all
      * components have the same NumericIlk, which is also the vector's
      * numeric ilk.
      */
-    COMPLEX_VECTOR,
+    COMPLEX_VECTOR(2, 4),
     /**
      * All components of a multivector have ilk NUMBER, and the same
      * NumericIlk. The dimension <em>d</em> of a multivector can run
      * from 2 to 5, with <em>2**d</em> the corresponding number of
      * componets.
      */
-    MULTI_VECTOR,
+    MULTI_VECTOR(2, 5),
     /**
      * An homogeneous array of slawx of ilk NUMBER. It can contain any
      * number of components with the same numeric ilk, which is also
@@ -99,19 +99,19 @@ public enum SlawIlk {
      * contain any number of components with the same numeric ilk,
      * which is also the array's numeric ilk.
      */
-    VECTOR_ARRAY,
+    VECTOR_ARRAY(2, 4),
     /**
      * An homogeneous array of slawx of ilk COMPLEX_VECTOR. It can
      * contain any number of components with the same numeric ilk,
      * which is also the array's numeric ilk.
      */
-    COMPLEX_VECTOR_ARRAY,
+    COMPLEX_VECTOR_ARRAY(2, 4),
     /**
      * An homogeneous array of slawx of ilk MULTI_VECTOR. It can
      * contain any number of components with the same numeric ilk,
      * which is also the array's numeric ilk.
      */
-    MULTI_VECTOR_ARRAY,
+    MULTI_VECTOR_ARRAY(2, 5),
     /**
      * A composite Slaw consisting of two slawx. Often referred to as
      * its car and cdr, those components can be accessed using
@@ -166,6 +166,22 @@ public enum SlawIlk {
      * {@link #arrayIlks}.
      */
     public boolean isArray() { return arrays.contains(this); }
+
+    /**
+     * Numeric containers have a dimension: this method you gives you
+     * its minimum value (2) for them, or 0 for non-containers.
+     */
+    public int minDimension() {
+        return minDim;
+    }
+
+    /**
+     * Numeric containers have a dimension: this method you gives you
+     * its minimum value (2) for them, or 0 for non-containers.
+     */
+    public int maxDimension() {
+        return maxDim;
+    }
 
     /**
      * The set of ilks for slawx that represent a single value. That
@@ -232,4 +248,14 @@ public enum SlawIlk {
     private static EnumSet<SlawIlk> arrays =
         EnumSet.of(NUMBER_ARRAY, COMPLEX_ARRAY, VECTOR_ARRAY,
                    COMPLEX_VECTOR_ARRAY, MULTI_VECTOR_ARRAY);
+
+    private SlawIlk() { this(0, 0); }
+
+    private SlawIlk(int min, int max) {
+        minDim = min;
+        maxDim = max;
+    }
+
+    private final int minDim;
+    private final int maxDim;
 }
