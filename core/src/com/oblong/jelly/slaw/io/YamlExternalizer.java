@@ -19,17 +19,18 @@ import com.oblong.jelly.slaw.SlawExternalizer;
 
 public final class YamlExternalizer implements SlawExternalizer {
 
-    public YamlExternalizer(Set<YamlOptions> opts) {
-        options = opts;
+    public YamlExternalizer(Set<YamlOptions> options) {
+        numberTags = !options.contains(YamlOptions.NO_NUMBER_TAGS);
+        useDirectives = !options.contains(YamlOptions.NO_DIRECTIVES);
     }
 
     @Override public final void extern(Slaw s, OutputStream os)
         throws IOException {
-        extern(s, os, "");
-        write(os, "\n");
+        if (useDirectives) write(os, "---\n");
+        extern(s, os, "", "\n");
     }
 
-    void extern(Slaw s, OutputStream os, String prefix)
+    void extern(Slaw s, OutputStream os, String prefix, String suffix)
         throws IOException {
         write(os, prefix);
         maybeTag(s, os);
@@ -45,10 +46,12 @@ public final class YamlExternalizer implements SlawExternalizer {
             externShortList(s, os); break;
 
         case CONS: externCons(s, os, prefix); break;
-        case MAP: case LIST: externList(s, os, prefix); break;
+        case LIST: externList(s, os, prefix); break;
+        case MAP: externMap(s, os, prefix); break;
         case PROTEIN: externProtein(s.toProtein(), os, prefix); break;
         default: assert s.ilk() == NIL : "Unexpected ilk: " + s.ilk();
         }
+        write(os, suffix);
     }
 
     void externNil(Slaw s, OutputStream os) throws IOException {
@@ -59,9 +62,9 @@ public final class YamlExternalizer implements SlawExternalizer {
     }
 
     void externString(Slaw s, OutputStream os) throws IOException {
-        write(os, "'");
-        write(os, s.emitString().replace("'", "\\'"));
-        write(os, "'");
+        write(os, "\"");
+        write(os, s.emitString().replace("\"", "\\\""));
+        write(os, "\"");
     }
 
     void externNumber(Slaw n, OutputStream os) throws IOException {
@@ -78,28 +81,22 @@ public final class YamlExternalizer implements SlawExternalizer {
     }
 
     void externCons(Slaw s, OutputStream os, String pr) throws IOException {
-        write(os, "\n" + pr + "{");
-        extern(s.car(), os, pr + "  ");
-        write(os, pr + ": ");
-        extern(s.cdr(), os, pr + "  ");
-        write(os, "}");
+        extern(s.car(), os, pr + "{ ", " : ");
+        extern(s.cdr(), os, "", "}");
     }
 
     void externShortList(Slaw s, OutputStream os) throws IOException {
         final int c = s.count();
         write(os, " [");
         for (int i = 0; i < c; ++i) {
-            extern(s, os, "");
+            extern(s, os, "", "");
             if (i < c - 1) write(os, ", ");
         }
     }
 
     void externList(Slaw s, OutputStream os, String pr) throws IOException {
         if (s.count() > 0) {
-            for (Slaw ss : s) {
-                write(os, "\n" + pr + "- ");
-                extern(ss, os, pr + "   ");
-            }
+            for (Slaw ss : s) extern(ss, os, "\n" + pr + "- ", "");
         } else {
             write(os, pr + " []");
         }
@@ -108,8 +105,8 @@ public final class YamlExternalizer implements SlawExternalizer {
     void externMap(Slaw s, OutputStream os, String pr) throws IOException {
         if (s.count() > 0) {
             for (Slaw ss : s) {
-                write(os, "\n" + pr + "- ");
-                externCons(ss, os, pr + "   ");
+                extern(ss.car(), os, "\n" + pr + "- ", " : ");
+                extern(ss.cdr(), os, "", "");
             }
         } else {
             write(os, pr + " {}");
@@ -124,15 +121,15 @@ public final class YamlExternalizer implements SlawExternalizer {
             write(os, pr + " {}");
         } else {
             if (ingests != null) {
-                write(os, pr + "ingests:\n" + pr);
-                extern(ingests, os, pr);
+                write(os, proteinKey("\n" + pr, YamlTags.INGESTS_KEY));
+                extern(ingests, os, pr + "  ", "");
             }
-            if (descrips != null) {
-                write(os, pr + "descrips:\n" + pr);
-                extern(descrips, os, pr);
+            if (descrips != null){
+                write(os, proteinKey("\n" + pr, YamlTags.DESCRIPS_KEY));
+                extern(descrips, os, pr + "  ", "");
             }
             if (p.dataLength() > 0) {
-                write(os, pr + "rude_data: -|\n" + pr);
+                write(os, "\n" + pr + YamlTags.DATA_KEY + ": |\n" + pr);
                 write(os, pr);
                 for (char c : Base64Coder.encode(p.copyData()))
                     os.write((byte)c);
@@ -151,14 +148,19 @@ public final class YamlExternalizer implements SlawExternalizer {
         return os;
     }
 
+    private static String proteinKey(String p, String k) {
+        return p + YamlTags.YAML_NS + YamlTags.STRING_YT + " " + k + ":";
+    }
+
     private void maybeTag(Slaw s, OutputStream os) throws IOException {
-        if (!s.isNumber() || !options.contains(YamlOptions.NO_NUMBER_TAGS)) {
+        if (!s.isNumber() || numberTags) {
             // if (s.isMap() && options.contains(YamlOptions.UNORDERED_MAPS))
             //     write(os, YamlTags.UMAP_YT);
             // else
-            write(os, YamlTags.tag(s));
+            write(os, YamlTags.tag(s) + " ");
         }
     }
 
-    private final Set<YamlOptions> options;
+    private final boolean useDirectives;
+    final boolean numberTags;
 }

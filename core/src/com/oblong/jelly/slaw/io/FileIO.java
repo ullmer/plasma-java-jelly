@@ -4,17 +4,22 @@ package com.oblong.jelly.slaw.io;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.PushbackInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PushbackInputStream;
+import java.io.Reader;
 import java.util.Set;
 
 import net.jcip.annotations.Immutable;
 
+import com.oblong.jelly.SlawIO;
 import com.oblong.jelly.SlawIO.Format;
 import com.oblong.jelly.SlawIO.YamlOptions;
 import com.oblong.jelly.SlawReader;
 import com.oblong.jelly.SlawWriter;
+import com.oblong.jelly.slaw.SlawFactory;
+import com.oblong.jelly.slaw.java.JavaSlawFactory;
 
 /**
  *
@@ -29,7 +34,9 @@ public final class FileIO {
         final PushbackInputStream is =
             new PushbackInputStream(new FileInputStream(fileName));
         final BinaryFileHeader header = BinaryFileHeader.read(is);
-        return header == null ? yamlReader(is) : binaryReader(is, header);
+        return header == null
+            ? yamlReader(new InputStreamReader(is))
+            : binaryReader(is, header.isLittleEndian());
     }
 
     public static SlawWriter binaryWriter(String fileName)
@@ -42,23 +49,26 @@ public final class FileIO {
     public static SlawWriter yamlWriter(String fileName,
                                         Set<YamlOptions> opts)
         throws IOException {
-        return new StreamWriter(new FileOutputStream(fileName),
-                                Format.YAML, new YamlExternalizer(opts));
+        final FileOutputStream os = new FileOutputStream(fileName);
+        if (!opts.contains(YamlOptions.NO_DIRECTIVES)) {
+            os.write("%YAML 1.1\n".getBytes());
+            os.write("%TAG ! tag:oblong.com,2009:slaw/\n".getBytes());
+        }
+        return new StreamWriter(os, Format.YAML, new YamlExternalizer(opts));
     }
 
-    private static SlawReader yamlReader(InputStream is) {
-        return null;
+    private static SlawReader yamlReader(Reader reader) {
+        return new YamlReader(reader, factory);
     }
 
-    private static SlawReader binaryReader(InputStream is,
-                                           BinaryFileHeader hd)
+    private static SlawReader binaryReader(InputStream is, boolean le)
         throws IOException {
-        return new StreamReader(is, new BinaryInternalizer(),
-                          hd.isLittleEndian(), Format.BINARY);
+        return new BinaryReader(is, new BinaryInternalizer(), le, factory);
 
     }
 
     private FileIO() {}
 
     private static final BinaryFileHeader HEADER = new BinaryFileHeader();
+    private static final SlawFactory factory = new JavaSlawFactory();
 }

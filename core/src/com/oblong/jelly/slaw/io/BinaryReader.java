@@ -12,7 +12,6 @@ import com.oblong.jelly.SlawIO.Format;
 import com.oblong.jelly.SlawReader;
 import com.oblong.jelly.slaw.SlawInternalizer;
 import com.oblong.jelly.slaw.SlawFactory;
-import com.oblong.jelly.slaw.java.JavaSlawFactory;
 
 /**
  *
@@ -21,7 +20,7 @@ import com.oblong.jelly.slaw.java.JavaSlawFactory;
  * @author jao
  */
 @NotThreadSafe
-final class StreamReader implements SlawReader {
+final class BinaryReader implements SlawReader {
 
     @Override public Slaw next() {
         final Slaw result = hasNext() ? next : null;
@@ -48,14 +47,15 @@ final class StreamReader implements SlawReader {
         }
     }
 
-    @Override public Format format() { return format; }
+    @Override public Format format() { return Format.BINARY; }
 
-    StreamReader(InputStream is, SlawInternalizer in, boolean le, Format fmt) {
+    BinaryReader(InputStream is, SlawInternalizer in,
+                 boolean le, SlawFactory f) {
         stream = is;
         internalizer = in;
-        format = fmt;
         littleEndian = le;
         next = null;
+        factory = f;
     }
 
     private Slaw fetchNext() {
@@ -71,11 +71,9 @@ final class StreamReader implements SlawReader {
         log.warning(msg + e.getMessage());
     }
 
-    private static final SlawFactory factory = new JavaSlawFactory();
-
     private final InputStream stream;
     private final SlawInternalizer internalizer;
-    private final Format format;
     private final boolean littleEndian;
+    private final SlawFactory factory;
     private Slaw next;
 }

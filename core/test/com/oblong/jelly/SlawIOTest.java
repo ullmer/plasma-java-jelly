@@ -24,16 +24,21 @@ import static com.oblong.jelly.SlawIO.Format.*;
 public class SlawIOTest {
 
     @BeforeClass public static void initDef() throws IOException {
-        defFile = File.createTempFile("jelly-slawio", "");
+        // defFile = File.createTempFile("jelly-slawio", "");
+        defFile = new File("/tmp/jelly");
         defFileName = defFile.getAbsolutePath();
     }
 
     @After public void tearDown() {
-        defFile.delete();
+        //        defFile.delete();
     }
 
     @Test public void binary() throws IOException {
         readWriteTest(BINARY);
+    }
+
+    @Test public void yaml() throws IOException {
+        readWriteTest(YAML);
     }
 
     private final void readWriteTest(Format fmt) throws IOException {
@@ -60,7 +65,8 @@ public class SlawIOTest {
         assertEquals(fmt, reader.format());
         for (int i = 0; i < slawx.length; ++i) {
             assertTrue(reader.hasNext());
-            assertEquals(slawx[i], reader.next());
+            final Slaw s = reader.next();
+            assertEquals(s.toString(), slawx[i], s);
         }
         assertFalse(reader.hasNext());
         assertNull(reader.next());
@@ -74,11 +80,16 @@ public class SlawIOTest {
     private static String defFileName;
 
     private static final Slaw[] someSlawx = {
-        int8(3), bool(true), nil(), unt64(123),
-        string("astring"), string("a longer string this"),
-        cons(int32(1), nil()), list(unt16(1)),
+        int8(3), unt64(123),
+        bool(true), bool(false),
+        nil(),
+        string("astring"),
+        string("a longer string this, with \" thingie's"),
+        cons(int32(1), nil()),
+        list(), list(unt16(1), nil(), string("helluva \"quoted\"")),
         map(nil(), nil(), int8(1), string("a")),
-        protein(null, null)
+        protein(null, null),
+        protein(list(int8(1), int32(2)), map(string("a"), nil()))
     };
 
     private static final Slaw[] noSlaw = new Slaw[0];
