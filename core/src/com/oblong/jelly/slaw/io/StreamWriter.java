@@ -19,9 +19,9 @@ import com.oblong.jelly.slaw.SlawExternalizer;
  * @author jao
  */
 @NotThreadSafe
-final class StreamWriter implements SlawWriter {
+class StreamWriter implements SlawWriter {
 
-    @Override public final boolean write(Slaw s) {
+    @Override public boolean write(Slaw s) {
         if (s == null) return false;
         try {
             externalizer.extern(s, stream);
@@ -32,7 +32,7 @@ final class StreamWriter implements SlawWriter {
         }
     }
 
-    @Override public final boolean close() {
+    @Override public boolean close() {
         try {
             stream.close();
             return true;
@@ -55,7 +55,8 @@ final class StreamWriter implements SlawWriter {
         log.warning(msg + e.getMessage());
     }
 
-    private final OutputStream stream;
+    final OutputStream stream;
+
     private final SlawExternalizer externalizer;
     private final SlawIO.Format format;
 }

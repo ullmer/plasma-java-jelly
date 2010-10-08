@@ -19,6 +19,7 @@ final class YamlTags {
     static final String YAML_NS = "!!";
     static final String OB_NS = "!";
 
+    static final String NADA_YT = "nada";
     static final String NIL_YT = "null";
     static final String BOOL_YT = "bool";
     static final String STRING_YT = "string";
@@ -47,6 +48,8 @@ final class YamlTags {
     static final String INGESTS_KEY = "ingests";
     static final String DESCRIPS_KEY = "descrips";
     static final String DATA_KEY = "rude_data";
+
+    static final String EOED = "--- " + OB_NS + NADA_YT + "\n";
 
     static boolean isNil(String tag) { return NIL_YT.equals(tag); }
     static boolean isBool(String tag) { return BOOL_YT.equals(tag); }
