@@ -76,6 +76,7 @@ public class SerializationTestBase {
                 assertEquals(msg, s, s2);
                 assertEquals(msg, 0, is.available());
             } catch (Exception e) {
+                e.printStackTrace();
                 fail(msg + ": " + e);
             }
         }

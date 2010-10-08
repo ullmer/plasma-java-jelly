@@ -6,7 +6,7 @@ import com.oblong.jelly.Slaw;
 
 abstract class AtomicSlaw extends JavaSlaw {
 
-    @Override public int dimension() { return 1; }
+    @Override public int dimension() { return 0; }
     @Override public final int count() { return 1; }
 
     @Override public final Slaw nth(int n) {

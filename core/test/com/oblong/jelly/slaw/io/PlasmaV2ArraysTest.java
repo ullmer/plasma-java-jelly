@@ -30,9 +30,9 @@ public class PlasmaV2ArraysTest extends SerializationTestBase {
         for (SlawIlk i : SlawIlk.arrayIlks()) {
             for (NumericIlk ni : NumericIlk.values()) {
                 final int minDim = i == SlawIlk.NUMBER_ARRAY
-                    || i == SlawIlk.COMPLEX_ARRAY ? 1 : 2;
-                final int maxDim = minDim == 1 ?
-                    1 : i == SlawIlk.MULTI_VECTOR ? 5 : 4;
+                    || i == SlawIlk.COMPLEX_ARRAY ? 0 : 2;
+                final int maxDim = minDim == 0 ?
+                    0 : i == SlawIlk.MULTI_VECTOR ? 5 : 4;
                 for (int d = minDim; d <= maxDim; d++) {
                     String msg = i + "/" + ni + "/" + d;
                     final Slaw a = array(i, ni, d);
@@ -71,7 +71,8 @@ public class PlasmaV2ArraysTest extends SerializationTestBase {
         for (int i = 0; i < 100; i++) ls[i] = unt8(i);
         final Slaw a = array(ls);
         final byte[] ba = slawToBytes(a);
-        checkHeading("Big array", ba, SlawIlk.NUMBER_ARRAY, NumericIlk.UNT8, 1, 100);
+        checkHeading("Big array", ba, SlawIlk.NUMBER_ARRAY,
+                     NumericIlk.UNT8, 1, 100);
         for (int i = 0; i < 100; i++)
             assertEquals(i + "th", i, ba[i + 8]);
         checkIntern("", a, ba);
@@ -95,7 +96,8 @@ public class PlasmaV2ArraysTest extends SerializationTestBase {
                                   complex(number(ni, 3L), number(ni, 4L)));
             final byte[] bs = slawToBytes(ca);
             final String msg = "Array of " + ni + "/" + arrayStr(bs);
-            assertEquals(BinaryProtocol.roundUp(8 + 4 * ni.bytes()), bs.length);
+            assertEquals(BinaryProtocol.roundUp(8 + 4 * ni.bytes()),
+                         bs.length);
             checkHeading(msg, bs, SlawIlk.COMPLEX_ARRAY, ni, 1, 2);
             if (ni.isIntegral()) {
                 for (int j = 0; j < 4; j++) {
@@ -114,7 +116,8 @@ public class PlasmaV2ArraysTest extends SerializationTestBase {
                                    vector(number(ni, 3L), number(ni, 4L)));
             final byte[] b22 = slawToBytes(v22);
             final String msg = "Array of " + ni + "/" + arrayStr(b22);
-            assertEquals(BinaryProtocol.roundUp(8 + 4 * ni.bytes()), b22.length);
+            assertEquals(BinaryProtocol.roundUp(8 + 4 * ni.bytes()),
+                         b22.length);
             checkHeading(msg, b22, SlawIlk.VECTOR_ARRAY, ni, 2, 2);
             if (ni.isIntegral()) {
                 for (int j = 0; j < 4; j++) {
@@ -133,6 +136,7 @@ public class PlasmaV2ArraysTest extends SerializationTestBase {
                                      NumericIlk ni,
                                      int dim,
                                      int breadth) {
+        dim = Math.max(1, dim);
         final int b0 = ((int)bs[0]) & 0xff;
         assertEquals(msg, 3, b0>>>6);
         assertEquals(msg, ni.isIntegral() ? 0 : 1, (b0>>>5) & 1);

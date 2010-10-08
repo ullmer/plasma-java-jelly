@@ -79,6 +79,7 @@ final class BinaryProtocol {
 
     static int numericDimension(long h) {
         final int nk = numericKind(h);
+        if (nk == 0) return 0;
         return nk < 4 ? nk + 1 : nk - 2;
     }
 

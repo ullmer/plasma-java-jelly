@@ -406,8 +406,8 @@ public abstract class Slaw implements Iterable<Slaw> {
 
     /**
      * When this Slaw is a vector or multivector, its dimension will
-     * be returned. Numbers have dimension 1. For other ilks, this
-     * method returns 0.
+     * be returned. Arrays have the dimension of their components. For
+     * other ilks, this method returns 0.
      */
     public abstract int dimension();
 

@@ -67,8 +67,9 @@ public final class JavaSlawFactory implements SlawFactory {
     }
 
     @Override public Slaw vector(Slaw... cs) {
-        if (cs.length < 2 || cs.length > 4)
-            throw new IllegalArgumentException("Invalid component number");
+        if (!SlawIlk.NUMBER_VECTOR.isValidDimension(cs.length))
+            throw new IllegalArgumentException("Invalid dimension: "
+                                               + cs.length);
         return makeVector(cs);
     }
 
@@ -86,14 +87,8 @@ public final class JavaSlawFactory implements SlawFactory {
             throw new IllegalArgumentException("Null arg");
         if (!ilk.isArray())
             throw new IllegalArgumentException("Expected array ilk");
-        if (d <= 0 || d > 5
-            || ((ilk == SlawIlk.NUMBER_ARRAY || ilk == SlawIlk.COMPLEX_ARRAY)
-                && d>1)
-            || ((ilk == SlawIlk.VECTOR_ARRAY
-                 || ilk == SlawIlk.COMPLEX_VECTOR_ARRAY)
-                && (d < 2 || d > 4))
-            || (ilk == SlawIlk.MULTI_VECTOR_ARRAY && (d < 2 || d > 5)))
-            throw new IllegalArgumentException ("Invalid dimension");
+        if (!ilk.isValidDimension(d))
+            throw new IllegalArgumentException ("Invalid dimension: " + d);
         return SlawEmptyArray.valueOf(ilk, ni, d);
     }
 

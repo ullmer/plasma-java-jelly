@@ -252,9 +252,13 @@ public final class BinaryExternalizer extends AbstractBinaryExternalizer {
         pad(b.putLong(hb|(long)octs(len+p)).put(bs), p);
     }
 
+    private static int components(Slaw s) {
+        return Math.max(1, s.dimension());
+    }
+
     private static int numericWidth(Slaw s) {
         final int nb = s.numericIlk().bytes();
-        final int w = nb * (s.isMultivector() ? s.count() : s.dimension());
+        final int w = nb * (s.isMultivector() ? s.count() : components(s));
         return s.ilk().isComplexNumeric() ? 2 * w : w;
     }
 
@@ -273,12 +277,12 @@ public final class BinaryExternalizer extends AbstractBinaryExternalizer {
 
     private static int arraySize(Slaw a) {
         return OCT_LEN
-            + roundUp(a.count() * a.dimension() * a.numericIlk().bytes());
+            + roundUp(a.count() * components(a) * a.numericIlk().bytes());
     }
 
     private static int complexArraySize(Slaw a) {
         return OCT_LEN
-            + roundUp(2 * a.count() * a.dimension() * a.numericIlk().bytes());
+            + roundUp(2 * a.count() * components(a) * a.numericIlk().bytes());
     }
 
     private static void putArray(long h, ByteWriter b, Slaw a)

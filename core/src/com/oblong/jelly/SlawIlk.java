@@ -184,6 +184,14 @@ public enum SlawIlk {
     }
 
     /**
+     * Utility method checking that a given dimension is in the range
+     * accepted by this ilk.
+     */
+    public boolean isValidDimension(int d) {
+        return minDim <= d && maxDim >= d;
+    }
+
+    /**
      * The set of ilks for slawx that represent a single value. That
      * is, ilks for slawx that are not an aggregate of other slawx.
      * This set is composed of <code>NIL</code>, <code>BOOL</code>,
