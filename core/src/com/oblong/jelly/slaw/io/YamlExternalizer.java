@@ -4,6 +4,7 @@ package com.oblong.jelly.slaw.io;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.EnumSet;
 import java.util.Set;
 
 import org.yaml.snakeyaml.util.Base64Coder;
@@ -18,6 +19,10 @@ import static com.oblong.jelly.SlawIlk.*;
 import com.oblong.jelly.slaw.SlawExternalizer;
 
 public final class YamlExternalizer implements SlawExternalizer {
+
+    public static SlawExternalizer rawExternalizer() {
+        return new YamlExternalizer(EnumSet.of(YamlOptions.NO_DIRECTIVES));
+    }
 
     public YamlExternalizer(Set<YamlOptions> options) {
         numberTags = !options.contains(YamlOptions.NO_NUMBER_TAGS);
@@ -89,7 +94,7 @@ public final class YamlExternalizer implements SlawExternalizer {
         final int c = s.count();
         write(os, " [");
         for (int i = 0; i < c; ++i) {
-            extern(s, os, "", "");
+            extern(s.nth(i), os, "", "");
             if (i < c - 1) write(os, ", ");
         }
     }
