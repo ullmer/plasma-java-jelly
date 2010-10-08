@@ -32,7 +32,7 @@ public class PlasmaV2ArraysTest extends SerializationTestBase {
                 final int minDim = i == SlawIlk.NUMBER_ARRAY
                     || i == SlawIlk.COMPLEX_ARRAY ? 0 : 2;
                 final int maxDim = minDim == 0 ?
-                    0 : i == SlawIlk.MULTI_VECTOR ? 5 : 4;
+                    0 : i == SlawIlk.MULTI_VECTOR_ARRAY ? 5 : 4;
                 for (int d = minDim; d <= maxDim; d++) {
                     String msg = i + "/" + ni + "/" + d;
                     final Slaw a = array(i, ni, d);

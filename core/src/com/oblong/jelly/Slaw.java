@@ -908,17 +908,18 @@ public abstract class Slaw implements Iterable<Slaw> {
     public static Slaw array(Slaw[] sx) { return factory.array(sx); }
 
     /**
-     * A factory method constructing a non-empty numeric Slaw array out
-     * of its components. At least one of the arguments must be
+     * A factory method constructing a non-empty numeric Slaw array
+     * out of its components. At least one of the arguments must be
      * non-null (nulls are skipped), and all non-null arguments must
      * have the same ilk (otherwise an
      * <code>IllegalArgumentException</code> is thrown). That common
      * ilk must be numeric (i.e., return true for {@link
      * SlawIlk#isNumeric}) but not an array ilk (i.e. return false for
-     * {@link SlawIlk#isArray}). The ilk of the resulting array is
-     * derived from that that of its components in the natural way,
-     * and can therefore be any of the array ilks (as defined by the
-     * predicate {@link SlawIlk#isArray}).
+     * {@link SlawIlk#isArray}). In addition, all components must have
+     * the same {@link #dimension dimension}. The ilk of the resulting
+     * array is derived from that that of its components in the
+     * natural way, and can therefore be any of the array ilks (as
+     * defined by the predicate {@link SlawIlk#isArray}).
      *
      * <p> As is the case with all other composite numeric Slaw
      * constructors, the arguments don't need to have the same numeric

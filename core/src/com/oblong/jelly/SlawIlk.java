@@ -239,7 +239,10 @@ public enum SlawIlk {
         if (sx.length == 0) return true;
         if (sx[0] == null) return false;
         final SlawIlk ilk = sx[0].ilk();
-        for (Slaw s : sx) if (s == null || s.ilk() != ilk) return false;
+        final int dim = sx[0].dimension();
+        for (Slaw s : sx)
+            if (s == null || s.ilk() != ilk || s.dimension() != dim)
+                return false;
         return true;
     }
 
