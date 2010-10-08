@@ -92,18 +92,19 @@ public final class YamlExternalizer implements SlawExternalizer {
 
     void externShortList(Slaw s, OutputStream os) throws IOException {
         final int c = s.count();
-        write(os, " [");
+        write(os, "[");
         for (int i = 0; i < c; ++i) {
             extern(s.nth(i), os, "", "");
             if (i < c - 1) write(os, ", ");
         }
+        write(os, "]");
     }
 
     void externList(Slaw s, OutputStream os, String pr) throws IOException {
         if (s.count() > 0) {
             for (Slaw ss : s) extern(ss, os, "\n" + pr + "- ", "");
         } else {
-            write(os, pr + " []");
+            write(os, pr + "[]");
         }
     }
 
@@ -114,7 +115,7 @@ public final class YamlExternalizer implements SlawExternalizer {
                 extern(ss.cdr(), os, "", "");
             }
         } else {
-            write(os, pr + " {}");
+            write(os, pr + "{}");
         }
     }
 
@@ -154,12 +155,7 @@ public final class YamlExternalizer implements SlawExternalizer {
     }
 
     private void maybeTag(Slaw s, OutputStream os) throws IOException {
-        if (!s.isNumber() || numberTags) {
-            // if (s.isMap() && options.contains(YamlOptions.UNORDERED_MAPS))
-            //     write(os, YamlTags.UMAP_YT);
-            // else
-            write(os, YamlTags.tag(s) + " ");
-        }
+        if (!s.isNumber() || numberTags) { write(os, YamlTags.tag(s) + " "); }
     }
 
     private final boolean useDirectives;
