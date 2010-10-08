@@ -133,6 +133,7 @@ final class YamlTags {
         TAGS.put(MAP, MAP_YT);
         TAGS.put(LIST, LIST_YT);
         TAGS.put(NUMBER, NUMBER_YT);
+        TAGS.put(COMPLEX, COMPLEX_YT);
         TAGS.put(NUMBER_VECTOR, VECTOR_YT);
         TAGS.put(COMPLEX_VECTOR, VECTOR_YT);
         for (SlawIlk i : SlawIlk.arrayIlks()) TAGS.put(i, ARRAY_YT);

@@ -155,7 +155,7 @@ final class YamlReader implements SlawReader {
 
     private Slaw readComplex(Slaw[] slawx) {
         try {
-            return factory.vector(slawx[0], slawx[1]);
+            return factory.complex(slawx[0], slawx[1]);
         } catch (Throwable e) {
             return null;
         }
