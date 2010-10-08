@@ -20,6 +20,10 @@ import static com.oblong.jelly.SlawTests.*;
 public class SlawVectorTest {
 
     @Test public void vectors() {
+        for (Slaw v : SlawTests.vectors()) testVector(v, v.numericIlk());
+    }
+
+    @Test public void coercions() {
         testVector(vector(int32(2), int8(-3)), INT32);
         testVector(vector(unt64(239392), float64(3.12), unt8(2)), FLOAT64);
         testVector(vector(unt32(-3452), unt8(1), int16(3452), int64(0)),

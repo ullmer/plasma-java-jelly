@@ -2,18 +2,109 @@
 
 package com.oblong.jelly;
 
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Set;
+
 import static org.junit.Assert.*;
 
-class SlawTests {
+public final class SlawTests {
 
-    static final void testIlk(Slaw s, SlawIlk ilk, NumericIlk nilk) {
+    public static Slaw[] numbers() {
+        final List<Slaw> ns = new ArrayList<Slaw>();
+        final Set<NumericIlk>
+            nis = EnumSet.complementOf(EnumSet.of(NumericIlk.UNT64));
+        for (NumericIlk ni : nis) {
+            if (ni.isIntegral()) {
+                ns.add(Slaw.number(ni, ni.max()));
+                ns.add(Slaw.number(ni, ni.min()));
+                ns.add(Slaw.number(ni, ni.min() + (ni.max() - ni.min()) / 2));
+                ns.add(Slaw.number(ni, ni.min() + (ni.max() - ni.min()) / 5));
+            } else {
+                ns.add(Slaw.number(ni, ni.fmax()));
+                ns.add(Slaw.number(ni, ni.fmin()));
+                ns.add(Slaw.number(ni, 0));
+                ns.add(Slaw.number(ni, ni.fmin()
+                                   + (ni.fmax() - ni.fmin()) / 5.5323));
+            }
+        }
+        return ns.toArray(new Slaw[0]);
+    }
+
+    public static Slaw[] complexes() {
+        final Slaw[] nos = numbers();
+        final List<Slaw> cs = new ArrayList<Slaw>();
+        for (int i = 0; i < nos.length / 2; ++i)
+            cs.add(Slaw.complex(nos[i], nos[nos.length - 1 - i]));
+        for (int i = 0; i < nos.length - 1; i += 2)
+            cs.add(Slaw.complex(nos[i], nos[i + 1]));
+        return cs.toArray(new Slaw[0]);
+    }
+
+    public static Slaw[] vectors() {
+        final List<Slaw> cs = new ArrayList<Slaw>();
+        for (Slaw nv : numberVectors(0)) cs.add(nv);
+        for (Slaw cv : complexVectors(0)) cs.add(cv);
+        return cs.toArray(new Slaw[0]);
+    }
+
+    public static Slaw[] numberVectors(int dimension) {
+        return vectors(numbers(), dimension);
+    }
+
+    public static Slaw[] complexVectors(int dimension) {
+        return vectors(complexes(), dimension);
+    }
+
+    public static Slaw[] vectors(Slaw[] nos, int d) {
+        final List<Slaw> cs = new ArrayList<Slaw>();
+        for (int i = 0; i < nos.length - 3; i += 4) {
+            if (d == 2 || d == 0)
+                cs.add(Slaw.vector(nos[i], nos[i+1]));
+            if (d == 3 || d == 0)
+                cs.add(Slaw.vector(nos[i], nos[i+1], nos[i+2]));
+            if (d == 4 || d == 0)
+                cs.add(Slaw.vector(nos[i], nos[i+1], nos[i+2], nos[i+3]));
+        }
+        return cs.toArray(new Slaw[0]);
+    }
+
+    public static Slaw[] arrays(Slaw[] ns) {
+        assertTrue(SlawIlk.haveSameIlk(ns));
+        final List<Slaw> arrays = new ArrayList<Slaw>();
+        for (int i = 1; i < ns.length; ++i) {
+            final Slaw[] cmps = new Slaw[i];
+            for (int j = 0; j < i; ++j) cmps[j] = ns[j];
+            arrays.add(Slaw.array(cmps));
+        }
+        return arrays.toArray(new Slaw[0]);
+    }
+
+    public static Slaw[] emptyArrays() {
+        final List<Slaw> arrays = new ArrayList<Slaw>();
+        for (SlawIlk i : SlawIlk.arrayIlks()) {
+            for (NumericIlk ni : NumericIlk.values()) {
+                final int minDim =
+                    (i == SlawIlk.NUMBER_ARRAY || i == SlawIlk.COMPLEX_ARRAY)
+                    ? 0 : 2;
+                final int maxDim = minDim == 0
+                    ? 0 : (i == SlawIlk.MULTI_VECTOR_ARRAY ? 5 : 4);
+                for (int d = minDim; d <= maxDim; d++)
+                    arrays.add(Slaw.array(i, ni, d));
+            }
+        }
+        return arrays.toArray(new Slaw[0]);
+    }
+
+    public static void testIlk(Slaw s, SlawIlk ilk, NumericIlk nilk) {
         assertNotNull(s);
         assertEquals(s, s);
         assertEquals(ilk, s.ilk());
         assertEquals(nilk, s.numericIlk());
     }
 
-    static final void testListness(Slaw s) {
+    public static void testListness(Slaw s) {
         int count = s.count();
 
         assertTrue(count == 1 || !s.isAtomic());
@@ -46,7 +137,7 @@ class SlawTests {
         }
     }
 
-    static final void testAtomicEmissions(Slaw s) {
+    public static void testAtomicEmissions(Slaw s) {
         try {
             s.emitBoolean();
             assertTrue(s.isBoolean());
@@ -71,7 +162,7 @@ class SlawTests {
         }
     }
 
-    static final void testPairiness(Slaw s) {
+    public static void testPairiness(Slaw s) {
         Slaw first = null;
         try {
             first = s.car();
@@ -88,7 +179,7 @@ class SlawTests {
         }
     }
 
-    static final void testNotMap(Slaw s) {
+    public static void testNotMap(Slaw s) {
         assertEquals(0, s.emitMap().size());
     }
 }
