@@ -24,13 +24,13 @@ import static com.oblong.jelly.SlawIO.Format.*;
 public class SlawIOTest {
 
     @BeforeClass public static void initDef() throws IOException {
-        // defFile = File.createTempFile("jelly-slawio", "");
-        defFile = new File("/tmp/jelly");
+        defFile = File.createTempFile("jelly-slawio", "");
+        // defFile = new File("/tmp/jelly");
         defFileName = defFile.getAbsolutePath();
     }
 
     @After public void tearDown() {
-        //        defFile.delete();
+        defFile.delete();
     }
 
     @Test public void binary() throws IOException {
@@ -44,6 +44,15 @@ public class SlawIOTest {
     private final void readWriteTest(Format fmt) throws IOException {
         readWriteTest(fmt, noSlaw);
         readWriteTest(fmt, oneProtein);
+        readWriteTest(fmt, SlawTests.numbers());
+        readWriteTest(fmt, SlawTests.complexes());
+        readWriteTest(fmt, SlawTests.vectors());
+        readWriteTest(fmt, SlawTests.emptyArrays());
+        readWriteTest(fmt, SlawTests.arrays(SlawTests.numbers()));
+        for (int d = 2; d < 5; ++d) {
+            readWriteTest(fmt, SlawTests.arrays(SlawTests.numberVectors(d)));
+            readWriteTest(fmt, SlawTests.arrays(SlawTests.complexVectors(d)));
+        }
         readWriteTest(fmt, someSlawx);
     }
 
@@ -82,11 +91,8 @@ public class SlawIOTest {
     private static String defFileName;
 
     private static final Slaw[] someSlawx = {
-        int8(3), unt64(123),
-        bool(true), bool(false),
-        nil(),
-        string("astring"),
-        string("a longer string this, with \" thingie's"),
+        bool(true), bool(false), nil(),
+        string("astring"), string("a longer string this, with \" thingie's"),
         cons(int32(1), nil()),
         list(), list(unt16(1), nil(), string("helluva \"quoted\"")),
         map(nil(), nil(), int8(1), string("a")),
@@ -95,6 +101,7 @@ public class SlawIOTest {
     };
 
     private static final Slaw[] noSlaw = new Slaw[0];
+
     private static final Slaw[] oneProtein = {
         protein(int8(1), map(nil(), nil()))
     };
