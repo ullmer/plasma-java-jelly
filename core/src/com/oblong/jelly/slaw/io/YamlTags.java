@@ -81,9 +81,9 @@ final class YamlTags {
 
     static String rawTag(String tag) {
         if (tag == null) return "";
-        int i = tag.lastIndexOf('/');
-        if (i < 0) i = tag.lastIndexOf(":");
-        if (i < 0) i = tag.lastIndexOf("!");
+        int i = tag.indexOf(":slaw/");
+        if (i < 0) i = tag.lastIndexOf(':'); else i += 5;
+        if (i < 0) i = tag.lastIndexOf('!');
         return i < 0 ? tag : tag.substring(i + 1);
     }
 
@@ -98,10 +98,11 @@ final class YamlTags {
         case MULTI_VECTOR_ARRAY: num = "multivector/" + dim; break;
         default: assert false : "Non-array ilk " + ilk; break;
         }
+        if (ilk != NUMBER_ARRAY) num += "/";
         String nstr;
         if (ni.isIntegral()) nstr = ni.isSigned() ? "i" : "u";
         else nstr = "f";
-        return "!empty/" + num + "/" + nstr + ni.bytes();
+        return "empty/" + num + nstr + ni.bytes();
     }
 
     static NumericIlk numericIlk(String tag) {
