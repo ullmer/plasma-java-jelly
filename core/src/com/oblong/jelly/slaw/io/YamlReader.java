@@ -9,12 +9,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import net.jcip.annotations.NotThreadSafe;
+
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.nodes.MappingNode;
 import org.yaml.snakeyaml.nodes.Node;
 import org.yaml.snakeyaml.nodes.NodeTuple;
 import org.yaml.snakeyaml.nodes.ScalarNode;
 import org.yaml.snakeyaml.nodes.SequenceNode;
+import org.yaml.snakeyaml.reader.UnicodeReader;
 import org.yaml.snakeyaml.util.Base64Coder;
 
 import com.oblong.jelly.NumericIlk;
@@ -24,37 +27,49 @@ import com.oblong.jelly.SlawIO;
 import com.oblong.jelly.SlawReader;
 import com.oblong.jelly.slaw.SlawFactory;
 
+@NotThreadSafe
 final class YamlReader implements SlawReader {
 
-    public YamlReader(Reader reader, SlawFactory f) {
+    public YamlReader(UnicodeReader reader, SlawFactory f) {
         Iterable<Node> it = new Yaml().composeAll(reader);
         nodes = it == null ? null : it.iterator();
+        next = null;
         factory = f;
     }
 
-    public boolean hasNext() {
+    @Override public boolean hasNext() {
+        if (next == null) next = fetchNext();
+        return next != null;
+    }
+
+    @Override public Slaw next() {
+        final Slaw result = hasNext() ? next : null;
+        next = null;
+        return result;
+    }
+
+    @Override public void remove() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override public boolean close() {
+        nodes = null;
+        next = null;
+        return true;
+    }
+
+    @Override public SlawIO.Format format() { return SlawIO.Format.YAML; }
+
+    private Slaw fetchNext() {
         try {
-            return nodes != null && nodes.hasNext();
+            if (nodes == null || !nodes.hasNext()) return null;
+            Slaw s = parse(nodes.next());
+            while (s == null && nodes.hasNext()) s = parse(nodes.next());
+            return s;
         } catch (Throwable e) { // hasNext() may throw
             reportError(e.getMessage());
-            return false;
+            return null;
         }
-    }
-
-    public Slaw next() {
-        if (nodes == null || !nodes.hasNext()) return null;
-        Slaw s = parse(nodes.next());
-        while (s == null && nodes.hasNext()) s = parse(nodes.next());
-        return s;
-    }
-
-    public void remove() { throw new UnsupportedOperationException(); }
-
-    public SlawIO.Format format() { return SlawIO.Format.YAML; }
-
-    public boolean close() {
-        nodes = null;
-        return true;
     }
 
     private Slaw parse(Node node) {
@@ -67,7 +82,7 @@ final class YamlReader implements SlawReader {
             s = parseSeq(tag, ((SequenceNode)node).getValue());
         else if (node instanceof MappingNode)
             s = parseMap(tag, ((MappingNode)node).getValue());
-        if (s == null)
+        if (s == null && !YamlTags.NADA_YT.equals(tag))
             reportError("Unrecognised node: " + node + "(tag: " + tag + ")");
         return s;
     }
@@ -199,5 +214,6 @@ final class YamlReader implements SlawReader {
     }
 
     private Iterator<Node> nodes;
+    private Slaw next;
     private final SlawFactory factory;
 }

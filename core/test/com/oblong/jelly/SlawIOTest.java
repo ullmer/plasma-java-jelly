@@ -43,8 +43,8 @@ public class SlawIOTest {
 
     private final void readWriteTest(Format fmt) throws IOException {
         readWriteTest(fmt, noSlaw);
-        readWriteTest(fmt, someSlawx);
         readWriteTest(fmt, oneProtein);
+        readWriteTest(fmt, someSlawx);
     }
 
     private final void readWriteTest(Format fmt, Slaw[] slawx)
@@ -68,7 +68,9 @@ public class SlawIOTest {
             final Slaw s = reader.next();
             assertEquals(s.toString(), slawx[i], s);
         }
-        assertFalse(reader.hasNext());
+        if (reader.hasNext()) {
+            fail(reader.next().toString());
+        }
         assertNull(reader.next());
         assertTrue(reader.close());
 

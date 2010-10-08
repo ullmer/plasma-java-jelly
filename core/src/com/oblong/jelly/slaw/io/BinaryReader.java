@@ -22,15 +22,15 @@ import com.oblong.jelly.slaw.SlawFactory;
 @NotThreadSafe
 final class BinaryReader implements SlawReader {
 
+    @Override public boolean hasNext() {
+        if (next == null) next = fetchNext();
+        return next != null;
+    }
+
     @Override public Slaw next() {
         final Slaw result = hasNext() ? next : null;
         next = null;
         return result;
-    }
-
-    @Override public boolean hasNext() {
-        if (next == null) next = fetchNext();
-        return next != null;
     }
 
     @Override public void remove() {

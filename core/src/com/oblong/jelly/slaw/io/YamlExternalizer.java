@@ -31,7 +31,7 @@ public final class YamlExternalizer implements SlawExternalizer {
 
     @Override public final void extern(Slaw s, OutputStream os)
         throws IOException {
-        if (useDirectives) write(os, "---\n");
+        if (useDirectives) write(os, "--- ");
         extern(s, os, "", "\n");
     }
 
@@ -126,11 +126,11 @@ public final class YamlExternalizer implements SlawExternalizer {
             write(os, pr + " {}");
         } else {
             if (ingests != null) {
-                write(os, proteinKey("\n" + pr, YamlTags.INGESTS_KEY));
+                write(os, "\n" + pr + YamlTags.INGESTS_KEY + ":");
                 extern(ingests, os, pr + "  ", "");
             }
             if (descrips != null){
-                write(os, proteinKey("\n" + pr, YamlTags.DESCRIPS_KEY));
+                write(os, "\n" + pr + YamlTags.DESCRIPS_KEY + ":");
                 extern(descrips, os, pr + "  ", "");
             }
             if (p.dataLength() > 0) {
@@ -151,10 +151,6 @@ public final class YamlExternalizer implements SlawExternalizer {
             os.write(s.getBytes());
         }
         return os;
-    }
-
-    private static String proteinKey(String p, String k) {
-        return p + YamlTags.YAML_NS + YamlTags.STRING_YT + " " + k + ":";
     }
 
     private void maybeTag(Slaw s, OutputStream os) throws IOException {

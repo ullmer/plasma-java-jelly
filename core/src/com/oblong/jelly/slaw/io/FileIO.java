@@ -13,6 +13,8 @@ import java.util.Set;
 
 import net.jcip.annotations.Immutable;
 
+import org.yaml.snakeyaml.reader.UnicodeReader;
+
 import com.oblong.jelly.SlawIO;
 import com.oblong.jelly.SlawIO.Format;
 import com.oblong.jelly.SlawIO.YamlOptions;
@@ -35,7 +37,7 @@ public final class FileIO {
             new PushbackInputStream(new FileInputStream(fileName));
         final BinaryFileHeader header = BinaryFileHeader.read(is);
         return header == null
-            ? yamlReader(new InputStreamReader(is))
+            ? yamlReader(new UnicodeReader(is))
             : binaryReader(is, header.isLittleEndian());
     }
 
@@ -49,15 +51,10 @@ public final class FileIO {
     public static SlawWriter yamlWriter(String fileName,
                                         Set<YamlOptions> opts)
         throws IOException {
-        final FileOutputStream os = new FileOutputStream(fileName);
-        if (!opts.contains(YamlOptions.NO_DIRECTIVES)) {
-            os.write("%YAML 1.1\n".getBytes());
-            os.write("%TAG ! tag:oblong.com,2009:slaw/\n".getBytes());
-        }
-        return new StreamWriter(os, Format.YAML, new YamlExternalizer(opts));
+        return new YamlWriter(fileName, opts);
     }
 
-    private static SlawReader yamlReader(Reader reader) {
+    private static SlawReader yamlReader(UnicodeReader reader) {
         return new YamlReader(reader, factory);
     }
 
