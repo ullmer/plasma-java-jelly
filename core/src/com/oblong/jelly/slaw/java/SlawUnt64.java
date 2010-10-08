@@ -22,9 +22,5 @@ final class SlawUnt64 extends SlawNumber {
         return new BigInteger(1, toBytes(numericIlk(), value));
     }
 
-    @Override public String debugString() {
-        return emitBigInteger().toString();
-    }
-
     private long value;
 }

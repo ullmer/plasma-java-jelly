@@ -28,10 +28,9 @@ final class SlawEmptyArray extends JavaSlaw {
 
     @Override public Slaw find(Slaw k) { return null; }
 
-    @Override public String debugString() { return "{}"; }
-
     @Override public Slaw withNumericIlk(NumericIlk ni) {
-        return (ni == numericIlk) ? this : new SlawEmptyArray(ilk, ni, dimension);
+        return (ni == numericIlk)
+            ? this : new SlawEmptyArray(ilk, ni, dimension);
     }
 
     @Override public boolean slawEquals(Slaw o) {

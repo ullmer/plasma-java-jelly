@@ -30,9 +30,8 @@ public final class PoolProtein extends Protein {
 
     public Protein bareProtein() { return protein; }
 
-    @Override public String debugString() {
-        return protein.debugString()
-            + "\nIndex: " + index + ", Timestamp: " + stamp;
+    @Override public String toString() {
+        return super.toString() + "\nIndex: " + index + ", Stamp: " + stamp;
     }
 
     @Override public Slaw descrips() { return protein.descrips(); }

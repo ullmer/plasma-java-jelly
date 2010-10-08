@@ -18,9 +18,5 @@ final class SlawCons extends SlawPair {
 
     @Override public int dimension() { return 0; }
 
-    @Override public String debugString() {
-        return "(" + car().toString() + ", " + cdr().toString() + ")";
-    }
-
     private SlawCons(Slaw f, Slaw s) { super(f, s); }
 }

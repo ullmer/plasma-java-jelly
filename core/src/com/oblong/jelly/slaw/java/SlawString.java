@@ -22,8 +22,6 @@ final class SlawString extends AtomicSlaw {
 
     @Override public int hashCode() { return val.hashCode(); }
 
-    @Override public String debugString() { return val; }
-
     private SlawString(String s) { val = s; }
     private final String val;
 }

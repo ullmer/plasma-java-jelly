@@ -43,15 +43,5 @@ abstract class CompositeNumericSlaw extends JavaSlaw {
 
     @Override public final int hashCode() { return elements.hashCode(); }
 
-    @Override public final String debugString() {
-        final StringBuilder buff = new StringBuilder("{");
-        for (int i = 0, c = count(); i < c; i++) {
-            buff.append(nth(i).debugString());
-            if (i + 1 < c) buff.append(", ");
-        }
-        buff.append("}");
-        return buff.toString();
-    }
-
     final List<Slaw> elements;
 }

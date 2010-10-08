@@ -97,15 +97,6 @@ final class SlawList extends JavaSlaw {
         return true;
     }
 
-    @Override public String debugString() {
-        final StringBuilder buff = new StringBuilder("[");
-        for (int i = 0, c = count(); i < c; i++) {
-            buff.append(nth(i).toString());
-            if (i + 1 < c) buff.append(" ");
-        }
-        return buff.append("]").toString();
-    }
-
     SlawList(List<Slaw> elems, boolean copy) {
         elements = copy ? new ArrayList<Slaw>(elems) : elems;
         while (elements.remove(null));

@@ -22,10 +22,6 @@ final class SlawBool extends AtomicSlaw {
         return o.emitBoolean() == emitBoolean();
     }
 
-    @Override public String debugString() {
-        return (this == TRUE) ? "true" : "false";
-    }
-
     private SlawBool () {}
 
     private static final SlawBool TRUE = new SlawBool();

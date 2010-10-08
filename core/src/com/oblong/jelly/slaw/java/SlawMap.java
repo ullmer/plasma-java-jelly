@@ -53,15 +53,6 @@ final class SlawMap extends JavaSlaw {
     @Override public Slaw cdr() { return conses.cdr(); }
     @Override public Map<Slaw,Slaw> emitMap() { return conses.emitMap(); }
 
-    @Override public String debugString() {
-        final StringBuilder buff = new StringBuilder("{");
-        for (int i = 0, c = count(); i < c; i++) {
-            buff.append(nth(i).debugString());
-            if (i + 1 < c) buff.append(" ");
-        }
-        return buff.append("}").toString();
-    }
-
     @Override public boolean slawEquals(Slaw o) {
         if (o.count() != conses.count()) return false;
         for (int i = 0, c = count(); i < c; i++) {

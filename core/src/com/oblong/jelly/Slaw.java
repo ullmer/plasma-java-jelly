@@ -3,6 +3,7 @@
 
 package com.oblong.jelly;
 
+import java.io.ByteArrayOutputStream;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -10,10 +11,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
-import net.jcip.annotations.Immutable;
-
 import static com.oblong.jelly.NumericIlk.*;
 import static com.oblong.jelly.SlawIlk.*;
+import net.jcip.annotations.Immutable;
 
 /**
  * Slaw instances constitute the components of Proteins and wrap
@@ -596,11 +596,14 @@ public abstract class Slaw implements Iterable<Slaw> {
      * because all of them may change in future versions without
      * warning.
      */
-    @Override public final String toString() {
-        StringBuilder buff = new StringBuilder("Slaw<").append(ilk());
-        if (isNumeric()) buff.append("/").append(numericIlk());
-        buff.append(" = ").append(debugString()).append(">");
-        return buff.toString();
+    @Override public String toString() {
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        try {
+            externalizer.extern(this, os);
+        } catch (Exception e) {
+            return "";
+        }
+        return os.toString();
     }
 
     /**
@@ -614,9 +617,6 @@ public abstract class Slaw implements Iterable<Slaw> {
 
     /** Auxiliarly method used by equals. */
     public abstract boolean slawEquals(Slaw s);
-
-    /** Auxiliarly method used by toString. */
-    public abstract String debugString();
 
     /**
      * A factory method constructing a Slaw with ilk {@link
@@ -1002,4 +1002,6 @@ public abstract class Slaw implements Iterable<Slaw> {
     private static final com.oblong.jelly.slaw.SlawFactory factory =
         new com.oblong.jelly.slaw.java.JavaSlawFactory();
 
+    private static final com.oblong.jelly.slaw.SlawExternalizer externalizer =
+        com.oblong.jelly.slaw.io.YamlExternalizer.rawExternalizer();
 }

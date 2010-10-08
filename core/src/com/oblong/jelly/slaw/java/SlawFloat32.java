@@ -16,7 +16,6 @@ final class SlawFloat32 extends SlawNumber {
     @Override public double emitDouble() { return value; }
     @Override public float emitFloat() { return value; }
     @Override public long emitLong() { return (long)value; }
-    @Override public String debugString() { return "" + emitDouble(); }
 
     private float value;
 }

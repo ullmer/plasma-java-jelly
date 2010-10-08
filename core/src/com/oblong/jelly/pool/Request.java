@@ -151,7 +151,7 @@ public enum Request {
         if (arity != args.length)
             throw new ProtocolException(this + " expects " + arity + " args"
                                         + ", but was invoked with arg list "
-                                        + Slaw.list(args).debugString());
+                                        + Slaw.list(args));
     }
 
     private Slaw checkResponse(Slaw res, int v) throws PoolException {

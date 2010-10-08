@@ -63,8 +63,6 @@ abstract class SlawNumber extends AtomicSlaw {
 
     @Override public final int hashCode() { return (int)emitLong(); }
 
-    @Override public String debugString() { return "" + emitLong(); }
-
     @Override final public boolean slawEquals(Slaw s) {
         if (numericIlk().isIntegral()) return emitLong() == s.emitLong();
         return emitDouble() == s.emitDouble();

@@ -20,7 +20,7 @@ final class SlawNil extends AtomicSlaw {
 
     @Override public boolean slawEquals(Slaw o) { return true; }
 
-    @Override public String debugString() { return "nil"; }
+    @Override public String toString() { return "nil"; }
 
     private SlawNil () {}
 }

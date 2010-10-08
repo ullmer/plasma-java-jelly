@@ -28,10 +28,6 @@ final class SlawComplex extends SlawPair {
         return new SlawComplex(ilk, car(), cdr());
     }
 
-    @Override public String debugString() {
-        return car().debugString() + "+" + cdr().debugString() + "i";
-    }
-
     private SlawComplex(NumericIlk ilk, Slaw r, Slaw i) {
         super(r.withNumericIlk(ilk), i.withNumericIlk(ilk));
     }

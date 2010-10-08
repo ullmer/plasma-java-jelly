@@ -19,11 +19,6 @@ final class SlawProtein extends Protein {
         return new SlawProtein(descrips, ingests, data);
     }
 
-    @Override public String debugString() {
-        return "\ndescrips: " + descrips + "\ningests: " + ingests
-            + "\n(" + data.length + " bytes of raw data" + ")";
-    }
-
     @Override public Slaw descrips() { return descrips; }
     @Override public Slaw ingests() { return ingests; }
     @Override public byte datum(int n) { return data[n]; }
