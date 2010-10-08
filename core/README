@@ -11,41 +11,51 @@ other packages found under it are implementation details.
   It's been tested with Sun's JDK/JRE 1.6 and 1.5 under GNU/Linux and
   Mac OS X 10.6, and with OpenJDK 1.6 under GNU/Linux.
 
-*** Library dependencies
+** Library dependencies
 
-    Jelly has no run time dependencies on external libraries. The jars
-    in '../lib' are used for unit tests (JUnit) and compile-time
-    annotations, and are only relevant during building and testing.
+    Jelly uses the third party libraries found in '../lib'.
+    Compile-time libraries are not needed when linking jelly with your
+    apps. For the runtime ones, you can either add them to your
+    classpath or use the jelly-standalone jar, which includes them.
+
+*** Run time
+
+    - snakeyaml 1.7: YAML parsing.
+
+*** Compile time
+
+    - hamcrest-core 1.1, junit4 4.8.2: Unit testing
+    - jcip-annotations 1.0: Compile time annotations on thread safety.
 
 * Building
 
   To build jelly you need Ant 1.7 or better, or Eclipse. All other
   dependencies are included in the '../lib' folder.
 
-*** Ant targets
+** Ant targets
 
-    - =ant compile= will compile the library's source, with output to
+    - 'ant compile' will compile the library's source, with output to
       build/classes.
-    =- ant build= generates the jelly jar file, inside the dist folder.
-    - =ant test= runs the test suite, writing plain text reports inside
+    - 'ant build' generates the jelly jar files, inside the dist folder.
+    - 'ant test' runs the test suite, writing plain text reports inside
       build/test/data.
-    - =ant test-reporting= works as =ant test=, but also creates HTML
+    - 'ant test-reporting' works as 'ant test', but also creates HTML
       reports in build/test/reports.
-    - =ant javadoc= generates the library javadoc and puts it in
+    - 'ant javadoc' generates the library javadoc and puts it in
       build/javadoc.
-    - =ant doxygen= generates the documentation using doxygen, inside
+    - 'ant doxygen' generates the documentation using doxygen, inside
       build/doxygen. Doxygen has some problems recognizing Java enums
       and some other constructs: using javadoc is recommended.
 
-    Use =ant -p= for a complete list of targets.
+    Use 'ant -p' for a complete list of targets.
 
-*** Configurable options
+** Configurable options
 
-    Running =ant properties= will list all properties used by the build
+    Running 'ant properties' will list all properties used by the build
     scripts. You can override any of them either by using ant's -D
     flag or by creating a properties file called build.properties.
 
-*** Building for Java 1.5
+** Building for Java 1.5
 
     Of particular interest are the build properties compile.source and
     compile.target. By default, they are set to 1.6. You can create a
@@ -54,7 +64,7 @@ other packages found under it are implementation details.
          ant clean
          ant -Dcompile.source=1.5 -Dcompile.target=1.5 build
 
-*** Using Eclipse
+** Using Eclipse
 
     Just create a new project from existing sources, pointing to this
     directory. Sources are under 'src' and, for tests, under 'test'.
