@@ -4,11 +4,8 @@
 package com.oblong.jelly;
 
 import java.io.IOException;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Set;
-
 import com.oblong.jelly.slaw.io.FileIO;
 
 /**
@@ -35,21 +32,61 @@ public final class SlawIO {
     }
 
     /**
-     * Flags for customizing YAML output.
+     * Options for customizing YAML output.
      */
-    public enum YamlOptions {
-        /** Don't emit tags for numbers. */
-        NO_NUMBER_TAGS,
-        /** Don't emit YAML directives. */
-        NO_DIRECTIVES;
-        // /* Don't order maps (i.e., use !!map instead of !!omap). */
-        // UNORDERED_MAPS;
+    public static class YamlOptions {
+        /**
+         * Default configuration, emitting tags and YAML directives.
+         */
+        public YamlOptions() {
+            this(true, true);
+        }
 
         /**
-         * Default option set, containing none of the flags above.
+         * Customized configuration. See {@link #emitTags()} and
+         * {@link #useDirectives()} for the meaning of the passed
+         * flags.
          */
-        public static final Set<YamlOptions> DEFAULTS =
-           EnumSet.noneOf(YamlOptions.class);
+        public YamlOptions(boolean tags, boolean directives) {
+            emitTags = tags;
+            useDirectives = directives;
+        }
+
+        /**
+         * When this is <code>false</code>, YAML tags for numbers
+         * won't be emitted. That means that you'll lose information
+         * on the concrete numeric ilks of externalized slawx.
+         */
+        public boolean emitTags() { return emitTags; }
+
+        /**
+         * Setter for the {@link #emitTags() emitTags} flags, returning
+         * a reference to this for easy channing.
+         */
+        public YamlOptions emitTags(boolean tags) {
+            emitTags = tags;
+            return this;
+        }
+
+        /*
+         * Whether to emit directives. By default, the YAML document
+         * will contain directives on YAML version and Oblong's
+         * namespace. Set <code>directives</code> to
+         * <code>false</code> to skip them.
+         */
+        public boolean useDirectives() { return useDirectives; }
+
+        /**
+         * Setter for the {@link #useDirectives() useDirectives}
+         * flags, returning a reference to this for easy channing.
+         */
+        public YamlOptions useDirectives(boolean directives) {
+            useDirectives = directives;
+            return this;
+        }
+
+        private boolean useDirectives;
+        private boolean emitTags;
     }
 
     /**
@@ -91,9 +128,9 @@ public final class SlawIO {
      * Factory method creating a writer associated with the given
      * file.
      *
-     * <p> The file will be created or, if it exists, truncated to
-     * zero length. If the given format is YAML, none of the options
-     * available in {@link YamlOptions} will be used.
+     * The file will be created or, if it exists, truncated to zero
+     * length. If the given format is YAML, the default {@link
+     * YamlOptions} will be used.
      *
      * @throws IOException when the file cannot be created or written
      * to.
@@ -109,7 +146,7 @@ public final class SlawIO {
         case BINARY:
             return FileIO.binaryWriter(fileName);
         case YAML:
-            return writer(fileName, YamlOptions.DEFAULTS);
+            return writer(fileName, new YamlOptions());
         }
         return null;
     }
@@ -127,10 +164,10 @@ public final class SlawIO {
      *
      * @see SlawWriter
      */
-    public static SlawWriter writer(String fileName, Set<YamlOptions> opts)
+    public static SlawWriter writer(String fileName, YamlOptions opts)
         throws IOException {
         return FileIO.yamlWriter(fileName,
-                                 opts == null ? YamlOptions.DEFAULTS : opts);
+                                 opts == null ? new YamlOptions() : opts);
     }
 
     /**
@@ -155,9 +192,9 @@ public final class SlawIO {
      * to. Otherwise, the return value indicates whether all slawx
      * were written.
      */
-    public static boolean write(
-        Slaw[] slawx, String fileName, Set<YamlOptions> opts)
-        throws IOException {
+    public static boolean write(Slaw[] slawx,
+                                String fileName,
+                                YamlOptions opts) throws IOException {
         return write(slawx, writer(fileName, opts));
     }
 

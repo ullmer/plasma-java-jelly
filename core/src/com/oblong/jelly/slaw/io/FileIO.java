@@ -6,16 +6,11 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.PushbackInputStream;
-import java.io.Reader;
-import java.util.Set;
-
 import net.jcip.annotations.Immutable;
 
 import org.yaml.snakeyaml.reader.UnicodeReader;
 
-import com.oblong.jelly.SlawIO;
 import com.oblong.jelly.SlawIO.Format;
 import com.oblong.jelly.SlawIO.YamlOptions;
 import com.oblong.jelly.SlawReader;
@@ -48,8 +43,7 @@ public final class FileIO {
         return new StreamWriter(os, Format.BINARY, new BinaryExternalizer());
     }
 
-    public static SlawWriter yamlWriter(String fileName,
-                                        Set<YamlOptions> opts)
+    public static SlawWriter yamlWriter(String fileName, YamlOptions opts)
         throws IOException {
         return new YamlWriter(fileName, opts);
     }

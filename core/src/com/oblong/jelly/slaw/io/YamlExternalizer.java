@@ -4,8 +4,6 @@ package com.oblong.jelly.slaw.io;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.EnumSet;
-import java.util.Set;
 
 import org.yaml.snakeyaml.util.Base64Coder;
 
@@ -21,17 +19,16 @@ import com.oblong.jelly.slaw.SlawExternalizer;
 public final class YamlExternalizer implements SlawExternalizer {
 
     public static SlawExternalizer rawExternalizer() {
-        return new YamlExternalizer(EnumSet.of(YamlOptions.NO_DIRECTIVES));
+        return new YamlExternalizer(new YamlOptions(true, false));
     }
 
-    public YamlExternalizer(Set<YamlOptions> options) {
-        numberTags = !options.contains(YamlOptions.NO_NUMBER_TAGS);
-        useDirectives = !options.contains(YamlOptions.NO_DIRECTIVES);
+    public YamlExternalizer(YamlOptions options) {
+        this.options = options;
     }
 
     @Override public final void extern(Slaw s, OutputStream os)
         throws IOException {
-        if (useDirectives) write(os, "--- ");
+        if (options.useDirectives()) write(os, "--- ");
         extern(s, os, "", "\n");
     }
 
@@ -155,9 +152,9 @@ public final class YamlExternalizer implements SlawExternalizer {
     }
 
     private void maybeTag(Slaw s, OutputStream os) throws IOException {
-        if (!s.isNumber() || numberTags) { write(os, YamlTags.tag(s) + " "); }
+        final boolean emitTags = options.emitTags();
+        if (!s.isNumber() || emitTags) { write(os, YamlTags.tag(s) + " "); }
     }
 
-    private final boolean useDirectives;
-    final boolean numberTags;
+    final YamlOptions options;
 }

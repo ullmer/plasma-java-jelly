@@ -2,7 +2,6 @@
 
 package com.oblong.jelly.slaw.io;
 
-import java.io.Reader;
 import java.math.BigInteger;
 import java.util.Iterator;
 import java.util.ArrayList;
@@ -22,7 +21,6 @@ import org.yaml.snakeyaml.util.Base64Coder;
 
 import com.oblong.jelly.NumericIlk;
 import com.oblong.jelly.Slaw;
-import com.oblong.jelly.SlawIlk;
 import com.oblong.jelly.SlawIO;
 import com.oblong.jelly.SlawReader;
 import com.oblong.jelly.slaw.SlawFactory;
