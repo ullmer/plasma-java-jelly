@@ -20,6 +20,7 @@ final class YamlTags {
     static final String OB_NS = "!";
 
     static final String NADA_YT = "nada";
+    static final String BINARY_YT = "binary";
     static final String NIL_YT = "null";
     static final String BOOL_YT = "bool";
     static final String STRING_YT = "string";
@@ -54,7 +55,9 @@ final class YamlTags {
     static boolean isNil(String tag) { return NIL_YT.equals(tag); }
     static boolean isBool(String tag) { return BOOL_YT.equals(tag); }
     static boolean isString(String tag) {
-        return STRING_YT.equals(tag) || YSTRING_YT.equals(tag);
+        return STRING_YT.equals(tag)
+            || YSTRING_YT.equals(tag)
+            || BINARY_YT.equals(tag);
     }
     static boolean isComplex(String tag) { return COMPLEX_YT.equals(tag); }
     static boolean isVector(String tag) { return VECTOR_YT.equals(tag); }
@@ -68,8 +71,7 @@ final class YamlTags {
     static boolean isProtein(String tag) { return PROTEIN_YT.equals(tag); }
 
     static String tag(Slaw s) {
-        if (s.count() == 0 && s.isArray())
-            return OB_NS + EMPTY_TAGS.get(s);
+        if (s.count() == 0 && s.isArray()) return OB_NS + EMPTY_TAGS.get(s);
         return tag(s.ilk(), s.numericIlk());
     }
 
