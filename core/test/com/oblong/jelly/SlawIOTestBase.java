@@ -106,6 +106,16 @@ public class SlawIOTestBase {
     private static File defFile;
     private static String defFileName;
 
+    private static final Slaw[] noSlaw = new Slaw[0];
+
+    private static final byte[] data = {
+        1, 2, 3, 4, 5, 6, 7, 8, 9, 20, 65, -3, 5, -6, 93, 126, -127, 0, 0
+    };
+
+    private static final Slaw[] oneProtein = {
+        protein(int8(1), map(nil(), nil()), data)
+    };
+
     private static final Slaw[] atomicSlawx = {
         bool(true), bool(false), nil(),
         string("astring"), string("a longer string this, with \" thingie's"),
@@ -123,18 +133,10 @@ public class SlawIOTestBase {
     private static final Slaw[] nestedSlawx = {
         cons(compSlawx[0], compSlawx[4]),
         list(compSlawx[compSlawx.length-1], compSlawx[3], compSlawx[4]),
+        list(oneProtein[0], oneProtein[0], compSlawx[compSlawx.length - 1]),
         map(compSlawx[3], compSlawx[4], compSlawx[2], compSlawx[2]),
-        protein(compSlawx[0], compSlawx[5])
-    };
-
-    private static final Slaw[] noSlaw = new Slaw[0];
-
-    private static final byte[] data = {
-        1, 2, 3, 4, 5, 6, 7, 8, 9, 20, 65, -3, 5, -6, 93, 126, -127, 0, 0
-    };
-
-    private static final Slaw[] oneProtein = {
-        protein(int8(1), map(nil(), nil()), data)
+        protein(compSlawx[0], compSlawx[5]),
+        protein(oneProtein[0], compSlawx[compSlawx.length - 1], data)
     };
 
     private final Format format;
