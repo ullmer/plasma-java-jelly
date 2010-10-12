@@ -29,7 +29,7 @@ public final class YamlExternalizer implements SlawExternalizer {
 
     @Override public final void extern(Slaw s, OutputStream os)
         throws IOException {
-        if (options.useDirectives()) write(os, "--- ");
+        write(os, "--- ");
         extern(s, os, "", "\n");
     }
 
