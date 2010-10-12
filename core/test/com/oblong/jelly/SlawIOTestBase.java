@@ -6,7 +6,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -17,6 +16,7 @@ import static org.junit.Assume.*;
 
 import static com.oblong.jelly.Slaw.*;
 import com.oblong.jelly.SlawIO.Format;
+import com.oblong.jelly.SlawIO.YamlOptions;
 
 /**
  * Base class for SlawIO unit tests.
@@ -29,17 +29,8 @@ public class SlawIOTestBase {
 
     SlawIOTestBase(Format f) { format = f; }
 
-    @BeforeClass public static void initDef() throws IOException {
-        // defFile = File.createTempFile("jelly-slawio", "");
-        defFile = new File("/tmp/jelly");
-        defFileName = defFile.getAbsolutePath();
-    }
-
     @Before public void hasFormat() {
     	assumeTrue(format != null);
-    }
-    @After public void tearDown() {
-        // defFile.delete();
     }
 
     @Test public void empty() throws IOException {
@@ -83,19 +74,46 @@ public class SlawIOTestBase {
         }
     }
 
-    private final void readWriteTest(Slaw[] slawx) throws IOException {
-        final SlawWriter writer = SlawIO.writer(defFileName, format);
+    @Test public void files() throws IOException {
+        fileTest(nestedSlawx,
+                 File.createTempFile("jelly-slawio-test", "." + format));
+    }
+
+    final void readWriteTest(Slaw[] slawx) throws IOException {
+        readWriteTest(slawx, null);
+    }
+
+    final void readWriteTest(Slaw[] slawx, YamlOptions opts)
+        throws IOException {
+        byte[] data = format == Format.BINARY ?
+            SlawIO.toBytes(slawx) : SlawIO.toString(slawx, opts).getBytes();
+        checkReader(slawx, SlawIO.reader(data));
+        assertArrayEquals(slawx, SlawIO.fromBytes(data).toArray());
+    }
+
+    final void fileTest(Slaw[] slawx, File file)
+        throws IOException {
+        final String fileName = file.getAbsolutePath();
+        checkWriter(slawx, SlawIO.writer(fileName, format));
+        checkReader(slawx, SlawIO.reader(fileName));
+
+        assertArrayEquals(slawx, SlawIO.read(fileName).toArray());
+
+        assertTrue(SlawIO.write(slawx, fileName, format));
+        assertArrayEquals(slawx, SlawIO.read(fileName).toArray());
+
+        file.delete();
+    }
+
+    final void checkWriter(Slaw[] slawx, SlawWriter writer)
+        throws IOException {
         assertEquals(format, writer.format());
         for (Slaw s : slawx) assertTrue(writer.write(s));
         assertTrue(writer.close());
-        checkReader(slawx);
-
-        assertTrue(SlawIO.write(slawx, defFileName, format));
-        checkReader(slawx);
     }
 
-    private final void checkReader(Slaw[] slawx) throws IOException {
-        final SlawReader reader = SlawIO.reader(defFileName);
+    final void checkReader(Slaw[] slawx, SlawReader reader)
+        throws IOException {
         assertEquals(format, reader.format());
         for (int i = 0; i < slawx.length; ++i) {
             assertTrue(reader.hasNext());
@@ -107,30 +125,26 @@ public class SlawIOTestBase {
         }
         assertNull(reader.next());
         assertTrue(reader.close());
-
-        List<Slaw> slawx2 = SlawIO.read(defFileName);
-        assertArrayEquals(slawx, slawx2.toArray());
     }
 
-    private static File defFile;
-    private static String defFileName;
+    static final Slaw[] noSlaw = new Slaw[0];
 
-    private static final Slaw[] noSlaw = new Slaw[0];
-
-    private static final byte[] data = {
+    static final byte[] data = {
         1, 2, 3, 4, 5, 6, 7, 8, 9, 20, 65, -3, 5, -6, 93, 126, -127, 0, 0
     };
 
-    private static final Slaw[] oneProtein = {
-        protein(int8(1), map(nil(), nil()), data)
+    static final Slaw[] oneProtein = {
+        protein(list(int8(1), string("foo"), bool(false)),
+                map(string("a"), nil(), string("b"), unt64(2)),
+                data)
     };
 
-    private static final Slaw[] atomicSlawx = {
-        bool(true), bool(false), nil(),
+    static final Slaw[] atomicSlawx = {
+        bool(true), bool(false), nil(), int8(123), unt32(0),
         string("astring"), string("a longer string this, with \" thingie's"),
     };
 
-    private static final Slaw[] compSlawx = {
+    static final Slaw[] compSlawx = {
         cons(int32(1), nil()),
         list(),
         list(unt16(1), nil(), string("helluva \"quoted\"")),
@@ -139,7 +153,7 @@ public class SlawIOTestBase {
         protein(list(int8(1), int32(2)), map(string("a"), nil()))
     };
 
-    private static final Slaw[] nestedSlawx = {
+    static final Slaw[] nestedSlawx = {
         cons(compSlawx[0], compSlawx[4]),
         list(compSlawx[compSlawx.length-1], compSlawx[3], compSlawx[4]),
         list(oneProtein[0], oneProtein[0], compSlawx[compSlawx.length - 1]),
@@ -148,5 +162,5 @@ public class SlawIOTestBase {
         protein(oneProtein[0], compSlawx[compSlawx.length - 1], data)
     };
 
-    private final Format format;
+    final Format format;
 }
