@@ -2,8 +2,8 @@
 
 package com.oblong.jelly.slaw.io;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import java.io.BufferedOutputStream;
+import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PushbackInputStream;
@@ -12,6 +12,7 @@ import net.jcip.annotations.Immutable;
 import org.yaml.snakeyaml.reader.UnicodeReader;
 
 import com.oblong.jelly.SlawIO.Format;
+import static com.oblong.jelly.SlawIO.Format.*;
 import com.oblong.jelly.SlawIO.YamlOptions;
 import com.oblong.jelly.SlawReader;
 import com.oblong.jelly.SlawWriter;
@@ -25,27 +26,37 @@ import com.oblong.jelly.slaw.java.JavaSlawFactory;
  * @author jao
  */
 @Immutable
-public final class FileIO {
+public final class IOFactory {
 
-    public static SlawReader reader(String fileName) throws IOException {
-        final PushbackInputStream is =
-            new PushbackInputStream(new FileInputStream(fileName));
+    public static SlawReader reader(InputStream input) throws IOException {
+        final PushbackInputStream is = new PushbackInputStream(input);
         final BinaryFileHeader header = BinaryFileHeader.read(is);
         return header == null
             ? yamlReader(new UnicodeReader(is))
             : binaryReader(is, header.isLittleEndian());
     }
 
-    public static SlawWriter binaryWriter(String fileName)
-        throws IOException {
-        final FileOutputStream os = new FileOutputStream(fileName);
-        HEADER.write(os);
-        return new StreamWriter(os, Format.BINARY, new BinaryExternalizer());
+    public static SlawWriter writer(OutputStream os,
+                                    Format format,
+                                    YamlOptions opts) throws IOException {
+        switch (format) {
+        case BINARY: return binaryWriter(os);
+        case YAML: return yamlWriter(os, opts);
+        default: assert false : format.toString(); return null;
+        }
     }
 
-    public static SlawWriter yamlWriter(String fileName, YamlOptions opts)
+    public static SlawWriter binaryWriter(OutputStream os)
         throws IOException {
-        return new YamlWriter(fileName, opts);
+        HEADER.write(os);
+        return new StreamWriter(new BufferedOutputStream(os),
+                                Format.BINARY,
+                                new BinaryExternalizer());
+    }
+
+    public static SlawWriter yamlWriter(OutputStream os, YamlOptions opts)
+    	throws IOException {
+        return new YamlWriter(os, opts == null ? new YamlOptions() : opts);
     }
 
     private static SlawReader yamlReader(UnicodeReader reader) {
@@ -58,7 +69,7 @@ public final class FileIO {
 
     }
 
-    private FileIO() {}
+    private IOFactory() {}
 
     private static final BinaryFileHeader HEADER = new BinaryFileHeader();
     private static final SlawFactory factory = new JavaSlawFactory();

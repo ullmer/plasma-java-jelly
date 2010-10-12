@@ -2,7 +2,7 @@
 
 package com.oblong.jelly.slaw.io;
 
-import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.io.IOException;
 import com.oblong.jelly.Slaw;
 import com.oblong.jelly.SlawIO;
@@ -14,10 +14,8 @@ import com.oblong.jelly.SlawIO.YamlOptions;
  */
 final class YamlWriter extends StreamWriter {
 
-    YamlWriter(String file, YamlOptions opts) throws IOException {
-        super(new FileOutputStream(file),
-              SlawIO.Format.YAML,
-              new YamlExternalizer(opts));
+    YamlWriter(OutputStream os, YamlOptions opts) throws IOException {
+        super(os, SlawIO.Format.YAML, new YamlExternalizer(opts));
         useDirectives = opts.useDirectives();
         written = 0;
         if (useDirectives) {

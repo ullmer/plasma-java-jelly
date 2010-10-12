@@ -3,17 +3,23 @@
 
 package com.oblong.jelly;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
-import com.oblong.jelly.slaw.io.FileIO;
+
+import com.oblong.jelly.slaw.io.IOFactory;
 
 /**
- * Utilities for serializing Slaw instances to files.
+ * Utilities for serializing Slaw instances to files, strings and byte
+ * arrays.
  *
  * <p> Serialization can be piecemeal, via a {@link SlawWriter}
  * instance, or performed in a single, atomic operation using {@link
- * #write}. Reading the resulting files can be accomplished via a Slaw
+ * #write}. Reading the resulting data can be accomplished via a Slaw
  * iterator, i.e., an instance of {@link SlawReader}. It's also
  * possible to read all slawx in one shot using {@link #read}.
  *
@@ -101,10 +107,35 @@ public final class SlawIO {
      *
      * @see #read for atomically reading all slawx in a file.
      *
+     * @see #stringReader
+     * @see #reader(byte[])
      * @see SlawReader
      */
     public static SlawReader reader(String fileName) throws IOException {
-        return FileIO.reader(fileName);
+        return IOFactory.reader(new FileInputStream(fileName));
+    }
+
+    /**
+     * A reader getting its data from a given byte array.
+     *
+     * @see #reader(String)
+     * @see SlawReader
+     */
+    public static SlawReader reader(byte[] data) {
+        try {
+            return IOFactory.reader(new ByteArrayInputStream(data));
+        } catch (IOException e) {
+            // cannot happen
+            return null;
+        }
+    }
+
+    /**
+     * A reader getting its data from a given string. Equivalent to
+     * calling {@link #reader(byte[])} with <code>data.getBytes()</code>.
+     */
+    public static SlawReader stringReader(String data) {
+        return reader(data.getBytes());
     }
 
     /**
@@ -117,11 +148,27 @@ public final class SlawIO {
      * cannot be read for any other reason.
      */
     public static List<Slaw> read(String fileName) throws IOException {
-        final SlawReader reader = reader(fileName);
-        final List<Slaw> result = new ArrayList<Slaw>();
-        while (reader.hasNext()) result.add(reader.next());
-        reader.close();
-        return result;
+        return read(reader(fileName));
+    }
+
+    /**
+     * De-serialize a list of Slawx serialized in YAML format with
+     * {@link #toString(Slaw[], YamlOptions) toString}.
+     *
+     * @throws IOException if the input cannot be decoded.
+     */
+    public static List<Slaw> fromString(String yaml) throws IOException {
+        return fromBytes(yaml.getBytes());
+    }
+
+    /**
+     * De-serialize a list of Slawx serialized in YAML format with
+     * {@link #toBytes}.
+     *
+     * @throws IOException if the input cannot be decoded.
+     */
+    public static List<Slaw> fromBytes(byte[] bin) throws IOException {
+        return read(reader(bin));
     }
 
     /**
@@ -142,13 +189,7 @@ public final class SlawIO {
      */
     public static SlawWriter writer(String fileName, Format format)
         throws IOException {
-        switch (format) {
-        case BINARY:
-            return FileIO.binaryWriter(fileName);
-        case YAML:
-            return writer(fileName, new YamlOptions());
-        }
-        return null;
+        return IOFactory.writer(new FileOutputStream(fileName), format, null);
     }
 
     /**
@@ -162,17 +203,21 @@ public final class SlawIO {
      * @see #write for atomically writing an array of Slawx without
      * using an intermediate writer.
      *
+     * @see #toString for serializing to a string instead of a file.
+     *
      * @see SlawWriter
      */
     public static SlawWriter writer(String fileName, YamlOptions opts)
         throws IOException {
-        return FileIO.yamlWriter(fileName,
-                                 opts == null ? new YamlOptions() : opts);
+        return IOFactory.yamlWriter(new FileOutputStream(fileName), opts);
     }
 
     /**
      * Convenience method writing an array of slawx in one shot. If
      * the given file exists, it'll be overwritten.
+     *
+     * <p> For YAML output, you can also use
+     * {@link #write(Slaw[], String, YamlOptions) this write method}.
      *
      * @throws IOException when the file cannot be created or written
      * to. Otherwise, the return value indicates whether all slawx
@@ -184,6 +229,15 @@ public final class SlawIO {
     }
 
     /**
+     * Convenience method serializing an array of slawx to a bytes, in
+     * binary format.
+     *
+     */
+    public static byte[] toBytes(Slaw[] slawx) {
+        return toArray(slawx, Format.BINARY, null).toByteArray();
+    }
+
+    /**
      * Convenience method writing an array of slawx in one shot, in
      * YAML format, with the specified options. If the given file
      * exists, it'll be overwritten.
@@ -191,6 +245,8 @@ public final class SlawIO {
      * @throws IOException when the file cannot be created or written
      * to. Otherwise, the return value indicates whether all slawx
      * were written.
+     *
+     * @see #toString for serializing to a string instead of a file.
      */
     public static boolean write(Slaw[] slawx,
                                 String fileName,
@@ -198,12 +254,39 @@ public final class SlawIO {
         return write(slawx, writer(fileName, opts));
     }
 
+    /**
+     * Convenience method writing an array of slawx in one shot to an
+     * string, in YAML format, with the specified options.
+     *
+     */
+    public static String toString(Slaw[] slawx, YamlOptions opts) {
+        return toArray(slawx, Format.YAML, opts).toString();
+    }
+
+
+    private static List<Slaw> read(SlawReader reader) throws IOException {
+        final List<Slaw> result = new ArrayList<Slaw>();
+        while (reader.hasNext()) result.add(reader.next());
+        reader.close();
+        return result;
+    }
 
     private static boolean write(Slaw[] slawx, SlawWriter writer) {
         boolean result = true;
         for (Slaw s : slawx) result= writer.write(s) && result;
         result = writer.close() && result;
         return result;
+    }
+
+    public static ByteArrayOutputStream toArray(Slaw[] s,
+                                                Format f,
+                                                YamlOptions o) {
+        final ByteArrayOutputStream os = new ByteArrayOutputStream();
+        try {
+            write(s, IOFactory.writer(os, f, o));
+        } catch (IOException e) { // this error should never happen
+        }
+        return os;
     }
 
     private SlawIO() {}

@@ -6,10 +6,14 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import static org.junit.Assert.*;
+
 import org.junit.After;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import static org.junit.Assert.*;
+import static org.junit.Assume.*;
 
 import static com.oblong.jelly.Slaw.*;
 import com.oblong.jelly.SlawIO.Format;
@@ -21,6 +25,8 @@ import com.oblong.jelly.SlawIO.Format;
  */
 public class SlawIOTestBase {
 
+    public SlawIOTestBase() { this(null); }
+
     SlawIOTestBase(Format f) { format = f; }
 
     @BeforeClass public static void initDef() throws IOException {
@@ -29,6 +35,9 @@ public class SlawIOTestBase {
         defFileName = defFile.getAbsolutePath();
     }
 
+    @Before public void hasFormat() {
+    	assumeTrue(format != null);
+    }
     @After public void tearDown() {
         // defFile.delete();
     }
