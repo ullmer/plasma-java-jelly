@@ -27,6 +27,92 @@ import com.oblong.jelly.slaw.io.IOFactory;
  * {@link SlawIO.Format}, which will be automatically recognised by
  * readers.
  *
+ * <p> The binary output is in the same format used to store slawx in
+ * pools, plus a short header. As such, it's highly compact and, well,
+ * binary, which means that is not apt for general human consumption.
+ *
+ * <p> YAML output uses the YAML 1.1 format, with some Oblong-specific
+ * tags. Every YAML file (or output string) starts with a couple of
+ * directives spelling that out:
+ * <pre>
+ *   %YAML 1.1
+ *   %TAG ! tag:oblong.com,2009:slaw/
+ * </pre>
+ * followed by one or more YAML "documents". Each document starts
+ * with the string <code>"--- "</code>, followed by the slaw value.
+ *
+ * <p> Integer Slaw use special tags to denote their precise type. E.g.:
+ * <pre>
+ *   --- !u8 23
+ *   --- !i32 -23943
+ *   --- !f64 2.34341E23
+ * </pre>
+ *
+ * Other atomic types use regular YAML tags, with NIL represented
+ * by <code>!!null</code>:
+ * <pre>
+ *   --- !!str "This is a \"string\""
+ *   --- !string Also a string
+ *   --- !!bool true
+ *   --- !!null
+ * </pre>
+ *
+ * Numeric containers are represented as sequences of its components:
+ * <pre>
+ *   --- !complex [!i32 3, !i32 -23]
+ *   --- !vector [!i8 1, !i8 2]
+ *   --- !vector [!i16 1, !i16 2, !i16 3, !i16 4]
+ *   --- !array [!vector [!i8 0, !i8 1], !vector [!i8 2, !i8 3]]
+ * </pre>
+ *
+ * As you see, you don't need to specify the numeric ilk of the
+ * container, except in the case of empty arrays, which use special
+ * tags starting with "!empty", as in <code>!empty/i16</code> for an
+ * empty array of INT16s, or <code>!empty/vector/3/complex/u8</code>
+ * for a COMPLEX_VECTOR_ARRAY with numeric ilk UNT8.
+ *
+ * Lists are encoded using a standard YAML sequence, which can be
+ * represented either inline:
+ * <pre>
+ *   --- !!seq [!u8 0, !!str "a string", !!null, !!bool false]
+ * </pre>
+ * or in block form:
+ * </pre>
+ *   --- !!seq
+ *   - !u8 0
+ *   - !!str a string
+ *   - !!null
+ *   - !! bool false
+ * </pre>
+ *
+ * Slaw maps are externalized as a YAML ordered map
+ * (<code>!!omap</code>), which is a sequence of maps with just one
+ * key/value pair:
+ * <pre>
+ *   ---- !!omap
+ *   - !!str key : !i8 1969
+ *   - !null : !complex [!u16 1, !u16 2]
+ * </pre>
+ *
+ * while conses use the non-standard tag <code>!cons</code> and are
+ * represented as a map with one entry: its key is the cons' car and,
+ * its value, the cdr.
+ *
+ * <p> Finally, proteins use <code>!protein</code> and as represented
+ * as (non-ordered) maps with <code>ingests</code>,
+ * <code>descrips</code> and <code>rude_data</code> as keys, the
+ * latter containing the protein's extra data encoded in base64 and
+ * tagged as <code>!!binary</code>:
+ * <pre>
+ *   --- !protein
+ *   descrips: !!seq [!cons {!!str bat : !!str bi}, !i8 2]
+ *   ingests: !!omap
+ *      - key1: !i8 1
+ *      - key2: !i32 123231
+ *   rude_data: !!binary |-
+ *      AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGA==
+ * </pre>
+ *
  * @author jao
  */
 public final class SlawIO {
@@ -271,7 +357,7 @@ public final class SlawIO {
      * Convenience method writing an array of slawx in one shot to an
      * string, in YAML format, with the specified options.
      *
-     * @see #toString(Slaw)
+     * @see #toString(Slaw, YamlOptions)
      */
     public static String toString(Slaw[] slawx, YamlOptions opts) {
         return toArray(slawx, Format.YAML, opts).toString();
@@ -281,7 +367,7 @@ public final class SlawIO {
      * Convenience method serializing a slaw to an string, in YAML
      * format, with the specified options.
      *
-     * @see #toString(Slaw[])
+     * @see #toString(Slaw[], YamlOptions)
      */
     public static String toString(Slaw slaw, YamlOptions opts) {
         final Slaw[] slawx = {slaw};

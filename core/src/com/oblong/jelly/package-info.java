@@ -140,6 +140,28 @@
  * using the host of static factory methods in {@link
  * com.oblong.jelly.Slaw}.
  *
+ * <h3>Serializing Slaw</h3>
+ *
+ * Although pools are very useful for communicating proteins from one
+ * process to another, and can also be used for storage of proteins,
+ * it's also sometimes useful to store proteins (or other slawx) in a
+ * traditional file (or perhaps a String or a byte array).
+ *
+ * <p>The class {@link com.oblong.jelly.SlawIO} provides a collection
+ * of static methods allowing serialization of <code>Slaw</code> and
+ * <code>Protein</code> instances to and from files, strings and byte
+ * arrays, in binary and text formats. The first is designed for speed
+ * and compactness, while the second is a human-readable rendering of
+ * slawx using YAML syntax.
+ *
+ * <p>Serialization can be performed in one shot for a list of Slaw,
+ * or stepwise, via the {@link com.oblong.jelly.SlawReader} and {@link
+ * com.oblong.jelly.SlawWriter} interfaces.
+ *
+ * <p>The documentation for {@link com.oblong.jelly.SlawIO} provides
+ * more details on the serialization formats and utilities.
+ *
+ *
  * <h3>Error handling</h3>
  *
  * Errors in pool operations are reported by means of exceptions of a
