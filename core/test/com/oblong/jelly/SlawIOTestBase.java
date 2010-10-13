@@ -75,8 +75,7 @@ public class SlawIOTestBase {
     }
 
     @Test public void files() throws IOException {
-        fileTest(nestedSlawx,
-                 File.createTempFile("jelly-slawio-test", "." + format));
+        fileTest(nestedSlawx, null);
     }
 
     final void readWriteTest(Slaw[] slawx) throws IOException {
@@ -85,21 +84,32 @@ public class SlawIOTestBase {
 
     final void readWriteTest(Slaw[] slawx, YamlOptions opts)
         throws IOException {
-        byte[] data = format == Format.BINARY ?
+        final byte[] data = format == Format.BINARY ?
             SlawIO.toBytes(slawx) : SlawIO.toString(slawx, opts).getBytes();
         checkReader(slawx, SlawIO.reader(data));
         assertArrayEquals(slawx, SlawIO.fromBytes(data).toArray());
     }
 
-    final void fileTest(Slaw[] slawx, File file)
+    final void fileTest(Slaw[] slawx, YamlOptions opts) throws IOException {
+        fileTest(slawx,
+                 File.createTempFile("jelly-slawio-test", "." + format),
+                 opts);
+    }
+
+    final void fileTest(Slaw[] slawx, File file, YamlOptions opts)
         throws IOException {
+        final boolean bin = format == Format.BINARY;
         final String fileName = file.getAbsolutePath();
-        checkWriter(slawx, SlawIO.writer(fileName, format));
+        final SlawWriter writer = bin
+            ? SlawIO.writer(fileName, format) : SlawIO.writer(fileName, opts);
+        checkWriter(slawx, writer);
         checkReader(slawx, SlawIO.reader(fileName));
 
         assertArrayEquals(slawx, SlawIO.read(fileName).toArray());
 
-        assertTrue(SlawIO.write(slawx, fileName, format));
+        if (bin) assertTrue(SlawIO.write(slawx, fileName, format));
+        else assertTrue(SlawIO.write(slawx, fileName, opts));
+
         assertArrayEquals(slawx, SlawIO.read(fileName).toArray());
 
         file.delete();
