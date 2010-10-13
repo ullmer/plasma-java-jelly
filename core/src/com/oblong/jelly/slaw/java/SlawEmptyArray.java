@@ -13,6 +13,8 @@ final class SlawEmptyArray extends JavaSlaw {
 
     static Slaw valueOf(SlawIlk ilk, NumericIlk ni, int dimension) {
         assert ilk.isNumeric();
+        if (ilk == SlawIlk.NUMBER_ARRAY && ni.width() == 8)
+            return SlawByteArray.valueOf(ni.isSigned(), new byte[0]);
         return new SlawEmptyArray(ilk, ni, dimension);
     }
 

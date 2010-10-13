@@ -41,6 +41,10 @@ abstract class JavaSlaw extends Slaw {
         throw new UnsupportedOperationException(ilk() + " as byte");
     }
 
+    @Override public byte[] unsafeEmitByteArray() {
+        throw new UnsupportedOperationException(ilk() + " as byte[]");
+    }
+
     @Override public double emitDouble() {
         throw new UnsupportedOperationException(ilk() + " as double");
     }

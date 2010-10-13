@@ -105,6 +105,11 @@ public final class JavaSlawFactory implements SlawFactory {
         return SlawArray.valueOf(cmps);
     }
 
+    @Override public Slaw array(byte[] elems, boolean signed) {
+        if (elems == null) throw new IllegalArgumentException("Null array");
+        return SlawByteArray.valueOf(signed, elems);
+    }
+
     @Override public Slaw array(Slaw[] sx) {
         if (sx == null || sx.length == 0)
             throw new IllegalArgumentException("Arg cannot be empty");

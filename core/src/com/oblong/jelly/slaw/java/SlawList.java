@@ -25,9 +25,13 @@ final class SlawList extends JavaSlaw {
         return new SlawList(sx);
     }
 
-    static Slaw valueOf(List<Slaw> sx) {
+    static Slaw valueOf(List<Slaw> sx, boolean copy) {
         if (sx.size() == 0) return EMPTY_LIST;
-        return new SlawList(sx, true);
+        return new SlawList(sx, copy);
+    }
+
+    static Slaw valueOf(List<Slaw> sx) {
+        return valueOf(sx, true);
     }
 
     @Override public SlawIlk ilk() { return SlawIlk.LIST; }

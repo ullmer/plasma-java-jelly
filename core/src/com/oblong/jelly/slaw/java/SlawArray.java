@@ -19,7 +19,9 @@ final class SlawArray extends CompositeNumericSlaw {
     static Slaw valueOf(List<Slaw> cmps) {
         assert cmps.size() > 0;
         NumericIlk ni = NumericIlk.dominantIlkForList(cmps);
-        return new SlawArray(ni, cmps);
+        return cmps.get(0).isNumber() && ni.width() == 8
+            ? SlawByteArray.valueOf(ni.isSigned(), cmps)
+            : new SlawArray(ni, cmps);
     }
 
     @Override public SlawIlk ilk() { return ilks.get(nth(0).ilk()); }

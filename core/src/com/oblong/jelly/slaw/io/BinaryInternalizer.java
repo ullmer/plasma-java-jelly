@@ -209,8 +209,17 @@ public final class BinaryInternalizer implements SlawInternalizer {
         final long h = b.getLong();
         final int count = (int)arrayBreadth(h);
         if (count == 0) return emptyArray(h, b, f);
+        if (isByteArray(h)) return internByteArray(h, count, b, f);
         Slaw[] cmps = readArray(h, count, b, f);
         return f.array(cmps);
+    }
+
+    private static Slaw internByteArray(long h, int count,
+                                        ByteReader b, SlawFactory f)
+        throws IOException {
+        final byte[] elems = new byte[count];
+        b.get(elems, count);
+        return f.array(elems, numericIlk(h).isSigned());
     }
 
     private static Slaw[] readArray(long h, int count,

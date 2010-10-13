@@ -64,6 +64,12 @@ final class BinaryProtocol {
         return numericKind(h) == 0;
     }
 
+    static boolean isByteArray(long h) {
+        return isNumericScalar(h)
+            && !isComplexNumeric(h)
+            && numericIlk(h).width() == 8;
+    }
+
     static boolean isComplexNumeric(long h) {
         return (h & (0x1L<<57)) != 0;
     }

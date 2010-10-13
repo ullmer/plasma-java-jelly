@@ -34,6 +34,7 @@ public interface SlawFactory {
 
     Slaw multivector(Slaw... cmps);
 
+    Slaw array(byte[] e, boolean s);
     Slaw array(Slaw[] sx);
     Slaw array(Slaw s, Slaw... sx);
     Slaw array(SlawIlk ilk, NumericIlk ni, int dimension);

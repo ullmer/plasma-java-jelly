@@ -6,6 +6,7 @@ package com.oblong.jelly;
 import java.io.ByteArrayOutputStream;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -223,6 +224,16 @@ public abstract class Slaw implements Iterable<Slaw> {
     public final boolean isNumberVectorArray() { return is(VECTOR_ARRAY); }
 
     /**
+     * Byte arrays are Slawx with ilk {@link SlawIlk#NUMBER_ARRAY} and
+     * numeric ilk {@link NumericIlk#INT8} or {@link NumericIlk#UNT8}.
+     * We single them out because they're able to emit a native by Java
+     * byte array (see {@link #emitByteArray}
+     */
+    public final boolean isByteArray() {
+        return isNumberArray() && numericIlk().width() == 8;
+    }
+
+    /**
      * Checks whether this Slaw's ilk is {@link
      * SlawIlk#COMPLEX_VECTOR_ARRAY}
      */
@@ -371,6 +382,25 @@ public abstract class Slaw implements Iterable<Slaw> {
      * {@link #emitDouble} instead.
      */
     public abstract BigInteger emitBigInteger();
+
+    /**
+     * Byte arrays (see {@link #isByteArray()} can emit their data
+     * as a native Java array.
+     *
+     * <p>This method returns a copy of said data, or throws an
+     * UnsupportedOperationException if this slaw isn't a byte array.
+     */
+    public final byte[] emitByteArray() {
+        return Arrays.copyOf(unsafeEmitByteArray(), count());
+    }
+
+    /**
+     * This method works like {@link #emitByteArray}, but without
+     * copying. It's a performance hack that you shouldn't use unless
+     * you're completely sure that you will never ever modify the
+     * contents of the returned array.
+     */
+    public abstract byte[] unsafeEmitByteArray();
 
     /**
      * When this Slaw has ilk {@link SlawIlk#CONS}, {@link
@@ -906,6 +936,14 @@ public abstract class Slaw implements Iterable<Slaw> {
      * {@link #array(Slaw,Slaw...)} for details.
      */
     public static Slaw array(Slaw[] sx) { return factory.array(sx); }
+
+    /**
+     * A factory method creating an array of INT8 or UNT8. The given
+     * data is copied, so modifying it won't modify the returned slaw.
+     */
+    public static Slaw array(byte[] elems, boolean signed) {
+        return factory.array(elems, signed);
+    }
 
     /**
      * A factory method constructing a non-empty numeric Slaw array

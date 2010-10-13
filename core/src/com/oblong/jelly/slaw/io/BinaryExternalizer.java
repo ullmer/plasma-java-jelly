@@ -289,9 +289,14 @@ public final class BinaryExternalizer extends AbstractBinaryExternalizer {
         throws IOException {
         final int c = a.count();
         b.putLong(h|c);
-        for (int i = 0; i < c; i++) {
-            final Slaw n = a.nth(i);
-            for (int j = 0, d = n.count(); j < d; j++) putNumVal(b, n.nth(j));
+        if (a.isByteArray()) {
+            b.put(a.unsafeEmitByteArray());
+        } else {
+            for (int i = 0; i < c; i++) {
+                final Slaw n = a.nth(i);
+                for (int j = 0, d = n.count(); j < d; j++)
+                    putNumVal(b, n.nth(j));
+            }
         }
     }
 
