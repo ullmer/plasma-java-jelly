@@ -2,11 +2,12 @@
 
 package com.oblong.jelly;
 
+
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
-
 import static org.junit.Assert.*;
 
 public final class SlawTests {
@@ -19,16 +20,25 @@ public final class SlawTests {
             if (ni.isIntegral()) {
                 ns.add(Slaw.number(ni, ni.max()));
                 ns.add(Slaw.number(ni, ni.min()));
-                ns.add(Slaw.number(ni, ni.min() + (ni.max() - ni.min()) / 2));
-                ns.add(Slaw.number(ni, ni.min() + (ni.max() - ni.min()) / 5));
+                ns.add(Slaw.number(ni, 42));
+                if (ni.isSigned()) {
+                    ns.add(Slaw.number(ni, -42));
+                } else {
+                    ns.add(Slaw.number(ni, ni.min()
+                                       + (ni.max() - ni.min()) / 2));
+                }
             } else {
                 ns.add(Slaw.number(ni, ni.fmax()));
                 ns.add(Slaw.number(ni, ni.fmin()));
                 ns.add(Slaw.number(ni, 0));
-                ns.add(Slaw.number(ni, ni.fmin()
-                                   + (ni.fmax() - ni.fmin()) / 5.5323));
+                ns.add(Slaw.number(ni, 3.141592653589793));
+                ns.add(Slaw.number(ni, -2.718281828459045));
             }
         }
+        final BigInteger ml = BigInteger.valueOf(Long.MAX_VALUE);
+        ns.add(Slaw.unt64(ml.add(BigInteger.ONE)));
+        ns.add(Slaw.unt64(ml.shiftLeft(1).subtract(BigInteger.ONE)));
+        ns.add(Slaw.unt64(0));
         return ns.toArray(new Slaw[0]);
     }
 
