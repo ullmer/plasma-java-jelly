@@ -2,44 +2,65 @@
 
 package com.oblong.jelly;
 
-
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
+
 import static org.junit.Assert.*;
 
 public final class SlawTests {
 
-    public static Slaw[] numbers() {
+    public static Slaw[] numbers() { return numbers(false); }
+
+    public static Slaw[] numbers(boolean check) {
         final List<Slaw> ns = new ArrayList<Slaw>();
         final Set<NumericIlk>
             nis = EnumSet.complementOf(EnumSet.of(NumericIlk.UNT64));
         for (NumericIlk ni : nis) {
             if (ni.isIntegral()) {
-                ns.add(Slaw.number(ni, ni.max()));
-                ns.add(Slaw.number(ni, ni.min()));
-                ns.add(Slaw.number(ni, 42));
+                add(ns, ni, ni.max(), check);
+                add(ns, ni, ni.min(), check);
+                add(ns, ni, 42, check);
                 if (ni.isSigned()) {
-                    ns.add(Slaw.number(ni, -42));
+                    add(ns, ni, -42, check);
                 } else {
-                    ns.add(Slaw.number(ni, ni.min()
-                                       + (ni.max() - ni.min()) / 2));
+                    add(ns, ni, ni.min() + (ni.max() - ni.min()) / 2, check);
                 }
             } else {
-                ns.add(Slaw.number(ni, ni.fmax()));
-                ns.add(Slaw.number(ni, ni.fmin()));
-                ns.add(Slaw.number(ni, 0));
-                ns.add(Slaw.number(ni, 3.141592653589793));
-                ns.add(Slaw.number(ni, -2.718281828459045));
+                add(ns, ni, ni.fmax(), check);
+                add(ns, ni, ni.fmin(), check);
+                add(ns, ni, 0, check);
+                add(ns, ni, 3.141592653589793, check);
+                add(ns, ni, -2.718281828459045, check);
             }
         }
+
         final BigInteger ml = BigInteger.valueOf(Long.MAX_VALUE);
-        ns.add(Slaw.unt64(ml.add(BigInteger.ONE)));
-        ns.add(Slaw.unt64(ml.shiftLeft(1).subtract(BigInteger.ONE)));
-        ns.add(Slaw.unt64(0));
+        add(ns, ml.add(BigInteger.ONE), check);
+        add(ns, ml.shiftLeft(1).subtract(BigInteger.ONE), check);
+        add(ns, BigInteger.ZERO, check);
+
         return ns.toArray(new Slaw[0]);
+    }
+
+    static void add(List<Slaw> sl, NumericIlk ni, long v, boolean check) {
+        final Slaw n = Slaw.number(ni, v);
+        sl.add(n);
+        if (check) assertEquals("Slaw was: " + n, v, n.emitLong());
+    }
+
+    static void add(List<Slaw> sl, NumericIlk ni, double v, boolean check) {
+        final Slaw n = Slaw.number(ni, v);
+        sl.add(n);
+        if (check) assertEquals("Slaw was: " + n, v, n.emitDouble(), 0.00001);
+    }
+
+    static void add(List<Slaw> sl, BigInteger v, boolean check) {
+        final Slaw n = Slaw.unt64(v);
+        sl.add(n);
+        if (check) assertEquals("Slaw was: " + n, v, n.emitBigInteger());
     }
 
     public static Slaw[] complexes() {
