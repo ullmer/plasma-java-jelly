@@ -29,7 +29,7 @@ final class YamlTags {
     static final String CONS_YT = "cons";
     static final String MAP_YT = "omap";
     static final String UMAP_YT = "map";
-    static final String LIST_YT = "list";
+    static final String LIST_YT = "seq";
     static final String NUMBER_YT = "";
     static final String COMPLEX_YT = "complex";
     static final String VECTOR_YT = "vector";
@@ -128,7 +128,7 @@ final class YamlTags {
     static final Map<String, NumericIlk> NUMERIC_ILKS;
 
     static {
-        IN_YAML_NS = EnumSet.of(NIL, BOOL, STRING, MAP);
+        IN_YAML_NS = EnumSet.of(NIL, BOOL, STRING, MAP, LIST);
 
         TAGS = new EnumMap<SlawIlk, String>(SlawIlk.class);
         TAGS.put(NIL, NIL_YT);
