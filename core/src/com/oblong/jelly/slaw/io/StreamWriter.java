@@ -12,12 +12,6 @@ import com.oblong.jelly.SlawIO;
 import com.oblong.jelly.SlawWriter;
 import com.oblong.jelly.slaw.SlawExternalizer;
 
-/**
- *
- * Created: Thu Sep 30 21:43:13 2010
- *
- * @author jao
- */
 @NotThreadSafe
 class StreamWriter implements SlawWriter {
 

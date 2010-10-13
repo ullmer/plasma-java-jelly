@@ -4,14 +4,14 @@ package com.oblong.jelly.slaw.io;
 
 import java.io.OutputStream;
 import java.io.IOException;
+
+import net.jcip.annotations.NotThreadSafe;
+
 import com.oblong.jelly.Slaw;
 import com.oblong.jelly.SlawIO;
 import com.oblong.jelly.SlawIO.YamlOptions;
 
-/**
- *
- * @author jao
- */
+@NotThreadSafe
 final class YamlWriter extends StreamWriter {
 
     YamlWriter(OutputStream os, YamlOptions opts) throws IOException {
@@ -25,7 +25,7 @@ final class YamlWriter extends StreamWriter {
     }
 
     @Override public boolean write(Slaw s) {
-        final boolean r = super.write(s);
+        final boolean r = writePreamble() && super.write(s);
         if (r) ++written;
         return r;
     }
@@ -39,6 +39,18 @@ final class YamlWriter extends StreamWriter {
         return super.close();
     }
 
+    private boolean writePreamble() {
+        try {
+            if (written > 0) stream.write(NL);
+            stream.write(PREAMBLE);
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
     private final boolean useDirectives;
     private int written;
+    private static final byte[] PREAMBLE = "--- ".getBytes();
+    private static final byte[] NL = "\n".getBytes();
 }
