@@ -89,6 +89,7 @@ final class YamlReader implements SlawReader {
         final NumericIlk ni = YamlTags.numericIlk(tag);
         if (ni != null) return parseNumber(ni, nv);
         if (YamlTags.isNil(tag)) return factory.nil();
+        if (YamlTags.isYamlString(tag)) return parseYamlString(nv);
         if (YamlTags.isString(tag)) return factory.string(nv);
         if (YamlTags.isBool(tag)) return factory.bool(Boolean.valueOf(nv));
         return null;
@@ -120,6 +121,14 @@ final class YamlReader implements SlawReader {
                 ? factory.number(new BigInteger(val))
                 : factory.number(ni, new Long(val));
         return factory.number(ni, new Double(val));
+    }
+
+    private Slaw parseYamlString(String val) {
+        try {
+            return parseNumber(NumericIlk.FLOAT64, val);
+        } catch (NumberFormatException e) {
+            return factory.string(val);
+        }
     }
 
     private Slaw parseCons(List<NodeTuple> pairs) {

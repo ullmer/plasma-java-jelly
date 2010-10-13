@@ -14,6 +14,11 @@ final class SlawFloat64 extends SlawNumber {
 
     @Override public NumericIlk numericIlk() { return NumericIlk.FLOAT64; }
     @Override public double emitDouble() { return value; }
+
+    @Override public float emitFloat() {
+        return value > Float.MAX_VALUE ? Float.MAX_VALUE : (float)value;
+    }
+
     @Override public long emitLong() { return (long)value; }
 
     private double value;

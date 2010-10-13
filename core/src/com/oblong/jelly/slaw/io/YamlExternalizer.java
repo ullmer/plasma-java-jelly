@@ -70,12 +70,14 @@ public final class YamlExternalizer implements SlawExternalizer {
     void externNumber(Slaw n, OutputStream os) throws IOException {
         final NumericIlk ni = n.numericIlk();
         if (ni.isIntegral()) {
+            if (!options.emitTags()) n = Slaw.int64(n.emitLong());
             if (ni.bytes() > 4 && ni.isSigned()) {
                 write(os, n.emitBigInteger().toString());
             } else {
                 write(os, Long.toString(n.emitLong(), 10));
             }
         } else {
+            if (!options.emitTags()) n = Slaw.float64(n.emitDouble());
             write(os, Double.toString(n.emitDouble()));
         }
     }

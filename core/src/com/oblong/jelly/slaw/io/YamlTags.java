@@ -46,6 +46,9 @@ final class YamlTags {
     static final String F32_NYT = "f32";
     static final String F64_NYT = "f64";
 
+    static final String INT_YT = "int";
+    static final String FLOAT_YT = "float";
+
     static final String INGESTS_KEY = "ingests";
     static final String DESCRIPS_KEY = "descrips";
     static final String DATA_KEY = "rude_data";
@@ -55,10 +58,10 @@ final class YamlTags {
     static boolean isNil(String tag) { return NIL_YT.equals(tag); }
     static boolean isBool(String tag) { return BOOL_YT.equals(tag); }
     static boolean isString(String tag) {
-        return STRING_YT.equals(tag)
-            || YSTRING_YT.equals(tag)
-            || BINARY_YT.equals(tag);
+        return STRING_YT.equals(tag) || BINARY_YT.equals(tag);
     }
+    static boolean isYamlString(String tag) { return YSTRING_YT.equals(tag); }
+
     static boolean isComplex(String tag) { return COMPLEX_YT.equals(tag); }
     static boolean isVector(String tag) { return VECTOR_YT.equals(tag); }
     static boolean isMVector(String tag) { return MVECTOR_YT.equals(tag); }
@@ -156,6 +159,8 @@ final class YamlTags {
         NUMERIC_ILKS = new HashMap<String, NumericIlk>();
         for (NumericIlk ni : NUMERIC_TAGS.keySet())
             NUMERIC_ILKS.put(NUMERIC_TAGS.get(ni), ni);
+        NUMERIC_ILKS.put(INT_YT, INT64);
+        NUMERIC_ILKS.put(FLOAT_YT, FLOAT64);
 
         EMPTY_ARRAYS = new HashMap<String, Slaw>();
         EMPTY_TAGS = new HashMap<Slaw, String>();
