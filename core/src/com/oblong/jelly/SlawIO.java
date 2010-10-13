@@ -232,8 +232,21 @@ public final class SlawIO {
      * Convenience method serializing an array of slawx to a bytes, in
      * binary format.
      *
+     * @see #toBytes(Slaw)
      */
     public static byte[] toBytes(Slaw[] slawx) {
+        return toArray(slawx, Format.BINARY, null).toByteArray();
+    }
+
+    /**
+     * Convenience method serializing an slaw to a bytes, in binary
+     * format.
+     *
+     * @see #toBytes(Slaw[])
+     *
+     */
+    public static byte[] toBytes(Slaw slaw) {
+        final Slaw[] slawx = {slaw};
         return toArray(slawx, Format.BINARY, null).toByteArray();
     }
 
@@ -258,11 +271,22 @@ public final class SlawIO {
      * Convenience method writing an array of slawx in one shot to an
      * string, in YAML format, with the specified options.
      *
+     * @see #toString(Slaw)
      */
     public static String toString(Slaw[] slawx, YamlOptions opts) {
         return toArray(slawx, Format.YAML, opts).toString();
     }
 
+    /**
+     * Convenience method serializing a slaw to an string, in YAML
+     * format, with the specified options.
+     *
+     * @see #toString(Slaw[])
+     */
+    public static String toString(Slaw slaw, YamlOptions opts) {
+        final Slaw[] slawx = {slaw};
+        return toArray(slawx, Format.YAML, opts).toString();
+    }
 
     private static List<Slaw> read(SlawReader reader) throws IOException {
         final List<Slaw> result = new ArrayList<Slaw>();
