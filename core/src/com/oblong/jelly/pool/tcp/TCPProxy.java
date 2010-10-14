@@ -46,7 +46,8 @@ public final class TCPProxy implements Runnable {
                 launchHandler(socket.accept(), factory.get(address));
             } catch (Exception e) {
                 if (!socket.isClosed())
-                    log.severe("Exception launching handler: " + e.getMessage());
+                    log.severe("Exception launching handler: "
+                               + e.getMessage());
             }
         }
         closeHandlers();

@@ -41,7 +41,8 @@ final class TCPProxyHandler implements Runnable {
         try {
             init();
         } catch (IOException e) {
-            log.warning("IO error initialising pool handler: " + e.getMessage());
+            log.warning("IO error initialising pool handler: "
+                        + e.getMessage());
             log.warning("Closing handler");
             connection.close();
         }
@@ -49,7 +50,8 @@ final class TCPProxyHandler implements Runnable {
             try {
                 reply(forward(next()));
             } catch (Exception e) {
-                log.warning("Exception talking with server: " + e.getMessage());
+                log.warning("Exception talking with server: "
+                            + e.getMessage());
                 log.warning("Closing handler");
                 connection.close();
             }
@@ -57,7 +59,8 @@ final class TCPProxyHandler implements Runnable {
         try {
             if (socket.isConnected()) socket.close();
         } catch (Exception e) {
-            log.warning("Exception closing socket (ignored): " + e.getMessage());
+            log.warning("Exception closing socket (ignored): "
+                        + e.getMessage());
         }
     }
 
@@ -89,7 +92,8 @@ final class TCPProxyHandler implements Runnable {
         try {
             return internalizer.internProtein(socket.getInputStream(),factory);
         } catch (SlawParseError e) {
-            log.warning("Error parsing protein from server: " + e.getMessage());
+            log.warning("Error parsing protein from server: "
+                        + e.getMessage());
             return null;
         }
     }
