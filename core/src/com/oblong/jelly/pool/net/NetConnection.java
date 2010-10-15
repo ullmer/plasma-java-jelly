@@ -2,6 +2,7 @@
 
 package com.oblong.jelly.pool.net;
 
+import java.util.concurrent.TimeUnit;
 import java.util.Set;
 
 import com.oblong.jelly.PoolServerAddress;
@@ -15,6 +16,7 @@ public interface NetConnection {
     int version();
     SlawFactory factory();
 
+    void setTimeout(long t, TimeUnit u) throws PoolException;
     Slaw send(Request r, Slaw... args) throws PoolException;
     void close();
     boolean isOpen();

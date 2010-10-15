@@ -6,8 +6,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.util.EnumSet;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 import com.oblong.jelly.InOutException;
@@ -17,7 +19,7 @@ import com.oblong.jelly.PoolServerAddress;
 import com.oblong.jelly.PoolException;
 import com.oblong.jelly.Protein;
 import com.oblong.jelly.Slaw;
-
+import com.oblong.jelly.TimeoutException;
 
 import com.oblong.jelly.slaw.SlawExternalizer;
 import com.oblong.jelly.slaw.SlawFactory;
@@ -26,12 +28,6 @@ import com.oblong.jelly.util.ByteReader;
 
 import static com.oblong.jelly.pool.net.Request.*;
 
-/**
- *
- * Created: Tue Jun 22 15:15:59 2010
- *
- * @author jao
- */
 final class TCPPoolConnection implements NetConnection {
 
     @Override public PoolServerAddress address() { return address; }
@@ -39,6 +35,15 @@ final class TCPPoolConnection implements NetConnection {
     @Override public SlawFactory factory() { return factory; }
     @Override public Set<Request> supportedRequests() { return supported; }
 
+
+    @Override public void setTimeout(long t, TimeUnit u)
+        throws PoolException {
+        try {
+            if (t >= 0) socket.setSoTimeout((int)u.toMillis(t));
+        } catch (Exception e) {
+            throw new InOutException(e);
+        }
+    }
 
     @Override public Slaw send(Request r, Slaw... args)
         throws PoolException {
@@ -132,6 +137,8 @@ final class TCPPoolConnection implements NetConnection {
         try {
             ret =
                 internalizer.internProtein(socket.getInputStream(), factory);
+        } catch (SocketTimeoutException e) {
+            throw new TimeoutException(0);
         } catch (Exception e) {
             throw new InOutException(e);
         }

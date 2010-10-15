@@ -4,6 +4,7 @@ package com.oblong.jelly.pool.mem;
 
 import java.util.EnumSet;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import net.jcip.annotations.NotThreadSafe;
 
@@ -24,13 +25,6 @@ import static com.oblong.jelly.pool.net.Request.*;
 
 import com.oblong.jelly.slaw.SlawFactory;
 
-
-/**
- *
- * Created: Tue Jun 29 19:13:51 2010
- *
- * @author jao
- */
 @NotThreadSafe
 final class MemPoolConnection implements NetConnection {
 
@@ -52,23 +46,17 @@ final class MemPoolConnection implements NetConnection {
         open = false;
     }
 
-    @Override public PoolServerAddress address() {
-        return address;
-    }
+    @Override public PoolServerAddress address() { return address; }
 
     @Override public Set<Request> supportedRequests() { return SUPPORTED; }
 
-    @Override public boolean isOpen() {
-        return open;
-    }
+    @Override public boolean isOpen() { return open; }
 
-    @Override public SlawFactory factory() {
-        return factory;
-    }
+    @Override public SlawFactory factory() { return factory; }
 
-    @Override public int version() {
-        return 3;
-    }
+    @Override public int version() { return 3; }
+
+    @Override public void setTimeout(long t, TimeUnit u) {}
 
     @Override public Slaw send(Request request, Slaw... args)
         throws PoolException {

@@ -1,10 +1,11 @@
+// Copyright (c) 2010 Oblong Industries
+
 package com.oblong.jelly.pool.net;
 
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 import net.jcip.annotations.NotThreadSafe;
-
-import java.util.logging.Logger;
 
 import com.oblong.jelly.Hose;
 import com.oblong.jelly.NoSuchProteinException;
@@ -182,11 +183,17 @@ final class NetHose implements Hose {
     }
 
     private Protein await(long t, TimeUnit u) throws PoolException {
-        final Slaw res = Request.AWAIT_NEXT.send(connection, timeSlaw(t, u));
-        return new PoolProtein(res.nth(1).toProtein(),
-                               cleanIndex(res.nth(3).emitLong() + 1) - 1,
-                               res.nth(2).emitDouble(),
-                               this);
+        connection.setTimeout(t, u);
+        try {
+            final Slaw res =
+                Request.AWAIT_NEXT.send(connection, timeSlaw(t, u));
+            return new PoolProtein(res.nth(1).toProtein(),
+                                   cleanIndex(res.nth(3).emitLong() + 1) - 1,
+                                   res.nth(2).emitDouble(),
+                                   this);
+        } finally {
+            connection.setTimeout(0, u);
+        }
     }
 
     private Slaw timeSlaw(long timeout, TimeUnit unit) {
