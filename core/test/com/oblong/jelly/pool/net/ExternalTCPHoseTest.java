@@ -1,6 +1,6 @@
 // Copyright (c) 2010 Oblong Industries
 
-package com.oblong.jelly.pool.tcp;
+package com.oblong.jelly.pool.net;
 
 import com.oblong.jelly.HoseTestBase;
 import com.oblong.jelly.PoolException;

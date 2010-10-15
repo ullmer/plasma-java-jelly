@@ -1,14 +1,12 @@
 // Copyright (c) 2010 Oblong Industries
 
-package com.oblong.jelly.pool.tcp;
+package com.oblong.jelly.pool.net;
 
 import net.jcip.annotations.Immutable;
 
 import com.oblong.jelly.PoolServer;
 import com.oblong.jelly.PoolServers;
 import com.oblong.jelly.PoolServerAddress;
-import com.oblong.jelly.pool.PoolConnectionFactory;
-import com.oblong.jelly.pool.Server;
 
 /**
  *
@@ -27,6 +25,6 @@ public final class TCPServerFactory implements PoolServers.Factory {
         PoolServers.register("tcp", new TCPServerFactory());
     }
 
-    private static final PoolConnectionFactory factory =
+    private static final NetConnectionFactory factory =
         new TCPPoolConnection.Factory();
 }

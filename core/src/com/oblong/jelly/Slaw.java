@@ -6,7 +6,6 @@ package com.oblong.jelly;
 import java.io.ByteArrayOutputStream;
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -329,7 +328,7 @@ public abstract class Slaw implements Iterable<Slaw> {
 
     /**
      * Equivalent to downcasting the result of {@link #emitLong} to
-     * <code>byte</code>. If the numerick ilk of this Slaw corresponds
+     * <code>byte</code>. If the numeric ilk of this Slaw corresponds
      * to an integer wider than 8 bits, or a floating point, there's a
      * risk of losing precision due to the coercion. There's also a
      * potential coercion problem for {@link NumericIlk#UNT8}, in that
@@ -376,7 +375,7 @@ public abstract class Slaw implements Iterable<Slaw> {
      * type, this method is guaranteed to return the actual value,
      * without losing precision. But, if the numeric ilk of this Slaw
      * is either {@link NumericIlk#FLOAT32} or {@link
-     * NumericIlk#FLOAT64}, a loss of precision may occurr, equivalent
+     * NumericIlk#FLOAT64}, a loss of precision may occur, equivalent
      * to the one implied in a conversion from float or double to
      * long. Therefore, for those numeric ilks, it's safer to use
      * {@link #emitDouble} instead.
@@ -391,7 +390,9 @@ public abstract class Slaw implements Iterable<Slaw> {
      * UnsupportedOperationException if this slaw isn't a byte array.
      */
     public final byte[] emitByteArray() {
-        return Arrays.copyOf(unsafeEmitByteArray(), count());
+    	final byte[] res = new byte[count()];
+        System.arraycopy(unsafeEmitByteArray(), 0, res, 0, res.length);
+        return res;
     }
 
     /**
@@ -464,7 +465,7 @@ public abstract class Slaw implements Iterable<Slaw> {
      * <p> For complex numbers and conses, <code>nth(0)</code> and
      * <code>nth(1)</code> are equivalent to {@link #car()} and {@link
      * #cdr()}, respectively. For vectors and multivectors, it returns
-     * the corresponding component, while for lists it acessess the
+     * the corresponding component, while for lists it accesses the
      * nth element. If this Slaw is a map, the returning Slaw is a
      * cons composed of the nth key and value.
      *
@@ -515,7 +516,7 @@ public abstract class Slaw implements Iterable<Slaw> {
      * <code>count()-1</code> if <code>end>count()</code>. If
      * <code>end<=begin</code>, an empty list is returned. Negative
      * end or begin values are transformed to positive values by
-     * substracting them from <code>count()</code>.
+     * subtracting them from <code>count()</code>.
      */
     public final List<Slaw> emitList(int begin, int end) {
         final int c = count();

@@ -1,4 +1,4 @@
-package com.oblong.jelly.pool;
+package com.oblong.jelly.pool.net;
 
 import java.util.concurrent.TimeUnit;
 
@@ -13,12 +13,13 @@ import com.oblong.jelly.PoolAddress;
 import com.oblong.jelly.PoolException;
 import com.oblong.jelly.Protein;
 import com.oblong.jelly.Slaw;
+import com.oblong.jelly.pool.PoolProtein;
 import com.oblong.jelly.slaw.SlawFactory;
 
 @NotThreadSafe
-final class PoolHose implements Hose {
+final class NetHose implements Hose {
 
-    PoolHose(PoolConnection conn, String pn) throws PoolException {
+    NetHose(NetConnection conn, String pn) throws PoolException {
         connection = conn;
         factory = conn.factory();
         poolAddress = new PoolAddress(connection.address(), pn);
@@ -213,7 +214,7 @@ final class PoolHose implements Hose {
     private static final double OLD_NO_WAIT = WAIT_FOREVER;
     private static final int FIRST_NEW_WAIT_V = 2;
 
-    private final PoolConnection connection;
+    private final NetConnection connection;
     private final SlawFactory factory;
     private final PoolAddress poolAddress;
     private String name;

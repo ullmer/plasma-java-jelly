@@ -5,7 +5,7 @@ package com.oblong.jelly.pool.mem;
 import java.io.IOException;
 import com.oblong.jelly.PoolException;
 import com.oblong.jelly.PoolServerAddress;
-import com.oblong.jelly.pool.tcp.TCPProxy;
+import com.oblong.jelly.pool.net.TCPProxy;
 
 /**
  *

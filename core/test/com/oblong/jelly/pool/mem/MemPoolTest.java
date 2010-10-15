@@ -21,30 +21,30 @@ import com.oblong.jelly.pool.PoolProtein;
 public class MemPoolTest {
 
     @Before public void cleanup() {
-        for (Slaw n : MemPool.names())
+        for (Slaw n : MemPool.slawNames())
             assertTrue(MemPool.dispose(n.emitString()));
     }
 
     @Test public void register() {
         final String[] names = {"p0", "p1", "p2"};
-        assertEquals(0, MemPool.names().length);
+        assertEquals(0, MemPool.slawNames().length);
         for (String n : names) {
             assertFalse(MemPool.exists(n));
             assertNotNull(MemPool.create(n));
             assertTrue(MemPool.exists(n));
         }
-        assertEquals(names.length, MemPool.names().length);
+        assertEquals(names.length, MemPool.slawNames().length);
         for (String n : names) {
             assertNull(MemPool.create(n));
             final MemPool pool = MemPool.get(n);
             assertNotNull(pool);
             assertEquals(n, pool.name());
         }
-        for (Slaw n : MemPool.names()) {
+        for (Slaw n : MemPool.slawNames()) {
             assertTrue(MemPool.dispose(n.emitString()));
             assertFalse(MemPool.exists(n.emitString()));
         }
-        assertEquals(0, MemPool.names().length);
+        assertEquals(0, MemPool.slawNames().length);
     }
 
     @Test public void deposit() {

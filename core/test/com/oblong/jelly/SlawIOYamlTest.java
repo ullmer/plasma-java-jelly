@@ -7,7 +7,6 @@ import java.io.IOException;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import com.oblong.jelly.SlawIO.Format;
 import com.oblong.jelly.SlawIO.YamlOptions;
 
 import static com.oblong.jelly.Slaw.*;

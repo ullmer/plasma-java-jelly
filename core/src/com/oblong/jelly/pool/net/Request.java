@@ -1,6 +1,6 @@
 // Copyright (c) 2010 Oblong Industries
 
-package com.oblong.jelly.pool;
+package com.oblong.jelly.pool.net;
 
 import java.util.HashMap;
 
@@ -10,6 +10,7 @@ import com.oblong.jelly.NumericIlk;
 import com.oblong.jelly.PoolException;
 import com.oblong.jelly.ProtocolException;
 import com.oblong.jelly.Slaw;
+import com.oblong.jelly.pool.ServerErrorCode;
 
 
 /**
@@ -124,13 +125,13 @@ public enum Request {
     public int arity() { return arity; }
     public int responseArity() { return responseArity; }
 
-    public Slaw send(PoolConnection conn, Slaw... args)
+    public Slaw send(NetConnection conn, Slaw... args)
         throws PoolException {
         checkRequest(conn, args);
         return checkResponse(conn.send(this, args), conn.version());
     }
 
-    public Slaw sendAndClose(PoolConnection conn, Slaw... args)
+    public Slaw sendAndClose(NetConnection conn, Slaw... args)
         throws PoolException {
         try {
             return send(conn, args);
@@ -141,7 +142,7 @@ public enum Request {
 
     abstract Slaw getRetort(Slaw res, int v) throws ProtocolException;
 
-    private void checkRequest(PoolConnection conn, Slaw... args)
+    private void checkRequest(NetConnection conn, Slaw... args)
         throws PoolException {
         if (conn == null || !conn.isOpen()) {
             throw new InOutException("Connection closed");

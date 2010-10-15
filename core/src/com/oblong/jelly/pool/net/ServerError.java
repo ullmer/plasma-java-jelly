@@ -1,4 +1,4 @@
-package com.oblong.jelly.pool;
+package com.oblong.jelly.pool.net;
 
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -12,12 +12,13 @@ import com.oblong.jelly.PoolExistsException;
 import com.oblong.jelly.ProtocolException;
 import com.oblong.jelly.Slaw;
 import com.oblong.jelly.TimeoutException;
+import com.oblong.jelly.pool.ServerErrorCode;
 
 import static com.oblong.jelly.pool.ServerErrorCode.*;
 
 import com.oblong.util.Pair;
 
-public enum ServerError {
+enum ServerError {
     SPLEND {
         public PoolException asException(Slaw res, long code) {
             return null;

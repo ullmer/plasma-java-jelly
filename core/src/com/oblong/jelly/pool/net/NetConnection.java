@@ -1,6 +1,6 @@
 // Copyright (c) 2010 Oblong Industries
 
-package com.oblong.jelly.pool;
+package com.oblong.jelly.pool.net;
 
 import java.util.Set;
 
@@ -9,7 +9,7 @@ import com.oblong.jelly.PoolException;
 import com.oblong.jelly.Slaw;
 import com.oblong.jelly.slaw.SlawFactory;
 
-public interface PoolConnection {
+public interface NetConnection {
 
     PoolServerAddress address();
     int version();

@@ -1,6 +1,6 @@
 // Copyright (c) 2010 Oblong Industries
 
-package com.oblong.jelly.pool.tcp;
+package com.oblong.jelly.pool.net;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,16 +18,13 @@ import com.oblong.jelly.PoolException;
 import com.oblong.jelly.Protein;
 import com.oblong.jelly.Slaw;
 
-import com.oblong.jelly.pool.PoolConnection;
-import com.oblong.jelly.pool.PoolConnectionFactory;
-import com.oblong.jelly.pool.Request;
 
 import com.oblong.jelly.slaw.SlawExternalizer;
 import com.oblong.jelly.slaw.SlawFactory;
 import com.oblong.jelly.slaw.SlawInternalizer;
 import com.oblong.jelly.util.ByteReader;
 
-import static com.oblong.jelly.pool.Request.*;
+import static com.oblong.jelly.pool.net.Request.*;
 
 /**
  *
@@ -35,7 +32,7 @@ import static com.oblong.jelly.pool.Request.*;
  *
  * @author jao
  */
-final class TCPPoolConnection implements PoolConnection {
+final class TCPPoolConnection implements NetConnection {
 
     @Override public PoolServerAddress address() { return address; }
     @Override public int version() { return version; }
@@ -69,8 +66,8 @@ final class TCPPoolConnection implements PoolConnection {
         return !socket.isClosed();
     }
 
-    static class Factory implements PoolConnectionFactory {
-        @Override public PoolConnection get(PoolServerAddress addr)
+    static class Factory implements NetConnectionFactory {
+        @Override public NetConnection get(PoolServerAddress addr)
             throws PoolException {
             return new TCPPoolConnection(addr);
         }

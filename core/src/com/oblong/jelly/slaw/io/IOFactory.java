@@ -12,7 +12,6 @@ import net.jcip.annotations.Immutable;
 import org.yaml.snakeyaml.reader.UnicodeReader;
 
 import com.oblong.jelly.SlawIO.Format;
-import static com.oblong.jelly.SlawIO.Format.*;
 import com.oblong.jelly.SlawIO.YamlOptions;
 import com.oblong.jelly.SlawReader;
 import com.oblong.jelly.SlawWriter;

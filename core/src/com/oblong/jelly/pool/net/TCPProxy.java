@@ -1,6 +1,6 @@
 // Copyright (c) 2010 Oblong Industries
 
-package com.oblong.jelly.pool.tcp;
+package com.oblong.jelly.pool.net;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -11,8 +11,6 @@ import java.util.logging.Logger;
 
 import com.oblong.jelly.PoolException;
 import com.oblong.jelly.PoolServerAddress;
-import com.oblong.jelly.pool.PoolConnection;
-import com.oblong.jelly.pool.PoolConnectionFactory;
 
 
 /**
@@ -23,13 +21,13 @@ import com.oblong.jelly.pool.PoolConnectionFactory;
  */
 public final class TCPProxy implements Runnable {
 
-    public TCPProxy(PoolConnectionFactory factory, PoolServerAddress addr)
+    public TCPProxy(NetConnectionFactory factory, PoolServerAddress addr)
         throws IOException {
         this(factory, addr, PoolServerAddress.DEFAULT_PORT);
     }
 
     public TCPProxy(
-        PoolConnectionFactory factory, PoolServerAddress address, int port)
+        NetConnectionFactory factory, PoolServerAddress address, int port)
         throws IOException {
         this.factory = factory;
         this.address = address;
@@ -72,7 +70,7 @@ public final class TCPProxy implements Runnable {
         }
     }
 
-    private void launchHandler(Socket sock, PoolConnection pc)
+    private void launchHandler(Socket sock, NetConnection pc)
         throws IOException {
         final TCPProxyHandler handler = new TCPProxyHandler(sock, pc);
         final Thread th = new Thread(handler);
@@ -91,7 +89,7 @@ public final class TCPProxy implements Runnable {
     }
 
     private final ServerSocket socket;
-    private final PoolConnectionFactory factory;
+    private final NetConnectionFactory factory;
     private final PoolServerAddress address;
     private final List<TCPProxyHandler> handlers;
     private final List<Thread> threads;

@@ -13,14 +13,14 @@ import com.oblong.jelly.PoolServerAddress;
 import com.oblong.jelly.Protein;
 import com.oblong.jelly.Slaw;
 import com.oblong.jelly.TimeoutException;
-import com.oblong.jelly.pool.PoolConnection;
-import com.oblong.jelly.pool.PoolConnectionFactory;
 import com.oblong.jelly.pool.PoolProtein;
-import com.oblong.jelly.pool.Request;
 import com.oblong.jelly.pool.ServerErrorCode;
+import com.oblong.jelly.pool.net.NetConnection;
+import com.oblong.jelly.pool.net.NetConnectionFactory;
+import com.oblong.jelly.pool.net.Request;
 
-import static com.oblong.jelly.pool.Request.*;
 import static com.oblong.jelly.pool.ServerErrorCode.*;
+import static com.oblong.jelly.pool.net.Request.*;
 
 import com.oblong.jelly.slaw.SlawFactory;
 
@@ -32,10 +32,10 @@ import com.oblong.jelly.slaw.SlawFactory;
  * @author jao
  */
 @NotThreadSafe
-final class MemPoolConnection implements PoolConnection {
+final class MemPoolConnection implements NetConnection {
 
-    static class Factory implements PoolConnectionFactory {
-        @Override public PoolConnection get(PoolServerAddress addr) {
+    static class Factory implements NetConnectionFactory {
+        @Override public NetConnection get(PoolServerAddress addr) {
             return new MemPoolConnection(addr);
         }
     }
@@ -134,7 +134,7 @@ final class MemPoolConnection implements PoolConnection {
 
     private Slaw listRequest() {
         open = false;
-        return makeResponse(OK, factory.list(MemPool.names()));
+        return makeResponse(OK, factory.list(MemPool.slawNames()));
     }
 
     private Slaw deposit(Slaw s) {

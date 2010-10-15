@@ -1,7 +1,6 @@
 // Copyright (c) 2010 Oblong Industries
 
-package com.oblong.jelly.pool.tcp;
-
+package com.oblong.jelly.pool.net;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -13,8 +12,6 @@ import com.oblong.jelly.NumericIlk;
 import com.oblong.jelly.PoolException;
 import com.oblong.jelly.Protein;
 import com.oblong.jelly.Slaw;
-import com.oblong.jelly.pool.PoolConnection;
-import com.oblong.jelly.pool.Request;
 import com.oblong.jelly.pool.ServerErrorCode;
 import com.oblong.jelly.slaw.SlawExternalizer;
 import com.oblong.jelly.slaw.SlawFactory;
@@ -32,7 +29,7 @@ import com.oblong.jelly.util.ByteReader;
  * @author jao
  */
 final class TCPProxyHandler implements Runnable {
-    TCPProxyHandler(Socket sock, PoolConnection pc) {
+    TCPProxyHandler(Socket sock, NetConnection pc) {
         socket = sock;
         connection = pc;
     }
@@ -50,10 +47,11 @@ final class TCPProxyHandler implements Runnable {
             try {
                 reply(forward(next()));
             } catch (Exception e) {
-                log.warning("Exception talking with server: "
-                            + e.getMessage());
-                log.warning("Closing handler");
-                connection.close();
+                if (connection.isOpen()) {
+                    log.warning("Connection error: " + e.getMessage());
+                    log.warning("Closing handler");
+                    connection.close();
+                }
             }
         }
         try {
@@ -149,7 +147,7 @@ final class TCPProxyHandler implements Runnable {
     private static final Slaw OP_V = factory.number(NumericIlk.INT64, 14);
 
     private final Socket socket;
-    private final PoolConnection connection;
+    private final NetConnection connection;
     private static final SlawInternalizer internalizer =
         new BinaryInternalizer();
     private static final SlawExternalizer externalizer =

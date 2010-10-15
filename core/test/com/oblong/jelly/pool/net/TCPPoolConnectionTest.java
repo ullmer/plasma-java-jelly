@@ -1,6 +1,6 @@
 // Copyright (c) 2010 Oblong Industries
 
-package com.oblong.jelly.pool.tcp;
+package com.oblong.jelly.pool.net;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -14,11 +14,11 @@ import static org.junit.Assert.*;
 
 import com.oblong.jelly.PoolException;
 import com.oblong.jelly.PoolTestBase;
-import com.oblong.jelly.pool.Request;
 
-import static com.oblong.jelly.pool.Request.*;
+import static com.oblong.jelly.pool.net.Request.*;
 
 import com.oblong.jelly.pool.mem.TCPMemProxy;
+import com.oblong.jelly.pool.net.TCPPoolConnection;
 
 /**
  * Unit Test for TCP pool servers, using a MemPool-base TCPProxy

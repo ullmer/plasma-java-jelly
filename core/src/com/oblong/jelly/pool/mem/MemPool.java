@@ -11,35 +11,29 @@ import com.oblong.jelly.Protein;
 import com.oblong.jelly.Slaw;
 import com.oblong.jelly.pool.PoolProtein;
 
-/**
- *
- * Created: Tue Jun 29 23:18:48 2010
- *
- * @author jao
- */
 @ThreadSafe
 final class MemPool {
 
-    public static boolean exists(String name) {
+    static boolean exists(String name) {
         return pools.containsKey(name);
     }
 
-    public static MemPool create(String name) {
+    static MemPool create(String name) {
         if (exists(name)) return null;
         final MemPool p = new MemPool(name);
         final MemPool old = pools.putIfAbsent(name, p);
         return old == null ? p : old;
     }
 
-    public static MemPool get(String name) {
-        return pools.get(name);
-    }
+    static MemPool get(String name) { return pools.get(name); }
 
-    public static boolean dispose(String name) {
+    static boolean dispose(String name) {
         return pools.remove(name) != null;
     }
 
-    public static Slaw[] names() {
+    static Set<String> names() { return pools.keySet(); }
+
+    static Slaw[] slawNames() {
         final Set<String> ks = pools.keySet();
         final Slaw[] result = new Slaw[ks.size()];
         int i = 0;
@@ -47,21 +41,21 @@ final class MemPool {
         return result;
     }
 
-    public String name() { return name; }
+    String name() { return name; }
 
-    public long oldestIndex() {
+    long oldestIndex() {
         synchronized (proteins) {
             return proteins.size() > 0 ? 0 : -1;
         }
     }
 
-    public long newestIndex() {
+    long newestIndex() {
         synchronized (proteins) {
             return proteins.size() - 1;
         }
     }
 
-    public PoolProtein nth(long index) {
+    PoolProtein nth(long index) {
         if (index >= 0) {
             synchronized (proteins) {
                 if (index < proteins.size()) return proteins.get((int)index);
@@ -70,7 +64,7 @@ final class MemPool {
         return null;
     }
 
-    public PoolProtein next(long index, double timeout) {
+    PoolProtein next(long index, double timeout) {
         PoolProtein p = nth(index);
         if (p == null && timeout != 0) {
             if (timeout < 0) return waitNext(index);
@@ -93,7 +87,7 @@ final class MemPool {
         return p;
     }
 
-    public PoolProtein waitNext(long index) {
+    PoolProtein waitNext(long index) {
         synchronized (proteins) {
             PoolProtein p = nth(index);
             while (p == null) {
@@ -108,12 +102,12 @@ final class MemPool {
         }
     }
 
-    public PoolProtein find(long index, Slaw descrip, boolean fwd) {
+    PoolProtein find(long index, Slaw descrip, boolean fwd) {
         final int idx = (int)index;
         return fwd ? findFwd(idx, descrip) : findBack(idx, descrip);
     }
 
-    public PoolProtein deposit(Protein p) {
+    PoolProtein deposit(Protein p) {
         return deposit(p, ((double)System.currentTimeMillis()) / 10e3);
     }
 
