@@ -3,6 +3,7 @@
 package com.oblong.jelly;
 
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -72,14 +73,29 @@ public class HoseTestBase extends PoolServerTestBase {
         assertEquals(defHose.newestIndex() + 1, defHose.index());
     }
 
-    @Test public void await() throws PoolException {
+    @Test public void await() throws PoolException, TimeoutException {
         defHose.seekTo(defHose.oldestIndex());
         for (int i = 0; i < TLEN; ++i) {
             assertEquals(i + "th", DEP_PROTEINS[i],
                          defHose.awaitNext(1, TimeUnit.SECONDS));
             assertTrue(i + "th", DEP_PROTEINS[i].index() < defHose.index());
         }
+
         assertEquals(defHose.newestIndex() + 1, defHose.index());
+    }
+
+    @Test public void awaitTimeout() throws PoolException {
+        defHose.runOut();
+        final long lapse = 10;
+        final long t = System.currentTimeMillis();
+        try {
+          defHose.awaitNext(lapse, TimeUnit.MILLISECONDS);
+        } catch (TimeoutException e) {
+            // we're good if the timeout expired
+            assertTrue(System.currentTimeMillis() >= t + lapse);
+            return;
+        }
+        fail("awaitNext() didn't timeout");
     }
 
     @Test public void awaitNext() throws PoolException {

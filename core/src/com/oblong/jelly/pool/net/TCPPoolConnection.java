@@ -19,8 +19,6 @@ import com.oblong.jelly.PoolServerAddress;
 import com.oblong.jelly.PoolException;
 import com.oblong.jelly.Protein;
 import com.oblong.jelly.Slaw;
-import com.oblong.jelly.TimeoutException;
-
 import com.oblong.jelly.slaw.SlawExternalizer;
 import com.oblong.jelly.slaw.SlawFactory;
 import com.oblong.jelly.slaw.SlawInternalizer;
@@ -138,7 +136,7 @@ final class TCPPoolConnection implements NetConnection {
             ret =
                 internalizer.internProtein(socket.getInputStream(), factory);
         } catch (SocketTimeoutException e) {
-            throw new TimeoutException(0);
+            return null;
         } catch (Exception e) {
             throw new InOutException(e);
         }

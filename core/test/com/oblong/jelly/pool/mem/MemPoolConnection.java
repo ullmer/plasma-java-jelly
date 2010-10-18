@@ -13,7 +13,6 @@ import com.oblong.jelly.PoolException;
 import com.oblong.jelly.PoolServerAddress;
 import com.oblong.jelly.Protein;
 import com.oblong.jelly.Slaw;
-import com.oblong.jelly.TimeoutException;
 import com.oblong.jelly.pool.PoolProtein;
 import com.oblong.jelly.pool.ServerErrorCode;
 import com.oblong.jelly.pool.net.NetConnection;
@@ -167,8 +166,7 @@ final class MemPoolConnection implements NetConnection {
 
     private Slaw await(double timeout) throws PoolException {
         final PoolProtein p = pool.next(index, timeout);
-        if (p == null && timeout > 0)
-            throw new TimeoutException(POOL_AWAIT_TIMEDOUT.code());
+        if (p == null && timeout > 0) return null;
         final Slaw time = makeStamp(p == null ? 0 : p.timestamp());
         final Slaw prot = p == null ? NULL_PROT : p.bareProtein();
         final Slaw ret = p == null ? NO_SUCH_PROTEIN : OK;

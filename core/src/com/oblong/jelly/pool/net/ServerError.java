@@ -11,7 +11,6 @@ import com.oblong.jelly.PoolException;
 import com.oblong.jelly.PoolExistsException;
 import com.oblong.jelly.ProtocolException;
 import com.oblong.jelly.Slaw;
-import com.oblong.jelly.TimeoutException;
 import com.oblong.jelly.pool.ServerErrorCode;
 
 import static com.oblong.jelly.pool.ServerErrorCode.*;
@@ -41,7 +40,7 @@ enum ServerError {
     },
     TIMEOUT {
         public PoolException asException(Slaw res, long code) {
-            return new TimeoutException(code);
+            return null;
         }
     },
     CORRUPT_POOL {

@@ -4,6 +4,7 @@
 package com.oblong.jelly;
 
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import net.jcip.annotations.NotThreadSafe;
 
@@ -317,13 +318,21 @@ public interface Hose {
      * than one protein must be added to the pool by other
      * participants before this call returns.
      *
-     * @throws PoolException In particular, failure to retrieve the
-     * next protein is reported as a timeout ({@link
-     * PoolException.Kind#TIMEOUT} or {@link TimeoutException}) rather
-     * than as <code>NoSuchProteinException</code>, as was the case
-     * for {@link #next}.
+     * <p>A failure to retrieve a protein because the timeout expires
+     * is reported by throwing a TimeoutException (which is not a
+     * PoolException). A typical usage pattern is thus:
+     * <pre>
+     *   try {
+     *       handleProtein(pool.waitNext(period, TimeUnit.SECONDS));
+     *   } catch (TimeoutException e) {
+     *       handleTimeout();
+     *   } catch (PoolException e) {
+     *       handleProtocolError();
+     *   }
+     * </pre>
      */
-    Protein awaitNext(long period, TimeUnit unit) throws PoolException;
+    Protein awaitNext(long period, TimeUnit unit)
+    	throws PoolException, TimeoutException;
 
     /**
      * Like {@link #next()}, but blocking indefinitely if no proteins

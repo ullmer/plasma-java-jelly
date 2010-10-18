@@ -3,6 +3,7 @@
 package com.oblong.jelly.pool.net;
 
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 
 import net.jcip.annotations.NotThreadSafe;
@@ -140,7 +141,7 @@ final class NetHose implements Hose {
     }
 
     @Override public Protein awaitNext(long t, TimeUnit unit)
-        throws PoolException {
+        throws PoolException, TimeoutException {
         if (t == 0) return next();
         if (dirtyIndex)
             try {
@@ -152,7 +153,12 @@ final class NetHose implements Hose {
     }
 
     @Override public Protein awaitNext() throws PoolException {
-        return awaitNext(-1, TimeUnit.SECONDS);
+        try {
+	        return awaitNext(-1, TimeUnit.SECONDS);
+        } catch (TimeoutException e) {
+        	assert false : "Timeout while waiting forever";
+            return null;
+        }
     }
 
     @Override public Protein previous() throws PoolException {
@@ -182,11 +188,13 @@ final class NetHose implements Hose {
                                this);
     }
 
-    private Protein await(long t, TimeUnit u) throws PoolException {
+    private Protein await(long t, TimeUnit u) 
+        throws PoolException, TimeoutException {
         connection.setTimeout(t, u);
         try {
             final Slaw res =
                 Request.AWAIT_NEXT.send(connection, timeSlaw(t, u));
+            if (res == null) throw new TimeoutException();
             return new PoolProtein(res.nth(1).toProtein(),
                                    cleanIndex(res.nth(3).emitLong() + 1) - 1,
                                    res.nth(2).emitDouble(),

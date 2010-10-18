@@ -81,7 +81,7 @@ public enum Request {
             return retort(index(res, 0), 1);
         }
     },
-    AWAIT_NEXT(11, 1, 4) {
+    AWAIT_NEXT(11, 1, 4, true) {
         Slaw getRetort(Slaw res, int v) throws ProtocolException {
             return retort(index(stamp(protein(res, 1, 3), 2), 3), 0);
         }
@@ -156,15 +156,28 @@ public enum Request {
     }
 
     private Slaw checkResponse(Slaw res, int v) throws PoolException {
-        if (res.count() < responseArity)
-            throw new ProtocolException(res, "Wrong response arity "
-                                            + res.count() + " ("
-                                            + responseArity + " expected)");
-        final Slaw ret = getRetort(res, v);
+        if (timeouts) return checkTimeoutResponse(res, v);
+        if (res == null) throw new ProtocolException("No response");
+        final Slaw ret = checkRetort(res, v);
         final ServerError err = ServerError.getError(v, ret);
         if (err != ServerError.SPLEND)
             throw err.asException(res, ret.emitLong());
         return res;
+    }
+
+    private Slaw checkTimeoutResponse(Slaw res, int v) throws PoolException {
+        if (res == null) return null;
+        final Slaw ret = checkRetort(res, v);
+        ServerError err = ServerError.getError(v, ret);
+        return err == ServerError.TIMEOUT ? null : res;
+    }
+
+    private Slaw checkRetort(Slaw res, int v) throws PoolException {
+    	if (res.count() < responseArity)
+            throw new ProtocolException(res, "Wrong response arity "
+                                        + res.count() + " ("
+                                        + responseArity + " expected)");
+        return getRetort(res, v);
     }
 
     private static Slaw index(Slaw s, int p) throws ProtocolException {
@@ -201,14 +214,20 @@ public enum Request {
     }
 
     private Request(int c, int a, int ra) {
+        this(c, a, ra, false);
+    }
+
+    private Request(int c, int a, int ra, boolean tos) {
         code = c;
         arity = a;
         responseArity = ra;
+        timeouts = tos;
     }
 
     private final int code;
     private final int arity;
     private final int responseArity;
+    private final boolean timeouts;
 
     private static final HashMap<Integer, Request> i2r =
        new HashMap<Integer, Request>();

@@ -3,6 +3,7 @@
 package com.oblong.jelly.pool.mem;
 
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import com.oblong.jelly.BadAddressException;
 import com.oblong.jelly.Hose;
@@ -13,7 +14,6 @@ import com.oblong.jelly.PoolException;
 import com.oblong.jelly.PoolServerAddress;
 import com.oblong.jelly.Protein;
 import com.oblong.jelly.Slaw;
-import com.oblong.jelly.TimeoutException;
 import com.oblong.jelly.pool.PoolProtein;
 
 final class MemHose implements Hose {
@@ -85,8 +85,10 @@ final class MemHose implements Hose {
     }
 
     @Override public Protein awaitNext(long period, TimeUnit unit)
-        throws PoolException {
-        return checkProtein(await(unit.toMillis(period)/1000.00));
+        throws PoolException, TimeoutException {
+    	final Protein p = await(unit.toMillis(period)/1000.00);
+    	if (p == null) throw new TimeoutException();
+        return checkProtein(p);
     }
 
     @Override public Protein awaitNext() throws PoolException {
@@ -133,7 +135,6 @@ final class MemHose implements Hose {
 
     private Protein await(double timeout) throws PoolException {
         final PoolProtein p = pool.next(index, timeout);
-        if (p == null && timeout > 0) throw new TimeoutException(0);
         if (p != null) ++index;
         return p;
     }

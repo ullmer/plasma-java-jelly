@@ -82,7 +82,6 @@ final class MemPool {
                     nanos -= (System.currentTimeMillis() - start) * THOUSAND;
                 }
             }
-            System.out.println("Protein was: " + p);
         }
         return p;
     }
