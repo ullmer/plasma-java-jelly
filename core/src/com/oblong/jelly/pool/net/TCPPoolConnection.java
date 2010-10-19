@@ -109,9 +109,11 @@ final class TCPPoolConnection implements NetConnection {
         try {
             address = addr;
             socket = new Socket(addr.host(), addr.port());
-            sendPreamble(socket.getOutputStream());
-            version = readVersions(socket.getInputStream());
-            supported = readSupported(socket.getInputStream(), version);
+            input = socket.getInputStream();
+            output = socket.getOutputStream();
+            sendPreamble(output);
+            version = readVersions(input);
+            supported = readSupported(input, version);
             externalizer = defaultExternalizer;
             internalizer = defaultInternalizer;
         } catch (IOException e) {
@@ -123,7 +125,8 @@ final class TCPPoolConnection implements NetConnection {
 
     private Slaw send(Protein p) throws PoolException {
         try {
-            externalizer.extern(p, socket.getOutputStream());
+            while (input.available() > 0) input.read();
+            externalizer.extern(p, output);
         } catch (Exception e) {
             throw new InOutException(e);
         }
@@ -133,8 +136,7 @@ final class TCPPoolConnection implements NetConnection {
     private Slaw read() throws PoolException {
         Slaw ret = null;
         try {
-            ret =
-                internalizer.internProtein(socket.getInputStream(), factory);
+            ret = internalizer.internProtein(input, factory);
         } catch (SocketTimeoutException e) {
             return null;
         } catch (Exception e) {
@@ -177,6 +179,8 @@ final class TCPPoolConnection implements NetConnection {
     private final int version;
     private final PoolServerAddress address;
     private final Socket socket;
+    private final OutputStream output;
+    private final InputStream input;
     private final Set<Request> supported;
     private final SlawExternalizer externalizer;
     private final SlawInternalizer internalizer;
