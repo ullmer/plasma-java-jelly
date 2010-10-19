@@ -6,10 +6,10 @@ import net.jcip.annotations.Immutable;
 
 import com.oblong.jelly.PoolServer;
 import com.oblong.jelly.PoolServerAddress;
-import com.oblong.jelly.PoolServers;
+import com.oblong.jelly.pool.PoolServerFactory;
 
 @Immutable
-public final class MemServerFactory implements PoolServers.Factory {
+public final class MemServerFactory extends PoolServerFactory {
 
     public static final String SCM = "mem";
 
@@ -22,7 +22,7 @@ public final class MemServerFactory implements PoolServers.Factory {
     }
 
     public static boolean register(String scheme) {
-        return PoolServers.register(scheme, new MemServerFactory());
+        return register(scheme, new MemServerFactory());
     }
 
 }

@@ -5,6 +5,8 @@ package com.oblong.jelly;
 
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.oblong.jelly.pool.PoolServerFactory;
+
 import net.jcip.annotations.ThreadSafe;
 
 /**
@@ -46,7 +48,7 @@ public final class PoolServers {
         PoolServer server = servers.get(address);
         if (server == null) {
             final String scheme = address.scheme();
-            final Factory f = factories.get(scheme);
+            final PoolServerFactory f = PoolServerFactory.get(scheme);
             if (f != null) {
                 server = f.get(address);
                 final PoolServer old = servers.putIfAbsent(address, server);
@@ -56,32 +58,7 @@ public final class PoolServers {
         return server;
     }
 
-    /**
-     * Interface for implementors of new pool server types.
-     *
-     * User code accessing just TCP pool servers can safely ignore
-     * this interface.
-     */
-    public interface Factory {
-        PoolServer get(PoolServerAddress address);
-    }
-
-    /**
-     * Registration method for new pool server schema.
-     *
-     * Only implementors of new pool server types will find a use for
-     * this method, which can be ignored by users just interested in
-     * accessing TCP pool servers.
-     */
-    public static boolean register(String scheme, Factory factory) {
-        if (scheme == null || factory == null) return false;
-        return factories.put(scheme, factory) == null;
-    }
-
-    private static ConcurrentHashMap<String, Factory> factories =
-        new ConcurrentHashMap<String, Factory>();
-
-    static {
+     static {
         com.oblong.jelly.pool.net.TCPServerFactory.register();
         com.oblong.jelly.pool.mem.MemServerFactory.register();
     }

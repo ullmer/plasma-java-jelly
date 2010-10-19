@@ -5,8 +5,8 @@ package com.oblong.jelly.pool.net;
 import net.jcip.annotations.Immutable;
 
 import com.oblong.jelly.PoolServer;
-import com.oblong.jelly.PoolServers;
 import com.oblong.jelly.PoolServerAddress;
+import com.oblong.jelly.pool.PoolServerFactory;
 
 /**
  *
@@ -15,14 +15,14 @@ import com.oblong.jelly.PoolServerAddress;
  * @author jao
  */
 @Immutable
-public final class TCPServerFactory implements PoolServers.Factory {
+public final class TCPServerFactory extends PoolServerFactory {
 
     @Override public PoolServer get(PoolServerAddress address) {
         return new Server(factory, address);
     }
 
     public static void register() {
-        PoolServers.register("tcp", new TCPServerFactory());
+        register("tcp", new TCPServerFactory());
     }
 
     private static final NetConnectionFactory factory =
