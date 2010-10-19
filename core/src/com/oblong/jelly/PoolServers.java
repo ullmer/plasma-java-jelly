@@ -5,8 +5,6 @@ package com.oblong.jelly;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.oblong.jelly.pool.PoolServerFactory;
-
 import net.jcip.annotations.ThreadSafe;
 
 /**
@@ -45,26 +43,13 @@ public final class PoolServers {
      * returns null.
      */
     public static PoolServer get(PoolServerAddress address) {
-        PoolServer server = servers.get(address);
-        if (server == null) {
-            final String scheme = address.scheme();
-            final PoolServerFactory f = PoolServerFactory.get(scheme);
-            if (f != null) {
-                server = f.get(address);
-                final PoolServer old = servers.putIfAbsent(address, server);
-                if (old != null) server = old;
-            }
-        }
-        return server;
+        return com.oblong.jelly.pool.PoolServerFactory.get(address);
     }
 
      static {
         com.oblong.jelly.pool.net.TCPServerFactory.register();
         com.oblong.jelly.pool.mem.MemServerFactory.register();
     }
-
-    private static ConcurrentHashMap<PoolServerAddress, PoolServer> servers =
-        new ConcurrentHashMap<PoolServerAddress, PoolServer>();
 
     private PoolServers() {}
 }

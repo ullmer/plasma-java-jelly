@@ -17,7 +17,7 @@ import com.oblong.jelly.pool.PoolServerFactory;
 @Immutable
 public final class TCPServerFactory extends PoolServerFactory {
 
-    @Override public PoolServer get(PoolServerAddress address) {
+    @Override public PoolServer getServer(PoolServerAddress address) {
         return new Server(factory, address);
     }
 

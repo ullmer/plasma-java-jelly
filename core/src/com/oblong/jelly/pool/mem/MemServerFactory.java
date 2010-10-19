@@ -13,7 +13,7 @@ public final class MemServerFactory extends PoolServerFactory {
 
     public static final String SCM = "mem";
 
-    @Override public PoolServer get(PoolServerAddress address) {
+    @Override public PoolServer getServer(PoolServerAddress address) {
         return new MemPoolServer(address);
     }
 
