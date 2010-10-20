@@ -3,8 +3,6 @@
 
 package com.oblong.jelly;
 
-import java.util.concurrent.ConcurrentHashMap;
-
 import net.jcip.annotations.ThreadSafe;
 
 /**
