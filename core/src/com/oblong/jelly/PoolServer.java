@@ -22,15 +22,14 @@ import java.util.Set;
  * <p> The concrete nature of the pool server is described by the
  * scheme of its {@link PoolServerAddress}, which also serves as the
  * universal resource identifier for the server. To obtain an instance
- * of this class associated to a given address, use the factory class
- * {@link PoolServers}.
+ * of this class associated to a given address, use the factory method
+ * {@link Pool#server}.
  *
  * <p> All the operations defined in this interface can also be
  * performed by means of the static methods in {@link Pool}, that will
  * spare you the trouble (in case that's a trouble) of having to deal
  * with PoolServer instances at all.
  *
- * @see PoolServers
  * @see Pool
  *
  * @author jao

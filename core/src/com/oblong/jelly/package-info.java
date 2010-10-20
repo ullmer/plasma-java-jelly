@@ -20,8 +20,7 @@
  * {@link com.oblong.jelly.PoolServerAddress}), and the reification of
  * pool servers, which can be accomplished (via the creation of
  * objects implementing {@link com.oblong.jelly.PoolServer} interface)
- * using the {@link com.oblong.jelly.PoolServers PoolServers} factory
- * class.
+ * using the {@link com.oblong.jelly.Pool#server} factory method.
  *
  * <p> It's also possible to treat errors in a finer-grained way by
  * means of the host of exception classes defined in the library, all
