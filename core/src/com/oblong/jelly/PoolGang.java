@@ -14,41 +14,6 @@ public abstract class PoolGang {
     public static PoolGang newGang() { return newGang(10); }
     public static PoolGang newGang(int bufferSize) { return null; }
 
-    public static PoolGang newGang(PoolAddress... addrs)
-        throws GangException {
-        return newGang(false, addrs);
-    }
-
-    public static PoolGang newGang(String... uris) throws GangException {
-        return newGang(false, uris);
-    }
-
-    public static PoolGang newGang(boolean ignoreErrors, PoolAddress... addrs)
-        throws GangException {
-        final PoolGang gang = newGang(addrs.length);
-        for (PoolAddress addr : addrs) {
-            try {
-                gang.add(addr, ignoreErrors);
-            } catch (PoolException e) {
-                throw new GangException(addr.toString(), addr, e);
-            }
-        }
-        return gang;
-    }
-
-    public static PoolGang newGang(boolean ignoreErrors, String... uris)
-        throws GangException {
-        final PoolGang gang = newGang(uris.length);
-        for (String uri : uris) {
-            try {
-                gang.add(uri, ignoreErrors);
-            } catch (PoolException e) {
-                throw new GangException(uri, null, e);
-            }
-        }
-        return gang;
-    }
-
     public abstract int count();
 
     public final boolean add(String name, String uri) throws PoolException {
@@ -92,9 +57,9 @@ public abstract class PoolGang {
     public abstract boolean remove(String name);
     public abstract void disband();
 
-    public abstract Protein next() throws GangException;
+    public abstract Protein next() throws GangException, InterruptedException;
     public abstract Protein awaitNext(long period, TimeUnit unit)
-        throws GangException, TimeoutException;
+        throws GangException, TimeoutException, InterruptedException;
 
     public abstract boolean wakeUp();
 }
