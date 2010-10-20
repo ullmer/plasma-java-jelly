@@ -23,7 +23,7 @@ import java.util.Set;
  * scheme of its {@link PoolServerAddress}, which also serves as the
  * universal resource identifier for the server. To obtain an instance
  * of this class associated to a given address, use the factory method
- * {@link Pool#server}.
+ * {@link Pool#getServer}.
  *
  * <p> All the operations defined in this interface can also be
  * performed by means of the static methods in {@link Pool}, that will

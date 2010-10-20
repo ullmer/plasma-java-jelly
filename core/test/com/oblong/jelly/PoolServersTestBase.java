@@ -31,7 +31,7 @@ public class PoolServersTestBase {
             final String uri = scheme + "://" + a;
             final PoolServerAddress addr = PoolServerAddress.fromURI(uri);
             assertEquals(scheme, addr.scheme());
-            final PoolServer s = Pool.server(addr);
+            final PoolServer s = Pool.getServer(addr);
             assertNotNull(uri, s);
             assertEquals(addr, s.address());
         }
@@ -41,7 +41,7 @@ public class PoolServersTestBase {
         assumeTrue(scheme != null);
         final PoolServerAddress addr =
             new PoolServerAddress(scheme + "aaaa", "localhost", 22);
-        assertNull(Pool.server(addr));
+        assertNull(Pool.getServer(addr));
     }
 
     private final String scheme;

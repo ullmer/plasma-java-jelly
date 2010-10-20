@@ -10,7 +10,7 @@ import java.util.Set;
  * A collection of functions to operate on pools. Most of these
  * functions are, strictly speaking, redundant, in the sense that you
  * can perform the same operations via {@link PoolServer} instances
- * obtained from the {@link #server} factory method. But the latter
+ * obtained from the {@link #getServer} factory method. But the latter
  * can be a bit roundabout when you don't need to keep the PoolServer
  * around and all you want is a quick way to, say, create a pool or
  * obtain a {@link Hose} in one shot. The methods in this class allow
@@ -49,7 +49,7 @@ public final class Pool {
      * instance, because its protocol is not registered), this method
      * returns null.
      */
-    public static PoolServer server(PoolServerAddress address) {
+    public static PoolServer getServer(PoolServerAddress address) {
         return com.oblong.jelly.pool.PoolServerFactory.get(address);
     }
 
@@ -77,7 +77,7 @@ public final class Pool {
      */
     public static void create(PoolAddress addr, PoolOptions opts)
         throws PoolException {
-        server(addr.serverAddress()).create(addr.poolName(), opts);
+        getServer(addr.serverAddress()).create(addr.poolName(), opts);
     }
 
     /**
@@ -101,7 +101,7 @@ public final class Pool {
      * @see #dispose(String)
      */
     public static void dispose(PoolAddress addr) throws PoolException {
-        server(addr.serverAddress()).dispose(addr.poolName());
+        getServer(addr.serverAddress()).dispose(addr.poolName());
     }
 
     /**
@@ -125,7 +125,7 @@ public final class Pool {
      * @see #participate(String)
      */
     public static Hose participate(PoolAddress addr) throws PoolException {
-        return server(addr.serverAddress()).participate(addr.poolName());
+        return getServer(addr.serverAddress()).participate(addr.poolName());
     }
 
     /**
@@ -152,7 +152,7 @@ public final class Pool {
      */
     public static Hose participate(PoolAddress addr, PoolOptions opts)
         throws PoolException {
-        return server(addr.serverAddress())
+        return getServer(addr.serverAddress())
                           .participate(addr.poolName(), opts);
     }
 
@@ -183,7 +183,7 @@ public final class Pool {
      */
     public static Set<String> pools(PoolServerAddress addr)
         throws PoolException {
-        return server(addr).pools();
+        return getServer(addr).pools();
     }
 
     private Pool() {}

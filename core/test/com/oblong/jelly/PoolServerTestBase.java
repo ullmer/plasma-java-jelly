@@ -31,7 +31,7 @@ public class PoolServerTestBase {
 
     protected PoolServerTestBase(PoolServerAddress addr)
         throws PoolException {
-        server = Pool.server(addr);
+        server = Pool.getServer(addr);
         assertNotNull(server);
         assertEquals(addr, server.address());
     }
@@ -56,7 +56,7 @@ public class PoolServerTestBase {
         PoolServer s = null;
         if (uri != null && !uri.isEmpty()) {
             try {
-                s = Pool.server(PoolServerAddress.fromURI(uri));
+                s = Pool.getServer(PoolServerAddress.fromURI(uri));
             } catch (PoolException e) {
                 fail(e.getMessage());
             }
