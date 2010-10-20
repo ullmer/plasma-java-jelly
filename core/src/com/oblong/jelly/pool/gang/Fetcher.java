@@ -39,11 +39,8 @@ final class Fetcher implements Runnable {
     synchronized boolean isIdle() { return idle; }
 
     synchronized void withdraw() {
-        try {
-            errors = false;
-            hose.withdraw();
-        } catch (Exception e) {
-        }
+        errors = false;
+        hose.withdraw();
     }
 
     private final Hose hose;
