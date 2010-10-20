@@ -49,6 +49,9 @@ public abstract class PoolGang {
         return add(PoolAddress.fromURI(uri), ignoreErrors);
     }
 
+    public abstract boolean add(Hose h, boolean ignoreErrors)
+        throws PoolException;
+
     public abstract boolean add(String name,
                                 PoolAddress addr,
                                 boolean ignoreErrors) throws PoolException;
