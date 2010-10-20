@@ -33,7 +33,7 @@ public final class Gang extends HoseGang {
         final Hose h = Pool.participate(addr);
         if (name != null) h.setName(name);
         if (index > 0) h.seekTo(index);
-        return addFetcher(h, false);
+        return addFetcher(h, true);
     }
 
     @Override public boolean remove(String name) {
@@ -74,12 +74,12 @@ public final class Gang extends HoseGang {
 
     private void launchFetchers() {
         for (Fetcher f : fetchers.values()) {
-            if (f.isDone()) executor.execute(f);
+            if (f.isIdle()) executor.execute(f);
         }
     }
 
-    private boolean addFetcher(Hose h, boolean ie) {
-        final Fetcher old = fetchers.put(h.name(), new Fetcher(h, queue, ie));
+    private boolean addFetcher(Hose h, boolean e) {
+        final Fetcher old = fetchers.put(h.name(), new Fetcher(h, queue, e));
         if (old != null) old.withdraw();
         return old == null;
     }

@@ -5,13 +5,17 @@ package com.oblong.jelly.pool.gang;
 import com.oblong.jelly.Hose;
 import com.oblong.jelly.PoolException;
 
-import net.jcip.annotations.NotThreadSafe;
+import net.jcip.annotations.ThreadSafe;
+import net.jcip.annotations.GuardedBy;
 
-@NotThreadSafe
+@ThreadSafe
 final class Fetcher implements Runnable {
 
     public final void run() {
-        done = false;
+        synchronized (this) {
+            if (!idle) return;
+            idle = false;
+        }
         try {
             try {
                 queue.put(hose.awaitNext());
@@ -20,20 +24,21 @@ final class Fetcher implements Runnable {
             }
         } catch (InterruptedException e) {
             // let the thread die
+        } finally {
+            synchronized (this) { idle = true; }
         }
-        done = true;
     }
 
-    Fetcher(Hose h, FetchQueue q, boolean ie) {
+    Fetcher(Hose h, FetchQueue q, boolean e) {
         hose = h;
         queue = q;
-        errors = !ie;
-        done = true;
+        errors = e;
+        idle = true;
     }
 
-    boolean isDone() { return done; }
+    synchronized boolean isIdle() { return idle; }
 
-    void withdraw() {
+    synchronized void withdraw() {
         try {
             errors = false;
             hose.withdraw();
@@ -44,5 +49,5 @@ final class Fetcher implements Runnable {
     private final Hose hose;
     private final FetchQueue queue;
     private volatile boolean errors;
-    private volatile boolean done;
+    @GuardedBy("this") private boolean idle;
 }
