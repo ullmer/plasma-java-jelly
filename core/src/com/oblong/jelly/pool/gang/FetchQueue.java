@@ -32,24 +32,23 @@ final class FetchQueue {
         put(new GangException(hose.name(), hose.poolAddress(), e));
     }
 
-    Protein next(long t, TimeUnit u) throws GangException {
-        try {
-            return (t < 0 || u == null) ? null : protein(queue.poll(t, u));
-        } catch (InterruptedException e) {
-            return null;
-        }
+    boolean wakeUp() {
+        return queue.offer(WAKE_TOKEN);
     }
 
-    Protein take() throws GangException {
-        try {
-            return protein(queue.take());
-        } catch (InterruptedException e) {
-            return null;
-        }
+    Protein next(long t, TimeUnit u)
+        throws GangException, InterruptedException {
+        return (t < 0 || u == null) ? null : protein(queue.poll(t, u));
     }
 
-    private Protein protein(Elem e) throws GangException {
+    Protein take() throws GangException, InterruptedException {
+        return protein(queue.take());
+    }
+
+    private Protein protein(Elem e)
+        throws GangException, InterruptedException {
         if (e == null) return null;
+        if (e == WAKE_TOKEN) throw new InterruptedException();
         if (e.error != null) throw e.error;
         return e.protein;
     }
@@ -62,4 +61,6 @@ final class FetchQueue {
     };
 
     private final BlockingQueue<Elem> queue;
+
+    private static final Elem WAKE_TOKEN = new Elem((Protein)null);
 }

@@ -47,14 +47,15 @@ public final class Gang extends HoseGang {
         fetchers.clear();
     }
 
-    @Override public Protein next() throws GangException {
+    @Override public Protein next()
+        throws GangException, InterruptedException {
         Protein p = tryNext();
         if (p == null) p = queue.take();
         return p;
     }
 
     @Override public Protein awaitNext(long period, TimeUnit unit)
-        throws GangException, TimeoutException {
+        throws GangException, TimeoutException, InterruptedException {
         Protein p = tryNext();
         if (p == null) p = queue.next(period, unit);
         if (p == null) throw new TimeoutException();
@@ -62,10 +63,10 @@ public final class Gang extends HoseGang {
     }
 
     @Override public boolean wakeUp() {
-        return false;
+        return queue.wakeUp();
     }
 
-    private Protein tryNext() throws GangException {
+    private Protein tryNext() throws GangException, InterruptedException {
         final Protein p = queue.next(0, TimeUnit.SECONDS);
         if (p == null) launchFetchers();
         return p;
