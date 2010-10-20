@@ -9,52 +9,49 @@ import java.util.concurrent.TimeoutException;
  *
  * @author jao
  */
-public abstract class PoolGang {
+public abstract class HoseGang {
 
-    public static PoolGang newGang() { return newGang(10); }
-    public static PoolGang newGang(int bufferSize) { return null; }
+    public static HoseGang newGang() { return newGang(10); }
+    public static HoseGang newGang(int bufferSize) {
+        // return new com.oblong.jelly.pool.gang.Gang(bufferSize);
+    }
 
     public abstract int count();
 
     public final boolean add(String name, String uri) throws PoolException {
-        return add(name, PoolAddress.fromURI(uri), false);
+        return add(name, PoolAddress.fromURI(uri), -1);
     }
 
-    public final boolean add(String name, String uri, boolean ignoreErrors)
+    public final boolean add(String name, String uri, long index)
         throws PoolException {
-        return add(name, PoolAddress.fromURI(uri), ignoreErrors);
+        return add(name, PoolAddress.fromURI(uri), index);
     }
 
     public final boolean add(String name, PoolAddress addr)
         throws PoolException {
-        return add(name, addr, false);
+        return add(name, addr, -1);
     }
 
     public final String add(PoolAddress addr) throws PoolException {
-        return add(addr, false);
+        return add(addr, -1);
     }
 
-    public final String add(PoolAddress addr, boolean ignoreErrors)
+    public final String add(PoolAddress addr, long index)
         throws PoolException {
         final String name = addr.toString();
-        return add(name, addr, ignoreErrors) ? name : null;
+        return add(name, addr, index) ? name : null;
     }
 
     public final String add(String uri) throws PoolException {
-        return add(uri, false);
+        return add(uri, -1);
     }
 
-    public final String add(String uri, boolean ignoreErrors)
-        throws PoolException {
-        return add(PoolAddress.fromURI(uri), ignoreErrors);
+    public final String add(String uri, long index) throws PoolException {
+        return add(PoolAddress.fromURI(uri), index);
     }
 
-    public abstract boolean add(Hose h, boolean ignoreErrors)
+    public abstract boolean add(String name, PoolAddress addr, long index)
         throws PoolException;
-
-    public abstract boolean add(String name,
-                                PoolAddress addr,
-                                boolean ignoreErrors) throws PoolException;
 
 
     public abstract boolean remove(String name);
