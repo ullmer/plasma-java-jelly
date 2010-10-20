@@ -13,7 +13,7 @@ public abstract class HoseGang {
 
     public static HoseGang newGang() { return newGang(10); }
     public static HoseGang newGang(int bufferSize) {
-        // return new com.oblong.jelly.pool.gang.Gang(bufferSize);
+        return new com.oblong.jelly.pool.gang.Gang(bufferSize);
     }
 
     public abstract int count();
