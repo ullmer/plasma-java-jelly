@@ -94,11 +94,6 @@ public class PoolException extends Exception {
          */
         PROTOCOL_ERROR("Protocol error"),
         /**
-         * Timeout while waiting for server response.
-         * @see TimeoutException
-         */
-        TIMEOUT("A timeout expired waiting for a protein"),
-        /**
          * The requested protein does not exist in pool.
          * @see NoSuchProteinException
          */
