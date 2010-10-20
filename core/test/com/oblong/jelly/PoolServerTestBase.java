@@ -12,7 +12,7 @@ import static org.junit.Assert.*;
 import com.oblong.jelly.PoolException;
 
 /**
- * Base class for tests needing a PoolServerInstance.
+ * Base class for tests needing a PoolServer instance.
  *
  * Created: Mon Jul  5 22:13:18 2010
  *
@@ -31,7 +31,7 @@ public class PoolServerTestBase {
 
     protected PoolServerTestBase(PoolServerAddress addr)
         throws PoolException {
-        server = PoolServers.get(addr);
+        server = Pool.server(addr);
         assertNotNull(server);
         assertEquals(addr, server.address());
     }
@@ -56,7 +56,7 @@ public class PoolServerTestBase {
         PoolServer s = null;
         if (uri != null && !uri.isEmpty()) {
             try {
-                s = PoolServers.get(PoolServerAddress.fromURI(uri));
+                s = Pool.server(PoolServerAddress.fromURI(uri));
             } catch (PoolException e) {
                 fail(e.getMessage());
             }

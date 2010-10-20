@@ -34,7 +34,7 @@ public class TCPHoseTest extends HoseTestBase {
 
     static {
         try {
-            proxy = new TCPMemProxy(60005);
+            proxy = new TCPMemProxy(0);
             proxyThread = new Thread(proxy);
             proxyThread.start();
         } catch (Exception e) {

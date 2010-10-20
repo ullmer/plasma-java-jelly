@@ -7,11 +7,11 @@ package com.oblong.jelly;
 import java.util.Set;
 
 /**
- * A collection of functions to operate on pools. All these
+ * A collection of functions to operate on pools. Most of these
  * functions are, strictly speaking, redundant, in the sense that you
  * can perform the same operations via {@link PoolServer} instances
- * obtained from the {@link PoolServers} factory. But the latter can
- * be a bit roundabout when you don't need to keep the PoolServer
+ * obtained from the {@link #server} factory method. But the latter
+ * can be a bit roundabout when you don't need to keep the PoolServer
  * around and all you want is a quick way to, say, create a pool or
  * obtain a {@link Hose} in one shot. The methods in this class allow
  * you to do precisely that, and to ignore the PoolServer API if you
@@ -37,6 +37,21 @@ import java.util.Set;
  * @author jao
  */
 public final class Pool {
+    /**
+     * Provides an object implementing PoolServer given its address.
+     *
+     * <p> Pool servers are uniquely identified by their address,
+     * which acts in this respect as a URI. This method actually
+     * returns the same object when called repeatedly with the same
+     * argument.
+     *
+     * <p> If there's no PoolServer with the given address (for
+     * instance, because its protocol is not registered), this method
+     * returns null.
+     */
+    public static PoolServer server(PoolServerAddress address) {
+        return com.oblong.jelly.pool.PoolServerFactory.get(address);
+    }
 
     /**
      * Asks a pool server to create the pool denoted by the given URI,
@@ -62,7 +77,7 @@ public final class Pool {
      */
     public static void create(PoolAddress addr, PoolOptions opts)
         throws PoolException {
-        PoolServers.get(addr.serverAddress()).create(addr.poolName(), opts);
+        server(addr.serverAddress()).create(addr.poolName(), opts);
     }
 
     /**
@@ -86,7 +101,7 @@ public final class Pool {
      * @see #dispose(String)
      */
     public static void dispose(PoolAddress addr) throws PoolException {
-        PoolServers.get(addr.serverAddress()).dispose(addr.poolName());
+        server(addr.serverAddress()).dispose(addr.poolName());
     }
 
     /**
@@ -110,8 +125,7 @@ public final class Pool {
      * @see #participate(String)
      */
     public static Hose participate(PoolAddress addr) throws PoolException {
-        return PoolServers.get(addr.serverAddress())
-                          .participate(addr.poolName());
+        return server(addr.serverAddress()).participate(addr.poolName());
     }
 
     /**
@@ -138,7 +152,7 @@ public final class Pool {
      */
     public static Hose participate(PoolAddress addr, PoolOptions opts)
         throws PoolException {
-        return PoolServers.get(addr.serverAddress())
+        return server(addr.serverAddress())
                           .participate(addr.poolName(), opts);
     }
 
@@ -169,8 +183,14 @@ public final class Pool {
      */
     public static Set<String> pools(PoolServerAddress addr)
         throws PoolException {
-        return PoolServers.get(addr).pools();
+        return server(addr).pools();
     }
 
     private Pool() {}
+
+    static {
+        com.oblong.jelly.pool.net.TCPServerFactory.register();
+        com.oblong.jelly.pool.mem.MemServerFactory.register();
+    }
+
 }
