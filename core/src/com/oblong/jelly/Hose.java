@@ -375,4 +375,11 @@ public interface Hose {
      * in {@link #previous()}.
      */
     Protein previous(Slaw descrip) throws PoolException;
+
+    /**
+     * Creates a new connection to the same pool, and sets the new
+     * hose's index to this instance's value. The returned value also
+     * inherits this hose's name.
+     */
+    Hose dup() throws PoolException;
 }

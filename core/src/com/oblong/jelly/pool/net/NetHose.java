@@ -11,6 +11,7 @@ import net.jcip.annotations.NotThreadSafe;
 import com.oblong.jelly.Hose;
 import com.oblong.jelly.NoSuchProteinException;
 import com.oblong.jelly.NumericIlk;
+import com.oblong.jelly.Pool;
 import com.oblong.jelly.PoolAddress;
 import com.oblong.jelly.PoolException;
 import com.oblong.jelly.Protein;
@@ -188,7 +189,14 @@ final class NetHose implements Hose {
                                this);
     }
 
-    private Protein await(long t, TimeUnit u) 
+    @Override public Hose dup() throws PoolException {
+        final Hose result = Pool.participate(poolAddress);
+        result.setName(name);
+        result.seekTo(index);
+        return result;
+    }
+
+    private Protein await(long t, TimeUnit u)
         throws PoolException, TimeoutException {
         connection.setTimeout(t, u);
         try {

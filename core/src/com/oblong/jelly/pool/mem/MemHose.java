@@ -9,6 +9,7 @@ import com.oblong.jelly.BadAddressException;
 import com.oblong.jelly.Hose;
 import com.oblong.jelly.NoSuchPoolException;
 import com.oblong.jelly.NoSuchProteinException;
+import com.oblong.jelly.Pool;
 import com.oblong.jelly.PoolAddress;
 import com.oblong.jelly.PoolException;
 import com.oblong.jelly.PoolServerAddress;
@@ -101,6 +102,13 @@ final class MemHose implements Hose {
 
     @Override public Protein previous(Slaw descrip) throws PoolException {
         return checkProtein(getPrev(descrip));
+    }
+
+    @Override public Hose dup() throws PoolException {
+        final Hose result = Pool.participate(address);
+        result.setName(name);
+        result.seekTo(index);
+        return result;
     }
 
     MemHose(MemPool pool, PoolServerAddress addr) {
