@@ -13,8 +13,8 @@ final class Fetcher implements Runnable {
 
     public final void run() {
         synchronized (this) {
-            if (!idle) return;
-            idle = false;
+            if (!runnable) return;
+            runnable = false;
         }
         try {
             try {
@@ -25,7 +25,7 @@ final class Fetcher implements Runnable {
         } catch (InterruptedException e) {
             // let the thread die
         } finally {
-            synchronized (this) { idle = true; }
+            synchronized (this) { runnable = hose.isConnected(); }
         }
     }
 
@@ -33,12 +33,13 @@ final class Fetcher implements Runnable {
         hose = h;
         queue = q;
         errors = e;
-        idle = true;
+        runnable = true;
     }
 
-    synchronized boolean isIdle() { return idle; }
+    synchronized boolean isRunnable() { return runnable; }
 
-    synchronized void withdraw() {
+    void withdraw() {
+        synchronized (this) { runnable = false; }
         errors = false;
         hose.withdraw();
     }
@@ -46,5 +47,5 @@ final class Fetcher implements Runnable {
     private final Hose hose;
     private final FetchQueue queue;
     private volatile boolean errors;
-    @GuardedBy("this") private boolean idle;
+    @GuardedBy("this") private boolean runnable;
 }

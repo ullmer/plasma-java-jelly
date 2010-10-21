@@ -74,7 +74,7 @@ public final class Gang extends HoseGang {
 
     private void launchFetchers() {
         for (Fetcher f : fetchers.values()) {
-            if (f.isIdle()) executor.execute(f);
+            if (f.isRunnable()) executor.execute(f);
         }
     }
 
