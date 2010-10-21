@@ -74,20 +74,32 @@ public class MemPoolTest {
         final int PN = 5;
         final PoolProtein[] deps = new PoolProtein[PN];
         final Slaw[] ds = new Slaw[PN];
+        final Slaw e0 = Slaw.string("foo");
+        final Slaw e1 =  Slaw.int8(3);
         for (int i = 0; i < PN; ++i) {
             ds[i] = Slaw.int32(i);
-            final Slaw d = Slaw.list(Slaw.string("foo"), ds[i]);
+            final Slaw d = Slaw.list(e0, e1, ds[i]);
             deps[i] = pool.deposit(Slaw.protein(d, null, null));
             assertNotNull(deps[i]);
         }
         for (int i = 0; i < PN; ++i) {
-            assertNull(i + "th", pool.find(i + 1, ds[i], true));
-            assertNull(i + "th", pool.find(i - 1, ds[i], false));
-            for (int j = 0; j < i; ++j)
-                assertEquals(deps[i], pool.find(j, ds[i], true));
-            for (int j = PN - 1; j >= i; --j)
-                assertEquals(i + "th, " + j,
-                             deps[i], pool.find(j, ds[i], false));
+            final Slaw[][] matches = {
+                {ds[i]}, {e1, ds[i]}, {e0, ds[i]}, {e0, e1, ds[i]}
+            };
+            for (Slaw[] match : matches) {
+                assertNull(i + "th ", pool.find(i + 1, match, true));
+                assertNull(i + "th", pool.find(i - 1, match, false));
+                for (int j = 0; j < i; ++j)
+                    assertEquals(deps[i], pool.find(j, match, true));
+                for (int j = PN - 1; j >= i; --j)
+                    assertEquals(i + "th, " + j,
+                                 deps[i], pool.find(j, match, false));
+            }
+            final Slaw[][] sure = {{e0}, {e1}, {e0, e1}};
+            for (Slaw[] m : sure) {
+                assertEquals(deps[i], pool.find(i, m, true));
+                assertEquals(deps[i], pool.find(i, m, false));
+            }
         }
     }
 }

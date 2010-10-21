@@ -73,6 +73,43 @@ public class HoseTestBase extends PoolServerTestBase {
         assertEquals(defHose.newestIndex() + 1, defHose.index());
     }
 
+    @Test public void nextMatchingAll() throws PoolException {
+        defHose.rewind();
+        for (int i = 0; i < TLEN; ++i) {
+            final Slaw[] m = DEP_PROTEINS[i].descrips().emitArray();
+            assertEquals(i + "th", DEP_PROTEINS[i], defHose.next(m));
+            assertTrue(i + "th", DEP_PROTEINS[i].index() < defHose.index());
+        }
+        assertEquals(defHose.newestIndex() + 1, defHose.index());
+    }
+
+    @Test public void nextMatchingOne() throws PoolException {
+        defHose.rewind();
+        for (int i = 0; i < TLEN; ++i) {
+            final Slaw m = DEP_PROTEINS[i].descrips().nth(i % 3);
+            assertEquals(i + "th", DEP_PROTEINS[i], defHose.next(m));
+            assertTrue(i + "th", DEP_PROTEINS[i].index() < defHose.index());
+        }
+        assertEquals(defHose.newestIndex() + 1, defHose.index());
+    }
+
+    @Test public void nextMatchingSome() throws PoolException {
+        defHose.rewind();
+        for (int i = 0; i < TLEN; ++i) {
+            final Slaw m = DEP_PROTEINS[i].descrips().nth(i % 2);
+            final Slaw m2 = DEP_PROTEINS[i].descrips().nth(2);
+            try {
+                final Protein p = defHose.next(m2, m);
+                fail("Found " + p);
+            } catch (NoSuchProteinException e) {
+                // expected
+            }
+            assertEquals(i + "th", DEP_PROTEINS[i], defHose.next(m, m2));
+            assertTrue(i + "th", DEP_PROTEINS[i].index() < defHose.index());
+        }
+        assertEquals(defHose.newestIndex() + 1, defHose.index());
+    }
+
     @Test public void await() throws PoolException, TimeoutException {
         defHose.seekTo(defHose.oldestIndex());
         for (int i = 0; i < TLEN; ++i) {
@@ -124,7 +161,9 @@ public class HoseTestBase extends PoolServerTestBase {
     }
 
     protected static Protein makeProtein(int i) {
-        final Slaw desc = list(string("descrips"), int32(i));
+        final Slaw desc = list(string("descrips"),
+                               int32(i),
+                               map(string("foo"), nil()));
         final Slaw ings = map(string("string-key"), string("value"),
                               string("nil-key"), nil(),
                               string("int64-key"), int64(i));

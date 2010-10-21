@@ -77,12 +77,8 @@ final class MemHose implements Hose {
         return nth(index);
     }
 
-    @Override public Protein next() throws PoolException {
-        return next(null);
-    }
-
-    @Override public Protein next(Slaw descrip) throws PoolException {
-        return checkProtein(getNext(descrip));
+    @Override public Protein next(Slaw... descrips) throws PoolException {
+        return checkProtein(getNext(descrips));
     }
 
     @Override public Protein awaitNext(long period, TimeUnit unit)
@@ -96,12 +92,8 @@ final class MemHose implements Hose {
         return checkProtein(await(0));
     }
 
-    @Override public Protein previous() throws PoolException {
-        return previous(null);
-    }
-
-    @Override public Protein previous(Slaw descrip) throws PoolException {
-        return checkProtein(getPrev(descrip));
+    @Override public Protein previous(Slaw... descrips) throws PoolException {
+        return checkProtein(getPrev(descrips));
     }
 
     @Override public Hose dup() throws PoolException {
@@ -125,18 +117,18 @@ final class MemHose implements Hose {
         }
     }
 
-    private Protein getNext(Slaw desc) {
+    private Protein getNext(Slaw... desc) {
         final long idx = Math.max(pool.oldestIndex(), index);
-        final PoolProtein p =
-            desc == null ? pool.next(idx, 0) : pool.find(idx, desc, false);
+        final PoolProtein p = desc.length == 0 ?
+            pool.next(idx, 0) : pool.find(idx, desc, false);
         if (p != null) index = p.index() + 1;
         return p;
     }
 
-    private Protein getPrev(Slaw desc) {
+    private Protein getPrev(Slaw... desc) {
         final long idx = Math.min(pool.newestIndex(), index - 1);
-        final PoolProtein p =
-            desc == null ? pool.nth(idx) : pool.find(idx, desc, true);
+        final PoolProtein p = desc.length == 0 ?
+            pool.nth(idx) : pool.find(idx, desc, true);
         if (p != null) index = p.index();
         return p;
     }

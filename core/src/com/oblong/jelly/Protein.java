@@ -68,6 +68,16 @@ public abstract class Protein extends Slaw {
      */
     public abstract Slaw descrips();
 
+    /**
+     * A protein matches the given slaw list if its descrips contain
+     * them in the same order (although not necessarily contiguosly.
+     */
+    public final boolean matches(Slaw... slawx) {
+        if (slawx.length == 0) return true;
+        if (descrips() == null) return false;
+        return descrips().indexOf(0, slawx) > -1;
+    }
+
     /** Number of bytes of raw data that this protein contains */
     public abstract int dataLength();
 

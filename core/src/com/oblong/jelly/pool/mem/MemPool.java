@@ -101,9 +101,9 @@ final class MemPool {
         }
     }
 
-    PoolProtein find(long index, Slaw descrip, boolean fwd) {
+    PoolProtein find(long index, Slaw[] descs, boolean fwd) {
         final int idx = (int)index;
-        return fwd ? findFwd(idx, descrip) : findBack(idx, descrip);
+        return fwd ? findFwd(idx, descs) : findBack(idx, descs);
     }
 
     PoolProtein deposit(Protein p) {
@@ -124,24 +124,24 @@ final class MemPool {
         this.name = name;
     }
 
-    private PoolProtein findBack(int index, Slaw descrip) {
+    private PoolProtein findBack(int index, Slaw[] descrip) {
         synchronized (proteins) {
             if (index >= proteins.size()) index = proteins.size() - 1;
             for (int i = index; i > -1; --i) {
                 final PoolProtein p = proteins.get(i);
-                if (p.descrips().contains(descrip)) return p;
+                if (p.matches(descrip)) return p;
             }
         }
         return null;
     }
 
-    private PoolProtein findFwd(int index, Slaw descrip) {
+    private PoolProtein findFwd(int index, Slaw[] descrip) {
         synchronized (proteins) {
             if (index < 0) index = 0;
             final int last = proteins.size();
             for (int i = index; i < last; ++i) {
                 final PoolProtein p = proteins.get(i);
-                if (p.descrips().contains(descrip)) return p;
+                if (p.matches(descrip)) return p;
             }
         }
         return null;

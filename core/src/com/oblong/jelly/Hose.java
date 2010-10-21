@@ -260,43 +260,23 @@ public interface Hose {
     Protein current() throws PoolException;
 
     /**
-     * Retrieves the next Protein in the pool with index equal or greater
-     * than this Hose's local index, and advances the latter.
-     *
-     * <p> Thus, successive calls to <code>next</code> will
-     * sequentially traverse the sequence of proteins in the pool.
-     * Since the absence of a next protein (when reaching the end of
-     * the pool) is signaled by means of a <code>PoolException</code>
-     * (of type <code>NoSuchProteinException</code>), the return value
-     * of this method is always non-null. Moreover, after each call,
-     * the value returned by <code>index()</code> will be equal to the
-     * index of the returned protein plus one.
-     *
-     * <p> If no protein is available at call time, this method will
-     * fail immediately. Use {@link #awaitNext()} or {@link
-     * #awaitNext(long, TimeUnit)} if you're willing to wait.
-     */
-    Protein next() throws PoolException;
-
-    /**
      * Looks for the next protein in the pool whose descrips match
-     * the given one.
+     * the given ones.
      *
      * <p> The search will start at the current index, and proceed
-     * forward until a protein matching (see below) the given descrip
+     * forward until a protein matching (see below) the given descrips
      * is found, or no more proteins are available, in which case a
      * <code>PoolException</code> with kind {@link
      * PoolException.Kind#NO_SUCH_PROTEIN} (and, therefore, type
      * {@link NoSuchProteinException}) will be thrown.
      *
-     * <p> If <code>descrip</code> is not a Slaw list, any protein
-     * containing it among its descrips will match. If
-     * <code>descrip</code> is a list, all of its elements must be
-     * present in the protein's descrip list, possibly with
-     * intervening gaps. As you can see, matching can only happen for
-     * proteins whose descrips are a Slaw list.
+     * <p> If <code>descrips</code> is empty, any protein will match.
+     * Otherwise, matching is checked using {@link Protein#matches} on
+     * incoming proteins (although, for remote servers, that check can
+     * and will be performed on the server side). Remember that
+     * matching can occurr only on descrips which are lists.
      */
-    Protein next(Slaw descrip) throws PoolException;
+    Protein next(Slaw... descrips) throws PoolException;
 
     /**
      * Like {@link #next()}, but blocking (with a timeout) if no
@@ -350,6 +330,10 @@ public interface Hose {
      * Retrieves the next Protein in the pool with index strictly less
      * than this Hose's local index, and decreases the latter.
      *
+     * <p>If the list of <code>descrips</code> is not empty, the given
+     * protein must also match it, according to the predicate {@link
+     * Protein#matches}.
+     *
      * <p> If there are no proteins with an index lesser than the
      * current local index, a {@link NoSuchProteinException} is
      * thrown, and the local index is not modified.
@@ -364,22 +348,28 @@ public interface Hose {
      * the local hose index will be equal to that of the returned
      * protein.
      */
-    Protein previous() throws PoolException;
+    Protein previous(Slaw... descrips) throws PoolException;
 
     /**
-     * Looks for the next protein in the pool whose descrips match
-     * the given one.
+     * This method asks the underlying pool for the existence of a
+     * Protein matching the given descrips. If the protein is
+     * available, it returns <code>true</code>; otherwise, the method
+     * initiates a delayed retrieval of the next matching protein
+     * returning <code>false</code> to the coder. If you call {@link
+     * #next()} or {@link #awaitNext()} afterwards, without any
+     * intervening modification of the Hose index, the possibly
+     * pre-fetched Protein will be returned, and the index adjusted
+     * accordingly.
      *
-     * <p> This method works like {@link #next(Slaw)}, but searching
-     * backwards instead of forwards. The local index is modified as
-     * in {@link #previous()}.
+     * <p>When called without arguments, no test on the next protein's
+     * descrips is performed.
      */
-    Protein previous(Slaw descrip) throws PoolException;
+    // boolean poll(Slaw... descrips) throws PoolException;
 
     /**
      * Creates a new connection to the same pool, and sets the new
      * hose's index to this instance's value. The returned value also
-     * inherits this hose's name.
+     * inherits this hose's name and is always connected.
      */
     Hose dup() throws PoolException;
 }

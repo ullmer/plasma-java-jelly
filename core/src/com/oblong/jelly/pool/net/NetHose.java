@@ -123,18 +123,11 @@ final class NetHose implements Hose {
         return nth(index);
     }
 
-    @Override public Protein next() throws PoolException {
-        final Slaw res = Request.NEXT.send(connection, indexSlaw(index));
-        return new PoolProtein(res.nth(0).toProtein(),
-                               cleanIndex(res.nth(2).emitLong() + 1) - 1,
-                               res.nth(1).emitDouble(),
-                               this);
-    }
-
-    @Override public Protein next(Slaw descrip) throws PoolException {
-        if (descrip == null) throw new NoSuchProteinException(0L);
-        final Slaw res =
-            Request.PROBE_FWD.send(connection, indexSlaw(index), descrip);
+    @Override public Protein next(Slaw... descrips) throws PoolException {
+        if (descrips.length == 0) return next();
+        final Slaw res = Request.PROBE_FWD.send(connection,
+                                                indexSlaw(index),
+                                                matcher(descrips));
         return new PoolProtein(res.nth(0).toProtein(),
                                cleanIndex(res.nth(2).emitLong() + 1) - 1,
                                res.nth(1).emitDouble(),
@@ -162,18 +155,11 @@ final class NetHose implements Hose {
         }
     }
 
-    @Override public Protein previous() throws PoolException {
-        final Slaw res = Request.PREV.send(connection, indexSlaw(index));
-        return new PoolProtein(res.nth(0).toProtein(),
-                               cleanIndex(res.nth(2).emitLong()),
-                               res.nth(1).emitDouble(),
-                               this);
-    }
-
-    @Override public Protein previous(Slaw descrip) throws PoolException {
-        if (descrip == null) throw new NoSuchProteinException(0L);
-        final Slaw res =
-            Request.PROBE_BACK.send(connection, indexSlaw(index), descrip);
+    @Override public Protein previous(Slaw... descrips) throws PoolException {
+        if (descrips.length == 0) return previous();
+        final Slaw res = Request.PROBE_BACK.send(connection,
+                                                 indexSlaw(index),
+                                                 matcher(descrips));
         return new PoolProtein(res.nth(0).toProtein(),
                                cleanIndex(res.nth(2).emitLong()),
                                res.nth(1).emitDouble(),
@@ -196,6 +182,22 @@ final class NetHose implements Hose {
         return result;
     }
 
+    private Protein next() throws PoolException {
+        final Slaw res = Request.NEXT.send(connection, indexSlaw(index));
+        return new PoolProtein(res.nth(0).toProtein(),
+                               cleanIndex(res.nth(2).emitLong() + 1) - 1,
+                               res.nth(1).emitDouble(),
+                               this);
+    }
+
+    private Protein previous() throws PoolException {
+        final Slaw res = Request.PREV.send(connection, indexSlaw(index));
+        return new PoolProtein(res.nth(0).toProtein(),
+                               cleanIndex(res.nth(2).emitLong()),
+                               res.nth(1).emitDouble(),
+                               this);
+    }
+
     private Protein await(long t, TimeUnit u)
         throws PoolException, TimeoutException {
         connection.setTimeout(t, u);
@@ -210,6 +212,10 @@ final class NetHose implements Hose {
         } finally {
             connection.setTimeout(0, u);
         }
+    }
+
+    private Slaw matcher(Slaw... descrips) {
+        return factory.list(descrips);
     }
 
     private Slaw timeSlaw(long timeout, TimeUnit unit) {

@@ -495,15 +495,9 @@ public abstract class Slaw implements Iterable<Slaw> {
      * arguments is null (Slaw never contains null sub-slawx).
      */
     public final int indexOf(Slaw elem, Slaw... elems) {
-        final int c = count();
-        int first = -1;
-        for (int i = 0; i < c && first < 0; ++i)
-            if (nth(i).equals(elem)) first = i;
-        int k = 0;
-        for (int i = first + 1; i < c && k < elems.length; ++i) {
-            if (nth(i).equals(elems[k])) ++k;
-        }
-        return k == elems.length ? first : -1;
+        int first = indexOf(0, elem);
+        if (elems.length == 0) return first;
+        return (first > -1 && indexOf(first + 1, elems) > -1) ? first : -1;
     }
 
     /**
@@ -523,6 +517,13 @@ public abstract class Slaw implements Iterable<Slaw> {
      * SlawIlk#LIST}.
      */
     public final List<Slaw> emitList() { return emitList(0, count()); }
+
+    /**
+     * Like {@link #emitList()}, but returning an array.
+     */
+    public final Slaw[] emitArray() {
+        return emitList().toArray(new Slaw[0]);
+    }
 
     /**
      * Returns a slice of the list constructed by {@link #emitList()}.
@@ -1051,6 +1052,18 @@ public abstract class Slaw implements Iterable<Slaw> {
      */
     public static Slaw array(SlawIlk ilk, NumericIlk ni, int dimension) {
         return factory.array(ilk, ni, dimension);
+    }
+
+    final int indexOf(int start, Slaw... elems) {
+        final int c = count();
+        int first = -1;
+        for (int i = start; i < c && first < 0; ++i)
+            if (nth(i).equals(elems[0])) first = i;
+        int k = 1;
+        for (int i = first + 1; i < c && k < elems.length; ++i) {
+            if (nth(i).equals(elems[k])) ++k;
+        }
+        return k == elems.length ? first : -1;
     }
 
     protected Slaw() {}

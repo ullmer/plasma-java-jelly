@@ -145,9 +145,13 @@ public final class SlawTests {
         }
 
         int k = 0;
+        final Slaw[] array = s.emitArray();
+        assertEquals(s.count(), array.length);
         for (Slaw ss : s) {
             assertNotNull(ss);
-            assertEquals(s.nth(k++), ss);
+            assertEquals(s.nth(k), ss);
+            assertEquals(s.nth(k), array[k]);
+            ++k;
         }
         assertEquals(s.count(), k);
 

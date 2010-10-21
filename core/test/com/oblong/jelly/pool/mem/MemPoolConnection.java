@@ -142,16 +142,18 @@ final class MemPoolConnection implements NetConnection {
 
     private Slaw next(long idx, Slaw desc) {
         idx = Math.max(pool.oldestIndex(), idx);
+        final Slaw[] m = desc.isList() ? desc.emitArray() : new Slaw[0];
         final PoolProtein p =
-            desc == null ? pool.next(idx, 0) : pool.find(idx, desc, false);
+            desc == null ? pool.next(idx, 0) : pool.find(idx, m, false);
         if (p != null) index = p.index() + 1;
         return makePTIR(p);
     }
 
     private Slaw prev(long idx, Slaw desc) {
         idx = Math.min(pool.newestIndex(), idx - 1);
+        final Slaw[] m = desc.isList() ? desc.emitArray() : new Slaw[0];
         final PoolProtein p =
-            desc == null ? pool.nth(idx) : pool.find(idx, desc, true);
+            desc == null ? pool.nth(idx) : pool.find(idx, m, true);
         if (p != null) index = p.index();
         return makePTIR(p);
     }
