@@ -24,6 +24,7 @@ public class AtomicSlawxTest {
         testAtomicEmissions(nil);
         testPairiness(nil);
         testListness(nil);
+        testAtomicIndex(nil);
     }
 
     void testBool(boolean v) {
@@ -36,6 +37,7 @@ public class AtomicSlawxTest {
         testPairiness(s);
         testListness(s);
         testNotMap(s);
+        testAtomicIndex(s);
     }
 
     @Test public void bool() {
@@ -54,6 +56,7 @@ public class AtomicSlawxTest {
         testPairiness(s);
         testListness(s);
         testNotMap(s);
+        testAtomicIndex(s);
     }
 
     @Test public void string() {

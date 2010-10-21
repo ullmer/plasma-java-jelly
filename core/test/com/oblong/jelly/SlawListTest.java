@@ -88,12 +88,17 @@ public class SlawListTest {
 
     private void listTests(Slaw ls) {
         assertTrue(ls.isList());
+        assertFalse(ls.contains(ls));
         List<Slaw> sl = ls.emitList();
         Slaw lc = Slaw.list(sl);
         assertEquals(ls, lc);
         for (int i = 0, c = ls.count(); i < c; ++i) {
             assertEquals(sl.get(i), ls.nth(i));
             assertEquals(i, ls.indexOf(ls.nth(i)));
+            if (i > 0) {
+                assertEquals(0, ls.indexOf(ls.nth(0), ls.nth(i)));
+                assertEquals(i - 1, ls.indexOf(ls.nth(i - 1), ls.nth(i)));
+            }
         }
         Map<Slaw,Slaw> m = ls.emitMap();
         assertEquals(ls.count()/2, m.size());

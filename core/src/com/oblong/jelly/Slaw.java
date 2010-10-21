@@ -479,25 +479,41 @@ public abstract class Slaw implements Iterable<Slaw> {
     public abstract Slaw nth(int n);
 
     /**
-     * Looks for <code>elem</code> among the sub-slawx of this Slaw
-     * instance, using {@link #equals} as equality test. It returns
-     * the index of <code>elem</code>, when found, or -1 otherwise.
-     * Thus, it is always the case that the return value is less that
-     * <code>count()</code>, and that, whenever this methods returns a
-     * non-negative value, <code>e.equals(indexOf(e))</code> is true.
+     * Looks for <code>elem</code> and all <code>elems</code> among
+     * this Slaw's sub-slawx. The search is performed in order, and
+     * the method returns the index of the first argument, if all of
+     * them are present. For this method to return anything other than
+     * -1, all slawx must appear among this Slaw's sub-slawx in the
+     * given order, but not necessarily contiguously.
+     *
+     * <p>Thus, it is always the case that the return value is less
+     * that <code>count()</code>, and that, whenever this method
+     * returns a non-negative value, <code>e.equals(indexOf(e))</code>
+     * is true.
+     *
+     * <p>The result will always be <code>-1</code> if any of the
+     * arguments is null (Slaw never contains null sub-slawx).
      */
-    public final int indexOf(Slaw elem) {
-        for (int i = 0, c = count(); i < c; i++)
-            if (elem.equals(nth(i))) return i;
-        return -1;
+    public final int indexOf(Slaw elem, Slaw... elems) {
+        final int c = count();
+        int first = -1;
+        for (int i = 0; i < c && first < 0; ++i)
+            if (nth(i).equals(elem)) first = i;
+        int k = 0;
+        for (int i = first + 1; i < c && k < elems.length; ++i) {
+            if (nth(i).equals(elems[k])) ++k;
+        }
+        return k == elems.length ? first : -1;
     }
 
     /**
-     * Looks for <code>elem</code> among this Slaw's sub-slawx. This
-     * method just checks whether {@link #indexOf} returns an index
-     * greater than 0.
+     * Checks whether <code>indexOf(elem, elems) > -1</code>.
+     *
+     * @see #indexOf(Slaw, Slaw...)
      */
-    public final boolean contains(Slaw elem) { return indexOf(elem) >= 0; }
+    public final boolean contains(Slaw elem, Slaw... elems) {
+        return indexOf(elem, elems) > -1;
+    }
 
     /**
      * Creates a list with all of the sub-slawx of this Slaw. This

@@ -89,6 +89,10 @@ public class SlawMapTest {
             assertTrue(conses.get(i).isCons());
             assertEquals(conses.get(i), m.nth(i));
             assertEquals(conses.get(i).cdr(), map.get(conses.get(i).car()));
+            assertTrue(m.contains(conses.get(i)));
+            assertFalse(m.contains(conses.get(i).car()));
+            if (i > 0)
+                assertEquals(0, m.indexOf(conses.get(0), conses.get(i)));
         }
         testListness(m);
         testAtomicEmissions(m);

@@ -17,11 +17,17 @@ import static com.oblong.jelly.Slaw.*;
 public class SlawProteinTest {
 
     @Test public void empty() {
-        Protein p =  protein(null, null, null);
+        final Protein p =  protein(null, null, null);
         assertNull(p.ingests());
         assertNull(p.descrips());
         assertEquals(0, p.dataLength());
         assertEquals(protein(null, null, null), p);
     }
 
+    @Test public void indexOf() {
+        final Protein p = protein(list(int8(0)), map(), null);
+        assertEquals(-1, p.indexOf(p.ingests()));
+        assertEquals(-1, p.indexOf(p.descrips()));
+        assertEquals(-1, p.indexOf(p));
+    }
 }

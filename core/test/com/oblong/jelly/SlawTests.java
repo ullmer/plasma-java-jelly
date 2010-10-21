@@ -136,7 +136,7 @@ public final class SlawTests {
     }
 
     public static void testListness(Slaw s) {
-        int count = s.count();
+        final int count = s.count();
 
         assertTrue(count == 1 || !s.isAtomic());
 
@@ -166,6 +166,13 @@ public final class SlawTests {
         } catch (IndexOutOfBoundsException e) {
             // good
         }
+    }
+
+    public static void testAtomicIndex(Slaw s) {
+        assertEquals(0, s.indexOf(s));
+        assertEquals(-1, s.indexOf(s, s));
+        assertEquals(-1, s.indexOf(s, Slaw.nil(), s));
+        assertTrue(s.contains(s));
     }
 
     public static void testAtomicEmissions(Slaw s) {
@@ -207,6 +214,13 @@ public final class SlawTests {
             else assertEquals(0, second.count());
         } catch (UnsupportedOperationException e) {
             assertTrue(s.count() < 2);
+        }
+        if (s.count() == 2) {
+            assertEquals(0, s.indexOf(s.car()));
+            assertEquals(s.car().equals(s.cdr()) ? 0 : 1, s.indexOf(s.cdr()));
+            assertFalse(s.contains(s.car(), s.cdr(), s.car()));
+            assertEquals(s.car().equals(s.cdr()),
+                         s.contains(s.car(), s.car()));
         }
     }
 
