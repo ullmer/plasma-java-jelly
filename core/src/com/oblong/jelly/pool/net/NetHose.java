@@ -175,6 +175,10 @@ final class NetHose implements Hose {
                                this);
     }
 
+    @Override public boolean poll(Slaw... descrips) throws PoolException {
+        return false;
+    }
+
     @Override public Hose dup() throws PoolException {
         final Hose result = Pool.participate(poolAddress);
         result.setName(name);

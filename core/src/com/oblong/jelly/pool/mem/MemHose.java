@@ -96,6 +96,10 @@ final class MemHose implements Hose {
         return checkProtein(getPrev(descrips));
     }
 
+    @Override public boolean poll(Slaw... descrips) throws PoolException {
+        return pool.find(index, descrips, true) != null;
+    }
+
     @Override public Hose dup() throws PoolException {
         final Hose result = Pool.participate(address);
         result.setName(name);
@@ -120,7 +124,7 @@ final class MemHose implements Hose {
     private Protein getNext(Slaw... desc) {
         final long idx = Math.max(pool.oldestIndex(), index);
         final PoolProtein p = desc.length == 0 ?
-            pool.next(idx, 0) : pool.find(idx, desc, false);
+            pool.next(idx, 0) : pool.find(idx, desc, true);
         if (p != null) index = p.index() + 1;
         return p;
     }
@@ -128,7 +132,7 @@ final class MemHose implements Hose {
     private Protein getPrev(Slaw... desc) {
         final long idx = Math.min(pool.newestIndex(), index - 1);
         final PoolProtein p = desc.length == 0 ?
-            pool.nth(idx) : pool.find(idx, desc, true);
+            pool.nth(idx) : pool.find(idx, desc, false);
         if (p != null) index = p.index();
         return p;
     }

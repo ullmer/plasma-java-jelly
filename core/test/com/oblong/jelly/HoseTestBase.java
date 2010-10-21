@@ -79,6 +79,9 @@ public class HoseTestBase extends PoolServerTestBase {
             final Slaw[] m = DEP_PROTEINS[i].descrips().emitArray();
             assertEquals(i + "th", DEP_PROTEINS[i], defHose.next(m));
             assertTrue(i + "th", DEP_PROTEINS[i].index() < defHose.index());
+            defHose.rewind();
+            assertEquals(i + "th", DEP_PROTEINS[i], defHose.next(m));
+            assertTrue(i + "th", DEP_PROTEINS[i].index() < defHose.index());
         }
         assertEquals(defHose.newestIndex() + 1, defHose.index());
     }
@@ -88,6 +91,10 @@ public class HoseTestBase extends PoolServerTestBase {
         for (int i = 0; i < TLEN; ++i) {
             final Slaw m = DEP_PROTEINS[i].descrips().nth(i % 3);
             assertEquals(i + "th", DEP_PROTEINS[i], defHose.next(m));
+            assertTrue(i + "th", DEP_PROTEINS[i].index() < defHose.index());
+            final Slaw unique = DEP_PROTEINS[i].descrips().nth(0);
+            defHose.rewind();
+            assertEquals(i + "th", DEP_PROTEINS[i], defHose.next(unique));
             assertTrue(i + "th", DEP_PROTEINS[i].index() < defHose.index());
         }
         assertEquals(defHose.newestIndex() + 1, defHose.index());
@@ -161,8 +168,8 @@ public class HoseTestBase extends PoolServerTestBase {
     }
 
     protected static Protein makeProtein(int i) {
-        final Slaw desc = list(string("descrips"),
-                               int32(i),
+        final Slaw desc = list(int32(i),
+                               string("descrips"),
                                map(string("foo"), nil()));
         final Slaw ings = map(string("string-key"), string("value"),
                               string("nil-key"), nil(),

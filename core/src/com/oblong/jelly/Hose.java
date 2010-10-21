@@ -351,20 +351,23 @@ public interface Hose {
     Protein previous(Slaw... descrips) throws PoolException;
 
     /**
-     * This method asks the underlying pool for the existence of a
-     * Protein matching the given descrips. If the protein is
-     * available, it returns <code>true</code>; otherwise, the method
-     * initiates a delayed retrieval of the next matching protein
-     * returning <code>false</code> to the coder. If you call {@link
-     * #next()} or {@link #awaitNext()} afterwards, without any
-     * intervening modification of the Hose index, the possibly
-     * pre-fetched Protein will be returned, and the index adjusted
-     * accordingly.
+     * Asks the underlying pool for the existence of a Protein
+     * matching the given descrips and initiate a pre-fetch.
+     *
+     * <p>If the protein is available, it returns <code>true</code>;
+     * otherwise, the method initiates a delayed retrieval of the next
+     * matching protein returning <code>false</code> to the coder. If
+     * you call {@link #next()} or {@link #awaitNext()} afterwards,
+     * without any intervening modification of the Hose index, the
+     * possibly pre-fetched Protein will be used, and the index
+     * adjusted accordingly. That way, you can spend the network
+     * transmission time (for servers that use the network, that is)
+     * doing other stuff.
      *
      * <p>When called without arguments, no test on the next protein's
      * descrips is performed.
      */
-    // boolean poll(Slaw... descrips) throws PoolException;
+    boolean poll(Slaw... descrips) throws PoolException;
 
     /**
      * Creates a new connection to the same pool, and sets the new
