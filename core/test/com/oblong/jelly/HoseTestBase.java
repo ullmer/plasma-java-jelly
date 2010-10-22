@@ -5,7 +5,6 @@ package com.oblong.jelly;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -33,17 +32,15 @@ public class HoseTestBase extends PoolServerTestBase {
 
     @Before public void openDefault() throws PoolException {
         assertNotNull(server);
-        final PoolAddress address = poolAddress("default-pool");
-        defHose = Pool.participate(address, null);
-        assertTrue(defHose.isConnected());
-        if (DEP_PROTEINS == null) {
-            DEP_PROTEINS = deposit(defHose, -1);
+        if (defHose == null) {
+            final PoolAddress address = poolAddress("default-pool");
+            defHose = Pool.participate(address, null);
+            if (DEP_PROTEINS == null) {
+                DEP_PROTEINS = deposit(defHose, -1);
+            }
         }
+        assertNotNull(defHose);
         assertNotNull(DEP_PROTEINS);
-    }
-
-    @After public void close() throws PoolException {
-        if (defHose != null) defHose.withdraw();
     }
 
     @Test public void hoseName() throws PoolException {
@@ -203,10 +200,10 @@ public class HoseTestBase extends PoolServerTestBase {
         return result;
     }
 
-    private volatile Hose defHose = null;
+    private static Hose defHose = null;
 
     private static final Protein[] TEST_PROTEINS;
-    private volatile static Protein[] DEP_PROTEINS = null;
+    private static Protein[] DEP_PROTEINS = null;
     private static final int TLEN = 5;
 
     static {
