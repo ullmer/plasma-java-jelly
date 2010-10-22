@@ -19,9 +19,11 @@ import com.oblong.jelly.PoolServerAddress;
 import com.oblong.jelly.PoolException;
 import com.oblong.jelly.Protein;
 import com.oblong.jelly.Slaw;
+import com.oblong.jelly.NumericIlk;
 import com.oblong.jelly.slaw.SlawExternalizer;
 import com.oblong.jelly.slaw.SlawFactory;
 import com.oblong.jelly.slaw.SlawInternalizer;
+import com.oblong.jelly.pool.PoolProtein;
 import com.oblong.jelly.util.ByteReader;
 
 import static com.oblong.jelly.pool.net.Request.*;
@@ -116,6 +118,7 @@ final class TCPPoolConnection implements NetConnection {
             supported = readSupported(input, version);
             externalizer = defaultExternalizer;
             internalizer = defaultInternalizer;
+            asynchronousProtein = null;
         } catch (IOException e) {
             throw new InOutException(e);
         } catch (IllegalArgumentException e) {
@@ -125,7 +128,6 @@ final class TCPPoolConnection implements NetConnection {
 
     private Slaw send(Protein p) throws PoolException {
         try {
-            while (input.available() > 0) input.read();
             externalizer.extern(p, output);
         } catch (Exception e) {
             throw new InOutException(e);
@@ -142,13 +144,39 @@ final class TCPPoolConnection implements NetConnection {
         } catch (Exception e) {
             throw new InOutException(e);
         }
-        if (!ret.isProtein())
+        final Slaw code = getResultCode(ret);
+        final Slaw args = getResultArgs(ret);
+        if (CMD_RESULT.equals(code)) return args;
+        if (FANCY_CMD_R1.equals(code)) return args;
+        if (FANCY_CMD_R3.equals(code)) updateAsync(args);
+        return read();
+    }
+
+    private static Slaw getResultCode(Slaw ret) throws InOutException {
+        if (!ret.isProtein() || ret.toProtein().ingests() == null)
             throw new InOutException("Non-protein received from server");
-        ret = ret.toProtein().ingests();
-        if (ret != null) ret = ret.find(ARGS_KEY);
-        // if (ret == null)
-        //     throw new InOutException("Empty response from server");
-        return ret;
+        final Slaw code = ret.toProtein().ingests().find(OP_KEY);
+        if (!VALID_RESULTS.contains(code))
+            throw new InOutException("Unexpected response code: " + ret);
+        return code;
+    }
+
+    private static Slaw getResultArgs(Slaw ret) throws InOutException {
+        final Slaw args = ret.toProtein().ingests().find(ARGS_KEY);
+        if (args != null && !args.isList())
+            throw new InOutException("Invalid response args: " + ret);
+        return args;
+    }
+
+    private void updateAsync(Slaw args) {
+        if (args.count() == 3
+            && args.nth(0).isNumber(NumericIlk.FLOAT64)
+            && args.nth(1).isNumber(NumericIlk.INT64)
+            && args.nth(2).isProtein())
+            asynchronousProtein = new PoolProtein(args.nth(2).toProtein(),
+                                                  args.nth(1).emitLong(),
+                                                  args.nth(0).emitDouble(),
+                                                  null);
     }
 
     private static void sendPreamble(OutputStream os) throws IOException {
@@ -184,6 +212,7 @@ final class TCPPoolConnection implements NetConnection {
     private final Set<Request> supported;
     private final SlawExternalizer externalizer;
     private final SlawInternalizer internalizer;
+    private PoolProtein asynchronousProtein;
 
     private static final SlawFactory factory =
         new com.oblong.jelly.slaw.java.JavaSlawFactory();
@@ -205,6 +234,15 @@ final class TCPPoolConnection implements NetConnection {
 
     static final Slaw OP_KEY = factory.string("op");
     static final Slaw ARGS_KEY = factory.string("args");
+
+    static final Slaw CMD_RESULT = factory.number(NumericIlk.INT32, 14);
+    static final Slaw FANCY_CMD_R1 = factory.number(NumericIlk.INT32, 64);
+    static final Slaw FANCY_CMD_R2 = factory.number(NumericIlk.INT32, 65);
+    static final Slaw FANCY_CMD_R3 = factory.number(NumericIlk.INT32, 66);
+    static final Slaw VALID_RESULTS = factory.list(CMD_RESULT,
+                                                   FANCY_CMD_R1,
+                                                   FANCY_CMD_R2,
+                                                   FANCY_CMD_R3);
 
     static final byte[] PREAMBLE = {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x50,

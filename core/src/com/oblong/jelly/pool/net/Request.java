@@ -91,6 +91,11 @@ public enum Request {
             return retort(index(stamp(protein(res, 1, 0), 2), 3), 0);
         }
     },
+    FANCY_ADD_AWAITER(20, 2, 3) {
+        Slaw getRetort(Slaw res, int v) throws ProtocolException {
+            return retort(stamp(index(res, 2), 1), 2);
+        }
+    },
     INFO(15, 1, 2) {
         Slaw getRetort(Slaw res, int v) throws ProtocolException {
             return retort(protein(res, 1, 0), 0);
@@ -114,6 +119,13 @@ public enum Request {
     PREV(19, 1, 4) {
         Slaw getRetort(Slaw res, int v) throws ProtocolException {
             return retort(index(stamp(protein(res, 0, 3), 1), 2), 3);
+        }
+    }
+    ,
+    SUB_FETCH(22, 1, 3) {
+        Slaw getRetort(Slaw res, int v) throws ProtocolException {
+            list(index(index(res, 2), 1), 0);
+            return Slaw.int64(0);
         }
     };
 
@@ -204,6 +216,10 @@ public enum Request {
     private static Slaw stamp(Slaw s, int p) throws ProtocolException {
         return check(s, p, "float64",
                      s.nth(p).isNumber(NumericIlk.FLOAT64));
+    }
+
+    private static Slaw list(Slaw s, int p) throws ProtocolException {
+        return check(s, p, "list", s.nth(p).isList());
     }
 
     private static Slaw check(Slaw s, int p, String kind, boolean b)
