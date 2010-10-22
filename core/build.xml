@@ -35,7 +35,7 @@
   <property name="compile.source" value="1.6"/>
   <property name="compile.target" value="1.6"/>
 
-  <property name="test.server" value=""/>
+  <property name="test.server" value="tcp://localhost"/>
   <property name="test.halt" value="yes"/>
   <property name="test.src.dir" location="test"/>
   <property name="test.build.dir" location="${build.dir}/test"/>
@@ -43,6 +43,7 @@
   <property name="test.data.dir" location="${test.build.dir}/data"/>
   <property name="test.reports.dir" location="${test.build.dir}/reports"/>
   <property name="test.reports.format" value="frames"/>
+  <property name="test.external.pattern" value="**/External*Test.class"/>
 
   <tstamp>
     <format property="timestamp.isoformat"
@@ -50,7 +51,13 @@
   </tstamp>
 
   <fileset id="test.fileset"
-           dir="${test.classes.dir}" includes="**/*Test.class"/>
+           dir="${test.classes.dir}"
+           includes="**/*Test.class"
+           excludes="${test.external.pattern}"/>
+
+  <fileset id="test.external.fileset"
+           dir="${test.classes.dir}"
+           includes="${test.external.pattern}"/>
 
   <path id="compile.classpath">
     <fileset dir="${lib.dir}">
@@ -145,10 +152,6 @@
            haltonerror="${test.halt}" haltonfailure="${test.halt}"
            printsummary="off" showoutput="no" logfailedtests="no">
       <assertions><enable/></assertions>
-      <jvmarg value="-Xms256m"/>
-      <jvmarg value="-Xmx256m"/>
-      <jvmarg value="-server"/>
-      <jvmarg value="-Dcom.oblong.jelly.externalServer=${test.server}"/>
       <classpath refid="test.run.classpath"/>
       <formatter type="plain" usefile="false"/>
       <formatter type="plain" usefile="true"/>
@@ -159,20 +162,37 @@
     </junit>
   </target>
 
+  <target name="external-test" depends="compile-tests"
+          description="Run unit tests using external pool server">
+    <junit fork="yes" forkMode="perTest"
+           haltonerror="${test.halt}" haltonfailure="${test.halt}"
+           printsummary="off" showoutput="no" logfailedtests="no">
+      <assertions><enable/></assertions>
+      <jvmarg value="-Dcom.oblong.jelly.externalServer=${test.server}"/>
+      <classpath refid="test.run.classpath"/>
+      <formatter type="plain" usefile="false"/>
+      <formatter type="plain" usefile="true"/>
+      <test name="${testcase}" todir="${test.data.dir}" if="testcase"/>
+      <batchtest todir="${test.data.dir}" unless="testcase">
+        <fileset refid="test.external.fileset"/>
+      </batchtest>
+    </junit>
+  </target>
+
   <target name="test-reporting"
           depends="compile-tests"
           description="Run unit tests and generate HTML report">
-    <junit fork="yes" forkMode="once" printsummary="off"
+    <junit fork="yes" forkMode="perTest" printsummary="off"
            errorProperty="test.failed" failureProperty="test.failed">
-      <jvmarg value="-Xms256m"/>
-      <jvmarg value="-Xmx256m"/>
-      <jvmarg value="-server"/>
       <jvmarg value="-Dcom.oblong.jelly.externalServer=${test.server}"/>
       <classpath refid="test.run.classpath"/>
       <formatter type="plain" usefile="false"/>
       <formatter type="xml" usefile="true"/>
       <batchtest todir="${test.data.dir}">
         <fileset refid="test.fileset"/>
+      </batchtest>
+      <batchtest todir="${test.data.dir}" unless="testcase">
+        <fileset refid="test.external.fileset"/>
       </batchtest>
     </junit>
 

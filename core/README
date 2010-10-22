@@ -38,7 +38,7 @@ other packages found under it are implementation details.
       build/classes.
     - 'ant build' generates the jelly jar files, inside the dist folder.
     - 'ant test' runs the test suite, writing plain text reports inside
-      build/test/data.
+      build/test/data. See the Tests section below for more info.
     - 'ant test-reporting' works as 'ant test', but also creates HTML
       reports in build/test/reports.
     - 'ant javadoc' generates the library javadoc and puts it in
@@ -73,3 +73,33 @@ other packages found under it are implementation details.
 
     Alternatively, you can create an ant-based project in Eclipse,
     pointing it to build.xml in this directory.
+
+* Tests
+
+  To run the unit test suites, you can use the following ant targets:
+
+  - 'test' Runs all unit tests that don't depend on external services.
+    You can specify a single test by defining 'testcase' to the fully
+    qualified name of the test class you want to run:
+
+       ant -Dtestcase=com.oblong.jelly.pool.net.TCPHoseTest test
+
+  - 'external-test' Runs tests that use a external pool server. By
+    default, 'tcp://locahost' is used, but you can override that URI
+    by defining 'test.server':
+
+       ant -Dtest.server=tcp://some.host:1969 external-test
+
+  - 'test-report' Runs all tests generating an HTML report in
+    ${test.reports.dir}, which points to build/test/reports by
+    default.
+
+  Test results are displayed in the standard output and written in
+  text format in ${test.data.dir} (build/test/data by default).
+
+  For 'test' and 'external-test', test execution halts if an error
+  occurrs. It's possible to change this behaviour by defining
+  'test.halt':
+
+      ant -Dtest.halt=no -Dtest.server=tcp://192.168.1.34 external-test
+
