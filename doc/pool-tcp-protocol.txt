@@ -20,7 +20,7 @@ Here is the key to the types in the table.
 
 'i' - int64
 'p' - protein
-'r' - ob_retort (usually int64, but may be a list; see code)
+'r' - ob_retort (usually int64, but may be unt64 or a list in older TCP servers)
 's' - string
 't' - pool_timestamp (as float64)
 'x' - slaw
@@ -33,6 +33,8 @@ F - this is the Final command in a connection (server closes
     connection after sending response)
 N - iNterruptible; if you send another request before you get a response,
     this request will terminate and you'll get responses for both requests.
+
+Requests:
 
 Name                           op state request response
 
@@ -49,13 +51,24 @@ POOL_CMD_NEWEST_INDEX           9 P     <none>  ir
 POOL_CMD_OLDEST_INDEX          10 P     <none>  ir
 POOL_CMD_AWAIT_NEXT_SINGLE     11 P     t       rpti
 POOL_CMD_MULTI_ADD_AWAITER     12 PN    <none>  rpti
-<none>                         13
-POOL_CMD_RESULT                14
 POOL_CMD_INFO                  15 P     i       rp
 POOL_CMD_LIST                  16 IF    <none>  rx
 POOL_CMD_INDEX_LOOKUP          17 P     tii     ir
 POOL_CMD_PROBE_BACK            18 P     ix      ptir
 POOL_CMD_PREV                  19 P     i       ptir
+POOL_CMD_FANCY_ADD_AWAITER     20 PN    ix      rti + rti + tip
+POOL_CMD_SET_HOSE_NAME         21 P     ssi     <no response>
+POOL_CMD_SUB_FETCH             22 P     x       xii
+
+Responses:
+
+POOL_CMD_RESULT                14
+POOL_CMD_FANCY_RESULT_1        64
+POOL_CMD_FANCY_RESULT_2        65
+POOL_CMD_FANCY_RESULT_3        66
+
+All requests return a single response of type POOL_CMD_RESULT, unless
+otherwise noted.
 
 More detailed request-response information
 ==========================================
@@ -158,6 +171,9 @@ POOL_CMD_PREV, or POOL_CMD_PROBE_BACK).
 This implicit state could be considered a bug, since most other
 network commands explicitly specify the index at which to start
 (e. g. POOL_CMD_NEXT and POOL_CMD_PROBE_FRWD).
+Preferably, new clients should use POOL_CMD_FANCY_ADD_AWAITER instead,
+and consider POOL_CMD_AWAIT_NEXT_SINGLE and POOL_CMD_MULTI_ADD_AWAITER
+to be deprecated.
 
 POOL_CMD_INFO - get information about the current pool
   i: number of hops (probably 0 or -1 at this point)
@@ -194,6 +210,83 @@ response:
   t: the timestamp of that protein
   i: the index of the protein
   r: retort
+
+POOL_CMD_SET_HOSE_NAME - specify the name of the hose and process
+  s: name of hose
+  s: name of program
+  i: process ID
+This command cannot fail and sends no response, thus avoiding a
+round-trip latency.  The information specified is used solely for
+logging and debugging.
+
+POOL_CMD_FANCY_ADD_AWAITER - wait indefinitely for a protein; can be interrupted
+  i: index of the protein before where you want to start awaiting
+  x: the pattern to match against the descrips (string or list of strings,
+     or nil for no pattern)
+1st response: POOL_CMD_FANCY_RESULT_1
+  r: retort
+  t: the timestamp of that protein
+  i: the index of the protein
+2nd response (only if 1st was POOL_NO_SUCH_PROTEIN): POOL_CMD_FANCY_RESULT_2
+  r: retort
+  t: the timestamp of that protein
+  i: the index of the protein
+3rd response (only if 1st or 2nd was OB_OK): POOL_CMD_FANCY_RESULT_3
+  t: the timestamp of that protein
+  i: the index of the protein
+  p: the protein you were waiting for
+
+POOL_CMD_SUB_FETCH - fetch part or all of one or more proteins
+  x: a slaw list of slaw maps; see below
+response:
+  x: a slaw list of slaw maps; see below
+  i: oldest index (or negative retort for error or empty pool)
+  i: newest index (or negative retort for error or empty pool)
+
+The request and response for POOL_CMD_SUB_FETCH are both lists, where
+each list element represents one protein that is to be fetched.
+(Therefore, the request and response lists are of the same length.)
+Each list element is a map.  The map keys are kept to six characters
+or less, because that is more efficient in the slaw encoding.
+
+Each element of the request list should have the following keys:
+
+name      type     description
+----      ----     -----------
+idx       int64    index of the protein to be fetched
+des       bool     true if you want the protein's descrips
+ing       bool     true if you want the protein's ingests
+roff      int64    offset of rude data to start at, or -1 for no rude data
+rbytes    int64    number of bytes of rude data to get, or -1 for "until end"
+
+Each element of the response list should have the following keys:
+
+name      type     description
+----      ----     -----------
+idx       int64    index of the protein that was fetched
+retort    int64    0 (OB_OK) on success, or other retort on failure
+                   (the remaining keys need not be present‡ on failure)
+time      float64  protein's timestamp metadata from the pool
+tbytes    int64    total number of bytes in the protein
+dbytes    int64    number of bytes in the protein's descrips
+ibytes    int64    number of bytes in the protein's ingests
+rbytes    int64    number of bytes in the protein's rude data
+ndes      int64    -1 if no descrips or descrips is not a list or map
+                   otherwise, number of descrips
+ning      int64    -1 if no ingests or ingests is not a list or map
+                   otherwise, number of ingests
+prot      protein  absent‡ if "des" and "ing" were false and roff was -1
+                   otherwise, a (possibly trimmed) version of the
+                   protein at idx (contains descrips and/or ingests
+                   only if requested, and the rude data is only the
+                   range requested from the original protein)
+
+Note: all of the metadata (tbytes, dbytes, ibytes, rbytes, ndes, ning)
+refers to the original protein in the pool, not the trimmed protein
+that was returned.
+
+‡ The current server does not actually omit these keys, but it could;
+the client doesn't care one way or the other.
 
 Endianness
 ==========
