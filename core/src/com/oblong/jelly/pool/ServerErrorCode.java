@@ -11,6 +11,7 @@ package com.oblong.jelly.pool;
 public enum ServerErrorCode {
     POOL_SPLEND(0),
     // Some file-related op failed
+    POOL_NO_POOLS_DIR(pe(400)),
     POOL_FILE_BADTH(pe(500)),
     POOL_NULL_HOSE(pe(505)),
     // Problem with semaphores
@@ -101,11 +102,15 @@ public enum ServerErrorCode {
     SLAW_YAML_ERR(ioe(6)),
     SLAW_NO_YAML(ioe(7));
 
-    private static final long FIRST_POOL = 200000;
-    private static final long FIRST_SLAW = 210000;
-    private static final long FIRST_IO = 220000;
+    public static final long FIRST_POOL = 200000;
+    public static final long FIRST_SLAW = 210000;
+    public static final long FIRST_IO = 220000;
 
     public long code() { return code; }
+
+    public boolean isPoolError() {
+        return code <= -FIRST_POOL && code > -FIRST_SLAW;
+    }
 
     private static long pe(long off) { return -(FIRST_POOL + off); }
     private static long se(long off) { return -(FIRST_SLAW + off); }
