@@ -74,55 +74,6 @@ public class HoseTestBase extends PoolServerTestBase {
         assertEquals(defHose.newestIndex() + 1, defHose.index());
     }
 
-    @Test public void nextMatchingAll() throws PoolException {
-        defHose.rewind();
-        for (int i = 0; i < TLEN; ++i) {
-            final Slaw[] m = DEP_PROTEINS[i].descrips().emitArray();
-            assertEquals(3, m.length);
-            assertEquals(i + "th", DEP_PROTEINS[i], defHose.next(m));
-            assertTrue(i + "th", DEP_PROTEINS[i].index() < defHose.index());
-            defHose.rewind();
-            try {
-                assertEquals(i + "th", DEP_PROTEINS[i], defHose.next(m));
-            } catch (NoSuchProteinException e) {
-                fail(i + " not found: " + DEP_PROTEINS[i]);
-            }
-            assertTrue(i + "th", DEP_PROTEINS[i].index() < defHose.index());
-        }
-        assertEquals(defHose.newestIndex() + 1, defHose.index());
-    }
-
-    @Test public void nextMatchingOne() throws PoolException {
-        defHose.rewind();
-        for (int i = 0; i < TLEN; ++i) {
-            final Slaw m = DEP_PROTEINS[i].descrips().nth(i % 3);
-            assertEquals(i + "th", DEP_PROTEINS[i], defHose.next(m));
-            assertTrue(i + "th", DEP_PROTEINS[i].index() < defHose.index());
-            final Slaw unique = DEP_PROTEINS[i].descrips().nth(0);
-            defHose.rewind();
-            assertEquals(i + "th", DEP_PROTEINS[i], defHose.next(unique));
-            assertTrue(i + "th", DEP_PROTEINS[i].index() < defHose.index());
-        }
-        assertEquals(defHose.newestIndex() + 1, defHose.index());
-    }
-
-    @Test public void nextMatchingSome() throws PoolException {
-        defHose.rewind();
-        for (int i = 0; i < TLEN; ++i) {
-            final Slaw m = DEP_PROTEINS[i].descrips().nth(i % 2);
-            final Slaw m2 = DEP_PROTEINS[i].descrips().nth(2);
-            try {
-                final Protein p = defHose.next(m2, m);
-                fail("Found " + p);
-            } catch (NoSuchProteinException e) {
-                // expected
-            }
-            assertEquals(i + "th", DEP_PROTEINS[i], defHose.next(m, m2));
-            assertTrue(i + "th", DEP_PROTEINS[i].index() < defHose.index());
-        }
-        assertEquals(defHose.newestIndex() + 1, defHose.index());
-    }
-
     @Test public void await() throws PoolException, TimeoutException {
         defHose.seekTo(defHose.oldestIndex());
         for (int i = 0; i < TLEN; ++i) {
@@ -171,6 +122,61 @@ public class HoseTestBase extends PoolServerTestBase {
             defHose.seekTo(DEP_PROTEINS[i].index());
             assertEquals(i + "th", DEP_PROTEINS[i], defHose.current());
         }
+    }
+
+    private interface Matcher {
+        Slaw[] get(Slaw descrips) throws PoolException;
+    }
+
+    private void testMatching(Matcher matcher) throws PoolException {
+        defHose.rewind();
+        for (int i = 0; i < TLEN; ++i) {
+            final Slaw[] m = matcher.get(DEP_PROTEINS[i].descrips());
+            assertEquals(i + "th", DEP_PROTEINS[i], defHose.next(m));
+            assertTrue(i + "th", DEP_PROTEINS[i].index() < defHose.index());
+
+            defHose.runOut();
+            assertEquals(i + "th", DEP_PROTEINS[i], defHose.previous(m));
+            assertEquals(i + "th", DEP_PROTEINS[i].index(), defHose.index());
+
+            defHose.rewind();
+            assertEquals(i + "th", DEP_PROTEINS[i], defHose.next(m));
+            assertTrue(i + "th", DEP_PROTEINS[i].index() < defHose.index());
+        }
+        assertEquals(defHose.newestIndex() + 1, defHose.index());
+    }
+
+    @Test public void matchingAll() throws PoolException {
+        testMatching(new Matcher() {
+                public Slaw[] get(Slaw d) { return d.emitArray(); }
+            });
+    }
+
+    @Test public void matchingOne() throws PoolException {
+        testMatching(new Matcher() {
+                public Slaw[] get(Slaw d) {
+                    final Slaw[] m = { d.nth(0) };
+                    return m;
+                }
+            });
+    }
+
+    @Test public void matchingSome() throws PoolException {
+        testMatching(new Matcher () {
+                public Slaw[] get(Slaw d) throws PoolException {
+                    final Slaw m = d.nth(0);
+                    final Slaw m2 = d.nth(1 + (i++) % 2);
+                    try {
+                        final Protein p = defHose.next(m2, m);
+                        fail("Found " + p);
+                    } catch (NoSuchProteinException e) {
+                        // expected
+                    }
+                    final Slaw[] ms = {m, m2};
+                    return ms;
+                }
+                int i = 0;
+            });
     }
 
     protected static Protein makeProtein(int i) {
