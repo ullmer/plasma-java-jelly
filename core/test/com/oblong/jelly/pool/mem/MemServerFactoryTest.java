@@ -22,6 +22,7 @@ public class MemServerFactoryTest extends PoolServersTestBase {
     }
 
     @Test public void reRegister() {
+        MemServerFactory.register();
         assertFalse(MemServerFactory.register("mem"));
         assertFalse(MemServerFactory.register());
         assertTrue(MemServerFactory.register("foo"));

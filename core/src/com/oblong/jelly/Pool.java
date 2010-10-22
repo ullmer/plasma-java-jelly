@@ -186,6 +186,13 @@ public final class Pool {
         return getServer(addr).pools();
     }
 
+    /**
+     * Checks whether the given pool exists.
+     */
+    public static boolean exists(PoolAddress addr) throws PoolException {
+        return pools(addr.serverAddress()).contains(addr.poolName());
+    }
+
     private Pool() {}
 
     static {

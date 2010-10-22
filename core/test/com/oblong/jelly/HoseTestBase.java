@@ -5,6 +5,7 @@ package com.oblong.jelly;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -30,16 +31,19 @@ public class HoseTestBase extends PoolServerTestBase {
         super(addr);
     }
 
-    @Before public void openDefault() {
-        if (defHose == null) {
-            try {
-                defHose =
-                    Pool.participate(poolAddress("default-pool"), null);
-                DEP_PROTEINS = deposit(defHose, -1);
-            } catch (PoolException e) {
-                fail("Initialisation error: " + e);
-            }
+    @Before public void openDefault() throws PoolException {
+        assertNotNull(server);
+        final PoolAddress address = poolAddress("default-pool");
+        defHose = Pool.participate(address, null);
+        assertTrue(defHose.isConnected());
+        if (DEP_PROTEINS == null) {
+            DEP_PROTEINS = deposit(defHose, -1);
         }
+        assertNotNull(DEP_PROTEINS);
+    }
+
+    @After public void close() throws PoolException {
+        if (defHose != null) defHose.withdraw();
     }
 
     @Test public void hoseName() throws PoolException {
@@ -77,10 +81,15 @@ public class HoseTestBase extends PoolServerTestBase {
         defHose.rewind();
         for (int i = 0; i < TLEN; ++i) {
             final Slaw[] m = DEP_PROTEINS[i].descrips().emitArray();
+            assertEquals(3, m.length);
             assertEquals(i + "th", DEP_PROTEINS[i], defHose.next(m));
             assertTrue(i + "th", DEP_PROTEINS[i].index() < defHose.index());
             defHose.rewind();
-            assertEquals(i + "th", DEP_PROTEINS[i], defHose.next(m));
+            try {
+                assertEquals(i + "th", DEP_PROTEINS[i], defHose.next(m));
+            } catch (NoSuchProteinException e) {
+                fail(i + " not found: " + DEP_PROTEINS[i]);
+            }
             assertTrue(i + "th", DEP_PROTEINS[i].index() < defHose.index());
         }
         assertEquals(defHose.newestIndex() + 1, defHose.index());
@@ -179,7 +188,7 @@ public class HoseTestBase extends PoolServerTestBase {
         return protein(desc, ings, data);
     }
 
-    protected static Protein[] deposit(Hose h, int no) {
+    protected static Protein[] deposit(Hose h, int no) throws PoolException {
         if (no <= 0) no = TEST_PROTEINS.length;
         final Protein[] result = new Protein[no];
         for (int i = 0; i < no; ++i)
@@ -189,13 +198,15 @@ public class HoseTestBase extends PoolServerTestBase {
                 fail("Deposit of " + i + "th protein failed. Protein was: "
                      + TEST_PROTEINS[i] + ". Exception: " + e);
             }
+        h.rewind();
+        for (int i = 0; i < no; ++i) h.awaitNext();
         return result;
     }
 
-    private static Hose defHose = null;
+    private volatile Hose defHose = null;
 
     private static final Protein[] TEST_PROTEINS;
-    private static Protein[] DEP_PROTEINS;
+    private volatile static Protein[] DEP_PROTEINS = null;
     private static final int TLEN = 5;
 
     static {

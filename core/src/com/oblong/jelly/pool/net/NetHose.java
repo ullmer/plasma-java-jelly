@@ -204,7 +204,8 @@ final class NetHose implements Hose {
 
     private Protein await(long t, TimeUnit u)
         throws PoolException, TimeoutException {
-        connection.setTimeout(t, u);
+        if (t > 0) connection.setTimeout(u.toMillis(t) + 100,
+                                         TimeUnit.MILLISECONDS);
         try {
             final Slaw res =
                 Request.AWAIT_NEXT.send(connection, timeSlaw(t, u));

@@ -124,6 +124,7 @@ public enum Request {
     public int code() { return code; }
     public int arity() { return arity; }
     public int responseArity() { return responseArity; }
+    public boolean timeouts() { return timeouts; }
 
     public Slaw send(NetConnection conn, Slaw... args)
         throws PoolException {
@@ -174,8 +175,8 @@ public enum Request {
 
     private Slaw checkRetort(Slaw res, int v) throws PoolException {
     	if (res.count() < responseArity)
-            throw new ProtocolException(res, "Wrong response arity "
-                                        + res.count() + " ("
+            throw new ProtocolException(res, "Wrong response arity in "
+                                        + this + "\n" + res + "\n("
                                         + responseArity + " expected)");
         return getRetort(res, v);
     }

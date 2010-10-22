@@ -37,7 +37,7 @@ final class TCPPoolConnection implements NetConnection {
     @Override public void setTimeout(long t, TimeUnit u)
         throws PoolException {
         try {
-            if (t >= 0) socket.setSoTimeout((int)u.toMillis(t));
+            if (isOpen() && t >= 0) socket.setSoTimeout((int)u.toMillis(t));
         } catch (Exception e) {
             throw new InOutException(e);
         }
@@ -146,8 +146,8 @@ final class TCPPoolConnection implements NetConnection {
             throw new InOutException("Non-protein received from server");
         ret = ret.toProtein().ingests();
         if (ret != null) ret = ret.find(ARGS_KEY);
-        if (ret == null)
-            throw new InOutException("Empty response from server");
+        // if (ret == null)
+        //     throw new InOutException("Empty response from server");
         return ret;
     }
 

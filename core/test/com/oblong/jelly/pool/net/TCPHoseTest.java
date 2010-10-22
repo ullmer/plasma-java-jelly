@@ -5,7 +5,7 @@ package com.oblong.jelly.pool.net;
 import static org.junit.Assert.*;
 
 import org.junit.AfterClass;
-
+import org.junit.BeforeClass;
 import com.oblong.jelly.HoseTestBase;
 import com.oblong.jelly.PoolException;
 import com.oblong.jelly.pool.mem.TCPMemProxy;
@@ -24,15 +24,7 @@ public class TCPHoseTest extends HoseTestBase {
         super(proxy.tcpAddress());
     }
 
-    @AfterClass public static void close() {
-        proxy.exit();
-        try { proxyThread.join(10); } catch (Exception e) {}
-    }
-
-    private static TCPMemProxy proxy;
-    private static Thread proxyThread;
-
-    static {
+    @BeforeClass public static void openProxy() {
         try {
             proxy = new TCPMemProxy(0);
             proxyThread = new Thread(proxy);
@@ -42,11 +34,12 @@ public class TCPHoseTest extends HoseTestBase {
         }
     }
 
-    public static void main(String[] args) throws PoolException {
-        TCPHoseTest test = new TCPHoseTest();
-        test.openDefault();
-        test.deposit();
-        test.clean();
-        close();
+    @AfterClass public static void closeProxy() {
+        proxy.exit();
+        try { proxyThread.join(10); } catch (Exception e) {}
     }
+
+    private static TCPMemProxy proxy;
+    private static Thread proxyThread;
+
 }

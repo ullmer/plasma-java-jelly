@@ -29,7 +29,7 @@ public class PoolTestBase extends PoolServerTestBase {
     }
 
     @After public void cleanPools() throws PoolException {
-        clean();
+        clean(server);
     }
 
     @Test public void registration() throws PoolException {

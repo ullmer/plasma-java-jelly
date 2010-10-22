@@ -48,7 +48,7 @@ final class TCPProxyHandler implements Runnable {
                 reply(forward(next()));
             } catch (Exception e) {
                 if (connection.isOpen()) {
-                    log.warning("Connection error: " + e.getMessage());
+                    log.warning("Connection error: " + e);
                     log.warning("Closing handler");
                     connection.close();
                 }
@@ -144,7 +144,7 @@ final class TCPProxyHandler implements Runnable {
         makeRet(ServerErrorCode.POOL_UNSUPPORTED_OPERATION);
     private static final Slaw NO_CONN =
         makeRet(ServerErrorCode.POOL_SERVER_UNREACH);
-    private static final Slaw OP_V = factory.number(NumericIlk.INT64, 14);
+    private static final Slaw OP_V = factory.number(NumericIlk.INT32, 14);
 
     private final Socket socket;
     private final NetConnection connection;

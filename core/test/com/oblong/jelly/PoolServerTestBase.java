@@ -26,7 +26,7 @@ public class PoolServerTestBase {
 
     public PoolServerTestBase(PoolServer s) throws PoolException {
         server = s;
-        clean();
+        // clean();
     }
 
     protected PoolServerTestBase(PoolServerAddress addr)
@@ -40,7 +40,7 @@ public class PoolServerTestBase {
         assumeTrue(server != null);
     }
 
-    public void clean() throws PoolException {
+    public void clean(PoolServer server) throws PoolException {
         if (server != null) {
             final Set<String> pools = server.pools();
             for (String n : pools) server.dispose(n);

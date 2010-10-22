@@ -36,6 +36,7 @@
   <property name="compile.target" value="1.6"/>
 
   <property name="test.server" value=""/>
+  <property name="test.halt" value="yes"/>
   <property name="test.src.dir" location="test"/>
   <property name="test.build.dir" location="${build.dir}/test"/>
   <property name="test.classes.dir" location="${test.build.dir}/classes"/>
@@ -140,7 +141,8 @@
   </target>
 
   <target name="test" depends="compile-tests" description="Run unit tests">
-    <junit fork="yes" forkMode="once" haltonerror="yes" haltonfailure="yes"
+    <junit fork="yes" forkMode="perTest"
+           haltonerror="${test.halt}" haltonfailure="${test.halt}"
            printsummary="off" showoutput="no" logfailedtests="no">
       <assertions><enable/></assertions>
       <jvmarg value="-Xms256m"/>
