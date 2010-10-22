@@ -5,6 +5,9 @@ package com.oblong.jelly.pool.net;
 import com.oblong.jelly.HoseTestBase;
 import com.oblong.jelly.PoolException;
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+
 /**
  * Tests for Hose operations against an external TCP pool server.
  *
@@ -18,4 +21,7 @@ public class ExternalTCPHoseTest extends HoseTestBase {
         super(externalServer());
     }
 
+    @BeforeClass @AfterClass public static void clean() throws PoolException {
+        clean(externalServer());
+    }
 }

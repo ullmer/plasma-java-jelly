@@ -40,7 +40,7 @@ public class PoolServerTestBase {
         assumeTrue(server != null);
     }
 
-    public void clean(PoolServer server) throws PoolException {
+    public static void clean(PoolServer server) throws PoolException {
         if (server != null) {
             final Set<String> pools = server.pools();
             for (String n : pools) server.dispose(n);

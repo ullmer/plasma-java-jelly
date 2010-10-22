@@ -110,6 +110,7 @@ enum ServerError {
         ERROR_TO_C = new ConcurrentHashMap<Pair<Integer,ServerError>, Long>();
 
         reg(3, CORRUPT_POOL,
+            POOL_NO_POOLS_DIR,
             POOL_FILE_BADTH,
             POOL_NULL_HOSE,
             POOL_SEMAPHORES_BADTH,
@@ -132,7 +133,11 @@ enum ServerError {
             POOL_RECV_BADTH,
             POOL_SOCK_BADTH,
             POOL_SERVER_BUSY,
-            POOL_SERVER_UNREACH);
+            POOL_SERVER_UNREACH,
+            POOL_ALREADY_GANG_MEMBER,
+            POOL_NOT_A_GANG_MEMBER,
+            POOL_EMPTY_GANG,
+            POOL_NULL_GANG);
         reg(3, BAD_NAME, POOL_POOLNAME_BADTH);
         reg(3, TIMEOUT, POOL_AWAIT_TIMEDOUT, POOL_AWAIT_WOKEN);
         reg(3, NO_SUCH_PROTEIN, POOL_NO_SUCH_PROTEIN);

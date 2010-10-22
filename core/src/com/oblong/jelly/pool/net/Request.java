@@ -93,7 +93,7 @@ public enum Request {
     },
     FANCY_ADD_AWAITER(20, 2, 3) {
         Slaw getRetort(Slaw res, int v) throws ProtocolException {
-            return retort(stamp(index(res, 2), 1), 2);
+            return retort(stamp(index(res, 2), 1), 0);
         }
     },
     INFO(15, 1, 2) {

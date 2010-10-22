@@ -124,6 +124,8 @@ final class NetHose implements Hose {
     }
 
     @Override public Protein next(Slaw... descrips) throws PoolException {
+        final Protein p = maybePooled(descrips);
+        if (p != null) return p;
         if (descrips.length == 0) return next();
         final Slaw res = Request.PROBE_FWD.send(connection,
                                                 indexSlaw(index),
@@ -150,7 +152,7 @@ final class NetHose implements Hose {
         try {
 	        return awaitNext(-1, TimeUnit.SECONDS);
         } catch (TimeoutException e) {
-        	assert false : "Timeout while waiting forever";
+            assert false : "Timeout while waiting forever";
             return null;
         }
     }
@@ -176,7 +178,14 @@ final class NetHose implements Hose {
     }
 
     @Override public boolean poll(Slaw... descrips) throws PoolException {
-        return false;
+        final Slaw m = descrips.length == 0
+            ? factory.nil() : factory.list(descrips);
+        try {
+            Request.FANCY_ADD_AWAITER.send(connection, indexSlaw(index), m);
+        } catch (NoSuchProteinException e) {
+            return false;
+        }
+        return true;
     }
 
     @Override public Hose dup() throws PoolException {
@@ -187,11 +196,21 @@ final class NetHose implements Hose {
     }
 
     private Protein next() throws PoolException {
+        final Protein p = maybePooled();
+        if (p != null) return p;
         final Slaw res = Request.NEXT.send(connection, indexSlaw(index));
         return new PoolProtein(res.nth(0).toProtein(),
                                cleanIndex(res.nth(2).emitLong() + 1) - 1,
                                res.nth(1).emitDouble(),
                                this);
+    }
+
+    private Protein maybePooled(Slaw... descrips) {
+        final Protein p = connection.polled();
+        if (p != null && p.matches(descrips))
+            return new PoolProtein(p, cleanIndex(p.index() + 1) - 1,
+                                   p.timestamp(), this);
+        return null;
     }
 
     private Protein previous() throws PoolException {

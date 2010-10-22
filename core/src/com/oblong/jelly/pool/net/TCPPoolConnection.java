@@ -50,6 +50,7 @@ final class TCPPoolConnection implements NetConnection {
         final Slaw ings = factory.map(OP_KEY, code,
                                       ARGS_KEY, factory.list(args));
         try {
+            polled();
             return send(factory.protein(null, ings , null));
         } catch (InOutException e) {
             close();
@@ -68,6 +69,20 @@ final class TCPPoolConnection implements NetConnection {
 
     @Override public boolean isOpen() {
         return !socket.isClosed();
+    }
+
+    @Override public PoolProtein polled() {
+        try {
+            if (asynchronousProtein == null && input.available() > 0) {
+                read(false);
+                while (input.available() > 0) input.read();
+            }
+        } catch (Exception e) {
+            // ignore
+        }
+        final PoolProtein result = asynchronousProtein;
+        asynchronousProtein = null;
+        return result;
     }
 
     static class Factory implements NetConnectionFactory {
@@ -131,10 +146,10 @@ final class TCPPoolConnection implements NetConnection {
         } catch (Exception e) {
             throw new InOutException(e);
         }
-        return read();
+        return read(true);
     }
 
-    private Slaw read() throws PoolException {
+    private Slaw read(boolean cont) throws PoolException {
         Slaw ret = null;
         try {
             ret = internalizer.internProtein(input, factory);
@@ -147,8 +162,10 @@ final class TCPPoolConnection implements NetConnection {
         final Slaw args = getResultArgs(ret);
         if (CMD_RESULT.equals(code)) return args;
         if (FANCY_CMD_R1.equals(code)) return args;
-        if (FANCY_CMD_R3.equals(code)) updateAsync(args);
-        return read();
+        if (FANCY_CMD_R2.equals(code)) return read(cont);
+        assert FANCY_CMD_R3.equals(code);
+        updateAsync(args);
+        return cont ? read(cont) : null;
     }
 
     private static Slaw getResultCode(Slaw ret) throws InOutException {

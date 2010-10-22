@@ -12,6 +12,7 @@ import com.oblong.jelly.NumericIlk;
 import com.oblong.jelly.PoolException;
 import com.oblong.jelly.Protein;
 import com.oblong.jelly.Slaw;
+import com.oblong.jelly.pool.PoolProtein;
 import com.oblong.jelly.pool.ServerErrorCode;
 import com.oblong.jelly.slaw.SlawExternalizer;
 import com.oblong.jelly.slaw.SlawFactory;
@@ -21,6 +22,7 @@ import com.oblong.jelly.slaw.io.BinaryExternalizer;
 import com.oblong.jelly.slaw.io.BinaryInternalizer;
 import com.oblong.jelly.slaw.java.JavaSlawFactory;
 import com.oblong.jelly.util.ByteReader;
+import com.oblong.util.Pair;
 
 /**
  *
@@ -88,7 +90,8 @@ final class TCPProxyHandler implements Runnable {
 
     private Protein next() throws IOException {
         try {
-            return internalizer.internProtein(socket.getInputStream(),factory);
+            return internalizer.internProtein(socket.getInputStream(),
+                                              factory);
         } catch (SlawParseError e) {
             log.warning("Error parsing protein from server: "
                         + e.getMessage());
@@ -96,19 +99,19 @@ final class TCPProxyHandler implements Runnable {
         }
     }
 
-    private Slaw forward(Protein p) {
+    private Pair<Request, Slaw> forward(Protein p) {
         final Request req = getRequest(p);
-        if (req == null) return NO_OP;
+        if (req == null) return Pair.create((Request)null, NO_OP);
         final Slaw[] args = getArgs(p);
         try {
-            return connection.send(req, args);
+            return Pair.create(req, connection.send(req, args));
         } catch (PoolException e) {
-            if (e.serverCode() == 0) return NO_CONN;
-            return makeRet(e.serverCode());
+            if (e.serverCode() == 0) return Pair.create(req, NO_CONN);
+            return Pair.create(req, makeRet(e.serverCode()));
         }
     }
 
-    private static Request getRequest(Protein p) {
+    private Request getRequest(Protein p) {
         final Slaw ings = p == null ? null : p.ingests();
         final Slaw sreq = ings == null ?
             null : ings.find(TCPPoolConnection.OP_KEY);
@@ -124,9 +127,32 @@ final class TCPProxyHandler implements Runnable {
         return args;
     }
 
-    private void reply(Slaw as) throws IOException {
-        final Slaw ings = factory.map(TCPPoolConnection.OP_KEY, OP_V,
-                                      TCPPoolConnection.ARGS_KEY, as);
+    private void reply(Pair<Request, Slaw> ra) throws IOException {
+        final boolean isFancy = ra.first() == Request.FANCY_ADD_AWAITER;
+        final Slaw op = isFancy
+            ? TCPPoolConnection.FANCY_CMD_R1 : TCPPoolConnection.CMD_RESULT;
+        final Slaw ings = factory.map(TCPPoolConnection.OP_KEY,
+                                      op,
+                                      TCPPoolConnection.ARGS_KEY,
+                                      ra.second());
+        final Protein reply = factory.protein(null, ings, null);
+        externalizer.extern(reply, socket.getOutputStream());
+        if (isFancy) {
+            final PoolProtein p = connection.polled();
+            if (p != null) sendR3(p);
+        }
+    }
+
+    private void sendR3(PoolProtein p) throws IOException {
+        final Slaw args = factory.list(factory.number(NumericIlk.FLOAT64,
+                                                      p.timestamp()),
+                                       factory.number(NumericIlk.INT64,
+                                                      p.index()),
+                                       p.bareProtein());
+        final Slaw ings = factory.map(TCPPoolConnection.OP_KEY,
+                                      TCPPoolConnection.FANCY_CMD_R3,
+                                      TCPPoolConnection.ARGS_KEY,
+                                      args);
         final Protein reply = factory.protein(null, ings, null);
         externalizer.extern(reply, socket.getOutputStream());
     }
@@ -144,7 +170,6 @@ final class TCPProxyHandler implements Runnable {
         makeRet(ServerErrorCode.POOL_UNSUPPORTED_OPERATION);
     private static final Slaw NO_CONN =
         makeRet(ServerErrorCode.POOL_SERVER_UNREACH);
-    private static final Slaw OP_V = factory.number(NumericIlk.INT32, 14);
 
     private final Socket socket;
     private final NetConnection connection;

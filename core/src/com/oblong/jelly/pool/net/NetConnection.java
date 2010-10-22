@@ -9,6 +9,7 @@ import com.oblong.jelly.PoolServerAddress;
 import com.oblong.jelly.PoolException;
 import com.oblong.jelly.Slaw;
 import com.oblong.jelly.slaw.SlawFactory;
+import com.oblong.jelly.pool.PoolProtein;
 
 public interface NetConnection {
 
@@ -21,4 +22,6 @@ public interface NetConnection {
     void close();
     boolean isOpen();
     Set<Request> supportedRequests();
+
+    PoolProtein polled();
 }

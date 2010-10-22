@@ -141,7 +141,7 @@
   </target>
 
   <target name="test" depends="compile-tests" description="Run unit tests">
-    <junit fork="yes" forkMode="once"
+    <junit fork="yes" forkMode="perTest"
            haltonerror="${test.halt}" haltonfailure="${test.halt}"
            printsummary="off" showoutput="no" logfailedtests="no">
       <assertions><enable/></assertions>
