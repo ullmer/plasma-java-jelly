@@ -18,41 +18,30 @@ public abstract class HoseGang {
 
     public abstract int count();
 
-    public final boolean add(String name, String uri) throws PoolException {
-        return add(name, PoolAddress.fromURI(uri), -1);
+    public final boolean add(PoolAddress addr) throws PoolException {
+        return add(addr.toString(), addr);
     }
 
-    public final boolean add(String name, String uri, long index)
-        throws PoolException {
-        return add(name, PoolAddress.fromURI(uri), index);
+    public final boolean add(String uri) throws PoolException {
+        return add(uri, uri);
+    }
+
+    public final boolean add(Hose hose) throws PoolException {
+        return add(hose.name(), hose);
+    }
+
+    public final boolean add(String name, String uri) throws PoolException {
+        return doAdd(name, Pool.participate(uri));
     }
 
     public final boolean add(String name, PoolAddress addr)
         throws PoolException {
-        return add(name, addr, -1);
+        return doAdd(name, Pool.participate(addr));
     }
 
-    public final String add(PoolAddress addr) throws PoolException {
-        return add(addr, -1);
+    public final boolean add(String name, Hose hose) throws PoolException {
+        return doAdd(name, hose.dupAndClose());
     }
-
-    public final String add(PoolAddress addr, long index)
-        throws PoolException {
-        final String name = addr.toString();
-        return add(name, addr, index) ? name : null;
-    }
-
-    public final String add(String uri) throws PoolException {
-        return add(uri, -1);
-    }
-
-    public final String add(String uri, long index) throws PoolException {
-        return add(PoolAddress.fromURI(uri), index);
-    }
-
-    public abstract boolean add(String name, PoolAddress addr, long index)
-        throws PoolException;
-
 
     public abstract boolean remove(String name);
     public abstract void disband();
@@ -62,4 +51,7 @@ public abstract class HoseGang {
         throws GangException, TimeoutException, InterruptedException;
 
     public abstract boolean wakeUp();
+
+    protected abstract boolean doAdd(String name, Hose hose)
+        throws PoolException;
 }

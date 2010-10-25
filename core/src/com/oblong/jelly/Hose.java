@@ -375,4 +375,10 @@ public interface Hose {
      * inherits this hose's name and is always connected.
      */
     Hose dup() throws PoolException;
+
+    /**
+     * Like {@link dup}, but closes this hose after transferring
+     * its connection to the returned one.
+     */
+    Hose dupAndClose() throws PoolException;
 }

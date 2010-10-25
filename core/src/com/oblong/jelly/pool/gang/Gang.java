@@ -28,14 +28,6 @@ public final class Gang extends HoseGang {
 
     @Override public int count() { return fetchers.size(); }
 
-    @Override public boolean add(String name, PoolAddress addr, long index)
-        throws PoolException {
-        final Hose h = Pool.participate(addr);
-        if (name != null) h.setName(name);
-        if (index > 0) h.seekTo(index);
-        return addFetcher(h, true);
-    }
-
     @Override public boolean remove(String name) {
         final Fetcher f = fetchers.remove(name);
         if (f != null) f.withdraw();
@@ -66,6 +58,13 @@ public final class Gang extends HoseGang {
         return queue.wakeUp();
     }
 
+    @Override protected boolean doAdd(String name, Hose h)
+        throws PoolException {
+        final Fetcher old = fetchers.put(name, new Fetcher(h, queue, true));
+        if (old != null) old.withdraw();
+        return old == null;
+    }
+
     private Protein tryNext() throws GangException, InterruptedException {
         final Protein p = queue.next(0, TimeUnit.SECONDS);
         if (p == null) launchFetchers();
@@ -76,12 +75,6 @@ public final class Gang extends HoseGang {
         for (Fetcher f : fetchers.values()) {
             if (f.isRunnable()) executor.execute(f);
         }
-    }
-
-    private boolean addFetcher(Hose h, boolean e) {
-        final Fetcher old = fetchers.put(h.name(), new Fetcher(h, queue, e));
-        if (old != null) old.withdraw();
-        return old == null;
     }
 
     private final ConcurrentHashMap<String, Fetcher> fetchers;

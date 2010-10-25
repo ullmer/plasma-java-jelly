@@ -18,9 +18,12 @@ public interface NetConnection {
     SlawFactory factory();
 
     void setTimeout(long t, TimeUnit u) throws PoolException;
+
     Slaw send(Request r, Slaw... args) throws PoolException;
+
     void close();
     boolean isOpen();
+
     Set<Request> supportedRequests();
 
     PoolProtein polled();

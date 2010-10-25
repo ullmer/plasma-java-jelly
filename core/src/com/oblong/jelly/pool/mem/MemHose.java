@@ -107,6 +107,11 @@ final class MemHose implements Hose {
         return result;
     }
 
+    @Override public Hose dupAndClose() throws PoolException {
+        withdraw();
+        return dup();
+    }
+
     MemHose(MemPool pool, PoolServerAddress addr) {
         this.pool = pool;
         index = 0;

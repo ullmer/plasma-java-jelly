@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 import net.jcip.annotations.NotThreadSafe;
 
 import com.oblong.jelly.Hose;
+import com.oblong.jelly.InOutException;
 import com.oblong.jelly.NoSuchProteinException;
 import com.oblong.jelly.NumericIlk;
 import com.oblong.jelly.Pool;
@@ -21,14 +22,6 @@ import com.oblong.jelly.slaw.SlawFactory;
 
 @NotThreadSafe
 final class NetHose implements Hose {
-
-    NetHose(NetConnection conn, String pn) throws PoolException {
-        connection = conn;
-        factory = conn.factory();
-        poolAddress = new PoolAddress(connection.address(), pn);
-        setName(null);
-        cleanIndex(newestIndex());
-    }
 
     @Override public int version() {
         return connection.version();
@@ -56,7 +49,7 @@ final class NetHose implements Hose {
     }
 
     @Override public boolean isConnected() {
-        return connection.isOpen();
+        return connection != null && connection.isOpen();
     }
 
     @Override public void withdraw() {
@@ -195,6 +188,26 @@ final class NetHose implements Hose {
         return result;
     }
 
+    @Override public Hose dupAndClose() throws PoolException {
+        if (!isConnected()) return dup();
+        final NetConnection c = connection;
+        connection = null;
+        return new NetHose(c, poolAddress, name, index);
+    }
+
+    NetHose(NetConnection con, String pn) throws PoolException {
+        this(con, new PoolAddress(con.address(), pn), null, -1);
+        cleanIndex(newestIndex());
+    }
+
+    NetHose(NetConnection conn, PoolAddress addr, String name, long idx) {
+        connection = conn;
+        factory = connection.factory();
+        poolAddress = addr;
+        setName(name);
+        cleanIndex(idx);
+    }
+
     private Protein next() throws PoolException {
         final Protein p = maybePooled();
         if (p != null) return p;
@@ -206,6 +219,7 @@ final class NetHose implements Hose {
     }
 
     private Protein maybePooled(Slaw... descrips) {
+        if (!isConnected()) return null;
         final Protein p = connection.polled();
         if (p != null && p.matches(descrips))
             return new PoolProtein(p, cleanIndex(p.index() + 1) - 1,
@@ -223,6 +237,7 @@ final class NetHose implements Hose {
 
     private Protein await(long t, TimeUnit u)
         throws PoolException, TimeoutException {
+        checkConnection();
         if (t > 0) connection.setTimeout(u.toMillis(t) + 100,
                                          TimeUnit.MILLISECONDS);
         try {
@@ -261,13 +276,17 @@ final class NetHose implements Hose {
         return index = idx;
     }
 
+    private void checkConnection() throws InOutException {
+        if (!isConnected()) throw new InOutException("Connection closed");
+    }
+
     private static final double WAIT_FOREVER = -1;
     private static final double NO_WAIT = 0;
     private static final double OLD_WAIT = NO_WAIT;
     private static final double OLD_NO_WAIT = WAIT_FOREVER;
     private static final int FIRST_NEW_WAIT_V = 2;
 
-    private final NetConnection connection;
+    private NetConnection connection;
     private final SlawFactory factory;
     private final PoolAddress poolAddress;
     private String name;

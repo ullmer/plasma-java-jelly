@@ -68,7 +68,7 @@ final class TCPPoolConnection implements NetConnection {
     }
 
     @Override public boolean isOpen() {
-        return !socket.isClosed();
+        return socket != null && !socket.isClosed();
     }
 
     @Override public PoolProtein polled() {
