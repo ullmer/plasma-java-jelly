@@ -89,7 +89,7 @@ final class MemHose implements Hose {
     }
 
     @Override public Protein awaitNext() throws PoolException {
-        return checkProtein(await(0));
+        return checkProtein(await(-1));
     }
 
     @Override public Protein previous(Slaw... descrips) throws PoolException {
