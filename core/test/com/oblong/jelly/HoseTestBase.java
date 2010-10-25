@@ -240,7 +240,7 @@ public class HoseTestBase extends PoolServerTestBase {
         return protein(desc, ings, data);
     }
 
-    protected static Protein[] deposit(Hose h, int no) throws PoolException {
+    static Protein[] deposit(Hose h, int no) throws PoolException {
         if (no <= 0) no = TEST_PROTEINS.length;
         final Protein[] result = new Protein[no];
         for (int i = 0; i < no; ++i)
