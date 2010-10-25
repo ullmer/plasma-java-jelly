@@ -2,6 +2,7 @@
 
 package com.oblong.jelly;
 
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -17,6 +18,7 @@ public abstract class HoseGang {
     }
 
     public abstract int count();
+    public abstract Set<String> names();
 
     public final boolean add(PoolAddress addr) throws PoolException {
         return add(addr.toString(), addr);

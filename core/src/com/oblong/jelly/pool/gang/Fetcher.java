@@ -2,50 +2,74 @@
 
 package com.oblong.jelly.pool.gang;
 
-import com.oblong.jelly.Hose;
-import com.oblong.jelly.PoolException;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import net.jcip.annotations.ThreadSafe;
-import net.jcip.annotations.GuardedBy;
+
+import com.oblong.jelly.Hose;
+import com.oblong.jelly.PoolException;
 
 @ThreadSafe
 final class Fetcher implements Runnable {
 
     public final void run() {
-        synchronized (this) {
-            if (!runnable) return;
-            runnable = false;
-        }
         try {
-            try {
-                queue.put(hose.awaitNext());
-            } catch (PoolException e) {
-                if (errors) queue.put(hose, e);
+            while (!hoses.isEmpty()) {
+                final Hose h = queue.available();
+                if (h != null && hoses.containsKey(h.name())) {
+                    try {
+                        if (h.poll()) queue.put(h);
+                        else queue.available(h);
+                    } catch (PoolException e) {
+                        if (errors) queue.put(h, e);
+                        queue.available(h);
+                    }
+                }
             }
         } catch (InterruptedException e) {
             // let the thread die
-        } finally {
-            synchronized (this) { runnable = hose.isConnected(); }
         }
     }
 
-    Fetcher(Hose h, FetchQueue q, boolean e) {
-        hose = h;
+    Fetcher(FetchQueue q) {
+        hoses = new ConcurrentHashMap<String, Hose>();
         queue = q;
-        errors = e;
-        runnable = true;
+        errors = true;
     }
 
-    synchronized boolean isRunnable() { return runnable; }
+    boolean add(String name, Hose hose) throws PoolException {
+        final Hose old = hoses.put(name, hose);
+        if (old != null) old.withdraw();
+        hose.setName(name);
+        try {
+            queue.available(hose);
+        } catch (InterruptedException e) {
+            throw new PoolException("Thread was interrupted: "
+                                    + e.getMessage());
+        }
+        return old == null;
+    }
 
-    void withdraw() {
-        synchronized (this) { runnable = false; }
+    boolean remove(String name) {
+        final Hose h = hoses.remove(name);
+        if (h != null) h.withdraw();
+        return h != null;
+    }
+
+    void removeAll() {
         errors = false;
-        hose.withdraw();
+        for (Hose h : hoses.values()) h.withdraw();
+        hoses.clear();
+        queue.wakeUpHoseQueue();
     }
 
-    private final Hose hose;
+    Set<String> names() { return hoses.keySet(); }
+
+    int count() { return hoses.size(); }
+
+    private final ConcurrentHashMap<String, Hose> hoses;
+
     private final FetchQueue queue;
     private volatile boolean errors;
-    @GuardedBy("this") private boolean runnable;
 }

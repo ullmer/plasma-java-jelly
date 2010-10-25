@@ -140,7 +140,7 @@ public class PoolException extends Exception {
             serverCode + "): " + info;
     }
 
-    protected PoolException(String msg) {
+    public PoolException(String msg) {
         this(Kind.UNCLASSIFIED, msg);
     }
 

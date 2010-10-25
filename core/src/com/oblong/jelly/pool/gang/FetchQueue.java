@@ -3,7 +3,7 @@
 package com.oblong.jelly.pool.gang;
 
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 import com.oblong.jelly.Hose;
@@ -16,12 +16,13 @@ import net.jcip.annotations.ThreadSafe;
 @ThreadSafe
 final class FetchQueue {
 
-    FetchQueue(int size) {
-        queue = new ArrayBlockingQueue<Elem>(size);
+    FetchQueue() {
+        queue = new LinkedBlockingQueue<Elem>();
+        disposed = new LinkedBlockingQueue<Elem>();
     }
 
-    void put(Protein p) throws InterruptedException {
-        queue.put(new Elem(p));
+    void put(Hose h) throws InterruptedException {
+        queue.put(new Elem(h));
     }
 
     void put(GangException e) throws InterruptedException {
@@ -45,22 +46,43 @@ final class FetchQueue {
         return protein(queue.take());
     }
 
+    void available(Hose h) throws InterruptedException {
+        disposed.put(new Elem(h));
+    }
+
+    Hose available() throws InterruptedException {
+        final Elem e = disposed.take();
+        if (e == WAKE_TOKEN) throw new InterruptedException();
+        return e.hose;
+    }
+
+    void wakeUpHoseQueue() {
+        try { disposed.put(WAKE_TOKEN); } catch (InterruptedException e) {}
+    }
+
     private Protein protein(Elem e)
         throws GangException, InterruptedException {
         if (e == null) return null;
         if (e == WAKE_TOKEN) throw new InterruptedException();
         if (e.error != null) throw e.error;
-        return e.protein;
+        try {
+            return  e.hose.next();
+        } catch (PoolException ex) {
+            throw new GangException(e.hose.name(), e.hose.poolAddress(), ex);
+        } finally {
+            disposed.put(e);
+        }
     }
 
     private static class Elem {
-        Elem(Protein p) { protein = p; }
+        Elem(Hose h) { hose = h; }
         Elem(GangException e) { error = e; }
-        Protein protein = null;
+        Hose hose = null;
         GangException error = null;
     };
 
     private final BlockingQueue<Elem> queue;
+    private final BlockingQueue<Elem> disposed;
 
-    private static final Elem WAKE_TOKEN = new Elem((Protein)null);
+    private static final Elem WAKE_TOKEN = new Elem((Hose)null);
 }
