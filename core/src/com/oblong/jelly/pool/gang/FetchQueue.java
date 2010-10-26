@@ -60,6 +60,11 @@ final class FetchQueue {
         try { disposed.put(WAKE_TOKEN); } catch (InterruptedException e) {}
     }
 
+    void clear() {
+        queue.clear();
+        disposed.clear();
+    }
+
     private Protein protein(Elem e)
         throws GangException, InterruptedException {
         if (e == null) return null;

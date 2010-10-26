@@ -17,7 +17,9 @@ final class Fetcher implements Runnable {
         try {
             while (!hoses.isEmpty()) {
                 final Hose h = queue.available();
-                if (h != null && hoses.containsKey(h.name())) {
+                if (!hoses.isEmpty()
+                    && h != null
+                    && hoses.containsKey(h.name())) {
                     try {
                         if (h.poll()) queue.put(h);
                         else queue.available(h);
@@ -61,6 +63,7 @@ final class Fetcher implements Runnable {
         errors = false;
         for (Hose h : hoses.values()) h.withdraw();
         hoses.clear();
+        queue.clear();
         queue.wakeUpHoseQueue();
     }
 

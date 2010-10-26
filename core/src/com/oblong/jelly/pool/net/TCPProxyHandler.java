@@ -50,8 +50,7 @@ final class TCPProxyHandler implements Runnable {
                 reply(forward(next()));
             } catch (Exception e) {
                 if (connection.isOpen()) {
-                    log.warning("Connection error: " + e);
-                    log.warning("Closing handler");
+                    log.warning("Connection error (closing handler): " + e);
                     connection.close();
                 }
             }

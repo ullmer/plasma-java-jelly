@@ -31,7 +31,15 @@ public final class Gang extends HoseGang {
 
     @Override public void disband() {
         fetcher.removeAll();
-        fetcherThread = null;
+        if (fetcherThread != null && fetcherThread.isAlive()) {
+            try {
+                fetcherThread.join(100);
+            } catch (InterruptedException e) {
+                // ignore
+            } finally {
+                fetcherThread = null;
+            }
+        }
     }
 
     @Override public Protein next()

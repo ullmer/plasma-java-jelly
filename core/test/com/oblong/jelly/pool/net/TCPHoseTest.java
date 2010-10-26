@@ -2,10 +2,10 @@
 
 package com.oblong.jelly.pool.net;
 
-import static org.junit.Assert.*;
-
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import static org.junit.Assert.*;
+
 import com.oblong.jelly.HoseTestBase;
 import com.oblong.jelly.PoolException;
 import com.oblong.jelly.pool.mem.TCPMemProxy;

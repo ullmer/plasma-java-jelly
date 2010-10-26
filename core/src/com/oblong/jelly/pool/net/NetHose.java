@@ -56,9 +56,8 @@ final class NetHose implements Hose {
         try {
             if (isConnected()) Request.WITHDRAW.sendAndClose(connection);
         } catch (PoolException e) {
-            final Logger log = Logger.getLogger(Hose.class.getName());
-            log.warning("Error withdrawing Hose '" + name() + "'");
-            log.warning("Exception was: " + e);
+            // final Logger log = Logger.getLogger(Hose.class.getName());
+            // log.info("Error withdrawing Hose '" + name() + "':\n\t" + e);
         }
     }
 

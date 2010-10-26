@@ -2,88 +2,94 @@
 
 package com.oblong.jelly;
 
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-
-import static org.junit.Assert.*;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
+import static org.junit.Assert.*;
+
+import com.oblong.jelly.pool.mem.TCPMemProxy;
+import com.oblong.util.Pair;
 
 /**
- * Unit Test for class HoseGang.
+ * Unit tests for class HoseGang.
+ *
  *
  * @author jao
  */
 public class HoseGangTest {
 
-    @Test public void empty() throws Exception {
-        final HoseGang g = HoseGang.newGang();
-        assertNotNull(g);
-        testEmpty(g);
-        g.disband();
-        assertTrue(g.add(Pool.participate("mem://localhost/p1", null)));
-        assertEquals(1, g.count());
-        testEmpty(g);
-        assertTrue(g.add(Pool.participate("mem://localhost/p2", null)));
-        assertEquals(2, g.count());
-        testEmpty(g);
-        final Hose h = Pool.participate("mem://localhost/p2");
-        assertFalse(g.add(h));
-        assertFalse(h.isConnected());
-        assertEquals(2, g.count());
-        testEmpty(g);
-        assertTrue(g.remove("mem://localhost/p2"));
-        assertFalse(g.remove("mem://localhost/p2"));
-        assertFalse(g.remove("foo"));
-        assertEquals(1, g.count());
-        g.disband();
-        assertEquals(0, g.count());
+    @Test public void emptyMem() throws Exception {
+        HoseGangTests.emptyTest(new PoolAddress(MEM_ADDR, "p1"),
+                                new PoolAddress(MEM_ADDR, "p2"));
     }
 
-    @Test public void mem() throws Exception {
-        final HoseGang g = memGang("a", "b", "c");
-        assertEquals(3, g.count());
-        testEmpty(g);
-        final Protein[] pas = deposit("mem://localhost/a", 5);
-        for (int i = 0; i < pas.length; ++i) {
-            assertEquals(pas[i], g.next());
-        }
-        testEmpty(g);
-        final Protein[] pbs = deposit("mem://localhost/b", 5);
-        final Protein[] pcs = deposit("mem://localhost/c", 5);
-        int b = 0, c = 0;
-        for (int i = 0; i < pbs.length + pcs.length; ++i) {
-            final Protein p = g.next();
-            if (b < pbs.length && pbs[b].equals(p)) ++b;
-            else if (c < pcs.length && pcs[c].equals(p)) ++c;
-            else fail("Unexpected protein: " + p);
-        }
-        assertEquals(pbs.length, b);
-        assertEquals(pcs.length, c);
-        g.disband();
+    @Test public void emptyTCP() throws Exception {
+        HoseGangTests.emptyTest(new PoolAddress(TCP_ADDR, "p1"),
+                                new PoolAddress(TCP_ADDR2, "p2"));
     }
 
-    static void testEmpty(HoseGang g) throws Exception {
+    @Test public void memSeq() throws Exception {
+        HoseGangTests.seqTest(new PoolAddress(MEM_ADDR, "a"),
+                              new PoolAddress(MEM_ADDR, "b"),
+                              new PoolAddress(MEM_ADDR, "c"));
+    }
+
+    @Test public void tcpSeq() throws Exception {
+        HoseGangTests.seqTest(new PoolAddress(TCP_ADDR, "a"),
+                              new PoolAddress(TCP_ADDR2, "b"),
+                              new PoolAddress(TCP_ADDR, "c"));
+    }
+
+    @Test public void mixSeq() throws Exception {
+        HoseGangTests.seqTest(new PoolAddress(MEM_ADDR, "a"),
+                              new PoolAddress(TCP_ADDR2, "b"),
+                              new PoolAddress(TCP_ADDR, "c"));
+    }
+
+    @BeforeClass public static void openProxy() {
         try {
-            g.awaitNext(1, TimeUnit.MILLISECONDS);
-            fail("Timed out returned");
-        } catch (TimeoutException e) {
-            // good
+            MEM_ADDR = PoolServerAddress.fromURI("mem://localhost");
+            Pair<TCPMemProxy, Thread> p = startProxy();
+            proxy = p.first();
+            proxyThread = p.second();
+            TCP_ADDR = proxy.tcpAddress();
+            p = startProxy();
+            proxy2 = p.first();
+            proxyThread2 = p.second();
+            TCP_ADDR2 = proxy2.tcpAddress();
+        } catch (Exception e) {
+            fail("Initialization error: " + e);
         }
     }
 
-    static HoseGang memGang(String... names) throws PoolException {
-        final HoseGang g = HoseGang.newGang();
-        for (String n : names) {
-            Pool.create("mem://localhost/" + n, null);
-            g.add("mem://localhost/" + n);
+    @AfterClass public static void closeProxy() {
+        proxy.exit();
+        proxy2.exit();
+        try {
+            proxyThread.join(100);
+            proxyThread2.join(100);
+        } catch (Exception e) {
         }
-        return g;
     }
 
-    static Protein[] deposit(String pool, int no) throws PoolException {
-        final Hose h = Pool.participate(pool);
-        final Protein[] ps = HoseTestBase.deposit(h, no);
-        h.withdraw();
-        return ps;
+    private static Pair<TCPMemProxy,Thread> startProxy() {
+        try {
+            final TCPMemProxy proxy = new TCPMemProxy(0);
+            final Thread thread = new Thread(proxy);
+            thread.start();
+            return Pair.create(proxy, thread);
+        } catch (Exception e) {
+            fail("Initialization error: " + e);
+            return null;
+        }
     }
+
+    private static Thread proxyThread;
+    private static Thread proxyThread2;
+    private static TCPMemProxy proxy;
+    private static TCPMemProxy proxy2;
+    private static PoolServerAddress TCP_ADDR;
+    private static PoolServerAddress TCP_ADDR2;
+    private static PoolServerAddress MEM_ADDR;
+
 }
