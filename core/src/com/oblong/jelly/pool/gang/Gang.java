@@ -33,9 +33,7 @@ public final class Gang extends HoseGang {
         fetcher.removeAll();
         if (fetcherThread != null && fetcherThread.isAlive()) {
             try {
-                fetcherThread.join(100);
-            } catch (InterruptedException e) {
-                // ignore
+                fetcherThread.interrupt();
             } finally {
                 fetcherThread = null;
             }

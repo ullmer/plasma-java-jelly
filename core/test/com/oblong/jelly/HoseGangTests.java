@@ -6,7 +6,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import static org.junit.Assert.*;
-import org.junit.Test;
 
 /**
  * Utilities for unit tests for class HoseGang.

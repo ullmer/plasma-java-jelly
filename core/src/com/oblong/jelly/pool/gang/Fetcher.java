@@ -17,15 +17,16 @@ final class Fetcher implements Runnable {
         try {
             while (!hoses.isEmpty()) {
                 final Hose h = queue.available();
-                if (!hoses.isEmpty()
-                    && h != null
-                    && hoses.containsKey(h.name())) {
-                    try {
-                        if (h.poll()) queue.put(h);
-                        else queue.available(h);
-                    } catch (PoolException e) {
-                        if (errors) queue.put(h, e);
-                        queue.available(h);
+                synchronized (this) {
+                    if (!hoses.isEmpty()
+                        && h != null
+                        && hoses.containsKey(h.name())) {
+                        try {
+                            if (h.poll()) queue.put(h);
+                            else queue.available(h);
+                        } catch (PoolException e) {
+                            if (errors) queue.put(h, e);
+                        }
                     }
                 }
             }
@@ -60,10 +61,12 @@ final class Fetcher implements Runnable {
     }
 
     void removeAll() {
-        errors = false;
-        for (Hose h : hoses.values()) h.withdraw();
-        hoses.clear();
-        queue.clear();
+        synchronized (this) {
+            errors = false;
+            for (Hose h : hoses.values()) h.withdraw();
+            hoses.clear();
+            queue.clear();
+        }
         queue.wakeUpHoseQueue();
     }
 

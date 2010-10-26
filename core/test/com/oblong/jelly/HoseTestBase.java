@@ -250,8 +250,8 @@ public class HoseTestBase extends PoolServerTestBase {
                 fail("Deposit of " + i + "th protein failed. Protein was: "
                      + TEST_PROTEINS[i] + ". Exception: " + e);
             }
-        h.rewind();
-        for (int i = 0; i < no; ++i) h.awaitNext();
+        // h.rewind();
+        // for (int i = 0; i < no; ++i) h.awaitNext();
         return result;
     }
 

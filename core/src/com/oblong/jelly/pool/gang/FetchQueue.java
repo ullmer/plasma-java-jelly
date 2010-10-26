@@ -31,6 +31,7 @@ final class FetchQueue {
 
     void put(Hose hose, PoolException e) throws InterruptedException {
         put(new GangException(hose.name(), hose.poolAddress(), e));
+        available(hose);
     }
 
     boolean wakeUp() {

@@ -92,8 +92,10 @@ final class TCPProxyHandler implements Runnable {
             return internalizer.internProtein(socket.getInputStream(),
                                               factory);
         } catch (SlawParseError e) {
-            log.warning("Error parsing protein from server: "
-                        + e.getMessage());
+            if (!socket.isClosed()) {
+                log.warning("Error parsing protein from server: "
+                            + e.getMessage());
+            }
             return null;
         }
     }
