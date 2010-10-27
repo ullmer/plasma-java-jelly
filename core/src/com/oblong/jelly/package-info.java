@@ -98,7 +98,7 @@
  * <b>not</b> thread-safe class in the library, since it has mutable
  * state but uses no synchronization primitives internally.
  *
- * <h3>Gangs: multiplexed protein reading</h3>
+ * <h4>Gangs: multiplexed protein reading</h4>
  *
  * {@link com.oblong.jelly.HoseGang} maintains a list of named
  * connections to pools, multiplexing their inputs and providing an
