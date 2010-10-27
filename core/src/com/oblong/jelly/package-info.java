@@ -98,6 +98,13 @@
  * <b>not</b> thread-safe class in the library, since it has mutable
  * state but uses no synchronization primitives internally.
  *
+ * <h3>Gangs: multiplexed protein reading</h3>
+ *
+ * {@link com.oblong.jelly.HoseGang} maintains a list of named
+ * connections to pools, multiplexing their inputs and providing an
+ * interface to read and wait on proteins coming from any of the
+ * underlying hoses. As an added boon, this class is thread-safe.
+ *
  * <h3>Deconstructing proteins</h3>
  *
  * {@link com.oblong.jelly.Protein} constitutes the exchange coin with
@@ -105,10 +112,9 @@
  * metadata (an index and timestamp, for instance) and two methods,
  * <code>ingests()</code> and <code>descrips()</code> giving you
  * access to its constituent slawx. Proteins can be either obtained
- * from hoses (using, for instance, {@link
- * com.oblong.jelly.Hose#next()} or {@link
- * com.oblong.jelly.Hose#nth(long)}) or explicitly constructed from
- * other slawx using the factory method {@link
+ * from hoses (using, for instance, {@link com.oblong.jelly.Hose#next}
+ * or {@link com.oblong.jelly.Hose#nth(long)}) or explicitly
+ * constructed from other slawx using the factory method {@link
  * com.oblong.jelly.Slaw#protein(Slaw,Slaw)}.
  *
  * <p> {@link com.oblong.jelly.Slaw} encompasses all the data types a

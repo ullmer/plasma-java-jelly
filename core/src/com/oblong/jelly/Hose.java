@@ -180,7 +180,7 @@ public interface Hose {
 
     /**
      * Sets the local index pointing just past the end of the pool, so
-     * that a call to {@link #next()} will wait, returning the next
+     * that a call to {@link #next} will wait, returning the next
      * protein deposited by another participant.
      */
     void runOut() throws PoolException;
@@ -279,7 +279,7 @@ public interface Hose {
     Protein next(Slaw... descrips) throws PoolException;
 
     /**
-     * Like {@link #next()}, but blocking (with a timeout) if no
+     * Like {@link #next}, but blocking (with a timeout) if no
      * proteins are available.
      *
      * <p> Whe a next protein is already available, this method
@@ -288,7 +288,7 @@ public interface Hose {
      * than the current one) for the specified amount of time.
      *
      * <p> When <code>period</code> is 0, this method behaves like
-     * {@link #next()} (i.e., it doesn't wait), while if
+     * {@link #next} (i.e., it doesn't wait), while if
      * <code>period</code> is negative, it behaves like {@link
      * #awaitNext()} (i.e., it waits forever).
      *
@@ -315,7 +315,7 @@ public interface Hose {
     	throws PoolException, TimeoutException;
 
     /**
-     * Like {@link #next()}, but blocking indefinitely if no proteins
+     * Like {@link #next}, but blocking indefinitely if no proteins
      * are available.
      *
      * <p> This method will return only when a protein is available,
@@ -357,7 +357,7 @@ public interface Hose {
      * <p>If the protein is available, it returns <code>true</code>;
      * otherwise, the method initiates a delayed retrieval of the next
      * matching protein returning <code>false</code> to the coder. If
-     * you call {@link #next()} or {@link #awaitNext()} afterwards,
+     * you call {@link #next} or {@link #awaitNext()} afterwards,
      * without any intervening modification of the Hose index, the
      * possibly pre-fetched Protein will be used, and the index
      * adjusted accordingly. That way, you can spend the network
@@ -391,7 +391,7 @@ public interface Hose {
     Hose dup() throws PoolException;
 
     /**
-     * Like {@link dup}, but closes this hose after transferring
+     * Like {@link #dup}, but closes this hose after transferring
      * its connection to the returned one.
      */
     Hose dupAndClose() throws PoolException;

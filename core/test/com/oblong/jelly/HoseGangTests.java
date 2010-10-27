@@ -46,14 +46,14 @@ public class HoseGangTests {
         testEmpty(g);
         final Protein[] pas = deposit(pa, 5);
         for (int i = 0; i < pas.length; ++i) {
-            assertEquals(i + "th step", pas[i], g.next());
+            assertEquals(i + "th step", pas[i], g.awaitNext());
         }
         testEmpty(g);
         final Protein[] pbs = deposit(pb, 5);
         final Protein[] pcs = deposit(pc, 5);
         int b = 0, c = 0;
         for (int i = 0; i < pbs.length + pcs.length; ++i) {
-            final Protein p = g.next();
+            final Protein p = g.awaitNext();
             if (b < pbs.length && pbs[b].equals(p)) ++b;
             else if (c < pcs.length && pcs[c].equals(p)) ++c;
             else fail("Unexpected protein: " + p

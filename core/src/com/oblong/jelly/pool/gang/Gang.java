@@ -6,17 +6,19 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import net.jcip.annotations.ThreadSafe;
+
 import com.oblong.jelly.GangException;
 import com.oblong.jelly.Hose;
 import com.oblong.jelly.HoseGang;
 import com.oblong.jelly.PoolException;
 import com.oblong.jelly.Protein;
-import net.jcip.annotations.ThreadSafe;
+import com.oblong.jelly.PoolException;
 
 @ThreadSafe
 public final class Gang extends HoseGang {
 
-    public Gang(int prefetch) {
+    public Gang() {
         queue = new FetchQueue();
         fetcher = new Fetcher(queue);
         fetcherThread = null;
@@ -40,7 +42,7 @@ public final class Gang extends HoseGang {
         }
     }
 
-    @Override public Protein next()
+    @Override public Protein awaitNext()
         throws GangException, InterruptedException {
         return queue.next(-1, null);
     }
