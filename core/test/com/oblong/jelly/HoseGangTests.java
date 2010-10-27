@@ -67,24 +67,25 @@ public class HoseGangTests {
     public static void waitTest(PoolAddress pa,
                                 PoolAddress pb,
                                 PoolAddress pc) throws Exception {
-        // final HoseGang g = add(HoseGang.newGang(), pa, pb, pc);
-        // assertEquals(3, g.count());
-        // testEmpty(g);
-        // final Protein[] pas = deposit(pa, 4);
-        // final Protein[] pbs = deposit(pb, 7);
-        // final Protein[] pcs = deposit(pc, 3);
-        // int a =0, b = 0, c = 0;
-        // for (int i = 0; i < pas.length + pbs.length + pcs.length; ++i) {
-        //     final Protein p = g.awaitNext(1, TimeUnit.MILLISECONDS);
-        //     if (b < pbs.length && pbs[b].equals(p)) ++b;
-        //     else if (c < pcs.length && pcs[c].equals(p)) ++c;
-        //     else if (a < pas.length && pas[c].equals(p)) ++a;
-        //     else fail("Unexpected protein: " + p);
-        // }
-        // assertEquals(pbs.length, b);
-        // assertEquals(pcs.length, c);
-        // assertEquals(pas.length, a);
-        // g.disband();
+        final HoseGang g = add(HoseGang.newGang(), pa, pb, pc);
+        assertEquals(3, g.count());
+        testEmpty(g);
+        final Protein[] pas = deposit(pa, 4);
+        final Protein[] pbs = deposit(pb, 7);
+        final Protein[] pcs = deposit(pc, 3);
+        int a = 0, b = 0, c = 0;
+        for (int i = 0; i < pas.length + pbs.length + pcs.length; ++i) {
+            final Protein p = g.awaitNext(1000, TimeUnit.MILLISECONDS);
+            if (b < pbs.length && pbs[b].equals(p)) ++b;
+            else if (c < pcs.length && pcs[c].equals(p)) ++c;
+            else if (a < pas.length && pas[a].equals(p)) ++a;
+            else fail("Unexpected protein: " + p
+                      + "\nwith a=" + a + ", b=" + b + ", c=" + c);
+        }
+        assertEquals(pbs.length, b);
+        assertEquals(pcs.length, c);
+        assertEquals(pas.length, a);
+        g.disband();
     }
 
     static void testEmpty(HoseGang g) throws Exception {

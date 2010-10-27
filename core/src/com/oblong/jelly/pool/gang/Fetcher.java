@@ -18,9 +18,7 @@ final class Fetcher implements Runnable {
             while (!hoses.isEmpty()) {
                 final Hose h = queue.available();
                 synchronized (this) {
-                    if (!hoses.isEmpty()
-                        && h != null
-                        && hoses.containsKey(h.name())) {
+                    if (!hoses.isEmpty() && hoses.containsKey(h.name())) {
                         try {
                             if (h.peek() != null || h.poll())
                                 queue.put(h);
@@ -46,11 +44,7 @@ final class Fetcher implements Runnable {
     boolean add(String name, Hose hose) throws PoolException {
         hose.setName(name);
         final Hose old = hoses.put(name, hose);
-        try {
-            queue.available(hose);
-        } catch (InterruptedException e) {
-            throw new PoolException("Thread interrupted: " + e.getMessage());
-        }
+        queue.available(hose);
         if (old != null) old.withdraw();
         return old == null;
     }

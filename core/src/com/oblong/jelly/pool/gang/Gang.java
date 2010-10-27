@@ -42,7 +42,7 @@ public final class Gang extends HoseGang {
 
     @Override public Protein next()
         throws GangException, InterruptedException {
-        return queue.take();
+        return queue.next(-1, null);
     }
 
     @Override public Protein awaitNext(long period, TimeUnit unit)

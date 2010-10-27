@@ -171,8 +171,7 @@ final class NetHose implements Hose {
     }
 
     @Override public boolean poll(Slaw... descrips) throws PoolException {
-        final Protein p = connection.polled();
-        if (!dirtyIndex && p != null && p.matches(descrips)) return true;
+        if (checkPolled(connection.polled())) return true;
         connection.resetPolled();
         final Slaw m = descrips.length == 0
             ? factory.nil() : factory.list(descrips);
@@ -225,11 +224,19 @@ final class NetHose implements Hose {
                                this);
     }
 
+    private boolean checkPolled(PoolProtein p, Slaw... descrips) {
+        return !dirtyIndex
+            && p != null
+            && p.index() > index
+            && p.matches(descrips);
+    }
+
     private Protein maybePolled(Slaw... descrips) {
         if (!isConnected()) return null;
-        final Protein p = connection.resetPolled();
-        if (p != null && p.matches(descrips)) {
-            return new PoolProtein(p, cleanIndex(p.index() + 1) - 1,
+        final PoolProtein p = connection.resetPolled();
+        if (checkPolled(p)) {
+            return new PoolProtein(p.bareProtein(),
+                                   cleanIndex(p.index() + 1) - 1,
                                    p.timestamp(), this);
         }
         return null;

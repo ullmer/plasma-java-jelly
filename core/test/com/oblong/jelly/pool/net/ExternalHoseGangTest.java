@@ -44,6 +44,12 @@ public class ExternalHoseGangTest {
                               new PoolAddress(TCP_ADDR, "c"));
     }
 
+    @Test public void await() throws Exception {
+        HoseGangTests.waitTest(new PoolAddress(MEM_ADDR, "a"),
+                               new PoolAddress(TCP_ADDR, "b"),
+                               new PoolAddress(TCP_ADDR, "c"));
+    }
+
     @AfterClass public static void clean() throws PoolException {
         PoolServerTestBase.clean(SERVER);
     }

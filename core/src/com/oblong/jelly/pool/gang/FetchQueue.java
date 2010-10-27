@@ -17,39 +17,35 @@ import net.jcip.annotations.ThreadSafe;
 final class FetchQueue {
 
     FetchQueue() {
-        queue = new LinkedBlockingQueue<Elem>();
+        ready = new LinkedBlockingQueue<Elem>();
         disposed = new LinkedBlockingQueue<Elem>();
+        waiting = new LinkedBlockingQueue<Elem>();
     }
 
     void put(Hose h) throws InterruptedException {
-        queue.put(new Elem(h));
+        ready.put(new Elem(h));
     }
 
     void put(GangException e) throws InterruptedException {
-        queue.put(new Elem(e));
+        ready.put(new Elem(e));
     }
 
     void put(Hose hose, PoolException e) throws InterruptedException {
         put(new GangException(hose.name(), hose.poolAddress(), e));
-        available(hose);
+        disposed.put(new Elem(hose));
     }
 
     boolean wakeUp() {
-        return queue.offer(WAKE_TOKEN);
+        return ready.offer(WAKE_TOKEN);
     }
 
     Protein next(long t, TimeUnit u)
         throws GangException, InterruptedException {
-        return (t < 0 || u == null) ? null : protein(queue.poll(t, u));
+        waiting.drainTo(disposed);
+        return t < 0 ? protein(ready.take()) : protein(ready.poll(t, u));
     }
 
-    Protein take() throws GangException, InterruptedException {
-        return protein(queue.take());
-    }
-
-    void available(Hose h) throws InterruptedException {
-        disposed.put(new Elem(h));
-    }
+    void available(Hose h) { waiting.offer(new Elem(h)); }
 
     Hose available() throws InterruptedException {
         final Elem e = disposed.take();
@@ -57,13 +53,12 @@ final class FetchQueue {
         return e.hose;
     }
 
-    void wakeUpHoseQueue() {
-        try { disposed.put(WAKE_TOKEN); } catch (InterruptedException e) {}
-    }
+    void wakeUpHoseQueue() { disposed.offer(WAKE_TOKEN); }
 
     void clear() {
-        queue.clear();
+        ready.clear();
         disposed.clear();
+        waiting.clear();
     }
 
     private Protein protein(Elem e)
@@ -72,11 +67,11 @@ final class FetchQueue {
         if (e == WAKE_TOKEN) throw new InterruptedException();
         if (e.error != null) throw e.error;
         try {
-            return  e.hose.next();
+            return e.hose.next();
         } catch (PoolException ex) {
             throw new GangException(e.hose.name(), e.hose.poolAddress(), ex);
         } finally {
-            disposed.put(e);
+            disposed.offer(e);
         }
     }
 
@@ -87,8 +82,9 @@ final class FetchQueue {
         GangException error = null;
     };
 
-    private final BlockingQueue<Elem> queue;
+    private final BlockingQueue<Elem> ready;
     private final BlockingQueue<Elem> disposed;
+    private final BlockingQueue<Elem> waiting;
 
     private static final Elem WAKE_TOKEN = new Elem((Hose)null);
 }
