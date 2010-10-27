@@ -42,15 +42,14 @@ final class Fetcher implements Runnable {
     }
 
     boolean add(String name, Hose hose) throws PoolException {
-        final Hose old = hoses.put(name, hose);
-        if (old != null) old.withdraw();
         hose.setName(name);
+        final Hose old = hoses.put(name, hose);
         try {
             queue.available(hose);
         } catch (InterruptedException e) {
-            throw new PoolException("Thread was interrupted: "
-                                    + e.getMessage());
+            throw new PoolException("Thread interrupted: " + e.getMessage());
         }
+        if (old != null) old.withdraw();
         return old == null;
     }
 
