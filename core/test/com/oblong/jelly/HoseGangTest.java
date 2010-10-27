@@ -46,6 +46,12 @@ public class HoseGangTest {
                               new PoolAddress(TCP_ADDR, "c"));
     }
 
+    @Test public void await() throws Exception {
+        HoseGangTests.waitTest(new PoolAddress(MEM_ADDR, "a"),
+                               new PoolAddress(TCP_ADDR2, "b"),
+                               new PoolAddress(TCP_ADDR, "c"));
+    }
+
     @BeforeClass public static void openProxy() {
         try {
             MEM_ADDR = PoolServerAddress.fromURI("mem://localhost");

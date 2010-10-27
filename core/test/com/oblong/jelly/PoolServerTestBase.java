@@ -29,13 +29,6 @@ public class PoolServerTestBase {
         // clean();
     }
 
-    protected PoolServerTestBase(PoolServerAddress addr)
-        throws PoolException {
-        server = Pool.getServer(addr);
-        assertNotNull(server);
-        assertEquals(addr, server.address());
-    }
-
     @Before public void maybeDisable() {
         assumeTrue(server != null);
     }
@@ -47,11 +40,7 @@ public class PoolServerTestBase {
         }
     }
 
-    protected PoolAddress poolAddress(String name) throws PoolException {
-        return new PoolAddress(server.address(), name);
-    }
-
-    protected static PoolServer externalServer() {
+    public static PoolServer externalServer() {
         String uri = System.getProperty("com.oblong.jelly.externalServer");
         PoolServer s = null;
         if (uri != null && !uri.isEmpty()) {
@@ -63,6 +52,17 @@ public class PoolServerTestBase {
             assertNotNull("URI: " + uri, s);
         }
         return s;
+    }
+
+    protected PoolServerTestBase(PoolServerAddress addr)
+        throws PoolException {
+        server = Pool.getServer(addr);
+        assertNotNull(server);
+        assertEquals(addr, server.address());
+    }
+
+    protected PoolAddress poolAddress(String name) throws PoolException {
+        return new PoolAddress(server.address(), name);
     }
 
     protected final PoolServer server;
