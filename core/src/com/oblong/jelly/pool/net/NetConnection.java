@@ -27,4 +27,5 @@ public interface NetConnection {
     Set<Request> supportedRequests();
 
     PoolProtein polled();
+    PoolProtein resetPolled();
 }

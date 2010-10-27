@@ -86,6 +86,7 @@ final class NetHose implements Hose {
     @Override public void seekTo(long idx) {
         index = idx;
         dirtyIndex = true;
+        if (isConnected()) connection.resetPolled();
     }
 
     @Override public void seekBy(long offset) {
@@ -116,7 +117,7 @@ final class NetHose implements Hose {
     }
 
     @Override public Protein next(Slaw... descrips) throws PoolException {
-        final Protein p = maybePooled(descrips);
+        final Protein p = maybePolled(descrips);
         if (p != null) return p;
         if (descrips.length == 0) return next();
         final Slaw res = Request.PROBE_FWD.send(connection,
@@ -142,7 +143,7 @@ final class NetHose implements Hose {
 
     @Override public Protein awaitNext() throws PoolException {
         try {
-	        return awaitNext(-1, TimeUnit.SECONDS);
+            return awaitNext(-1, TimeUnit.SECONDS);
         } catch (TimeoutException e) {
             assert false : "Timeout while waiting forever";
             return null;
@@ -170,6 +171,9 @@ final class NetHose implements Hose {
     }
 
     @Override public boolean poll(Slaw... descrips) throws PoolException {
+        final Protein p = connection.polled();
+        if (!dirtyIndex && p != null && p.matches(descrips)) return true;
+        connection.resetPolled();
         final Slaw m = descrips.length == 0
             ? factory.nil() : factory.list(descrips);
         try {
@@ -178,6 +182,10 @@ final class NetHose implements Hose {
             return false;
         }
         return true;
+    }
+
+    @Override public Protein peek() {
+        return connection.polled();
     }
 
     @Override public Hose dup() throws PoolException {
@@ -208,7 +216,7 @@ final class NetHose implements Hose {
     }
 
     private Protein next() throws PoolException {
-        final Protein p = maybePooled();
+        final Protein p = maybePolled();
         if (p != null) return p;
         final Slaw res = Request.NEXT.send(connection, indexSlaw(index));
         return new PoolProtein(res.nth(0).toProtein(),
@@ -217,16 +225,18 @@ final class NetHose implements Hose {
                                this);
     }
 
-    private Protein maybePooled(Slaw... descrips) {
+    private Protein maybePolled(Slaw... descrips) {
         if (!isConnected()) return null;
-        final Protein p = connection.polled();
-        if (p != null && p.matches(descrips))
+        final Protein p = connection.resetPolled();
+        if (p != null && p.matches(descrips)) {
             return new PoolProtein(p, cleanIndex(p.index() + 1) - 1,
                                    p.timestamp(), this);
+        }
         return null;
     }
 
     private Protein previous() throws PoolException {
+        connection.resetPolled();
         final Slaw res = Request.PREV.send(connection, indexSlaw(index));
         return new PoolProtein(res.nth(0).toProtein(),
                                cleanIndex(res.nth(2).emitLong()),
@@ -240,6 +250,8 @@ final class NetHose implements Hose {
         if (t > 0) connection.setTimeout(u.toMillis(t) + 100,
                                          TimeUnit.MILLISECONDS);
         try {
+            final Protein p = maybePolled();
+            if (p != null) return p;
             final Slaw res =
                 Request.AWAIT_NEXT.send(connection, timeSlaw(t, u));
             if (res == null) throw new TimeoutException();
@@ -289,6 +301,6 @@ final class NetHose implements Hose {
     private final SlawFactory factory;
     private final PoolAddress poolAddress;
     private String name;
-    long index;
-    boolean dirtyIndex;
+    private volatile long index;
+    private volatile boolean dirtyIndex;
 }

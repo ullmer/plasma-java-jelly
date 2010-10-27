@@ -366,8 +366,22 @@ public interface Hose {
      *
      * <p>When called without arguments, no test on the next protein's
      * descrips is performed.
+     *
+     * @see #peek
      */
     boolean poll(Slaw... descrips) throws PoolException;
+
+    /**
+     * Retrieves polled protein, if available, withouth modifying the
+     * local index.. This protein will always be available if a
+     * previous call to {@link #poll} returned true. It may also
+     * happen that it the intervening time the requested protein has
+     * arrived.
+     *
+     * <p>When no polled protein is available, this method returns
+     * <code>null</code>.
+     */
+    Protein peek();
 
     /**
      * Creates a new connection to the same pool, and sets the new

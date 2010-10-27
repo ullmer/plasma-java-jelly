@@ -80,7 +80,11 @@ final class TCPPoolConnection implements NetConnection {
         } catch (Exception e) {
             // ignore
         }
-        final PoolProtein result = asynchronousProtein;
+        return asynchronousProtein;
+    }
+
+    @Override public PoolProtein resetPolled() {
+        final PoolProtein result = polled();
         asynchronousProtein = null;
         return result;
     }
@@ -161,10 +165,9 @@ final class TCPPoolConnection implements NetConnection {
         final Slaw code = getResultCode(ret);
         final Slaw args = getResultArgs(ret);
         if (CMD_RESULT.equals(code)) return args;
-        if (FANCY_CMD_R1.equals(code)) return args;
-        if (FANCY_CMD_R2.equals(code)) return read(cont);
-        assert FANCY_CMD_R3.equals(code);
-        updateAsync(args);
+        if (FANCY_CMD_R1.equals(code)) return updateAsyncMeta(args);
+        if (FANCY_CMD_R2.equals(code)) updateAsyncMeta(args);
+        if (FANCY_CMD_R3.equals(code)) updateAsync(args);
         return cont ? read(cont) : null;
     }
 
@@ -184,15 +187,34 @@ final class TCPPoolConnection implements NetConnection {
         return args;
     }
 
+    private Slaw updateAsyncMeta(Slaw args) {
+        if (args.count() == 3
+            && args.nth(0).isNumber(NumericIlk.INT64)
+            && args.nth(0).emitLong() == 0
+            && args.nth(2).isNumber(NumericIlk.INT64)
+            && args.nth(1).isNumber(NumericIlk.FLOAT64)) {
+            asyncIndex = args.nth(2).emitLong();
+            asyncStamp = args.nth(1).emitDouble();
+        } else {
+            asyncIndex = -1;
+            asyncStamp = -1;
+        }
+        asynchronousProtein = null;
+        return args;
+    }
+
     private void updateAsync(Slaw args) {
         if (args.count() == 3
             && args.nth(0).isNumber(NumericIlk.FLOAT64)
             && args.nth(1).isNumber(NumericIlk.INT64)
-            && args.nth(2).isProtein())
+            && args.nth(2).isProtein()) {
+            final long idx = args.nth(1).emitLong();
+            final double ts = args.nth(0).emitDouble();
             asynchronousProtein = new PoolProtein(args.nth(2).toProtein(),
-                                                  args.nth(1).emitLong(),
-                                                  args.nth(0).emitDouble(),
+                                                  Math.max(asyncIndex, idx),
+                                                  Math.max(asyncStamp, ts),
                                                   null);
+        }
     }
 
     private static void sendPreamble(OutputStream os) throws IOException {
@@ -229,6 +251,8 @@ final class TCPPoolConnection implements NetConnection {
     private final SlawExternalizer externalizer;
     private final SlawInternalizer internalizer;
     private PoolProtein asynchronousProtein;
+    private long asyncIndex;
+    private double asyncStamp;
 
     private static final SlawFactory factory =
         new com.oblong.jelly.slaw.java.JavaSlawFactory();

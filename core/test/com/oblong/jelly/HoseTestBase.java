@@ -189,20 +189,27 @@ public class HoseTestBase extends PoolServerTestBase {
         defHose.rewind();
         for (int i = 0; i < TLEN; ++i) {
             assertTrue(defHose.poll());
+            assertTrue(defHose.poll());
+            assertEquals(DEP_PROTEINS[i], defHose.peek());
             assertEquals(DEP_PROTEINS[i], defHose.next());
+            assertNull(defHose.peek());
         }
         assertFalse(defHose.poll());
+        assertNull(defHose.peek());
     }
 
     @Test public void cancelledPoll() throws PoolException {
         defHose.rewind();
         for (int i = 0; i < TLEN; ++i) {
             assertTrue(defHose.poll());
+            assertEquals(DEP_PROTEINS[i], defHose.peek());
             defHose.oldestIndex();
             assertEquals(DEP_PROTEINS[i], defHose.next());
+            assertNull(defHose.peek());
             defHose.oldestIndex();
         }
         assertFalse(defHose.poll());
+        assertNull(defHose.peek());
     }
 
     private void testMatchingPoll(final Matcher matcher)
@@ -228,42 +235,34 @@ public class HoseTestBase extends PoolServerTestBase {
         testMatchingPoll(someMatcher);
     }
 
-    protected static Protein makeProtein(int i) {
+    static Protein makeProtein(int i, String hname) {
         final Slaw desc = list(int32(i),
                                string("descrips"),
                                map(string("foo"), nil()));
         final Slaw ings = map(string("string-key"), string("value"),
                               string("nil-key"), nil(),
-                              string("int64-key"), int64(i));
+                              string("int64-key"), int64(i),
+                              string("hose"), string(hname));
         final byte[] data = new byte[2 * i];
         for (int j = 0; j < data.length; ++j) data[j] = (byte)j;
         return protein(desc, ings, data);
     }
 
     static Protein[] deposit(Hose h, int no) throws PoolException {
-        if (no <= 0) no = TEST_PROTEINS.length;
+        if (no <= 0) no = TLEN;
         final Protein[] result = new Protein[no];
         for (int i = 0; i < no; ++i)
             try {
-                result[i] = h.deposit(TEST_PROTEINS[i]);
+                result[i] = h.deposit(makeProtein(i, h.name()));
             } catch (PoolException e) {
-                fail("Deposit of " + i + "th protein failed. Protein was: "
-                     + TEST_PROTEINS[i] + ". Exception: " + e);
+                fail("Deposit of " + i + "th protein failed");
             }
-        // h.rewind();
-        // for (int i = 0; i < no; ++i) h.awaitNext();
         return result;
     }
 
     private static Hose defHose = null;
 
-    private static final Protein[] TEST_PROTEINS;
     private static Protein[] DEP_PROTEINS = null;
     private static final int TLEN = 5;
 
-    static {
-        TEST_PROTEINS = new Protein[TLEN];
-        for (int i = 0; i < TEST_PROTEINS.length; ++i)
-            TEST_PROTEINS[i] = makeProtein(i);
-    }
 }

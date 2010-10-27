@@ -58,7 +58,9 @@ final class MemPoolConnection implements NetConnection {
 
     @Override public void setTimeout(long t, TimeUnit u) {}
 
-    @Override public PoolProtein polled() {
+    @Override public PoolProtein polled() { return polled; }
+
+    @Override public PoolProtein resetPolled() {
         final PoolProtein p = polled;
         polled = null;
         return p;
