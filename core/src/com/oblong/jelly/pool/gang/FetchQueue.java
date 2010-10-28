@@ -45,7 +45,10 @@ final class FetchQueue {
         return t < 0 ? protein(ready.take()) : protein(ready.poll(t, u));
     }
 
-    void available(Hose h) { waiting.offer(new Elem(h)); }
+    void available(Hose h) {
+        if (ready.size() == 0) disposed.offer(new Elem(h));
+        else waiting.offer(new Elem(h));
+    }
 
     Hose available() throws InterruptedException {
         final Elem e = disposed.take();
@@ -67,6 +70,7 @@ final class FetchQueue {
         if (e == WAKE_TOKEN) throw new InterruptedException();
         if (e.error != null) throw e.error;
         try {
+            assert e.hose.peek() != null;
             return e.hose.next();
         } catch (PoolException ex) {
             throw new GangException(e.hose.name(), e.hose.poolAddress(), ex);

@@ -58,6 +58,15 @@ public class HoseGangTest {
                                  new PoolAddress(TCP_ADDR, "c"));
     }
 
+    @Test public void memAsync() throws Exception {
+        HoseGangTests.asyncTest(new PoolAddress(MEM_ADDR, "a"),
+                                new PoolAddress(MEM_ADDR, "b"));
+    }
+
+    @Test public void mixAsync() throws Exception {
+        HoseGangTests.asyncTest(new PoolAddress(MEM_ADDR, "a"),
+                                new PoolAddress(TCP_ADDR, "b"));
+    }
 
     @BeforeClass public static void openProxy() {
         try {

@@ -69,7 +69,9 @@ final class MemHose implements Hose {
     }
 
     @Override public Protein deposit(Protein p) throws PoolException {
-        return pool.deposit(p);
+        final PoolProtein dp = pool.deposit(p);
+        if (polledIndex == dp.index()) polled = dp;
+        return dp;
     }
 
     @Override public Protein nth(long index) throws PoolException {
@@ -126,6 +128,7 @@ final class MemHose implements Hose {
         index = 0;
         connected = true;
         polled = null;
+        polledIndex = -1;
         try {
             address = new PoolAddress(addr, pool.name());
             name = address.toString();
@@ -186,4 +189,5 @@ final class MemHose implements Hose {
     private PoolAddress address;
     private MemPool pool;
     private PoolProtein polled;
+    private long polledIndex;
 }

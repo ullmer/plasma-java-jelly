@@ -138,10 +138,25 @@ final class TCPProxyHandler implements Runnable {
                                       ra.second());
         final Protein reply = factory.protein(null, ings, null);
         externalizer.extern(reply, socket.getOutputStream());
-        if (isFancy) {
-            final PoolProtein p = connection.polled();
-            if (p != null) sendR3(p);
+        final PoolProtein p = connection.resetPolled();
+        if (p != null) {
+            if (!isFancy) sendR2(p);
+            sendR3(p);
         }
+    }
+
+    private void sendR2(PoolProtein p) throws IOException {
+        final Slaw args = factory.list(factory.number(NumericIlk.INT64, 0),
+                                       factory.number(NumericIlk.FLOAT64,
+                                                      p.timestamp()),
+                                       factory.number(NumericIlk.INT64,
+                                                      p.index()));
+        final Slaw ings = factory.map(TCPPoolConnection.OP_KEY,
+                                      TCPPoolConnection.FANCY_CMD_R2,
+                                      TCPPoolConnection.ARGS_KEY,
+                                      args);
+        final Protein reply = factory.protein(null, ings, null);
+        externalizer.extern(reply, socket.getOutputStream());
     }
 
     private void sendR3(PoolProtein p) throws IOException {

@@ -13,7 +13,6 @@ import com.oblong.jelly.Hose;
 import com.oblong.jelly.HoseGang;
 import com.oblong.jelly.PoolException;
 import com.oblong.jelly.Protein;
-import com.oblong.jelly.PoolException;
 
 @ThreadSafe
 public final class Gang extends HoseGang {

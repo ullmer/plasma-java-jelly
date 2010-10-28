@@ -20,10 +20,9 @@ final class Fetcher implements Runnable {
                 synchronized (this) {
                     if (!hoses.isEmpty() && hoses.containsKey(h.name())) {
                         try {
-                            if (h.peek() != null || h.poll())
-                                queue.put(h);
-                            else
-                                queue.available(h);
+                            if (h.peek() == null) h.poll();
+                            if (h.peek() != null) queue.put(h);
+                            else queue.available(h);
                         } catch (PoolException e) {
                             if (errors) queue.put(h, e);
                         }

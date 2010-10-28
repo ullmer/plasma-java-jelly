@@ -39,6 +39,7 @@ final class MemPoolConnection implements NetConnection {
         index = Protein.NO_INDEX;
         open = true;
         polled = null;
+        polledIndex = -1;
     }
 
     @Override public void close() {
@@ -100,7 +101,6 @@ final class MemPoolConnection implements NetConnection {
 
     private Slaw hoseRequest(Request request, Slaw[] args)
         throws PoolException {
-        polled = null;
         if (pool == null) return makeResponse(NULL_HOSE);
         switch (request) {
         case OLDEST_INDEX:
@@ -138,6 +138,9 @@ final class MemPoolConnection implements NetConnection {
 
     private Slaw deposit(Slaw s) {
         final PoolProtein p = pool.deposit(s.toProtein());
+        if (polledIndex > -1 && polledIndex <= p.index()) {
+            polled = p;
+        }
         return makeResponse(makeIndex(p.index()),
                             OK,
                             makeStamp(p.timestamp()));
@@ -163,6 +166,7 @@ final class MemPoolConnection implements NetConnection {
 
     private Slaw pollProtein(long idx, Slaw desc) {
         polled = nextProtein(idx, desc);
+        polledIndex = polled == null ? idx : -1;
         return polled == null
             ? makeResponse(NO_SUCH_PROTEIN, makeStamp(0), makeIndex(0))
             : makeResponse(OK, makeStamp(polled.timestamp()),
@@ -225,6 +229,7 @@ final class MemPoolConnection implements NetConnection {
     private long index;
     private boolean open;
     private PoolProtein polled;
+    private long polledIndex;
 
     private static final com.oblong.jelly.slaw.SlawFactory factory =
         new com.oblong.jelly.slaw.java.JavaSlawFactory();

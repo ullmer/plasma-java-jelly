@@ -127,6 +127,53 @@ public class HoseGangTests {
         g.disband();
     }
 
+    public static void asyncTest(PoolAddress pa, PoolAddress pb)
+        throws Exception {
+        class Depositor implements Runnable {
+            Depositor(PoolAddress a, int no) { address = a; number = no; }
+            public void run() {
+                try {
+                    /* deposited = */ deposit(address, number);
+                } catch (PoolException e) {
+                    fail(e.toString());
+                }
+                // System.out.println("Deposited to " + address);
+            }
+            // Protein[] deposited = null;
+            final PoolAddress address;
+            final int number;
+        }
+
+        class Reader implements Runnable {
+            Reader(HoseGang g, int no) { gang = g;  number = no; }
+            public void run() {
+                // System.out.println("Here we go");
+                while (number > 0) {
+                    try {
+                        gang.awaitNext();
+                        --number;
+                        // System.out.println("Read, " + number + " left");
+                    } catch (Exception e) {
+                        fail(e.toString());
+                    }
+                }
+            }
+            final HoseGang gang;
+            int number;
+        }
+        final HoseGang gang = add(HoseGang.newGang(), pa, pb);
+        final Depositor da = new Depositor(pa, 3), db = new Depositor(pb, 2);
+        final Thread dta = new Thread(da), dtb = new Thread(db);
+        final Reader r = new Reader(gang, da.number + db.number);
+        final Thread rt = new Thread(r);
+        rt.start();
+        dta.start();
+        dtb.start();
+        rt.join();
+        assertEquals(0, r.number);
+        gang.disband();
+    }
+
     static void testEmpty(HoseGang g) throws Exception {
         try {
             g.awaitNext(1, TimeUnit.MILLISECONDS);

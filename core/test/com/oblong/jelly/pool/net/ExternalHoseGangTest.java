@@ -3,9 +3,10 @@
 package com.oblong.jelly.pool.net;
 
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
+import static org.junit.Assume.*;
 
 import com.oblong.jelly.HoseGangTests;
 import com.oblong.jelly.PoolAddress;
@@ -44,6 +45,10 @@ public class ExternalHoseGangTest {
                               new PoolAddress(TCP_ADDR, "c"));
     }
 
+    @Test public void async() throws Exception {
+        HoseGangTests.asyncTest(new PoolAddress(TCP_ADDR, "a"),
+                                new PoolAddress(TCP_ADDR, "b"));
+    }
     @Test public void await() throws Exception {
         HoseGangTests.waitTest(new PoolAddress(MEM_ADDR, "a"),
                                new PoolAddress(TCP_ADDR, "b"),
@@ -55,6 +60,10 @@ public class ExternalHoseGangTest {
                                  new PoolAddress(TCP_ADDR, "c"));
     }
 
+    @Before public void makeEclipseHappy() {
+        assumeTrue(SERVER != null);
+    }
+    
     @AfterClass public static void clean() throws PoolException {
         PoolServerTestBase.clean(SERVER);
     }
@@ -62,8 +71,8 @@ public class ExternalHoseGangTest {
     @BeforeClass public static void init() throws PoolException {
         MEM_ADDR = PoolServerAddress.fromURI("mem://localhost");
         SERVER = PoolServerTestBase.externalServer();
-        assertNotNull(SERVER);
-        TCP_ADDR = SERVER.address();
+        // assertNotNull(SERVER);
+        TCP_ADDR = SERVER == null ? null : SERVER.address();
         clean();
     }
 

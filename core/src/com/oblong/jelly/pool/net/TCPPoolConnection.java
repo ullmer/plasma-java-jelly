@@ -167,7 +167,7 @@ final class TCPPoolConnection implements NetConnection {
         if (CMD_RESULT.equals(code)) return args;
         if (FANCY_CMD_R1.equals(code)) return args;
         if (FANCY_CMD_R2.equals(code)) {
-            if (parseR2(args)) return read(cont);
+            if (positiveR2(args)) return read(cont);
         }
         if (FANCY_CMD_R3.equals(code)) updateAsync(args);
         return cont ? read(cont) : null;
@@ -189,7 +189,7 @@ final class TCPPoolConnection implements NetConnection {
         return args;
     }
 
-    private boolean parseR2(Slaw args) {
+    private boolean positiveR2(Slaw args) {
         return (args.count() == 3
                 && args.nth(0).isNumber(NumericIlk.INT64)
                 && args.nth(0).emitLong() == 0
