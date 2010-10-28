@@ -88,6 +88,45 @@ public class HoseGangTests {
         g.disband();
     }
 
+    public static void wakeUpTest(PoolAddress... pa) throws Exception {
+        class Waiter implements Runnable {
+            public void run() {
+                awaken = false;
+                protein = null;
+                try {
+                    while (true) { protein = gang.awaitNext(); }
+                } catch (InterruptedException e) {
+                    awaken = true;
+                } catch (Exception e) {
+                    fail(e.getMessage());
+                }
+            }
+            Waiter(HoseGang g) { gang = g; }
+            final HoseGang gang;
+            boolean awaken = false;
+            Protein protein = null;
+        }
+        final HoseGang g = HoseGangTests.add(HoseGang.newGang(), pa);
+        final Waiter w = new Waiter(g);
+        Thread th = new Thread(w);
+        th.start();
+        Thread.yield();
+        g.wakeUp();
+        th.join();
+        assertTrue(w.awaken);
+        assertNull(w.protein);
+        th = new Thread(w);
+        th.start();
+        final Protein p = deposit(pa[0], 1)[0];
+        Thread.yield();
+        g.wakeUp();
+        th.join();
+        assertTrue(w.awaken);
+        if (w.protein == null) assertEquals(p, g.awaitNext());
+        else assertEquals(p, w.protein);
+        g.disband();
+    }
+
     static void testEmpty(HoseGang g) throws Exception {
         try {
             g.awaitNext(1, TimeUnit.MILLISECONDS);

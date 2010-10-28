@@ -50,6 +50,11 @@ public class ExternalHoseGangTest {
                                new PoolAddress(TCP_ADDR, "c"));
     }
 
+    @Test public void wakeUp() throws Exception {
+        HoseGangTests.wakeUpTest(new PoolAddress(TCP_ADDR, "b"),
+                                 new PoolAddress(TCP_ADDR, "c"));
+    }
+
     @AfterClass public static void clean() throws PoolException {
         PoolServerTestBase.clean(SERVER);
     }

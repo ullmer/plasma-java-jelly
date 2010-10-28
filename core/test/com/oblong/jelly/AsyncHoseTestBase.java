@@ -77,7 +77,6 @@ public class AsyncHoseTestBase extends PoolServerTestBase {
         final Awaiter aw = new Awaiter(pa, timeout);
         final Thread th = new Thread(aw);
         th.start();
-        Thread.currentThread();
         Thread.yield();
         Hose h = Pool.participate(pa);
         Protein p = h.deposit(protein(nil(), list(int8(1))));
