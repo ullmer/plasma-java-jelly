@@ -56,7 +56,7 @@ public final class Pair<F, S> {
 
     /**
      * More or less free-form string representation, based upon those
-     * of @c F and @c S. Don't rely on this method for serialization
+     * of F and S. Don't rely on this method for serialization
      * purposes.
      */
     @Override public String toString() {

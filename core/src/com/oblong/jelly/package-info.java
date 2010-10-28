@@ -96,7 +96,11 @@
  *
  * <p> A second important thing to note is that Hose is the only
  * <b>not</b> thread-safe class in the library, since it has mutable
- * state but uses no synchronization primitives internally.
+ * state and does not use synchronization primitives internally.
+ *
+ * If you need to read from a hose only those proteins matching a
+ * fixed list of descrips, the {@link com.oblong.jelly.FilteredHose}
+ * decorator may come in handy.
  *
  * <h4>Gangs: multiplexed protein reading</h4>
  *

@@ -98,6 +98,10 @@ public abstract class HoseGang {
      * <code>hose</code>. The connection inherits the local index of
      * the given hose.
      *
+     * <p>This method is useful when you want to set up the initial
+     * index for reading, and also when you want to add to the gang
+     * a {@link FilteredHose}.
+     *
      * <p>After calling this method, your <code>hose</code> will be
      * disconnected.
      *
