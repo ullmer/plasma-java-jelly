@@ -202,8 +202,12 @@ final class TCPPoolConnection implements NetConnection {
             && args.nth(0).isNumber(NumericIlk.FLOAT64)
             && args.nth(1).isNumber(NumericIlk.INT64)
             && args.nth(2).isProtein()) {
+            // For reasons not clear to me, when asking for the first
+            // protein after -1, -1 (instead of the protein's index)
+            // is returned by the tcp pool server as index -- jao
+            final long idx = Math.max(0, args.nth(1).emitLong());
             asynchronousProtein = new PoolProtein(args.nth(2).toProtein(),
-                                                  args.nth(1).emitLong(),
+                                                  idx,
                                                   args.nth(0).emitDouble(),
                                                   null);
         }

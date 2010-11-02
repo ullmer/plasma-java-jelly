@@ -63,7 +63,7 @@ public class ExternalHoseGangTest {
     @Before public void makeEclipseHappy() {
         assumeTrue(SERVER != null);
     }
-    
+
     @AfterClass public static void clean() throws PoolException {
         PoolServerTestBase.clean(SERVER);
     }
