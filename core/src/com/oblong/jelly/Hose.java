@@ -373,13 +373,18 @@ public interface Hose {
 
     /**
      * Retrieves polled protein, if available, withouth modifying the
-     * local index.. This protein will always be available if a
-     * previous call to {@link #poll} returned true. It may also
-     * happen that it the intervening time the requested protein has
-     * arrived.
+     * local index. This protein will almost always be available if a
+     * previous call to {@link #poll} returned true (see note below).
+     * It may also happen that it the intervening time the requested
+     * protein has arrived.
      *
      * <p>When no polled protein is available, this method returns
      * <code>null</code>.
+     *
+     * <p><b>Note:</b> If you call peek immediately after poll,
+     * there's a slim chance that the protein is still arriving from
+     * the server, in which case peek will return null even after a
+     * positive poll.
      */
     Protein peek();
 
