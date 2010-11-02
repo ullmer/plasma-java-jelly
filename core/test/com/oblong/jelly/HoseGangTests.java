@@ -183,7 +183,8 @@ public class HoseGangTests {
         }
     }
 
-    static HoseGang add(HoseGang g, PoolAddress... as) throws PoolException {
+    public static HoseGang add(HoseGang g, PoolAddress... as)
+        throws PoolException {
         for (PoolAddress a : as) {
             try { Pool.dispose(a); } catch (PoolException e) {}
             Pool.create(a, null);
@@ -192,7 +193,8 @@ public class HoseGangTests {
         return g;
     }
 
-    static Protein[] deposit(PoolAddress pool, int no) throws PoolException {
+    public static Protein[] deposit(PoolAddress pool, int no)
+        throws PoolException {
         final Hose h = Pool.participate(pool);
         final Protein[] ps = HoseTestBase.deposit(h, no);
         h.withdraw();

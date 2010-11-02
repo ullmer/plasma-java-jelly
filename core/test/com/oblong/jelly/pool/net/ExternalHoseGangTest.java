@@ -5,6 +5,7 @@ package com.oblong.jelly.pool.net;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assume.*;
 
@@ -21,7 +22,6 @@ import com.oblong.jelly.PoolServerTestBase;
  * @author jao
  */
 public class ExternalHoseGangTest {
-
 
     @Test public void emptyTCP() throws Exception {
         HoseGangTests.emptyTest(new PoolAddress(TCP_ADDR, "p1"),
@@ -49,6 +49,7 @@ public class ExternalHoseGangTest {
         HoseGangTests.asyncTest(new PoolAddress(TCP_ADDR, "a"),
                                 new PoolAddress(TCP_ADDR, "b"));
     }
+
     @Test public void await() throws Exception {
         HoseGangTests.waitTest(new PoolAddress(MEM_ADDR, "a"),
                                new PoolAddress(TCP_ADDR, "b"),
@@ -74,6 +75,23 @@ public class ExternalHoseGangTest {
         // assertNotNull(SERVER);
         TCP_ADDR = SERVER == null ? null : SERVER.address();
         clean();
+    }
+
+    @Ignore("unrelated test for bug hunting")
+    @Test public void foo() throws Exception {
+        final PoolAddress addr = new PoolAddress(TCP_ADDR, "foo");
+        try { com.oblong.jelly.Pool.dispose(addr); } catch (Exception e) {}
+        com.oblong.jelly.Pool.create(addr, null);
+        final com.oblong.jelly.Protein[] ps = HoseGangTests.deposit(addr, 2);
+        final com.oblong.jelly.Hose h =
+            com.oblong.jelly.Pool.participate(addr);
+        h.rewind();
+        org.junit.Assert.assertTrue(h.poll());
+        // org.junit.Assert.assertEquals(ps[0], h.peek());
+        org.junit.Assert.assertEquals(ps[0], h.next());
+        org.junit.Assert.assertTrue(h.poll());
+        // org.junit.Assert.assertEquals(ps[1], h.peek());
+        org.junit.Assert.assertEquals(ps[1], h.next());
     }
 
     private static PoolServer SERVER;
