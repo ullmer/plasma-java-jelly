@@ -5,6 +5,7 @@ package com.oblong.jelly.pool.net;
 import java.util.concurrent.TimeUnit;
 import java.util.Set;
 
+import com.oblong.jelly.Hose;
 import com.oblong.jelly.PoolServerAddress;
 import com.oblong.jelly.PoolException;
 import com.oblong.jelly.Slaw;
@@ -28,4 +29,6 @@ public interface NetConnection {
 
     PoolProtein polled();
     PoolProtein resetPolled();
+
+    void setHose(Hose hose);
 }

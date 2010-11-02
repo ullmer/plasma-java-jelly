@@ -12,6 +12,7 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
+import com.oblong.jelly.Hose;
 import com.oblong.jelly.InOutException;
 import com.oblong.jelly.InvalidOperationException;
 import com.oblong.jelly.NumericIlk;
@@ -89,6 +90,8 @@ final class TCPPoolConnection implements NetConnection {
         return result;
     }
 
+    @Override public void setHose(Hose h) { hose = h; }
+
     static class Factory implements NetConnectionFactory {
         @Override public NetConnection get(PoolServerAddress addr)
             throws PoolException {
@@ -137,6 +140,7 @@ final class TCPPoolConnection implements NetConnection {
             externalizer = defaultExternalizer;
             internalizer = defaultInternalizer;
             asynchronousProtein = null;
+            hose = null;
         } catch (IOException e) {
             throw new InOutException(e);
         } catch (IllegalArgumentException e) {
@@ -197,19 +201,25 @@ final class TCPPoolConnection implements NetConnection {
                 && args.nth(1).isNumber(NumericIlk.FLOAT64));
     }
 
+    private long r3Index(Slaw s) {
+        long idx = s.emitLong();
+        if (idx >= 0 || hose == null) return Math.max(0, idx);
+        try {
+            return hose.oldestIndex();
+        } catch (PoolException e) {
+            return 0;
+        }
+    }
+
     private void updateAsync(Slaw args) {
         if (args.count() == 3
             && args.nth(0).isNumber(NumericIlk.FLOAT64)
             && args.nth(1).isNumber(NumericIlk.INT64)
             && args.nth(2).isProtein()) {
-            // For reasons not clear to me, when asking for the first
-            // protein after -1, -1 (instead of the protein's index)
-            // is returned by the tcp pool server as index -- jao
-            final long idx = Math.max(0, args.nth(1).emitLong());
             asynchronousProtein = new PoolProtein(args.nth(2).toProtein(),
-                                                  idx,
+                                                  r3Index(args.nth(1)),
                                                   args.nth(0).emitDouble(),
-                                                  null);
+                                                  hose);
         }
     }
 
@@ -247,6 +257,7 @@ final class TCPPoolConnection implements NetConnection {
     private final SlawExternalizer externalizer;
     private final SlawInternalizer internalizer;
     private PoolProtein asynchronousProtein;
+    private Hose hose;
 
     private static final SlawFactory factory =
         new com.oblong.jelly.slaw.java.JavaSlawFactory();

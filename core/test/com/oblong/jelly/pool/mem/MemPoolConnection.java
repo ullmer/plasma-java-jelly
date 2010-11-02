@@ -8,6 +8,7 @@ import java.util.concurrent.TimeUnit;
 
 import net.jcip.annotations.NotThreadSafe;
 
+import com.oblong.jelly.Hose;
 import com.oblong.jelly.NumericIlk;
 import com.oblong.jelly.PoolException;
 import com.oblong.jelly.PoolServerAddress;
@@ -74,6 +75,8 @@ final class MemPoolConnection implements NetConnection {
         if (LIST == request) return listRequest();
         return hoseRequest(request, args);
     }
+
+    @Override public void setHose(Hose h) {}
 
     private Slaw poolRequest(Request request, String poolName) {
         switch (request) {
