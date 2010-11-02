@@ -171,7 +171,7 @@ final class NetHose implements Hose {
     }
 
     @Override public boolean poll(Slaw... descrips) throws PoolException {
-        if (checkPolled(connection.polled())) return true;
+        if (checkPolled(connection.polled(), descrips)) return true;
         connection.resetPolled();
         final Slaw m = descrips.length == 0
             ? factory.nil() : factory.list(descrips);
@@ -202,7 +202,7 @@ final class NetHose implements Hose {
     }
 
     NetHose(NetConnection con, String pn) throws PoolException {
-        this(con, new PoolAddress(con.address(), pn), null, -1);
+        this(con, new PoolAddress(con.address(), pn), null, 0);
         cleanIndex(newestIndex());
     }
 
@@ -212,6 +212,7 @@ final class NetHose implements Hose {
         poolAddress = addr;
         setName(name);
         cleanIndex(idx);
+        connection.setHose(this);
     }
 
     private Protein next() throws PoolException {
@@ -227,7 +228,7 @@ final class NetHose implements Hose {
     private boolean checkPolled(PoolProtein p, Slaw... descrips) {
         return !dirtyIndex
             && p != null
-            && p.index() > index
+            && p.index() >= index
             && p.matches(descrips);
     }
 
@@ -286,7 +287,7 @@ final class NetHose implements Hose {
     }
 
     private Slaw indexSlaw(long idx) {
-        return factory.number(NumericIlk.INT64, idx);
+        return factory.number(NumericIlk.INT64, Math.max(0, idx));
     }
 
     private long cleanIndex(long idx) {
