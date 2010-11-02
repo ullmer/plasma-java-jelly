@@ -18,12 +18,15 @@
 
   <property name="build.dir" location="build"/>
   <property name="build.classes.dir" location="${build.dir}/classes"/>
+  <property name="build.javadoc.dir" location="${build.dir}/javadoc"/>
+  <property name="build.3rdparty.dir" location="${build.dir}/3rdparty"/>
+  <property name="build.manifest" location="${build.dir}/manifest.mf"/>
 
   <property name="dist.dir" location="dist"/>
   <property name="dist.jar"
             location="${dist.dir}/${jelly.basename}-${jelly.version}.jar"/>
-
-  <property name="build.javadoc.dir" location="${build.dir}/javadoc"/>
+  <property name="dist.standalone.jar"
+            location="${dist.dir}/${jelly.basename}-standalone-${jelly.version}.jar"/>
 
   <property name="doxygen.bin" value="doxygen"/>
   <property name="doxygen.cfg" location="etc/doxygen.cfg"/>
@@ -104,19 +107,42 @@
     </javac>
   </target>
 
-  <target name="build" depends="compile"
-          description="Generate the distribution">
-    <property name="manifest.mf" location="${build.dir}/manifest.mf" />
-    <manifest file="${manifest.mf}" >
+  <target name="-manifest">
+    <manifest file="${build.manifest}" >
       <attribute name="Built-By" value="${user.name}"/>
       <attribute name="Sealed" value="false"/>
       <attribute name="Built-On" value="${timestamp.isoformat}"/>
     </manifest>
+  </target>
+
+  <target name="jar" depends="compile,-manifest"
+          description="Generate jelly's jar file">
     <jar jarfile="${dist.jar}"
          duplicate="fail"
          basedir="${build.classes.dir}"
-         manifest="${manifest.mf}"/>
+         manifest="${build.manifest}"/>
   </target>
+
+  <target name="-extract-3rdparty" depends="init">
+    <delete dir="${build.3rdparty.dir}"/>
+    <mkdir dir="${build.3rdparty.dir}"/>
+    <unjar src="${lib.dir}/snakeyaml-1.7.jar"
+           dest="${build.3rdparty.dir}"
+           overwrite="true" />
+  </target>
+
+  <target name="standalone-jar" depends="compile,-manifest,-extract-3rdparty"
+          description="Generate jelly's standalone jar file">
+    <jar jarfile="${dist.standalone.jar}"
+         duplicate="fail"
+         manifest="${build.manifest}">
+      <fileset dir="${build.classes.dir}"/>
+      <fileset dir="${build.3rdparty.dir}"/>
+    </jar>
+  </target>
+
+  <target name="build" depends="jar,standalone-jar"
+          description="Generate all jelly jars"/>
 
   <target name="-test-init">
     <mkdir dir="${test.classes.dir}"/>
@@ -126,7 +152,7 @@
     <mkdir dir="${test.reports.dir}"/>
   </target>
 
-  <target name="compile-tests" depends="build,-test-init"
+  <target name="compile-tests" depends="jar,-test-init"
           description="Compile the test classes">
     <depend srcdir="${test.src.dir}"
             destdir="${test.classes.dir}"
