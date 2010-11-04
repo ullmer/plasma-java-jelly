@@ -28,7 +28,7 @@ import com.oblong.jelly.util.ByteReader;
 
 import static com.oblong.jelly.pool.net.Request.*;
 
-final class TCPPoolConnection implements NetConnection {
+final class TCPConnection implements NetConnection {
 
     @Override public PoolServerAddress address() { return address; }
     @Override public int version() { return version; }
@@ -95,7 +95,7 @@ final class TCPPoolConnection implements NetConnection {
     static class Factory implements NetConnectionFactory {
         @Override public NetConnection get(PoolServerAddress addr)
             throws PoolException {
-            return new TCPPoolConnection(addr);
+            return new TCPConnection(addr);
         }
     }
 
@@ -128,7 +128,7 @@ final class TCPPoolConnection implements NetConnection {
         return result;
     }
 
-    private TCPPoolConnection(PoolServerAddress addr) throws PoolException {
+    private TCPConnection(PoolServerAddress addr) throws PoolException {
         try {
             address = addr;
             socket = new Socket(addr.host(), addr.port());

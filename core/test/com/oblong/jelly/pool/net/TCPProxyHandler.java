@@ -67,11 +67,11 @@ final class TCPProxyHandler implements Runnable {
 
     private void init() throws IOException {
         ByteReader br = new ByteReader(socket.getInputStream());
-        final int preLen = TCPPoolConnection.PREAMBLE.length;
-        final int postLen = TCPPoolConnection.POSTAMBLE.length;
+        final int preLen = TCPConnection.PREAMBLE.length;
+        final int postLen = TCPConnection.POSTAMBLE.length;
         byte[] buffer = new byte[preLen];
         br.get(buffer, preLen);
-        if (!Arrays.equals(buffer, TCPPoolConnection.PREAMBLE))
+        if (!Arrays.equals(buffer, TCPConnection.PREAMBLE))
             throw new IOException("Unexpected preamble");
         final int netv = br.get();
         final int slawv = br.get();
@@ -82,7 +82,7 @@ final class TCPProxyHandler implements Runnable {
         final OutputStream os = socket.getOutputStream();
         os.write((byte)connection.version());
         os.write(slawv);
-        os.write(TCPPoolConnection.supportedToData(
+        os.write(TCPConnection.supportedToData(
                      connection.supportedRequests()));
         os.flush();
     }
@@ -115,14 +115,14 @@ final class TCPProxyHandler implements Runnable {
     private Request getRequest(Protein p) {
         final Slaw ings = p == null ? null : p.ingests();
         final Slaw sreq = ings == null ?
-            null : ings.find(TCPPoolConnection.OP_KEY);
+            null : ings.find(TCPConnection.OP_KEY);
         return sreq == null || !sreq.isNumber() ?
             null : Request.fromCode((int)sreq.emitLong());
     }
 
     private static Slaw[] getArgs(Protein p) {
         if (p == null || p.ingests() == null) return new Slaw[0];
-        final Slaw sargs = p.ingests().find(TCPPoolConnection.ARGS_KEY);
+        final Slaw sargs = p.ingests().find(TCPConnection.ARGS_KEY);
         final Slaw[] args = new Slaw[sargs == null ? 0 : sargs.count()];
         for (int i = 0; i < args.length; ++i) args[i] = sargs.nth(i);
         return args;
@@ -131,10 +131,10 @@ final class TCPProxyHandler implements Runnable {
     private void reply(Pair<Request, Slaw> ra) throws IOException {
         final boolean isFancy = ra.first() == Request.FANCY_ADD_AWAITER;
         final Slaw op = isFancy
-            ? TCPPoolConnection.FANCY_CMD_R1 : TCPPoolConnection.CMD_RESULT;
-        final Slaw ings = factory.map(TCPPoolConnection.OP_KEY,
+            ? TCPConnection.FANCY_CMD_R1 : TCPConnection.CMD_RESULT;
+        final Slaw ings = factory.map(TCPConnection.OP_KEY,
                                       op,
-                                      TCPPoolConnection.ARGS_KEY,
+                                      TCPConnection.ARGS_KEY,
                                       ra.second());
         final Protein reply = factory.protein(null, ings, null);
         externalizer.extern(reply, socket.getOutputStream());
@@ -151,9 +151,9 @@ final class TCPProxyHandler implements Runnable {
                                                       p.timestamp()),
                                        factory.number(NumericIlk.INT64,
                                                       p.index()));
-        final Slaw ings = factory.map(TCPPoolConnection.OP_KEY,
-                                      TCPPoolConnection.FANCY_CMD_R2,
-                                      TCPPoolConnection.ARGS_KEY,
+        final Slaw ings = factory.map(TCPConnection.OP_KEY,
+                                      TCPConnection.FANCY_CMD_R2,
+                                      TCPConnection.ARGS_KEY,
                                       args);
         final Protein reply = factory.protein(null, ings, null);
         externalizer.extern(reply, socket.getOutputStream());
@@ -165,9 +165,9 @@ final class TCPProxyHandler implements Runnable {
                                        factory.number(NumericIlk.INT64,
                                                       p.index()),
                                        p.bareProtein());
-        final Slaw ings = factory.map(TCPPoolConnection.OP_KEY,
-                                      TCPPoolConnection.FANCY_CMD_R3,
-                                      TCPPoolConnection.ARGS_KEY,
+        final Slaw ings = factory.map(TCPConnection.OP_KEY,
+                                      TCPConnection.FANCY_CMD_R3,
+                                      TCPConnection.ARGS_KEY,
                                       args);
         final Protein reply = factory.protein(null, ings, null);
         externalizer.extern(reply, socket.getOutputStream());

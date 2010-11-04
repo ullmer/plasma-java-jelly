@@ -18,7 +18,7 @@ import com.oblong.jelly.PoolTestBase;
 import static com.oblong.jelly.pool.net.Request.*;
 
 import com.oblong.jelly.pool.mem.TCPMemProxy;
-import com.oblong.jelly.pool.net.TCPPoolConnection;
+import com.oblong.jelly.pool.net.TCPConnection;
 
 /**
  * Unit Test for TCP pool servers, using a MemPool-base TCPProxy
@@ -48,7 +48,7 @@ public class TCPPoolConnectionTest extends PoolTestBase {
     }
 
     @Test public void supportedSets() throws PoolException, IOException {
-        checkSupported(TCPPoolConnection.defaultSupported);
+        checkSupported(TCPConnection.defaultSupported);
         for (Request r : Request.values()) checkSupported(r);
         checkSupported(CREATE, DISPOSE, PARTICIPATE, PARTICIPATE_C, WITHDRAW,
                        OLDEST_INDEX, NEWEST_INDEX, DEPOSIT, NTH_PROTEIN, NEXT,
@@ -62,9 +62,9 @@ public class TCPPoolConnectionTest extends PoolTestBase {
 
     private static void checkSupported(Set<Request> supp)
         throws PoolException, IOException {
-        final byte[] data = TCPPoolConnection.supportedToData(supp);
+        final byte[] data = TCPConnection.supportedToData(supp);
         final ByteArrayInputStream is = new ByteArrayInputStream(data);
-        assertEquals(supp, TCPPoolConnection.readSupported(is, 3));
+        assertEquals(supp, TCPConnection.readSupported(is, 3));
     }
 
 

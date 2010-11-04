@@ -26,5 +26,5 @@ public final class TCPServerFactory extends PoolServerFactory {
     }
 
     private static final NetConnectionFactory factory =
-        new TCPPoolConnection.Factory();
+        new TCPConnection.Factory();
 }
