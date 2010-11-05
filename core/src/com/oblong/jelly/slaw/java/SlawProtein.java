@@ -8,7 +8,6 @@ import java.util.concurrent.TimeUnit;
 
 import net.jcip.annotations.Immutable;
 
-import com.oblong.jelly.Hose;
 import com.oblong.jelly.Protein;
 import com.oblong.jelly.Slaw;
 

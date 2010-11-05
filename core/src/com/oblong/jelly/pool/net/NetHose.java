@@ -262,7 +262,7 @@ final class NetHose implements Hose {
         throws PoolException {
         if (from < 0) from = 0;
         if (from >= to) return factory.list();
-        final List<Slaw> req = new ArrayList<Slaw>((int)(from - to));
+        final List<Slaw> req = new ArrayList<Slaw>((int)(to - from));
         for (long k = from; k < to; ++k) {
             req.add(factory.map(factory.string("idx"), indexSlaw(k),
                                 factory.string("des"), factory.bool(d),
@@ -270,7 +270,7 @@ final class NetHose implements Hose {
                                 factory.string("roff"), indexSlaw(beg),
                                 factory.string("rbytes"), indexSlaw(len)));
         }
-        return Request.SUB_FETCH.send(connection, factory.map(req)).nth(0);
+        return Request.SUB_FETCH.send(connection, factory.list(req)).nth(0);
     }
 
     private Metadata firstFetch(Slaw f) throws NoSuchProteinException {

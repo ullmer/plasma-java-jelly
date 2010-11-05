@@ -5,7 +5,6 @@ package com.oblong.jelly.pool.mem;
 
 import com.oblong.jelly.Protein;
 import com.oblong.jelly.ProteinMetadata;
-import com.oblong.jelly.ProteinMetadata;
 import com.oblong.jelly.Slaw;
 import com.oblong.jelly.slaw.io.BinaryExternalizer;
 
@@ -48,7 +47,7 @@ final class MemProteinMetadata implements ProteinMetadata {
     }
 
     private static long listCount(Slaw s) {
-        return s == null || !s.isList() ? 0 : s.count();
+        return s == null || !(s.isList() || s.isMap()) ? 0 : s.count();
     }
 
     final Protein protein;

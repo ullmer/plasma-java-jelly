@@ -82,7 +82,7 @@ public final class Pool {
 
     /**
      * Asks a pool server to eliminate the pool denoted by the given
-     * URI The URI must include, of course, both the server and the
+     * URI. The latter must include, of course, both the server and the
      * pool names.
      *
      * @throws PoolException Possible error kinds include (but are not

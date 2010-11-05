@@ -213,7 +213,7 @@ public class HoseGangTests {
     public static Protein[] deposit(PoolAddress pool, int no)
         throws PoolException {
         final Hose h = Pool.participate(pool);
-        final Protein[] ps = HoseTestBase.deposit(h, no);
+        final Protein[] ps = HoseTests.deposit(h, no);
         h.withdraw();
         return ps;
     }

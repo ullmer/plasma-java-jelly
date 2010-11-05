@@ -19,7 +19,8 @@ public final class Metadata implements ProteinMetadata {
     public static final Slaw STAMP_KEY = Slaw.string("time");
     public static final Slaw SIZE_KEY = Slaw.string("tbytes");
     public static final Slaw ISIZE_KEY = Slaw.string("ibytes");
-    public static final Slaw DSIZE_KEY = Slaw.string("rbytes");
+    public static final Slaw DSIZE_KEY = Slaw.string("dbytes");
+    public static final Slaw RSIZE_KEY = Slaw.string("rbytes");
     public static final Slaw INO_KEY = Slaw.string("ning");
     public static final Slaw DNO_KEY = Slaw.string("ndes");
     public static final Slaw PROTEIN_KEY = Slaw.string("prot");
@@ -31,9 +32,7 @@ public final class Metadata implements ProteinMetadata {
     @Override public long descripsSize() { return readLong(DSIZE_KEY, 0); }
     @Override public long ingestsNumber() { return readLong(INO_KEY, 0); }
     @Override public long descripsNumber() { return readLong(DNO_KEY, 0); }
-    @Override public long dataSize() {
-        return size() - ingestsSize() - descripsSize();
-    }
+    @Override public long dataSize() { return readLong(RSIZE_KEY, 0); }
 
     Protein protein(Hose h) {
         final Slaw p = map.find(PROTEIN_KEY);

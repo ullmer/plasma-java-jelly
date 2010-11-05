@@ -2,11 +2,10 @@
 
 package com.oblong.jelly;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import org.junit.Before;
-import org.junit.Test;
 import static org.junit.Assert.*;
 
 import static com.oblong.jelly.Slaw.*;
@@ -17,34 +16,32 @@ import static com.oblong.jelly.Slaw.*;
  *
  * @author jao
  */
-public class HoseTestBase extends PoolServerTestBase {
+public class HoseTests {
 
-    public HoseTestBase() {
+    public HoseTests() {
+        address = null;
+        defHose = null;
+        depProteins = null;
     }
 
-    protected HoseTestBase(PoolServer s) throws PoolException {
-        super(s);
+    public HoseTests(PoolServerAddress addr) throws PoolException {
+        address = addr;
+        final PoolAddress pa = new PoolAddress(address, "default-pool");
+        try { Pool.dispose(pa); } catch (NoSuchPoolException e) {}
+        defHose = Pool.participate(pa, null);
+        depProteins = deposit(defHose, -1);
     }
 
-    protected HoseTestBase(PoolServerAddress addr) throws PoolException {
-        super(addr);
-    }
-
-    @Before public void openDefault() throws PoolException {
-        assertNotNull(server);
-        if (defHose == null) {
-            final PoolAddress address = poolAddress("default-pool");
-            defHose = Pool.participate(address, null);
-            if (DEP_PROTEINS == null) {
-                DEP_PROTEINS = deposit(defHose, -1);
-            }
+    public void cleanUp() {
+        try { defHose.withdraw(); } catch (Exception e) {}
+        try {
+            Pool.dispose(defHose.poolAddress());
+        } catch (PoolException e) {
         }
-        assertNotNull(defHose);
-        assertNotNull(DEP_PROTEINS);
     }
 
-    @Test public void hoseName() throws PoolException {
-        final PoolAddress a = poolAddress("eipool");
+    public void hoseName() throws PoolException {
+        final PoolAddress a = new PoolAddress(address, "eipool");
         final Hose h = Pool.participate(a, PoolOptions.SMALL);
         assertEquals(a, h.poolAddress());
         assertEquals(a.toString(), h.name());
@@ -55,69 +52,89 @@ public class HoseTestBase extends PoolServerTestBase {
         assertEquals(newName, h.name());
     }
 
-    @Test public void deposit() throws PoolException {
-        assertEquals(DEP_PROTEINS[0].index(), defHose.oldestIndex());
-        assertEquals(DEP_PROTEINS[TLEN - 1].index(), defHose.newestIndex());
+    public void deposit() throws PoolException {
+        assertEquals(depProteins[0].index(), defHose.oldestIndex());
+        assertEquals(depProteins[TLEN - 1].index(), defHose.newestIndex());
     }
 
-    @Test public void nth() throws PoolException {
-        for (int i = 0; i < TLEN; ++i) checkProtein(defHose.nth(i), i);
+    public void nth() throws PoolException {
+        for (int i = 0; i < TLEN; ++i) {
+            checkProtein(defHose.nth(i), i);
+            final ProteinMetadata md = defHose.metadata(i);
+            assertEquals(depProteins[i].index(), md.index());
+            assertEquals(depProteins[i].timestamp(), md.timestamp(), 0.00001);
+            assertEquals(3, md.descripsNumber());
+            assertEquals(4, md.ingestsNumber());
+            assertEquals(depProteins[i].dataLength(), md.dataSize());
+        }
     }
 
-    @Test public void next() throws PoolException {
+    public void next() throws PoolException {
         defHose.rewind();
         for (int i = 0; i < TLEN; ++i) {
             checkProtein(defHose.next(), i);
-            assertTrue(i + "th", DEP_PROTEINS[i].index() < defHose.index());
+            assertTrue(i + "th", depProteins[i].index() < defHose.index());
         }
         assertEquals(defHose.newestIndex() + 1, defHose.index());
     }
 
-    @Test public void await() throws PoolException, TimeoutException {
+    public void range() throws PoolException {
+        defHose.runOut();
+        for (int i = 1; i <= TLEN; ++i) {
+            final List<Protein> ps = defHose.range(0, i);
+            assertEquals(i, ps.size());
+            for (int k = 0; k < i; ++k) checkProtein(ps.get(k), k);
+        }
+    }
+
+    public void await() throws PoolException, TimeoutException {
         defHose.seekTo(defHose.oldestIndex());
         for (int i = 0; i < TLEN; ++i) {
             checkProtein(defHose.awaitNext(1, TimeUnit.SECONDS), i);
-            assertTrue(i + "th", DEP_PROTEINS[i].index() < defHose.index());
+            assertTrue(i + "th", depProteins[i].index() < defHose.index());
         }
 
         assertEquals(defHose.newestIndex() + 1, defHose.index());
     }
 
-    @Test public void awaitTimeout() throws PoolException {
-        defHose.runOut();
+    public void awaitTimeout() throws PoolException {
+        final Hose h = defHose.dup();
+        h.runOut();
         final long lapse = 10;
         final long t = System.currentTimeMillis();
         try {
-          defHose.awaitNext(lapse, TimeUnit.MILLISECONDS);
+          h.awaitNext(lapse, TimeUnit.MILLISECONDS);
         } catch (TimeoutException e) {
             // we're good if the timeout expired
             assertTrue(System.currentTimeMillis() >= t + lapse);
             return;
+        } finally {
+            h.withdraw();
         }
         fail("awaitNext() didn't timeout");
     }
 
-    @Test public void awaitNext() throws PoolException {
+    public void awaitNext() throws PoolException {
         defHose.seekTo(defHose.oldestIndex());
         for (int i = 0; i < TLEN; ++i) {
             checkProtein(defHose.awaitNext(), i);
-            assertTrue(i + "th", DEP_PROTEINS[i].index() < defHose.index());
+            assertTrue(i + "th", depProteins[i].index() < defHose.index());
         }
         assertEquals(defHose.newestIndex() + 1, defHose.index());
     }
 
-    @Test public void previous() throws PoolException {
+    public void previous() throws PoolException {
         defHose.runOut();
         assertEquals(defHose.newestIndex() + 1, defHose.index());
         for (int i = TLEN - 1; i > 0; --i) {
             checkProtein(defHose.previous(), i);
-            assertEquals(i + "th", DEP_PROTEINS[i].index(), defHose.index());
+            assertEquals(i + "th", depProteins[i].index(), defHose.index());
         }
     }
 
-    @Test public void current() throws PoolException {
+    public void current() throws PoolException {
         for (int i = 0; i < TLEN; i++) {
-            defHose.seekTo(DEP_PROTEINS[i].index());
+            defHose.seekTo(depProteins[i].index());
             checkProtein(defHose.current(), i);
         }
     }
@@ -137,7 +154,7 @@ public class HoseTestBase extends PoolServerTestBase {
             }
         };
 
-    private static final Matcher someMatcher = new Matcher () {
+    private final Matcher someMatcher = new Matcher () {
             public Slaw[] get(Slaw d) throws PoolException {
                 final Slaw m = d.nth(0);
                 final Slaw m2 = d.nth(1 + (i++) % 2);
@@ -156,53 +173,53 @@ public class HoseTestBase extends PoolServerTestBase {
     private void testMatching(Matcher matcher) throws PoolException {
         defHose.rewind();
         for (int i = 0; i < TLEN; ++i) {
-            final Slaw[] m = matcher.get(DEP_PROTEINS[i].descrips());
-            assertEquals(i + "th", DEP_PROTEINS[i], defHose.next(m));
-            assertTrue(i + "th", DEP_PROTEINS[i].index() < defHose.index());
+            final Slaw[] m = matcher.get(depProteins[i].descrips());
+            assertEquals(i + "th", depProteins[i], defHose.next(m));
+            assertTrue(i + "th", depProteins[i].index() < defHose.index());
 
             defHose.runOut();
-            assertEquals(i + "th", DEP_PROTEINS[i], defHose.previous(m));
-            assertEquals(i + "th", DEP_PROTEINS[i].index(), defHose.index());
+            assertEquals(i + "th", depProteins[i], defHose.previous(m));
+            assertEquals(i + "th", depProteins[i].index(), defHose.index());
 
             defHose.rewind();
-            assertEquals(i + "th", DEP_PROTEINS[i], defHose.next(m));
-            assertTrue(i + "th", DEP_PROTEINS[i].index() < defHose.index());
+            assertEquals(i + "th", depProteins[i], defHose.next(m));
+            assertTrue(i + "th", depProteins[i].index() < defHose.index());
         }
         assertEquals(defHose.newestIndex() + 1, defHose.index());
     }
 
-    @Test public void matchingAll() throws PoolException {
+    public void matchingAll() throws PoolException {
         testMatching(allMatcher);
     }
 
-    @Test public void matchingOne() throws PoolException {
+    public void matchingOne() throws PoolException {
         testMatching(oneMatcher);
     }
 
-    @Test public void matchingSome() throws PoolException {
+    public void matchingSome() throws PoolException {
         testMatching(someMatcher);
     }
 
-    @Test public void poll() throws PoolException {
+    public void poll() throws PoolException {
         defHose.rewind();
         for (int i = 0; i < TLEN; ++i) {
             assertTrue(defHose.poll());
             assertTrue(defHose.poll());
-            assertEquals(DEP_PROTEINS[i], defHose.peek());
-            assertEquals(DEP_PROTEINS[i], defHose.next());
+            assertEquals(depProteins[i], defHose.peek());
+            assertEquals(depProteins[i], defHose.next());
             assertNull(defHose.peek());
         }
         assertFalse(defHose.poll());
         assertNull(defHose.peek());
     }
 
-    @Test public void cancelledPoll() throws PoolException {
+    public void cancelledPoll() throws PoolException {
         defHose.rewind();
         for (int i = 0; i < TLEN; ++i) {
             assertTrue(defHose.poll());
-            assertEquals(DEP_PROTEINS[i], defHose.peek());
+            assertEquals(depProteins[i], defHose.peek());
             defHose.oldestIndex();
-            assertEquals(DEP_PROTEINS[i], defHose.next());
+            assertEquals(depProteins[i], defHose.next());
             assertNull(defHose.peek());
             defHose.oldestIndex();
         }
@@ -221,15 +238,15 @@ public class HoseTestBase extends PoolServerTestBase {
             });
     }
 
-    @Test public void matchingPollAll() throws PoolException {
+    public void matchingPollAll() throws PoolException {
         testMatchingPoll(allMatcher);
     }
 
-    @Test public void matchingPollOne() throws PoolException {
+    public void matchingPollOne() throws PoolException {
         testMatchingPoll(oneMatcher);
     }
 
-    @Test public void matchingPollSome() throws PoolException {
+    public void matchingPollSome() throws PoolException {
         testMatchingPoll(someMatcher);
     }
 
@@ -258,14 +275,14 @@ public class HoseTestBase extends PoolServerTestBase {
         return result;
     }
 
-    static void checkProtein(Protein p, int i) {
+    void checkProtein(Protein p, int i) {
         assertEquals(defHose.name(), p.source());
-        assertEquals(i + "th", DEP_PROTEINS[i], p);
+        assertEquals(i + "th", depProteins[i], p);
     }
 
-    private static Hose defHose = null;
-
-    private static Protein[] DEP_PROTEINS = null;
+    private final Hose defHose;
+    private final Protein[] depProteins;
+    private final PoolServerAddress address;
     private static final int TLEN = 5;
 
 }
