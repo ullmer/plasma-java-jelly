@@ -64,6 +64,25 @@ final class MemPool {
         return null;
     }
 
+    PoolProtein nth(long idx, boolean d, boolean i, long s, long l) {
+        final PoolProtein p = nth(idx);
+        if (p == null) return null;
+        byte[] data = null;
+        if (s >= 0 && l != 0) {
+            l = l < 0 ? p.dataLength() : Math.min(l, p.dataLength());
+            data = new byte[(int)l];
+            for (long k = 0; k < l; ++k) {
+                data[(int)k] = p.datum((int)(s + k));
+            }
+        }
+        return new PoolProtein(Slaw.protein(d ? p.descrips() : null,
+                                            i ? p.ingests() : null,
+                                            data),
+                               p.index(),
+                               p.timestamp(),
+                               null);
+    }
+
     PoolProtein next(long index, double timeout) {
         PoolProtein p = nth(index);
         if (p == null && timeout != 0) {

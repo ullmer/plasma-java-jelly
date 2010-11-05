@@ -3,6 +3,7 @@
 
 package com.oblong.jelly;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -238,6 +239,29 @@ public interface Hose {
      *
      */
     Protein nth(long index) throws PoolException;
+
+    Protein nth(long index, boolean descrips, boolean ingests, boolean data)
+        throws PoolException;
+
+    Protein nth(long index, boolean descrips, boolean ingests,
+                long dataStart, long dataLenght) throws PoolException;
+
+    /**
+     * Retrieves all proteins with the index the [from, to) interval.
+     */
+    List<Protein> range(long from, long to) throws PoolException;
+
+    List<Protein> range(long from, long to,
+                        boolean descrips, boolean ingests, boolean data)
+        throws PoolException;
+
+    List<Protein> range(long from, long to,
+                        boolean descrips, boolean ingests,
+                        long dataStart, long dataLength) throws PoolException;
+
+    ProteinMetadata metadata(long idx) throws PoolException;
+
+    List<ProteinMetadata> metadata(long from, long to) throws PoolException;
 
     /**
      * Retrieves the Protein located at the current value of the index.

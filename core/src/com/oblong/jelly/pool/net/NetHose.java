@@ -2,6 +2,8 @@
 
 package com.oblong.jelly.pool.net;
 
+import java.util.List;
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
@@ -16,6 +18,7 @@ import com.oblong.jelly.Pool;
 import com.oblong.jelly.PoolAddress;
 import com.oblong.jelly.PoolException;
 import com.oblong.jelly.Protein;
+import com.oblong.jelly.ProteinMetadata;
 import com.oblong.jelly.Slaw;
 import com.oblong.jelly.pool.PoolProtein;
 import com.oblong.jelly.slaw.SlawFactory;
@@ -170,6 +173,45 @@ final class NetHose implements Hose {
                                this);
     }
 
+    @Override public Protein nth(long idx, boolean d, boolean i, boolean dt)
+        throws PoolException {
+        return nth(idx, d, i, dt ? 0 : -1, -1);
+    }
+
+    @Override public Protein nth(long idx, boolean d, boolean i,
+                                 long s, long l) throws PoolException {
+        final Metadata md = firstFetch(subFetch(idx, idx + 1, d, i, s, l));
+        final Protein p = md.protein(this);
+        if (p == null) throw new NoSuchProteinException(0);
+        return p;
+    }
+
+    @Override public List<Protein> range(long from, long to)
+        throws PoolException {
+        return range(from, to, true, true, true);
+    }
+
+    @Override public List<Protein> range(long f, long t,
+                                         boolean d, boolean i, boolean dt)
+        throws PoolException {
+        return range(f, t, d, i, dt ? 0 : -1, -1);
+    }
+
+    @Override public List<Protein> range(long f, long t, boolean d, boolean i,
+                                         long s, long l)
+        throws PoolException {
+        return Metadata.parseProteins(subFetch(f, t, d, i, s, l), this);
+    }
+
+    @Override public ProteinMetadata metadata(long idx) throws PoolException {
+        return firstFetch(subFetch(idx, idx + 1, false, false, -1, -1));
+    }
+
+    @Override public List<ProteinMetadata> metadata(long from, long to)
+        throws PoolException {
+        return Metadata.parseMeta(subFetch(from, to, false, false, -1, -1));
+    }
+
     @Override public boolean poll(Slaw... descrips) throws PoolException {
         if (checkPolled(connection.polled(), descrips)) return true;
         connection.resetPolled();
@@ -213,6 +255,29 @@ final class NetHose implements Hose {
         setName(name);
         cleanIndex(idx);
         connection.setHose(this);
+    }
+
+    private Slaw subFetch(long from, long to,
+                          boolean d, boolean i, long beg, long len)
+        throws PoolException {
+        if (from < 0) from = 0;
+        if (from >= to) return factory.list();
+        final List<Slaw> req = new ArrayList<Slaw>((int)(from - to));
+        for (long k = from; k < to; ++k) {
+            req.add(factory.map(factory.string("idx"), indexSlaw(k),
+                                factory.string("des"), factory.bool(d),
+                                factory.string("ing"), factory.bool(i),
+                                factory.string("roff"), indexSlaw(beg),
+                                factory.string("rbytes"), indexSlaw(len)));
+        }
+        return Request.SUB_FETCH.send(connection, factory.map(req)).nth(0);
+    }
+
+    private Metadata firstFetch(Slaw f) throws NoSuchProteinException {
+        if (f.count() == 0) throw new NoSuchProteinException(0);
+        final Metadata md = new Metadata(f.nth(0));
+        if (md.retort() != 0) throw new NoSuchProteinException(md.retort());
+        return md;
     }
 
     private Protein next() throws PoolException {
