@@ -51,13 +51,20 @@ public class HoseGangTests {
         testEmpty(g);
         final Protein[] pbs = deposit(pb, 5);
         final Protein[] pcs = deposit(pc, 5);
+        final String bn = pb.toString();
+        final String cn = pc.toString();
         int b = 0, c = 0;
         for (int i = 0; i < pbs.length + pcs.length; ++i) {
             final Protein p = g.awaitNext();
-            if (b < pbs.length && pbs[b].equals(p)) ++b;
-            else if (c < pcs.length && pcs[c].equals(p)) ++c;
-            else fail("Unexpected protein: " + p
-                      + "\nwith b=" + b + ", c=" + c);
+            if (bn.equals(p.source())) {
+                assertTrue(b < pbs.length);
+                assertEquals(pbs[b++], p);
+            } else if (cn.equals(p.source())) {
+                assertTrue(c < pcs.length);
+                assertEquals(pcs[c++], p);
+            } else
+                fail("Unexpected protein: " + p
+                     + "\nwith b=" + b + ", c=" + c);
         }
         assertEquals(pbs.length, b);
         assertEquals(pcs.length, c);
@@ -73,14 +80,24 @@ public class HoseGangTests {
         final Protein[] pas = deposit(pa, 4);
         final Protein[] pbs = deposit(pb, 7);
         final Protein[] pcs = deposit(pc, 3);
+        final String an = pa.toString();
+        final String bn = pb.toString();
+        final String cn = pc.toString();
         int a = 0, b = 0, c = 0;
         for (int i = 0; i < pas.length + pbs.length + pcs.length; ++i) {
             final Protein p = g.awaitNext(1000, TimeUnit.MILLISECONDS);
-            if (b < pbs.length && pbs[b].equals(p)) ++b;
-            else if (c < pcs.length && pcs[c].equals(p)) ++c;
-            else if (a < pas.length && pas[a].equals(p)) ++a;
-            else fail("Unexpected protein: " + p
-                      + "\nwith a=" + a + ", b=" + b + ", c=" + c);
+            if (b < pbs.length && pbs[b].equals(p)) {
+                assertEquals(bn, p.source());
+                ++b;
+            } else if (c < pcs.length && pcs[c].equals(p)) {
+                assertEquals(cn, p.source());
+                ++c;
+            } else if (a < pas.length && pas[a].equals(p)) {
+                assertEquals(an, p.source());
+                ++a;
+            } else
+                fail("Unexpected protein: " + p
+                     + "\nwith a=" + a + ", b=" + b + ", c=" + c);
         }
         assertEquals(pbs.length, b);
         assertEquals(pcs.length, c);

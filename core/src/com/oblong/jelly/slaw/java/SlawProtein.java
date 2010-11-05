@@ -32,7 +32,7 @@ final class SlawProtein extends Protein {
     @Override public long index() { return NO_INDEX; }
     @Override public long timestamp(TimeUnit u) { return NO_TIMESTAMP; }
     @Override public double timestamp() { return NO_TIMESTAMP; }
-    @Override public Hose source() { return null; }
+    @Override public String source() { return null; }
 
     private SlawProtein(Slaw d, Slaw i, byte[] b) {
         descrips = d;

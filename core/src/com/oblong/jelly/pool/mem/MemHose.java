@@ -69,7 +69,7 @@ final class MemHose implements Hose {
     }
 
     @Override public Protein deposit(Protein p) throws PoolException {
-        final PoolProtein dp = pool.deposit(p);
+        final PoolProtein dp = new PoolProtein(pool.deposit(p), this);
         if (polledIndex == dp.index()) polled = dp;
         return dp;
     }
@@ -88,7 +88,7 @@ final class MemHose implements Hose {
 
     @Override public Protein awaitNext(long period, TimeUnit unit)
         throws PoolException, TimeoutException {
-    	final Protein p = await(unit.toMillis(period)/1000.00);
+    	final PoolProtein p = await(unit.toMillis(period)/1000.00);
     	if (p == null) throw new TimeoutException();
         return checkProtein(p);
     }
@@ -139,8 +139,8 @@ final class MemHose implements Hose {
         }
     }
 
-    private Protein getNext(Slaw... desc) {
-        Protein p = maybePolled(desc);
+    private PoolProtein getNext(Slaw... desc) {
+        PoolProtein p = maybePolled(desc);
         if (p == null) {
             final long idx = Math.max(pool.oldestIndex(), index);
             p = desc.length == 0 ?
@@ -150,7 +150,7 @@ final class MemHose implements Hose {
         return p;
     }
 
-    private Protein getPrev(Slaw... desc) {
+    private PoolProtein getPrev(Slaw... desc) {
         polled = null;
         final long idx = Math.min(pool.newestIndex(), index - 1);
         final PoolProtein p = desc.length == 0 ?
@@ -159,16 +159,16 @@ final class MemHose implements Hose {
         return p;
     }
 
-    private Protein await(double timeout) throws PoolException {
+    private PoolProtein await(double timeout) throws PoolException {
         if (timeout == 0) return getNext();
-        Protein p = maybePolled();
+        PoolProtein p = maybePolled();
         if (p == null) p = pool.next(index, timeout);
         if (p != null) ++index;
         return p;
     }
 
-    private Protein maybePolled(Slaw... descrips) {
-        Protein p = null;
+    private PoolProtein maybePolled(Slaw... descrips) {
+        PoolProtein p = null;
         if (polled != null && polled.matches(descrips)) p = polled;
         polled = null;
         return p;
@@ -178,9 +178,10 @@ final class MemHose implements Hose {
     	if (!connected) throw new NoSuchPoolException(0);
     }
 
-    private Protein checkProtein(Protein p) throws NoSuchProteinException {
+    private Protein checkProtein(PoolProtein p)
+        throws NoSuchProteinException {
         if (p == null) throw new NoSuchProteinException(0);
-        return p;
+        return p.source() == null? new PoolProtein(p, this) : p;
     }
 
     private String name;

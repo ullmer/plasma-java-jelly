@@ -28,6 +28,10 @@ public final class PoolProtein extends Protein {
         hose = h;
     }
 
+    public PoolProtein(PoolProtein p, Hose h) {
+        this(p.bareProtein(), p.index(), p.timestamp(), h);
+    }
+
     public Protein bareProtein() { return protein; }
 
     @Override public String toString() {
@@ -48,7 +52,9 @@ public final class PoolProtein extends Protein {
     @Override public long timestamp(TimeUnit unit) {
         return unit.convert((long)(stamp * 1e9), TimeUnit.NANOSECONDS);
     }
-    @Override public Hose source() { return hose; }
+    @Override public String source() {
+        return hose == null ? null : hose.name();
+    }
 
     private final Protein protein;
     private final long index;

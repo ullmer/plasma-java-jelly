@@ -61,14 +61,13 @@ public class HoseTestBase extends PoolServerTestBase {
     }
 
     @Test public void nth() throws PoolException {
-        for (int i = 0; i < TLEN; ++i)
-            assertEquals(DEP_PROTEINS[i], defHose.nth(i));
+        for (int i = 0; i < TLEN; ++i) checkProtein(defHose.nth(i), i);
     }
 
     @Test public void next() throws PoolException {
         defHose.rewind();
         for (int i = 0; i < TLEN; ++i) {
-            assertEquals(i + "th", DEP_PROTEINS[i], defHose.next());
+            checkProtein(defHose.next(), i);
             assertTrue(i + "th", DEP_PROTEINS[i].index() < defHose.index());
         }
         assertEquals(defHose.newestIndex() + 1, defHose.index());
@@ -77,8 +76,7 @@ public class HoseTestBase extends PoolServerTestBase {
     @Test public void await() throws PoolException, TimeoutException {
         defHose.seekTo(defHose.oldestIndex());
         for (int i = 0; i < TLEN; ++i) {
-            assertEquals(i + "th", DEP_PROTEINS[i],
-                         defHose.awaitNext(1, TimeUnit.SECONDS));
+            checkProtein(defHose.awaitNext(1, TimeUnit.SECONDS), i);
             assertTrue(i + "th", DEP_PROTEINS[i].index() < defHose.index());
         }
 
@@ -102,7 +100,7 @@ public class HoseTestBase extends PoolServerTestBase {
     @Test public void awaitNext() throws PoolException {
         defHose.seekTo(defHose.oldestIndex());
         for (int i = 0; i < TLEN; ++i) {
-            assertEquals(i + "th", DEP_PROTEINS[i], defHose.awaitNext());
+            checkProtein(defHose.awaitNext(), i);
             assertTrue(i + "th", DEP_PROTEINS[i].index() < defHose.index());
         }
         assertEquals(defHose.newestIndex() + 1, defHose.index());
@@ -112,7 +110,7 @@ public class HoseTestBase extends PoolServerTestBase {
         defHose.runOut();
         assertEquals(defHose.newestIndex() + 1, defHose.index());
         for (int i = TLEN - 1; i > 0; --i) {
-            assertEquals(i + "th", DEP_PROTEINS[i], defHose.previous());
+            checkProtein(defHose.previous(), i);
             assertEquals(i + "th", DEP_PROTEINS[i].index(), defHose.index());
         }
     }
@@ -120,7 +118,7 @@ public class HoseTestBase extends PoolServerTestBase {
     @Test public void current() throws PoolException {
         for (int i = 0; i < TLEN; i++) {
             defHose.seekTo(DEP_PROTEINS[i].index());
-            assertEquals(i + "th", DEP_PROTEINS[i], defHose.current());
+            checkProtein(defHose.current(), i);
         }
     }
 
@@ -258,6 +256,11 @@ public class HoseTestBase extends PoolServerTestBase {
                 fail("Deposit of " + i + "th protein failed");
             }
         return result;
+    }
+
+    static void checkProtein(Protein p, int i) {
+        assertEquals(defHose.name(), p.source());
+        assertEquals(i + "th", DEP_PROTEINS[i], p);
     }
 
     private static Hose defHose = null;

@@ -127,7 +127,9 @@ public abstract class HoseGang {
     public abstract void disband();
 
     /**
-     * Waits for the next protein, from any connection.
+     * Waits for the next protein, from any connection. Calling {@link
+     * Protein#source} on the returned protein will return the name
+     * used to add the connection to this gang.
      *
      * @throws InterruptedException if {@link #wakeUp} is invoked on
      * this hang from another thread.
@@ -153,7 +155,8 @@ public abstract class HoseGang {
      * Waits for the next protein, from any connection, for the
      * specified amount of time. If <code>period</code> is negative,
      * the call is equivalent to {@link #awaitNext()} (i.e., we'll
-     * wait for ever).
+     * wait for ever). Calling {@link Protein#source} on the returned
+     * protein will tell you which connection it comes from.
      *
      * @throws TimeoutException if the given period expires without
      * any new protein arriving.

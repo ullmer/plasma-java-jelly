@@ -130,11 +130,11 @@ public abstract class Protein extends Slaw {
     public abstract double timestamp();
 
     /**
-     * For proteins obtained by means of a Hose, this method returns a
-     * reference to the source Hose instance. For proteins created by
-     * other means, this method returns null.
+     * For proteins obtained by means of a Hose, this method returns
+     * the Hose's name. For proteins created by other means, this
+     * method returns null.
      */
-    public abstract Hose source();
+    public abstract String source();
 
     /** Returns {@link SlawIlk#PROTEIN}. */
     @Override public final SlawIlk ilk() { return SlawIlk.PROTEIN; }
