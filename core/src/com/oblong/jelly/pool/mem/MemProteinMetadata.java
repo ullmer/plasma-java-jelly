@@ -2,7 +2,6 @@
 
 package com.oblong.jelly.pool.mem;
 
-
 import com.oblong.jelly.Protein;
 import com.oblong.jelly.ProteinMetadata;
 import com.oblong.jelly.Slaw;
@@ -35,18 +34,18 @@ final class MemProteinMetadata implements ProteinMetadata {
     }
 
     @Override public long ingestsNumber() {
-        return listCount(protein.ingests());
+        return count(protein.ingests());
     }
 
     @Override public long descripsNumber() {
-        return listCount(protein.descrips());
+        return count(protein.descrips());
     }
 
     @Override public long dataSize() {
         return protein.dataLength();
     }
 
-    private static long listCount(Slaw s) {
+    private static long count(Slaw s) {
         return s == null || !(s.isList() || s.isMap()) ? 0 : s.count();
     }
 

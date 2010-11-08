@@ -109,7 +109,7 @@ final class MemHose implements Hose {
                                          boolean descrips,
                                          boolean ingests, boolean data)
         throws PoolException {
-        return range(from, to, true, true, 0, -1);
+        return range(from, to, true, true, data ? 0 : -1, -1);
     }
 
     @Override public List<Protein> range(long from, long to,

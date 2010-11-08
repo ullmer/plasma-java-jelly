@@ -32,7 +32,7 @@ final class NetHose implements Hose {
 
     @Override public Slaw info() {
         try {
-            final Slaw res = Request.INFO.send(connection, indexSlaw(-1));
+            final Slaw res = Request.INFO.send(connection, longSlaw(-1));
             return res.nth(1).toProtein().ingests();
         } catch (Throwable e) {
             return factory.map();
@@ -124,7 +124,7 @@ final class NetHose implements Hose {
         if (p != null) return p;
         if (descrips.length == 0) return next();
         final Slaw res = Request.PROBE_FWD.send(connection,
-                                                indexSlaw(index),
+                                                indexSlaw(),
                                                 matcher(descrips));
         return new PoolProtein(res.nth(0).toProtein(),
                                cleanIndex(res.nth(2).emitLong() + 1) - 1,
@@ -156,7 +156,7 @@ final class NetHose implements Hose {
     @Override public Protein previous(Slaw... descrips) throws PoolException {
         if (descrips.length == 0) return previous();
         final Slaw res = Request.PROBE_BACK.send(connection,
-                                                 indexSlaw(index),
+                                                 indexSlaw(),
                                                  matcher(descrips));
         return new PoolProtein(res.nth(0).toProtein(),
                                cleanIndex(res.nth(2).emitLong()),
@@ -165,7 +165,7 @@ final class NetHose implements Hose {
     }
 
     @Override public Protein nth(long idx) throws PoolException {
-        final Slaw sidx = indexSlaw(idx);
+        final Slaw sidx = longSlaw(idx);
         final Slaw res = Request.NTH_PROTEIN.send(connection, sidx);
         return new PoolProtein(res.nth(0).toProtein(),
                                sidx.emitLong(),
@@ -218,7 +218,7 @@ final class NetHose implements Hose {
         final Slaw m = descrips.length == 0
             ? factory.nil() : factory.list(descrips);
         try {
-            Request.FANCY_ADD_AWAITER.send(connection, indexSlaw(index), m);
+            Request.FANCY_ADD_AWAITER.send(connection, indexSlaw(), m);
         } catch (NoSuchProteinException e) {
             return false;
         }
@@ -264,11 +264,11 @@ final class NetHose implements Hose {
         if (from >= to) return factory.list();
         final List<Slaw> req = new ArrayList<Slaw>((int)(to - from));
         for (long k = from; k < to; ++k) {
-            req.add(factory.map(factory.string("idx"), indexSlaw(k),
+            req.add(factory.map(factory.string("idx"), longSlaw(k),
                                 factory.string("des"), factory.bool(d),
                                 factory.string("ing"), factory.bool(i),
-                                factory.string("roff"), indexSlaw(beg),
-                                factory.string("rbytes"), indexSlaw(len)));
+                                factory.string("roff"), longSlaw(beg),
+                                factory.string("rbytes"), longSlaw(len)));
         }
         return Request.SUB_FETCH.send(connection, factory.list(req)).nth(0);
     }
@@ -283,7 +283,7 @@ final class NetHose implements Hose {
     private Protein next() throws PoolException {
         final Protein p = maybePolled();
         if (p != null) return p;
-        final Slaw res = Request.NEXT.send(connection, indexSlaw(index));
+        final Slaw res = Request.NEXT.send(connection, indexSlaw());
         return new PoolProtein(res.nth(0).toProtein(),
                                cleanIndex(res.nth(2).emitLong() + 1) - 1,
                                res.nth(1).emitDouble(),
@@ -310,7 +310,7 @@ final class NetHose implements Hose {
 
     private Protein previous() throws PoolException {
         connection.resetPolled();
-        final Slaw res = Request.PREV.send(connection, indexSlaw(index));
+        final Slaw res = Request.PREV.send(connection, indexSlaw());
         return new PoolProtein(res.nth(0).toProtein(),
                                cleanIndex(res.nth(2).emitLong()),
                                res.nth(1).emitDouble(),
@@ -352,7 +352,15 @@ final class NetHose implements Hose {
     }
 
     private Slaw indexSlaw(long idx) {
-        return factory.number(NumericIlk.INT64, Math.max(0, idx));
+        return longSlaw(Math.max(0, idx));
+    }
+
+    private Slaw indexSlaw() {
+        return indexSlaw(index);
+    }
+
+    private Slaw longSlaw(long v) {
+        return factory.number(NumericIlk.INT64, v);
     }
 
     private long cleanIndex(long idx) {

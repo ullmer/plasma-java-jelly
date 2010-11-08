@@ -33,7 +33,7 @@ public class TCPHoseTest {
     @Test public void previous() throws Exception { tests.previous(); }
     @Test public void current() throws Exception { tests.current(); }
 
-    // @Test public void range() throws Exception { tests.range(); }
+    @Test public void range() throws Exception { tests.range(); }
 
     @Test public void matchingAll() throws Exception { tests.matchingAll(); }
     @Test public void matchingOne() throws Exception { tests.matchingOne(); }

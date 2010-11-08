@@ -2,7 +2,9 @@
 
 package com.oblong.jelly.pool.mem;
 
+import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -19,11 +21,13 @@ import com.oblong.jelly.pool.ServerErrorCode;
 import com.oblong.jelly.pool.net.NetConnection;
 import com.oblong.jelly.pool.net.NetConnectionFactory;
 import com.oblong.jelly.pool.net.Request;
+import com.oblong.jelly.slaw.SlawFactory;
+import com.oblong.util.Pair;
 
 import static com.oblong.jelly.pool.ServerErrorCode.*;
 import static com.oblong.jelly.pool.net.Request.*;
+import static com.oblong.jelly.pool.net.Metadata.*;
 
-import com.oblong.jelly.slaw.SlawFactory;
 
 @NotThreadSafe
 final class MemPoolConnection implements NetConnection {
@@ -126,6 +130,8 @@ final class MemPoolConnection implements NetConnection {
             return await(args[0].emitDouble());
         case FANCY_ADD_AWAITER:
             return pollProtein(args[0].emitLong(), args[1]);
+        case SUB_FETCH:
+            return subfetch(args[0]);
         case WITHDRAW:
             close();
             return makeResponse(OK);
@@ -211,6 +217,56 @@ final class MemPoolConnection implements NetConnection {
         return makeResponse(ret, prot, time, makeIndex(idx));
     }
 
+    private Slaw subfetch(Slaw args) {
+        final List<Slaw> info = new ArrayList<Slaw>(args.count());
+        long min = -1;
+        long max = -1;
+        for (Slaw m : args) {
+            final Pair<Long, Slaw> dl = subfetchOne(m);
+            if (dl != null) {
+                if (min < 0 || min > dl.first()) min = dl.first();
+                if (dl.first() > max) max = dl.first();
+                info.add(dl.second());
+            }
+        }
+        return makeResponse(factory.list(info),
+                            makeIndex(min),
+                            makeIndex(max));
+    }
+
+    private Pair<Long, Slaw> subfetchOne(Slaw req) {
+        final Slaw IDX_K = factory.string("idx");
+        final Slaw DES_K = factory.string("des");
+        final Slaw ING_K = factory.string("ing");
+        final Slaw ROF_K = factory.string("roff");
+        final Slaw RNO_K = factory.string("rbytes");
+        try {
+            final long idx = req.find(IDX_K).emitLong();
+            final boolean descs = req.find(DES_K).emitBoolean();
+            final boolean ings = req.find(ING_K).emitBoolean();
+            final long ds = req.find(ROF_K).emitLong();
+            final long dl = req.find(RNO_K).emitLong();
+            final PoolProtein prot = pool.nth(idx, descs, ings, ds, dl);
+            if (prot == null) return null;
+            final MemProteinMetadata md =
+                new MemProteinMetadata(pool.nth(idx));
+            final Slaw r = factory.map(RKEY, OK,
+                                       INDEX_KEY, makeIndex(idx),
+                                       STAMP_KEY, makeStamp(prot.timestamp()),
+                                       SIZE_KEY, makeLong(md.size()),
+                                       ISIZE_KEY, makeLong(md.ingestsSize()),
+                                       DSIZE_KEY, makeLong(md.descripsSize()),
+                                       RSIZE_KEY, makeLong(md.dataSize()),
+                                       INO_KEY, makeLong(md.ingestsNumber()),
+                                       DNO_KEY, makeLong(md.descripsNumber()),
+                                       PROTEIN_KEY, prot);
+            return Pair.create(new Long(idx), r);
+        } catch (Throwable e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     private static Slaw makeResponse(Slaw... args) {
         return factory.list(args);
     }
@@ -224,6 +280,10 @@ final class MemPoolConnection implements NetConnection {
     }
 
     private static Slaw makeIndex(long idx) {
+        return makeLong(idx);
+    }
+
+    private static Slaw makeLong(long idx) {
         return factory.number(NumericIlk.INT64, idx);
     }
 
@@ -248,7 +308,7 @@ final class MemPoolConnection implements NetConnection {
         EnumSet.of(CREATE, DISPOSE, PARTICIPATE, PARTICIPATE_C, WITHDRAW,
                    OLDEST_INDEX, NEWEST_INDEX, DEPOSIT, NTH_PROTEIN, NEXT,
                    PROBE_FWD, PREV, PROBE_BACK, AWAIT_NEXT, LIST,
-                   FANCY_ADD_AWAITER);
+                   FANCY_ADD_AWAITER, SUB_FETCH);
     static final Set<Request> POOL_OPS =
         EnumSet.of(CREATE, DISPOSE, PARTICIPATE, PARTICIPATE_C);
 }
