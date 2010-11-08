@@ -248,6 +248,8 @@ public interface Hose {
      */
     List<Protein> range(long from, long to) throws PoolException;
 
+    ProteinMetadata metadata(MetadataRequest req) throws PoolException;
+
     List<ProteinMetadata> metadata(MetadataRequest... reqs)
         throws PoolException;
 

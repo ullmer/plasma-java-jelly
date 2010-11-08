@@ -119,6 +119,16 @@ public final class FilteredHose implements Hose {
     }
 
     /**
+     * Retrieves metadata for a protein according to the request. No
+     * filtering is performed, since the metadata does not necessarily
+     * include descrips.
+     */
+    @Override public ProteinMetadata metadata(MetadataRequest req)
+        throws PoolException {
+        return hose.metadata(req);
+    }
+
+    /**
      * Retrieves metadata for proteins according to the request list.
      * No filtering is performed, since the metadata does not
      * necessarily include descrips.

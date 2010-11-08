@@ -189,6 +189,11 @@ final class NetHose implements Hose {
             subFetch(f, t, true, true, true), this);
     }
 
+    @Override public ProteinMetadata metadata(MetadataRequest req)
+        throws PoolException {
+        return firstFetch(subFetch(req));
+    }
+
     @Override public List<ProteinMetadata> metadata(MetadataRequest... rs)
         throws PoolException {
         return NetProteinMetadata.parseMeta(subFetch(rs), this);

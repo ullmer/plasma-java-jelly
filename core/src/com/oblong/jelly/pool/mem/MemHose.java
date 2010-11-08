@@ -99,17 +99,19 @@ final class MemHose implements Hose {
         return result;
     }
 
+    @Override public ProteinMetadata metadata(MetadataRequest req)
+        throws PoolException {
+        final ProteinMetadata md = makeMeta(req);
+        if (md == null) throw new NoSuchProteinException(0);
+        return md;
+    }
+
     @Override public List<ProteinMetadata> metadata(MetadataRequest... rs)
         throws PoolException {
         final List<ProteinMetadata> result = new ArrayList<ProteinMetadata>();
         for (MetadataRequest r : rs) {
-            final long i = r.index();
-            final Protein p = pool.nth(i,
-                                       r.descrips(),
-                                       r.ingests(),
-                                       r.dataStart(),
-                                       r.dataLength());
-            if (p != null) result.add(new MemProteinMetadata(pool.nth(i), p));
+            final ProteinMetadata md = makeMeta(r);
+            if (md != null) result.add(md);
         }
         return result;
     }
@@ -173,6 +175,16 @@ final class MemHose implements Hose {
             address = null;
             name = null;
         }
+    }
+
+    private ProteinMetadata makeMeta(MetadataRequest r) {
+        final long i = r.index();
+        final Protein p = pool.nth(i,
+                                   r.descrips(),
+                                   r.ingests(),
+                                   r.dataStart(),
+                                   r.dataLength());
+        return p != null ? new MemProteinMetadata(pool.nth(i), p) : null;
     }
 
     private PoolProtein getNext(Slaw... desc) {

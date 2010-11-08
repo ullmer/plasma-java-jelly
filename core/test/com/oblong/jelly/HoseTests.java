@@ -183,10 +183,8 @@ public class HoseTests {
 
     public void simpleMeta() throws PoolException {
         for (int i = 0; i < TLEN; ++i) {
-            final List<ProteinMetadata> mds =
+            final ProteinMetadata md =
                 defHose.metadata(new MetadataRequest(i));
-            assertEquals(1, mds.size());
-            final ProteinMetadata md = mds.get(0);
             checkMeta(md, i);
             assertNull(md.descrips());
             assertNull(md.ingests());
