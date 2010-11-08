@@ -245,7 +245,7 @@ final class NetHose implements Hose {
         if (f >= t) return factory.list();
         final List<Slaw> req = new ArrayList<Slaw>((int)(t - f));
         for (long k = f; k < t; ++k)
-            req.add(new MetadataRequest(k, d, i, dt ? 0 : 1, -1).toSlaw());
+            req.add(new MetadataRequest(k, d, i, dt ? 0 : -1, -1).toSlaw());
         return Request.SUB_FETCH.send(connection, factory.list(req)).nth(0);
     }
 

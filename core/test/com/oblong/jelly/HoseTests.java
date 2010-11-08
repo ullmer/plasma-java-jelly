@@ -38,6 +38,7 @@ public class HoseTests {
         @Test public void awaitNext() throws Exception { tests.awaitNext(); }
 
         @Test public void nth() throws Exception { tests.nth(); }
+        @Test public void pNth() throws Exception { tests.partialNth(); }
         @Test public void previous() throws Exception { tests.previous(); }
         @Test public void current() throws Exception { tests.current(); }
         @Test public void range() throws Exception { tests.range(); }
@@ -123,12 +124,65 @@ public class HoseTests {
     }
 
     public void nth() throws PoolException {
-        for (int i = 0; i < TLEN; ++i) checkProtein(defHose.nth(i), i);
+        for (int i = 0; i < TLEN; ++i) {
+            checkProtein(defHose.nth(i), i);
+        }
+    }
+
+    public void partialNth() throws Exception {
+        Protein p = defHose.nth(0, false, false, false);
+        assertNull(p.descrips());
+        assertNull(p.ingests());
+        assertEquals(0, p.dataLength());
+        assertEquals(depProteins[0].index(), p.index());
+        assertEquals(depProteins[0].timestamp(), p.timestamp(), 0.0);
+        assertEquals(defHose.name(), p.source());
+
+        p = defHose.nth(1, true, false, false);
+        assertEquals(depProteins[1].descrips(), p.descrips());
+        assertNull(p.ingests());
+        assertEquals(0, p.dataLength());
+        assertEquals(depProteins[1].index(), p.index());
+        assertEquals(depProteins[1].timestamp(), p.timestamp(), 0.0);
+        assertEquals(defHose.name(), p.source());
+
+        p = defHose.nth(2, false, true, false);
+        assertNull(p.descrips());
+        assertEquals(depProteins[2].ingests(), p.ingests());
+        assertEquals(0, p.dataLength());
+        assertEquals(depProteins[2].index(), p.index());
+        assertEquals(depProteins[2].timestamp(), p.timestamp(), 0.0);
+        assertEquals(defHose.name(), p.source());
+
+        p = defHose.nth(2, false, false, true);
+        assertNull(p.ingests());
+        assertNull(p.descrips());
+        assertArrayEquals(depProteins[2].copyData(), p.copyData());
+        assertEquals(depProteins[2].index(), p.index());
+        assertEquals(depProteins[2].timestamp(), p.timestamp(), 0.0);
+        assertEquals(defHose.name(), p.source());
+
+        p = defHose.nth(3, true, false, true);
+        assertEquals(depProteins[3].descrips(), p.descrips());
+        assertNull(p.ingests());
+        assertArrayEquals(depProteins[3].copyData(), p.copyData());
+        assertEquals(depProteins[3].index(), p.index());
+        assertEquals(depProteins[3].timestamp(), p.timestamp(), 0.0);
+        assertEquals(defHose.name(), p.source());
+
+        p = defHose.nth(1, false, true, true);
+        assertNull(p.descrips());
+        assertEquals(depProteins[1].ingests(), p.ingests());
+        assertArrayEquals(depProteins[1].copyData(), p.copyData());
+        assertEquals(depProteins[1].index(), p.index());
+        assertEquals(depProteins[1].timestamp(), p.timestamp(), 0.0);
+        assertEquals(defHose.name(), p.source());
+
+        checkProtein(defHose.nth(TLEN - 1, true, true, true), TLEN - 1);
     }
 
     public void simpleMeta() throws PoolException {
         for (int i = 0; i < TLEN; ++i) {
-            checkProtein(defHose.nth(i), i);
             final List<ProteinMetadata> mds =
                 defHose.metadata(new MetadataRequest(i));
             assertEquals(1, mds.size());
