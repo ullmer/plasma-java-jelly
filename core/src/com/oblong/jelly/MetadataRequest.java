@@ -82,7 +82,7 @@ public final class MetadataRequest {
     private static final Slaw DES_K = Slaw.string("des");
     private static final Slaw ING_K = Slaw.string("ing");
     private static final Slaw DOF_K = Slaw.string("roff");
-    private static final Slaw DLN_K = Slaw.string("rbytes");
+    private static final Slaw DLN_K = Slaw.string("bytes");
 
     private long index;
     private boolean descrips;

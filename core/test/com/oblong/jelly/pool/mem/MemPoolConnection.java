@@ -239,7 +239,7 @@ final class MemPoolConnection implements NetConnection {
         final Slaw DES_K = factory.string("des");
         final Slaw ING_K = factory.string("ing");
         final Slaw ROF_K = factory.string("roff");
-        final Slaw RNO_K = factory.string("rbytes");
+        final Slaw RNO_K = factory.string("bytes");
         try {
             final long idx = req.find(IDX_K).emitLong();
             final boolean descs = req.find(DES_K).emitBoolean();

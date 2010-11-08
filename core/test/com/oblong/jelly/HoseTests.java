@@ -42,6 +42,7 @@ public class HoseTests {
         @Test public void current() throws Exception { tests.current(); }
         @Test public void range() throws Exception { tests.range(); }
         @Test public void meta() throws Exception { tests.simpleMeta(); }
+        @Test public void mixMeta() throws Exception { tests.mixedMeta(); }
 
         @Test public void matchingAll() throws Exception {
             tests.matchingAll();
@@ -132,11 +133,40 @@ public class HoseTests {
                 defHose.metadata(new MetadataRequest(i));
             assertEquals(1, mds.size());
             final ProteinMetadata md = mds.get(0);
-            assertEquals(depProteins[i].index(), md.index());
-            assertEquals(depProteins[i].timestamp(), md.timestamp(), 0.00001);
-            assertEquals(3, md.descripsNumber());
-            assertEquals(4, md.ingestsNumber());
-            assertEquals(depProteins[i].dataLength(), md.dataSize());
+            checkMeta(md, i);
+            assertNull(md.descrips());
+            assertNull(md.ingests());
+            assertEquals(0, md.data().length);
+        }
+    }
+
+    public void mixedMeta() throws PoolException {
+        final MetadataRequest[] reqs = {
+            new MetadataRequest(0).descrips(true),
+            new MetadataRequest(2).ingests(true),
+            new MetadataRequest(3).dataStart(1).dataLength(2)
+        };
+        final List<ProteinMetadata> mds = defHose.metadata(reqs);
+        for (int i = 0; i < reqs.length; ++i) {
+            final int idx = (int)reqs[i].index();
+            checkMeta(mds.get(i), idx);
+
+            final Protein p = depProteins[idx];
+            if (reqs[i].descrips())
+                assertEquals(p.descrips(), mds.get(i).descrips());
+            else
+                assertNull(mds.get(i).descrips());
+
+            if (reqs[i].ingests())
+                assertEquals(p.ingests(), mds.get(i).ingests());
+            else
+                assertNull(mds.get(i).ingests());
+
+            final byte[] data = mds.get(i).data();
+            assertEquals(Math.max(0, reqs[i].dataLength()), data.length);
+            final int start = (int)reqs[i].dataStart();
+            for (int k = 0; k < data.length; ++k)
+                assertEquals(p.datum(start + k), data[k]);
         }
     }
 
@@ -349,6 +379,14 @@ public class HoseTests {
     void checkProtein(Protein p, int i) {
         assertEquals(defHose.name(), p.source());
         assertEquals(i + "th", depProteins[i], p);
+    }
+
+    void checkMeta(ProteinMetadata md, int i) {
+        assertEquals(depProteins[i].index(), md.index());
+        assertEquals(depProteins[i].timestamp(), md.timestamp(), 0.00001);
+        assertEquals(3, md.descripsNumber());
+        assertEquals(4, md.ingestsNumber());
+        assertEquals(depProteins[i].dataLength(), md.dataSize());
     }
 
     private final Hose defHose;
