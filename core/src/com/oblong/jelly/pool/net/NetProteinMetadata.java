@@ -2,6 +2,7 @@
 
 package com.oblong.jelly.pool.net;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +13,7 @@ import com.oblong.jelly.ProteinMetadata;
 import com.oblong.jelly.Slaw;
 import com.oblong.jelly.pool.PoolProtein;
 
-public final class Metadata implements ProteinMetadata {
+public final class NetProteinMetadata implements ProteinMetadata {
 
     public static final Slaw RKEY = Slaw.string("retort");
     public static final Slaw INDEX_KEY = Slaw.string("idx");
@@ -34,20 +35,35 @@ public final class Metadata implements ProteinMetadata {
     @Override public long descripsNumber() { return readLong(DNO_KEY, 0); }
     @Override public long dataSize() { return readLong(RSIZE_KEY, 0); }
 
-    Protein protein(Hose h) {
-        final Slaw p = map.find(PROTEIN_KEY);
-        if (p == null || !p.isProtein()) return null;
-        return new PoolProtein(p.toProtein(), index(), timestamp(), h);
+    @Override public Slaw descrips() {
+        return protein == null ? null : protein.descrips();
+    }
+
+    @Override public Slaw ingests() {
+        return protein == null ? null : protein.ingests();
+    }
+
+    @Override public byte[] data() {
+        final byte[] empty = new byte[0];
+        try {
+            return protein == null ? empty : protein.copyData();
+        } catch (IOException e) {
+            return empty;
+        }
+    }
+
+    Protein partialProtein() {
+        return protein;
     }
 
     long retort() { return readLong(RKEY, -1); }
 
-    static List<ProteinMetadata> parseMeta(Slaw lm) {
+    static List<ProteinMetadata> parseMeta(Slaw lm, Hose h) {
         final List<ProteinMetadata> result =
             new ArrayList<ProteinMetadata>(lm.count());
         for (Slaw m : lm) {
             if (m.isMap()) {
-                final Metadata md = new Metadata(m);
+                final NetProteinMetadata md = new NetProteinMetadata(m, h);
                 if (md.retort() == 0) result.add(md);
             }
         }
@@ -58,9 +74,9 @@ public final class Metadata implements ProteinMetadata {
         final List<Protein> result = new ArrayList<Protein>(lm.count());
         for (Slaw m : lm) {
             if (m.isMap()) {
-                final Metadata md = new Metadata(m);
+                final NetProteinMetadata md = new NetProteinMetadata(m, h);
                 if (md.retort() == 0) {
-                    final Protein p = md.protein(h);
+                    final Protein p = md.partialProtein();
                     if (p != null) result.add(p);
                 }
             }
@@ -68,7 +84,13 @@ public final class Metadata implements ProteinMetadata {
         return result;
     }
 
-    Metadata(Slaw m) { map = m; }
+    NetProteinMetadata(Slaw m, Hose h) {
+        map = m;
+        final Slaw sp = map.find(PROTEIN_KEY);
+        final Protein p = sp.isProtein() ? sp.toProtein() : null;
+        protein = p == null ?
+            null : new PoolProtein(p, index(), timestamp(), h);
+    }
 
     private final long readLong(Slaw key, long def) {
         final Slaw v = map.find(key);
@@ -82,4 +104,5 @@ public final class Metadata implements ProteinMetadata {
     }
 
     private final Slaw map;
+    private final Protein protein;
 }

@@ -8,6 +8,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import com.oblong.jelly.BadAddressException;
+import com.oblong.jelly.MetadataRequest;
 import com.oblong.jelly.Hose;
 import com.oblong.jelly.NoSuchPoolException;
 import com.oblong.jelly.NoSuchProteinException;
@@ -85,56 +86,30 @@ final class MemHose implements Hose {
                                  boolean descrips,
                                  boolean ingests,
                                  boolean data) throws PoolException {
-        return nth(index, descrips, ingests, 0, -1);
-    }
-
-    @Override public Protein nth(long index,
-                                 boolean descrips,
-                                 boolean ingests,
-                                 long dataStart,
-                                 long dataLen) throws PoolException {
-        return checkProtein(partialProtein(index,
-                                           descrips,
-                                           ingests,
-                                           dataStart,
-                                           dataLen));
+        return checkProtein(partialProtein(index, descrips, ingests, data));
     }
 
     @Override public List<Protein> range(long from, long to)
         throws PoolException {
-        return range(from, to, true, true, true);
-    }
-
-    @Override public List<Protein> range(long from, long to,
-                                         boolean descrips,
-                                         boolean ingests, boolean data)
-        throws PoolException {
-        return range(from, to, true, true, data ? 0 : -1, -1);
-    }
-
-    @Override public List<Protein> range(long from, long to,
-                                         boolean descrips, boolean ingests,
-                                         long dataStart, long dataLen)
-        throws PoolException {
         final List<Protein> result = new ArrayList<Protein>();
         for (long k = from; k < to; ++k) {
-            final Protein p =
-                partialProtein(k, descrips, ingests, dataStart, dataLen);
+            final Protein p = partialProtein(k, true, true, true);
             if (p != null) result.add(p);
         }
         return result;
     }
 
-    @Override public ProteinMetadata metadata(long idx) throws PoolException {
-        return new MemProteinMetadata(nth(idx));
-    }
-
-    @Override public List<ProteinMetadata> metadata(long from, long to)
+    @Override public List<ProteinMetadata> metadata(MetadataRequest... rs)
         throws PoolException {
         final List<ProteinMetadata> result = new ArrayList<ProteinMetadata>();
-        for (long k = from; k < to; ++k) {
-            final Protein p = pool.nth(k);
-            if (p != null) result.add(new MemProteinMetadata(p));
+        for (MetadataRequest r : rs) {
+            final long i = r.index();
+            final Protein p = pool.nth(i,
+                                       r.descrips(),
+                                       r.ingests(),
+                                       r.dataStart(),
+                                       r.dataLength());
+            if (p != null) result.add(new MemProteinMetadata(pool.nth(i), p));
         }
         return result;
     }
@@ -240,8 +215,8 @@ final class MemHose implements Hose {
     }
 
     private PoolProtein partialProtein(long idx, boolean d,
-                                       boolean i, long s, long l) {
-        return new PoolProtein(pool.nth(idx, d, i, s, l), this);
+                                       boolean i, boolean r) {
+        return new PoolProtein(pool.nth(idx, d, i, r ? 0 : -1, -1), this);
     }
 
     private Protein checkProtein(PoolProtein p)

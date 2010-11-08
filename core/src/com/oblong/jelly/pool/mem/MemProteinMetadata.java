@@ -2,16 +2,14 @@
 
 package com.oblong.jelly.pool.mem;
 
+import java.io.IOException;
+
 import com.oblong.jelly.Protein;
 import com.oblong.jelly.ProteinMetadata;
 import com.oblong.jelly.Slaw;
 import com.oblong.jelly.slaw.io.BinaryExternalizer;
 
 final class MemProteinMetadata implements ProteinMetadata {
-
-    MemProteinMetadata(Protein p) {
-        protein = p;
-    }
 
     @Override public long size() {
         return externalizer.externSize(protein);
@@ -45,11 +43,34 @@ final class MemProteinMetadata implements ProteinMetadata {
         return protein.dataLength();
     }
 
+    @Override public Slaw descrips() {
+        return partialProtein == null ? null : partialProtein.descrips();
+    }
+
+    @Override public Slaw ingests() {
+        return partialProtein == null ? null : partialProtein.ingests();
+    }
+
+    @Override public byte[] data() {
+        final byte[] empty = new byte[0];
+        try {
+            return partialProtein == null ? empty : partialProtein.copyData();
+        } catch (IOException e) {
+            return empty;
+        }
+    }
+
+    MemProteinMetadata(Protein prot, Protein partial) {
+        protein = prot;
+        partialProtein = partial;
+    }
+
     private static long count(Slaw s) {
         return s == null || !(s.isList() || s.isMap()) ? 0 : s.count();
     }
 
-    final Protein protein;
+    private final Protein protein;
+    private final Protein partialProtein;
 
     private static final BinaryExternalizer externalizer =
         new BinaryExternalizer();

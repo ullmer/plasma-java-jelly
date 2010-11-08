@@ -98,21 +98,7 @@ public final class FilteredHose implements Hose {
                                  boolean descrips,
                                  boolean ingests,
                                  boolean data) throws PoolException {
-        return nth(index, descrips, ingests, 0, -1);
-    }
-
-    /**
-     * Like {@link Hose#nth(long, boolean, boolean, long, long)},
-     * provided the requested (partial) protein matches this hose
-     * filter. Otherwise, a {@link NoSuchProteinException} is throw.
-     */
-    @Override public Protein nth(long index,
-                                 boolean descrips,
-                                 boolean ingests,
-                                 long dataStart,
-                                 long dataLength) throws PoolException {
-        final Protein p =
-            hose.nth(index, descrips, ingests, dataStart, dataLength);
+        final Protein p = hose.nth(index, descrips, ingests, data);
         if (!p.matches(this.descrips)) throw new NoSuchProteinException(0);
         return p;
     }
@@ -120,37 +106,12 @@ public final class FilteredHose implements Hose {
     /**
      * Retrieves those proteins in the range [from, to) that match
      * this hose's filter.
+     *
+     * @inheritDoc
      */
     @Override public List<Protein> range(long from, long to)
         throws PoolException {
-        return range(from, to, true, true, true);
-    }
-
-    /**
-     * Retrieves those proteins in the range [from, to) that match
-     * this hose's filter.
-     *
-     * @inheritDoc
-     */
-    @Override public List<Protein> range(long from, long to,
-                                         boolean descrips,
-                                         boolean ingests, boolean data)
-        throws PoolException {
-        return range(from, to, true, true, 0, -1);
-    }
-
-    /**
-     * Retrieves those proteins in the range [from, to) that match
-     * this hose's filter.
-     *
-     * @inheritDoc
-     */
-    @Override public List<Protein> range(long from, long to,
-                                         boolean descrips, boolean ingests,
-                                         long dataStart, long dataLength)
-        throws PoolException {
-        final List<Protein> result =
-            hose.range(from, to, descrips, ingests, dataStart, dataLength);
+        final List<Protein> result = hose.range(from, to);
         final Iterator<Protein> it = result.iterator();
         while (it.hasNext())
             if (!it.next().matches(this.descrips)) it.remove();
@@ -158,21 +119,13 @@ public final class FilteredHose implements Hose {
     }
 
     /**
-     * Retrieves metadata for protein at the given index. No filtering
-     * is performed, since the metadata does not include descrips.
+     * Retrieves metadata for proteins according to the request list.
+     * No filtering is performed, since the metadata does not
+     * necessarily include descrips.
      */
-    @Override public ProteinMetadata metadata(long idx) throws PoolException {
-        return hose.metadata(idx);
-    }
-
-    /**
-     * Retrieves metadata for proteins with index in the range. No
-     * filtering is performed, since the metadata does not include
-     * descrips.
-     */
-    @Override public List<ProteinMetadata> metadata(long from, long to)
+    @Override public List<ProteinMetadata> metadata(MetadataRequest... reqs)
         throws PoolException {
-        return hose.metadata(from, to);
+        return hose.metadata(reqs);
     }
 
     /**

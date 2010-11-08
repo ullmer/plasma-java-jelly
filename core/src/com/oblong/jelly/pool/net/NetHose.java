@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 
 import net.jcip.annotations.NotThreadSafe;
 
+import com.oblong.jelly.MetadataRequest;
 import com.oblong.jelly.Hose;
 import com.oblong.jelly.InOutException;
 import com.oblong.jelly.NoSuchProteinException;
@@ -175,41 +176,22 @@ final class NetHose implements Hose {
 
     @Override public Protein nth(long idx, boolean d, boolean i, boolean dt)
         throws PoolException {
-        return nth(idx, d, i, dt ? 0 : -1, -1);
-    }
-
-    @Override public Protein nth(long idx, boolean d, boolean i,
-                                 long s, long l) throws PoolException {
-        final Metadata md = firstFetch(subFetch(idx, idx + 1, d, i, s, l));
-        final Protein p = md.protein(this);
+        final NetProteinMetadata md =
+            firstFetch(subFetch(idx, idx + 1, d, i, dt));
+        final Protein p = md.partialProtein();
         if (p == null) throw new NoSuchProteinException(0);
         return p;
     }
 
-    @Override public List<Protein> range(long from, long to)
+    @Override public List<Protein> range(long f, long t)
         throws PoolException {
-        return range(from, to, true, true, true);
+        return NetProteinMetadata.parseProteins(
+            subFetch(f, t, true, true, true), this);
     }
 
-    @Override public List<Protein> range(long f, long t,
-                                         boolean d, boolean i, boolean dt)
+    @Override public List<ProteinMetadata> metadata(MetadataRequest... rs)
         throws PoolException {
-        return range(f, t, d, i, dt ? 0 : -1, -1);
-    }
-
-    @Override public List<Protein> range(long f, long t, boolean d, boolean i,
-                                         long s, long l)
-        throws PoolException {
-        return Metadata.parseProteins(subFetch(f, t, d, i, s, l), this);
-    }
-
-    @Override public ProteinMetadata metadata(long idx) throws PoolException {
-        return firstFetch(subFetch(idx, idx + 1, false, false, -1, -1));
-    }
-
-    @Override public List<ProteinMetadata> metadata(long from, long to)
-        throws PoolException {
-        return Metadata.parseMeta(subFetch(from, to, false, false, -1, -1));
+        return NetProteinMetadata.parseMeta(subFetch(rs), this);
     }
 
     @Override public boolean poll(Slaw... descrips) throws PoolException {
@@ -257,25 +239,27 @@ final class NetHose implements Hose {
         connection.setHose(this);
     }
 
-    private Slaw subFetch(long from, long to,
-                          boolean d, boolean i, long beg, long len)
+    private Slaw subFetch(long f, long t, boolean d, boolean i, boolean dt)
         throws PoolException {
-        if (from < 0) from = 0;
-        if (from >= to) return factory.list();
-        final List<Slaw> req = new ArrayList<Slaw>((int)(to - from));
-        for (long k = from; k < to; ++k) {
-            req.add(factory.map(factory.string("idx"), longSlaw(k),
-                                factory.string("des"), factory.bool(d),
-                                factory.string("ing"), factory.bool(i),
-                                factory.string("roff"), longSlaw(beg),
-                                factory.string("rbytes"), longSlaw(len)));
-        }
+        if (f < 0) f = 0;
+        if (f >= t) return factory.list();
+        final List<Slaw> req = new ArrayList<Slaw>((int)(t - f));
+        for (long k = f; k < t; ++k)
+            req.add(new MetadataRequest(k, d, i, dt ? 0 : 1, -1).toSlaw());
         return Request.SUB_FETCH.send(connection, factory.list(req)).nth(0);
     }
 
-    private Metadata firstFetch(Slaw f) throws NoSuchProteinException {
+    private Slaw subFetch(MetadataRequest... rs) throws PoolException {
+        if (rs.length == 0) return factory.list();
+        final List<Slaw> req = new ArrayList<Slaw>(rs.length);
+        for (MetadataRequest r : rs) req.add(r.toSlaw());
+        return Request.SUB_FETCH.send(connection, factory.list(req)).nth(0);
+    }
+
+    private NetProteinMetadata firstFetch(Slaw f)
+        throws NoSuchProteinException {
         if (f.count() == 0) throw new NoSuchProteinException(0);
-        final Metadata md = new Metadata(f.nth(0));
+        final NetProteinMetadata md = new NetProteinMetadata(f.nth(0), this);
         if (md.retort() != 0) throw new NoSuchProteinException(md.retort());
         return md;
     }

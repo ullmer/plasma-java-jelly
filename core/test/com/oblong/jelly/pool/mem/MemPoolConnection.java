@@ -26,7 +26,7 @@ import com.oblong.util.Pair;
 
 import static com.oblong.jelly.pool.ServerErrorCode.*;
 import static com.oblong.jelly.pool.net.Request.*;
-import static com.oblong.jelly.pool.net.Metadata.*;
+import static com.oblong.jelly.pool.net.NetProteinMetadata.*;
 
 
 @NotThreadSafe
@@ -249,7 +249,7 @@ final class MemPoolConnection implements NetConnection {
             final PoolProtein prot = pool.nth(idx, descs, ings, ds, dl);
             if (prot == null) return null;
             final MemProteinMetadata md =
-                new MemProteinMetadata(pool.nth(idx));
+                new MemProteinMetadata(pool.nth(idx), prot);
             final Slaw r = factory.map(RKEY, OK,
                                        INDEX_KEY, makeIndex(idx),
                                        STAMP_KEY, makeStamp(prot.timestamp()),

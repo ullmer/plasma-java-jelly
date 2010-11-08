@@ -41,6 +41,7 @@ public class HoseTests {
         @Test public void previous() throws Exception { tests.previous(); }
         @Test public void current() throws Exception { tests.current(); }
         @Test public void range() throws Exception { tests.range(); }
+        @Test public void meta() throws Exception { tests.simpleMeta(); }
 
         @Test public void matchingAll() throws Exception {
             tests.matchingAll();
@@ -121,9 +122,16 @@ public class HoseTests {
     }
 
     public void nth() throws PoolException {
+        for (int i = 0; i < TLEN; ++i) checkProtein(defHose.nth(i), i);
+    }
+
+    public void simpleMeta() throws PoolException {
         for (int i = 0; i < TLEN; ++i) {
             checkProtein(defHose.nth(i), i);
-            final ProteinMetadata md = defHose.metadata(i);
+            final List<ProteinMetadata> mds =
+                defHose.metadata(new MetadataRequest(i));
+            assertEquals(1, mds.size());
+            final ProteinMetadata md = mds.get(0);
             assertEquals(depProteins[i].index(), md.index());
             assertEquals(depProteins[i].timestamp(), md.timestamp(), 0.00001);
             assertEquals(3, md.descripsNumber());

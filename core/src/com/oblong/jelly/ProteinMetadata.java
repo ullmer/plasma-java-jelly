@@ -19,4 +19,7 @@ public interface ProteinMetadata {
     long descripsNumber();
     long dataSize();
 
+    Slaw descrips();
+    Slaw ingests();
+    byte[] data();
 }
