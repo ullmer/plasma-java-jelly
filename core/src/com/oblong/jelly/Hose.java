@@ -237,19 +237,75 @@ public interface Hose {
      * to communication problems or conditions encountered by the pool
      * server, may also arise.
      *
+     * @see #nth(long, boolean, boolean, boolean)
      */
     Protein nth(long index) throws PoolException;
 
+    /**
+     * Partially fetches the protein located at the given index. The
+     * boolean flags indicate whether the different components of the
+     * protein should be fetched. Setting any of them to
+     * <code>false</code> will make the returned protein to miss them,
+     * possibly resulting in less data across the network.
+     *
+     * <p> Calling <code>nth(i, true, true, true)</code> is equivalent
+     * to a plain <code>nth(i)</code> call.
+     *
+     * @throws PoolException If no protein with the requested
+     * <code>index</code> exists, the PoolException will be of type
+     * {@link NoSuchProteinException}. Other kinds, possibly related
+     * to communication problems or conditions encountered by the pool
+     * server, may also arise.
+     */
     Protein nth(long index, boolean descrips, boolean ingests, boolean data)
         throws PoolException;
 
     /**
-     * Retrieves all proteins with the index the [from, to) interval.
+     * Retrieves all available proteins with the index the [from, to)
+     * interval. If any of the requested indexes is not present in the
+     * pool, the protein is just omitted from the returned list, so it
+     * might well be that the its length is less that (to - from) (but
+     * it will never be greater).
+     *
+     * <p>The return value is never <code>null</code>: if no protein
+     * in the requested range is found, an empty list is returned.
+     *
+     * <p>In general, this method is not equivalent to calling {@link
+     * #nth(long)} in a loop because the data will be fetched in a
+     * single request to the pool, saving network bandwidth (when the
+     * network is involved, of course).
      */
     List<Protein> range(long from, long to) throws PoolException;
 
+    /**
+     * Retrieves metadata about a given protein. The protein is
+     * described by its index, stored in <code>req</code>, which also
+     * describes the pieces of metadata to be fetched.
+     *
+     * @throws PoolException If no protein with the requested
+     * <code>index</code> exists, the PoolException will be of type
+     * {@link NoSuchProteinException}. Other kinds, possibly related
+     * to communication problems or conditions encountered by the pool
+     * server, may also arise.
+     *
+     * @see ProteinMetadata
+     * @see MetadataRequest
+     */
     ProteinMetadata metadata(MetadataRequest req) throws PoolException;
 
+    /**
+     * Performs, in a single operation, a bunch of metadata requests.
+     *
+     * <p>Since all the requests are sent in one batch, using this
+     * method (instead of repeated calls to {@link
+     * #metadata(MetadataRequest)} you'll save network traffic for
+     * remote pools.
+     *
+     * <p>A second difference is that unfulfilled requests will not
+     * cause an error; instead, the corresponding metadata will be
+     * omitted from the returned list. Therefore, in general,
+     * <code>metadata(reqs).size() <= reqs.length</code>.
+     */
     List<ProteinMetadata> metadata(MetadataRequest... reqs)
         throws PoolException;
 
