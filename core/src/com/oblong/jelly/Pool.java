@@ -10,12 +10,12 @@ import java.util.Set;
  * A collection of functions to operate on pools. Most of these
  * functions are, strictly speaking, redundant, in the sense that you
  * can perform the same operations via {@link PoolServer} instances
- * obtained from the {@link #getServer} factory method. But the latter
- * can be a bit roundabout when you don't need to keep the PoolServer
- * around and all you want is a quick way to, say, create a pool or
- * obtain a {@link Hose} in one shot. The methods in this class allow
- * you to do precisely that, and to ignore the PoolServer API if you
- * wish to.
+ * obtained calling the {@link #getServer} factory method. But the
+ * latter can be a bit roundabout when you don't need to keep the
+ * PoolServer around and all you want is a quick way to, say, create a
+ * pool or obtain a {@link Hose} in one shot. The methods in this
+ * class allow you to do precisely that, and to ignore the PoolServer
+ * API if you wish to.
  *
  * <p> Half of these functions take a string URI to denote the pool they
  * act upon. Using them you can also be oblivious of PoolAddress and

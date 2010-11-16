@@ -2,14 +2,19 @@
 
 package com.oblong.jelly.pool;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.oblong.jelly.PoolServer;
+import com.oblong.jelly.PoolServers;
 import com.oblong.jelly.PoolServerAddress;
 
 public abstract class PoolServerFactory {
 
     public abstract PoolServer getServer(PoolServerAddress address);
+    public abstract Set<PoolServer> servers();
+    public abstract boolean registerListener(PoolServers.Listener listener);
 
     public static PoolServer get(PoolServerAddress address) {
         PoolServer server = servers.get(address);
@@ -25,6 +30,17 @@ public abstract class PoolServerFactory {
         return server;
     }
 
+    public static Set<PoolServer> servers(String scheme) {
+        final PoolServerFactory f = getFactory(scheme);
+        return f == null ? new HashSet<PoolServer>() : f.servers();
+    }
+
+    public static boolean registerListener(String scheme,
+                                           PoolServers.Listener listener) {
+        final PoolServerFactory f = getFactory(scheme);
+        return f != null && f.registerListener(listener);
+    }
+
     public static PoolServerFactory getFactory(String scheme) {
         return factories.get(scheme);
     }
@@ -34,9 +50,27 @@ public abstract class PoolServerFactory {
         return factories.put(scheme, factory) == null;
     }
 
+    public static Set<PoolServer> cachedServers(String scheme) {
+        final Set<PoolServer> result = new HashSet<PoolServer>();
+        for (PoolServer s : servers.values()) {
+            if (s.address().scheme().equals(scheme)) result.add(s);
+        }
+        return result;
+    }
+
+    public static PoolServer cache(PoolServer server) {
+        servers.put(server.address(), server);
+        return server;
+    }
+
+    public static PoolServer remove(PoolServerAddress addr) {
+        return servers.remove(addr);
+    }
+
     private static ConcurrentHashMap<String, PoolServerFactory> factories =
         new ConcurrentHashMap<String, PoolServerFactory>();
 
     private static ConcurrentHashMap<PoolServerAddress, PoolServer> servers =
         new ConcurrentHashMap<PoolServerAddress, PoolServer>();
+
 }

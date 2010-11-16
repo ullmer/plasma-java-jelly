@@ -40,6 +40,12 @@ public interface PoolServer {
     PoolServerAddress address();
 
     /**
+     * Name of the server, for display purposes. It's not guaranteed
+     * to be unique.
+     */
+    String name();
+
+    /**
      * Creates a new pool, with the given name and options, in this
      * server.
      *

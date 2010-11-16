@@ -16,6 +16,8 @@ final class MemPoolServer implements PoolServer {
 
     @Override public PoolServerAddress address() { return address; }
 
+    @Override public String name() { return address.toString(); }
+
     @Override public void create(String name, PoolOptions opts)
         throws PoolException {
         if (MemPool.create(name) == null) throw new PoolExistsException(0);
