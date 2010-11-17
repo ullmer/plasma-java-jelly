@@ -4,8 +4,6 @@ package com.oblong.jelly.pool.net;
 
 import java.io.IOException;
 import java.util.Set;
-import java.util.HashSet;
-
 import javax.jmdns.JmDNS;
 import javax.jmdns.ServiceEvent;
 import javax.jmdns.ServiceInfo;
@@ -19,21 +17,17 @@ import com.oblong.jelly.PoolServers;
 import com.oblong.jelly.PoolServerAddress;
 import com.oblong.jelly.pool.PoolServerFactory;
 
-/**
- *
- * Created: Mon Jun 14 14:42:48 2010
- *
- * @author jao
- */
 @ThreadSafe
 public final class TCPServerFactory extends PoolServerFactory {
+
+    @Override public boolean isRemote() { return true; }
 
     @Override public PoolServer getServer(PoolServerAddress address) {
         return new Server(factory, address);
     }
 
     @Override public synchronized Set<PoolServer> servers() {
-        final Set<PoolServer> result = new HashSet<PoolServer>();
+        final Set<PoolServer> result = PoolServerFactory.cached(SCM);
         final JmDNS dns = jmDNS();
         if (dns != null) {
             for (ServiceInfo inf : dns.list(SCM_SRV)) {
@@ -45,7 +39,7 @@ public final class TCPServerFactory extends PoolServerFactory {
     }
 
     @Override synchronized
-    public boolean registerListener(PoolServers.Listener listener) {
+    public boolean addListener(PoolServers.Listener listener) {
         final JmDNS dns = jmDNS();
         if (dns == null) return false;
         dns.addServiceListener(SCM_SRV, new Listener(listener));
@@ -75,20 +69,14 @@ public final class TCPServerFactory extends PoolServerFactory {
 
         @Override public void serviceRemoved(ServiceEvent e) {
             final PoolServer srv = fromInfo(e.getInfo());
-            if (srv != null) {
-                PoolServerFactory.remove(srv.address());
-                listener.serverRemoved(srv,
-                                       PoolServerFactory.cachedServers(SCM));
-            }
+            if (srv != null)
+                listener.serverRemoved(PoolServerFactory.remove(srv.address()));
         }
 
         @Override public void serviceResolved(ServiceEvent e) {
             final PoolServer srv = fromInfo(e.getInfo());
-            if (srv != null) {
-                PoolServerFactory.cache(srv);
-                listener.serverAdded(srv,
-                                     PoolServerFactory.cachedServers(SCM));
-            }
+            if (srv != null)
+                listener.serverAdded(PoolServerFactory.cache(srv));
         }
 
         final PoolServers.Listener listener;

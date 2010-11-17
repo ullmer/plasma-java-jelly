@@ -14,7 +14,8 @@ public abstract class PoolServerFactory {
 
     public abstract PoolServer getServer(PoolServerAddress address);
     public abstract Set<PoolServer> servers();
-    public abstract boolean registerListener(PoolServers.Listener listener);
+    public abstract boolean addListener(PoolServers.Listener listener);
+    public abstract boolean isRemote();
 
     public static PoolServer get(PoolServerAddress address) {
         PoolServer server = servers.get(address);
@@ -35,10 +36,27 @@ public abstract class PoolServerFactory {
         return f == null ? new HashSet<PoolServer>() : f.servers();
     }
 
-    public static boolean registerListener(String scheme,
-                                           PoolServers.Listener listener) {
+    public static Set<PoolServer> remoteServers() {
+        final Set<PoolServer> result = new HashSet<PoolServer>();
+        for (PoolServerFactory f : factories.values()) {
+            if (f.isRemote()) result.addAll(f.servers());
+        }
+        return result;
+    }
+
+    public static boolean addListener(String scheme,
+                                      PoolServers.Listener listener) {
+        if (scheme == null || listener == null) return false;
         final PoolServerFactory f = getFactory(scheme);
-        return f != null && f.registerListener(listener);
+        return f != null && f.addListener(listener);
+    }
+
+    public static void addRemoteListener(PoolServers.Listener listener) {
+        if (listener != null) {
+            for (PoolServerFactory f : factories.values()) {
+                if (f.isRemote()) f.addListener(listener);
+            }
+        }
     }
 
     public static PoolServerFactory getFactory(String scheme) {
@@ -50,7 +68,7 @@ public abstract class PoolServerFactory {
         return factories.put(scheme, factory) == null;
     }
 
-    public static Set<PoolServer> cachedServers(String scheme) {
+    public static Set<PoolServer> cached(String scheme) {
         final Set<PoolServer> result = new HashSet<PoolServer>();
         for (PoolServer s : servers.values()) {
             if (s.address().scheme().equals(scheme)) result.add(s);

@@ -16,15 +16,17 @@ public final class MemServerFactory extends PoolServerFactory {
 
     public static final String SCM = "mem";
 
+    @Override public boolean isRemote() { return false; }
+
     @Override public PoolServer getServer(PoolServerAddress address) {
         return new MemPoolServer(address);
     }
 
     @Override public Set<PoolServer> servers() {
-        return PoolServerFactory.cachedServers(SCM);
+        return PoolServerFactory.cached(SCM);
     }
 
-    @Override public boolean registerListener(PoolServers.Listener listener) {
+    @Override public boolean addListener(PoolServers.Listener listener) {
         return false;
     }
 

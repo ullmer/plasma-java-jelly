@@ -10,12 +10,12 @@ import java.util.Set;
  * A collection of functions to operate on pools. Most of these
  * functions are, strictly speaking, redundant, in the sense that you
  * can perform the same operations via {@link PoolServer} instances
- * obtained calling the {@link #getServer} factory method. But the
- * latter can be a bit roundabout when you don't need to keep the
- * PoolServer around and all you want is a quick way to, say, create a
- * pool or obtain a {@link Hose} in one shot. The methods in this
- * class allow you to do precisely that, and to ignore the PoolServer
- * API if you wish to.
+ * obtained calling any of the equivalent {@link #getServer} and
+ * {@link PoolServers#get} factory methods. But the latter can be a
+ * bit roundabout when you don't need to keep the PoolServer around
+ * and all you want is a quick way to, say, create a pool or obtain a
+ * {@link Hose} in one shot. The methods in this class allow you to do
+ * precisely that, and to ignore the PoolServer API if you wish to.
  *
  * <p> Half of these functions take a string URI to denote the pool they
  * act upon. Using them you can also be oblivious of PoolAddress and
@@ -38,16 +38,9 @@ import java.util.Set;
  */
 public final class Pool {
     /**
-     * Provides an object implementing PoolServer given its address.
+     * An alias to {@link PoolServers#get}, q.v.
      *
-     * <p> Pool servers are uniquely identified by their address,
-     * which acts in this respect as a URI. This method actually
-     * returns the same object when called repeatedly with the same
-     * argument.
-     *
-     * <p> If there's no PoolServer with the given address (for
-     * instance, because its protocol is not registered), this method
-     * returns null.
+     * @deprecated
      */
     public static PoolServer getServer(PoolServerAddress address) {
         return com.oblong.jelly.pool.PoolServerFactory.get(address);
