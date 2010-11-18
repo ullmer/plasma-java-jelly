@@ -42,8 +42,24 @@ public interface PoolServer {
     /**
      * Name of the server, for display purposes. It's not guaranteed
      * to be unique.
+     *
+     * <p> For remote servers discovered via zeroconf, this name
+     * corresponds to the service name.
      */
     String name();
+
+    /**
+     * Server subtype.
+     *
+     * The server "type" is given by the scheme of its pool address
+     * (e.g. "tcp"). Some servers may provide an additional subtype,
+     * specifying the purpose of the pools they serve, or any other
+     * application-specific information.
+     *
+     * <p> For remote servers discovered via zeroconf, this subtype
+     * corresponds to the server's service subtype.
+     */
+    String subtype();
 
     /**
      * Creates a new pool, with the given name and options, in this

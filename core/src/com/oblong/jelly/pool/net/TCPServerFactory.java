@@ -4,6 +4,8 @@ package com.oblong.jelly.pool.net;
 
 import java.io.IOException;
 import java.util.Set;
+import java.util.logging.Logger;
+
 import javax.jmdns.JmDNS;
 import javax.jmdns.ServiceEvent;
 import javax.jmdns.ServiceInfo;
@@ -54,8 +56,10 @@ public final class TCPServerFactory extends PoolServerFactory {
         if (!inf.hasData()) return null;
         try {
             final String url = inf.getURL(SCM);
+            final String name = inf.getName();
+            final String subtype = inf.getSubtype();
             final PoolServerAddress addr = PoolServerAddress.fromURI(url);
-            final PoolServer srv = new Server(factory, addr, inf.getName());
+            final PoolServer srv = new Server(factory, addr, name, subtype);
             return PoolServerFactory.cache(srv);
         } catch (PoolException e) {
             return null;
@@ -68,15 +72,14 @@ public final class TCPServerFactory extends PoolServerFactory {
         @Override public void serviceAdded(ServiceEvent e) {}
 
         @Override public void serviceRemoved(ServiceEvent e) {
-            final PoolServer srv = fromInfo(e.getInfo());
-            if (srv != null)
-                listener.serverRemoved(PoolServerFactory.remove(srv.address()));
+            final PoolServer s = fromInfo(e.getInfo());
+            if (s != null)
+                listener.serverRemoved(PoolServerFactory.remove(s.address()));
         }
 
         @Override public void serviceResolved(ServiceEvent e) {
-            final PoolServer srv = fromInfo(e.getInfo());
-            if (srv != null)
-                listener.serverAdded(PoolServerFactory.cache(srv));
+            final PoolServer s = fromInfo(e.getInfo());
+            if (s != null) listener.serverAdded(PoolServerFactory.cache(s));
         }
 
         final PoolServers.Listener listener;
@@ -87,7 +90,7 @@ public final class TCPServerFactory extends PoolServerFactory {
             try {
                 jmDNS = JmDNS.create();
             } catch (IOException e) {
-                // TODO: log
+                logger.severe("Error opening zeroconf: " + e.getMessage());
             }
         }
         return jmDNS;
@@ -97,6 +100,8 @@ public final class TCPServerFactory extends PoolServerFactory {
         new TCPConnection.Factory();
 
     private static final String SCM = "tcp";
-    private static final String SCM_SRV = "_pool._tcp";
+    private static final String SCM_SRV = "_pool-server._tcp";
     private static JmDNS jmDNS = null;
+    private static final Logger logger =
+        Logger.getLogger(TCPServerFactory.class.getName());
 }

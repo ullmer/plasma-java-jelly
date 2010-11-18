@@ -26,20 +26,24 @@ import com.oblong.jelly.slaw.SlawFactory;
 public final class Server implements PoolServer {
 
     public Server(NetConnectionFactory cf, PoolServerAddress addr) {
-        this(cf, addr, addr.toString());
+        this(cf, addr, addr.toString(), "");
     }
 
     public Server(NetConnectionFactory cf,
                   PoolServerAddress addr,
-                  String serverName) {
+                  String serverName,
+                  String st) {
         address = addr;
         connectionFactory = cf;
         name = serverName;
+        subtype = st;
     }
 
     @Override public PoolServerAddress address() { return address; }
 
     @Override public String name() { return name; }
+
+    @Override public String subtype() { return subtype; }
 
     @Override public void create(String name, PoolOptions opts)
         throws PoolException {
@@ -97,4 +101,5 @@ public final class Server implements PoolServer {
     private final PoolServerAddress address;
     private final NetConnectionFactory connectionFactory;
     private final String name;
+    private final String subtype;
 }
