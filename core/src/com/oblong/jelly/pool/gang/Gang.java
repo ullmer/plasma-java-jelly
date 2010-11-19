@@ -68,6 +68,6 @@ public final class Gang extends HoseGang {
 
     private final Fetcher fetcher;
     private final FetchQueue queue;
-    private Thread fetcherThread;
+    private volatile Thread fetcherThread;
 
 }

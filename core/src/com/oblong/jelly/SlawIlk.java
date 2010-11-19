@@ -78,7 +78,7 @@ public enum SlawIlk {
     /**
      * All components of a multivector have ilk NUMBER, and the same
      * NumericIlk. The dimension <em>d</em> of a multivector can run
-     * from 2 to 5, with <em>2**d</em> the corresponding number of
+     * from 2 to 5, with <em>2^d</em> the corresponding number of
      * componets.
      */
     MULTI_VECTOR(2, 5),
@@ -246,17 +246,17 @@ public enum SlawIlk {
         return true;
     }
 
-    private static EnumSet<SlawIlk> atoms =
+    private static final EnumSet<SlawIlk> atoms =
         EnumSet.of(NIL, BOOL, STRING, NUMBER);
-    private static EnumSet<SlawIlk> numeric =
+    private static final EnumSet<SlawIlk> numeric =
         EnumSet.of(NUMBER, COMPLEX,
                    NUMBER_VECTOR, COMPLEX_VECTOR, MULTI_VECTOR,
                    NUMBER_ARRAY, COMPLEX_ARRAY, VECTOR_ARRAY,
                    COMPLEX_VECTOR_ARRAY, MULTI_VECTOR_ARRAY);
-    private static EnumSet<SlawIlk> complex =
+    private static final EnumSet<SlawIlk> complex =
         EnumSet.of(COMPLEX, COMPLEX_VECTOR,
                    COMPLEX_ARRAY, COMPLEX_VECTOR_ARRAY);
-    private static EnumSet<SlawIlk> arrays =
+    private static final EnumSet<SlawIlk> arrays =
         EnumSet.of(NUMBER_ARRAY, COMPLEX_ARRAY, VECTOR_ARRAY,
                    COMPLEX_VECTOR_ARRAY, MULTI_VECTOR_ARRAY);
 

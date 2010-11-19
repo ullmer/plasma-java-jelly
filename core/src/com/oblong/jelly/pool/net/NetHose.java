@@ -367,10 +367,10 @@ final class NetHose implements Hose {
     private static final double OLD_NO_WAIT = WAIT_FOREVER;
     private static final int FIRST_NEW_WAIT_V = 2;
 
-    private NetConnection connection;
     private final SlawFactory factory;
     private final PoolAddress poolAddress;
-    private String name;
+    private volatile NetConnection connection;
+    private volatile String name;
     private volatile long index;
     private volatile boolean dirtyIndex;
 }

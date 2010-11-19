@@ -85,10 +85,12 @@ public abstract class PoolServerFactory {
         return servers.remove(addr);
     }
 
-    private static ConcurrentHashMap<String, PoolServerFactory> factories =
+    private static final
+    ConcurrentHashMap<String, PoolServerFactory> factories =
         new ConcurrentHashMap<String, PoolServerFactory>();
 
-    private static ConcurrentHashMap<PoolServerAddress, PoolServer> servers =
+    private static final
+    ConcurrentHashMap<PoolServerAddress, PoolServer> servers =
         new ConcurrentHashMap<PoolServerAddress, PoolServer>();
 
 }
