@@ -52,14 +52,14 @@ public interface PoolServer {
      * Server subtype.
      *
      * The server "type" is given by the scheme of its pool address
-     * (e.g. "tcp"). Some servers may provide an additional subtype,
+     * (e.g. "tcp"). Some servers may provide additional subtypes,
      * specifying the purpose of the pools they serve, or any other
      * application-specific information.
      *
-     * <p> For remote servers discovered via zeroconf, this subtype
-     * corresponds to the server's service subtype.
+     * <p> For remote servers discovered via zeroconf, these subtypes
+     * correspond to the server's service subtypes.
      */
-    String subtype();
+    Set<String> subtypes();
 
     /**
      * Creates a new pool, with the given name and options, in this

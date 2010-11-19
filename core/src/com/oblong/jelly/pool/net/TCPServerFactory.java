@@ -3,6 +3,7 @@
 package com.oblong.jelly.pool.net;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -57,9 +58,14 @@ public final class TCPServerFactory extends PoolServerFactory {
         try {
             final String url = inf.getURL(SCM);
             final String name = inf.getName();
-            final String subtype = inf.getSubtype();
             final PoolServerAddress addr = PoolServerAddress.fromURI(url);
-            final PoolServer srv = new Server(factory, addr, name, subtype);
+            final PoolServer cached = PoolServerFactory.remove(addr);
+            final Set<String> subtypes = cached == null ?
+                new HashSet<String>() : cached.subtypes();
+            final String subtype = inf.getSubtype();
+            if (subtype != null && subtype.length() > 0)
+                subtypes.add(subtype);
+            final PoolServer srv = new Server(factory, addr, name, subtypes);
             return PoolServerFactory.cache(srv);
         } catch (PoolException e) {
             return null;
