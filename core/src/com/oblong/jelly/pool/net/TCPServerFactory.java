@@ -107,7 +107,7 @@ public final class TCPServerFactory extends PoolServerFactory {
 
     private static final String SCM = "tcp";
     private static final String SCM_SRV = "_pool-server._tcp";
-    private static JmDNS jmDNS = null;
+    private static volatile JmDNS jmDNS = null;
     private static final Logger logger =
         Logger.getLogger(TCPServerFactory.class.getName());
 }
