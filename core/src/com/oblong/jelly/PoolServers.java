@@ -111,5 +111,23 @@ public final class PoolServers {
         PoolServerFactory.addRemoteListener(listener);
     }
 
+    public static void main(String[] args) throws InterruptedException {
+        Set<PoolServer> servers = servers("tcp");
+        addRemoteListener(new Listener() {
+                public void serverAdded(PoolServer s) {
+                    System.out.println("added: " + s.address());
+                }
+                public void serverRemoved(PoolServer s) {
+                    System.out.println("removed: " + s.address());
+                }
+            });
+        while (true) {
+            Thread.sleep(1000);
+            System.out.println("Found " + servers.size() + " servers:");
+            for (PoolServer s : servers)
+                System.out.println("\t- " + s.address());
+        }
+    }
+
     private PoolServers() {}
 }
