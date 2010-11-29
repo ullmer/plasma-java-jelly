@@ -76,13 +76,20 @@ public abstract class PoolServerFactory {
         return result;
     }
 
+    public static PoolServer cached(PoolServerAddress addr) {
+        return servers.get(addr);
+    }
+
     public static PoolServer cache(PoolServer server) {
         servers.put(server.address(), server);
         return server;
     }
 
-    public static PoolServer remove(PoolServerAddress addr) {
-        return servers.remove(addr);
+    public static PoolServer remove(String name) {
+        for (PoolServer s : servers.values()) {
+            if (s.name().equals(name)) return servers.remove(s.address());
+        }
+        return null;
     }
 
     private static final

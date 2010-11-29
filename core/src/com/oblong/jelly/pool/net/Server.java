@@ -94,6 +94,10 @@ public final class Server implements PoolServer {
         return new NetHose(connection, name);
      }
 
+    @Override public String toString() {
+        return "<Server: " + name + " @ " + address + ">";
+    }
+
     private static final Slaw optSlaw(PoolOptions opts) {
         return opts == null ? NULL_OPTS : opts.toProtein();
     }

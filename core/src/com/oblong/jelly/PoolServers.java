@@ -112,22 +112,27 @@ public final class PoolServers {
     }
 
     public static void main(String[] args) throws InterruptedException {
-        Set<PoolServer> servers = servers("tcp");
         addRemoteListener(new Listener() {
                 public void serverAdded(PoolServer s) {
-                    System.out.println("added: " + s.address());
+                    System.out.println("added: " + s);
                 }
                 public void serverRemoved(PoolServer s) {
-                    System.out.println("removed: " + s.address());
+                    System.out.println("removed: " + s);
                 }
             });
         while (true) {
-            Thread.sleep(1000);
+            Thread.sleep(5000);
+            Set<PoolServer> servers = servers("tcp");
             System.out.println("Found " + servers.size() + " servers:");
             for (PoolServer s : servers)
-                System.out.println("\t- " + s.address());
+                System.out.println("\t- " + s);
         }
     }
 
     private PoolServers() {}
+
+    static {
+        com.oblong.jelly.pool.net.TCPServerFactory.register();
+        com.oblong.jelly.pool.mem.MemServerFactory.register();
+    }
 }

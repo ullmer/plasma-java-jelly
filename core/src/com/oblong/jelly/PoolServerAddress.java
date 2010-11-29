@@ -78,7 +78,7 @@ public final class PoolServerAddress {
          this.port = port < 0 ? DEFAULT_PORT : port;
          stringRep = this.scheme
              + (this.host.length() == 0 ? "" : ("://" + this.host))
-             + (this.port == DEFAULT_PORT ? "" : ":" + this.port);
+             + ":" + this.port;
     }
 
     /**
