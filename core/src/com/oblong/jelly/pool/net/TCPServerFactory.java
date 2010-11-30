@@ -39,17 +39,22 @@ public final class TCPServerFactory
             final JmDNS dns = jmDNS();
             if (dns != null) {
                 for (ServiceInfo inf : dns.list(SCM_SRV)) {
-                    final PoolServer server = fromInfo (inf, true);
+                    final PoolServer server = fromInfo(inf, true);
                     if (server != null)
                         result.add(PoolServerFactory.cache(server));
                 }
+                jmDNS.addServiceListener(SCM_SRV, this);
             }
         }
         return result;
     }
 
     @Override synchronized public boolean addListener(Listener listener) {
-        if (jmDNS() == null) return false;
+        if (jmDNS == null) {
+            final JmDNS dns = jmDNS();
+            if (dns == null) return false;
+            dns.addServiceListener(SCM_SRV, this);
+        }
         listeners.add(listener);
         return true;
     }
@@ -84,6 +89,7 @@ public final class TCPServerFactory
     }
 
     @Override synchronized public void serviceRemoved(ServiceEvent e) {
+        logger.info("Service removed event: " + e);
         final PoolServer s = fromInfo(e.getInfo(), false);
         if (s != null) {
             PoolServerFactory.remove(s.name());
@@ -92,6 +98,7 @@ public final class TCPServerFactory
     }
 
     @Override synchronized public void serviceResolved(ServiceEvent e) {
+        logger.info("Service resolved event: " + e);
         final PoolServer s = fromInfo(e.getInfo(), true);
         if (s != null) {
             PoolServerFactory.cache(s);
@@ -103,7 +110,6 @@ public final class TCPServerFactory
         if (jmDNS == null) {
             try {
                 jmDNS = JmDNS.create();
-                jmDNS.addServiceListener(SCM_SRV, this);
             } catch (IOException e) {
                 logger.severe("Error opening zeroconf: " + e.getMessage());
             }

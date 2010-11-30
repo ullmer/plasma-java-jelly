@@ -7,7 +7,7 @@
   <application android:label="@string/app_name"
                android:icon="@drawable/icon"
                android:debuggable="true">
-        <activity android:name="PonderActivity"
+        <activity android:name="com.oblong.android.ponder.Ponder"
                   android:label="@string/app_name">
           <intent-filter>
             <action android:name="android.intent.action.MAIN" />
@@ -19,6 +19,9 @@
   <uses-sdk android:minSdkVersion="8" />
 
   <uses-permission android:name="android.permission.INTERNET" />
+  <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+  <uses-permission
+      android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
   <uses-permission android:name="android.permission.SET_DEBUG_APP" />
 
 </manifest>
