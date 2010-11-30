@@ -9,9 +9,7 @@ import android.net.wifi.WifiManager;
 import android.net.wifi.WifiManager.MulticastLock;
 import android.os.Handler;
 import android.os.Message;
-import android.view.View;
-import android.widget.TableLayout;
-import android.widget.TextView;
+import android.widget.ArrayAdapter;
 
 import com.oblong.jelly.PoolServer;
 import com.oblong.jelly.PoolServers;
@@ -24,9 +22,21 @@ import com.oblong.jelly.PoolServers;
  */
 final class ServerTable {
 
-    ServerTable(WifiManager wifi, TableLayout layout) {
-        rows = new ConcurrentHashMap<String, RowInfo>();
-        table = layout;
+    final static class RowInfo {
+        PoolServer server;
+
+        RowInfo(PoolServer s) {
+            server = s;
+        }
+
+        @Override public String toString() {
+            return server.address().host() + " (" + server.name() + ")";
+        }
+    }
+
+    ServerTable(WifiManager wifi, ArrayAdapter<RowInfo> adapter) {
+        infos = new ConcurrentHashMap<String, RowInfo>();
+        rows = adapter;
         wifiMngr = wifi;
         mcLock = setupMulticastLock();
         setupListener();
@@ -67,31 +77,19 @@ final class ServerTable {
     }
 
     private void delServer(PoolServer s) {
-        final RowInfo info = rows.remove(s.name());
+        final RowInfo info = infos.remove(s.name());
         if (info != null) {
-            table.removeView(info.view);
-            table.invalidate();
+            rows.remove(info);
+            rows.notifyDataSetChanged();
         }
     }
 
     private void addServer(PoolServer s) {
-        if (rows.get(s.name()) == null) {
-            final RowInfo info = new RowInfo(table, s);
-            rows.put(s.name(), info);
-            table.invalidate();
-        }
-    }
-
-    private static class RowInfo {
-        View view;
-        PoolServer server;
-
-        RowInfo(TableLayout table, PoolServer s) {
-            server = s;
-            final TextView txt = new TextView (table.getContext());
-            txt.setText(s.address().toString());
-            table.addView(txt);
-            view = txt;
+        if (infos.get(s.name()) == null) {
+            final RowInfo info = new RowInfo(s);
+            infos.put(s.name(), info);
+            rows.add(info);
+            rows.notifyDataSetChanged();
         }
     }
 
@@ -104,8 +102,8 @@ final class ServerTable {
         return buf.toString();
     }
 
-    private final ConcurrentHashMap<String, RowInfo> rows;
-    private final TableLayout table;
+    private final ConcurrentHashMap<String, RowInfo> infos;
+    private final ArrayAdapter<RowInfo> rows;
     private final MulticastLock mcLock;
     private final WifiManager wifiMngr;
 }

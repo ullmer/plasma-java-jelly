@@ -2,11 +2,12 @@
 
 package com.oblong.android.ponder;
 
-import android.app.Activity;
+import android.app.ListActivity;
 import android.content.Context;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
-import android.widget.TableLayout;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 /**
  *
@@ -14,27 +15,32 @@ import android.widget.TableLayout;
  *
  * @author jao
  */
-public class Ponder extends Activity {
+public class Ponder extends ListActivity {
 
     @Override public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        final TableLayout layout = new TableLayout(getApplicationContext());
-        setContentView(layout);
+        final ArrayAdapter<ServerTable.RowInfo> adapter =
+            new ArrayAdapter<ServerTable.RowInfo>(this, R.layout.server_item);
+
+        setListAdapter(adapter);
+
+        final ListView lv = getListView();
+        lv.setTextFilterEnabled(true);
 
         final WifiManager wifi =
             (WifiManager)getSystemService(Context.WIFI_SERVICE);
-        table = new ServerTable(wifi, layout);
-    }
-
-    @Override public void onStop() {
-        super.onStop();
-        table.deactivate();
+        table = new ServerTable(wifi, adapter);
     }
 
     @Override public void onResume() {
         super.onResume();
         table.activate();
+    }
+
+    @Override public void onStop() {
+        super.onStop();
+        table.deactivate();
     }
 
     private ServerTable table;
