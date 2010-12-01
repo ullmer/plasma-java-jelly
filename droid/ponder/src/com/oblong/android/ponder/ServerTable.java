@@ -3,19 +3,12 @@
 package com.oblong.android.ponder;
 
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Logger;
 
 import android.app.ListActivity;
-import android.content.Context;
 import android.net.wifi.WifiManager;
 import android.net.wifi.WifiManager.MulticastLock;
 import android.os.Handler;
 import android.os.Message;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.TextView;
 
 import com.oblong.jelly.PoolServer;
 import com.oblong.jelly.PoolServers;
@@ -31,7 +24,7 @@ final class ServerTable {
 
     ServerTable(ListActivity la, WifiManager wifi) {
         infos = new ConcurrentHashMap<String, RowInfo>();
-        rows = new ServerAdapter(la);
+        rows = new ServerListAdapter(la);
         la.setListAdapter(rows);
         wifiMngr = wifi;
         mcLock = setupMulticastLock();
@@ -54,81 +47,6 @@ final class ServerTable {
         setupListener();
     }
 
-    static final int ADD_MSG = 0;
-    static final int DEL_MSG = 1;
-    static final int UPD_MSG = 2;
-
-    private final static class RowInfo {
-        final PoolServer server;
-        volatile int poolNumber;
-        volatile View view;
-
-        RowInfo(PoolServer s) {
-            server = s;
-            poolNumber = UNINITIALIZED;
-            view = null;
-        }
-
-        void updatePoolNumber(final Handler hdl) {
-            Thread th = new Thread (new Runnable () {
-                    @Override public void run() {
-                        try {
-                            poolNumber = server.pools().size();
-                        } catch (Exception e) {
-                            poolNumber = CON_ERR;
-                        }
-                        hdl.sendMessage(
-                            Message.obtain(hdl, UPD_MSG, RowInfo.this));
-                    }
-                });
-            th.start();
-        }
-
-        String name() {
-            return server.name() + " (" + server.address().host() + ")";
-        }
-
-        String pools() {
-            return poolNumber < 0
-                ? ""
-                : poolNumber + " pool" + (poolNumber == 1 ? "" : "s");
-        }
-
-        boolean connectionError() {
-            return poolNumber == CON_ERR;
-        }
-
-        private static final int CON_ERR = -2;
-        private static final int UNINITIALIZED = -1;
-    }
-
-    private final static class ServerAdapter extends ArrayAdapter<RowInfo> {
-        ServerAdapter(ListActivity parent) {
-            super(parent, R.layout.server_item, R.id.server_host);
-        }
-
-        @Override public View getView(int n, View v, ViewGroup g) {
-            if (v == null || v.getId() != R.layout.server_item) {
-                final Context c = g.getContext();
-                final LayoutInflater i = (LayoutInflater)
-                    c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                v = i.inflate(R.layout.server_item, null);
-            }
-            fillView(v, getItem(n));
-            return v;
-        }
-
-        static void fillView(View v, RowInfo i) {
-            ((TextView)v.findViewById(R.id.server_host)).setText(i.name());
-            final TextView pcv = (TextView)v.findViewById(R.id.pool_count);
-            if (i.connectionError())
-                pcv.setError("Error connecting to the pool");
-            else
-                pcv.setText(i.pools());
-            i.view = v;
-        }
-    }
-
     private MulticastLock setupMulticastLock () {
         final int address = wifiMngr.getDhcpInfo().ipAddress;
         System.setProperty("net.mdns.interface", getHost(address));
@@ -139,6 +57,10 @@ final class ServerTable {
     }
 
     private void setupListener() {
+        final int ADD_MSG = 0;
+        final int DEL_MSG = 1;
+        final int UPD_MSG = 2;
+
         final Handler handler = new Handler () {
                 public void handleMessage(Message m) {
                     switch (m.what) {
@@ -153,7 +75,7 @@ final class ServerTable {
                     final RowInfo info = new RowInfo(s);
                     handler.sendMessage(
                         Message.obtain(handler, ADD_MSG, info));
-                    info.updatePoolNumber(handler);
+                    info.updatePoolNumber(handler, UPD_MSG);
                 }
                 public void serverRemoved(PoolServer s) {
                     handler.sendMessage(Message.obtain(handler, DEL_MSG, s));
@@ -179,7 +101,7 @@ final class ServerTable {
 
     private void updateServer(RowInfo info) {
         if (info.view != null) {
-            ServerAdapter.fillView(info.view, info);
+            ServerListAdapter.fillView(info.view, info);
             rows.notifyDataSetChanged();
         }
     }
@@ -194,7 +116,7 @@ final class ServerTable {
     }
 
     private final ConcurrentHashMap<String, RowInfo> infos;
-    private final ServerAdapter rows;
+    private final ServerListAdapter rows;
     private final MulticastLock mcLock;
     private final WifiManager wifiMngr;
 }
