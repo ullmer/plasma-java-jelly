@@ -20,17 +20,12 @@ public class Ponder extends ListActivity {
     @Override public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        final ArrayAdapter<ServerTable.RowInfo> adapter =
-            new ArrayAdapter<ServerTable.RowInfo>(this, R.layout.server_item);
-
-        setListAdapter(adapter);
+        final WifiManager wifi =
+            (WifiManager)getSystemService(Context.WIFI_SERVICE);
+        table = new ServerTable(this, wifi);
 
         final ListView lv = getListView();
         lv.setTextFilterEnabled(true);
-
-        final WifiManager wifi =
-            (WifiManager)getSystemService(Context.WIFI_SERVICE);
-        table = new ServerTable(wifi, adapter);
     }
 
     @Override public void onResume() {

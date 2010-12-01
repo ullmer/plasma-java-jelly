@@ -63,6 +63,17 @@ public final class TCPServerFactory
         register(SCM, new TCPServerFactory());
     }
 
+    public static void unregister() {
+        final TCPServerFactory f =
+            (TCPServerFactory)PoolServerFactory.unregister(SCM);
+        if (f != null && f.jmDNS != null) f.jmDNS.close();
+    }
+
+    public static void reset() {
+        unregister();
+        register();
+    }
+
     private PoolServer fromInfo(ServiceInfo inf, boolean adding) {
         try {
             final String url = inf.getURL(SCM);

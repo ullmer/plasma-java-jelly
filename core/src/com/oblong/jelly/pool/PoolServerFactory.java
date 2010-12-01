@@ -63,6 +63,10 @@ public abstract class PoolServerFactory {
         return factories.get(scheme);
     }
 
+    public static PoolServerFactory unregister(String scheme) {
+        return factories.remove(scheme);
+    }
+
     public static boolean register(String scheme, PoolServerFactory factory) {
         if (scheme == null || factory == null) return false;
         return factories.put(scheme, factory) == null;

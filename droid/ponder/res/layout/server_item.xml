@@ -1,7 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-          android:layout_width="fill_parent"
-          android:layout_height="fill_parent"
-          android:padding="10dp"
-          android:textSize="16sp" >
-</TextView>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:orientation="vertical"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+
+  <TextView android:id="@+id/server_host"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:textSize="16sp" >
+  </TextView>
+
+  <TextView android:id="@+id/pool_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:padding="10dp"
+            android:textSize="11sp"
+            android:singleLine="true"
+            android:layout_alignRight="@id/server_host"
+            android:text="da pool">
+  </TextView>
+
+</RelativeLayout>
