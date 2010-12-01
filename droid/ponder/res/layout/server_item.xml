@@ -19,7 +19,7 @@
             android:textSize="11sp"
             android:singleLine="true"
             android:layout_alignRight="@id/server_host"
-            android:text="da pool">
+            android:text="">
   </TextView>
 
 </RelativeLayout>

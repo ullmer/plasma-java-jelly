@@ -54,25 +54,34 @@ final class ServerTable {
         setupListener();
     }
 
+    static final int ADD_MSG = 0;
+    static final int DEL_MSG = 1;
+    static final int UPD_MSG = 2;
+
     private final static class RowInfo {
         final PoolServer server;
-        int poolNumber;
-        View view;
+        volatile int poolNumber;
+        volatile View view;
 
         RowInfo(PoolServer s) {
             server = s;
-            poolNumber = -1;
+            poolNumber = UNINITIALIZED;
             view = null;
         }
 
-        boolean updatePoolNumber() {
-            try {
-                poolNumber = server.pools().size();
-            } catch (Exception e) {
-                poolNumber = -1;
-                return false;
-            }
-            return true;
+        void updatePoolNumber(final Handler hdl) {
+            Thread th = new Thread (new Runnable () {
+                    @Override public void run() {
+                        try {
+                            poolNumber = server.pools().size();
+                        } catch (Exception e) {
+                            poolNumber = CON_ERR;
+                        }
+                        hdl.sendMessage(
+                            Message.obtain(hdl, UPD_MSG, RowInfo.this));
+                    }
+                });
+            th.start();
         }
 
         String name() {
@@ -85,6 +94,12 @@ final class ServerTable {
                 : poolNumber + " pool" + (poolNumber == 1 ? "" : "s");
         }
 
+        boolean connectionError() {
+            return poolNumber == CON_ERR;
+        }
+
+        private static final int CON_ERR = -2;
+        private static final int UNINITIALIZED = -1;
     }
 
     private final static class ServerAdapter extends ArrayAdapter<RowInfo> {
@@ -105,7 +120,11 @@ final class ServerTable {
 
         static void fillView(View v, RowInfo i) {
             ((TextView)v.findViewById(R.id.server_host)).setText(i.name());
-            ((TextView)v.findViewById(R.id.pool_count)).setText(i.pools());
+            final TextView pcv = (TextView)v.findViewById(R.id.pool_count);
+            if (i.connectionError())
+                pcv.setError("Error connecting to the pool");
+            else
+                pcv.setText(i.pools());
             i.view = v;
         }
     }
@@ -123,21 +142,21 @@ final class ServerTable {
         final Handler handler = new Handler () {
                 public void handleMessage(Message m) {
                     switch (m.what) {
-                    case 0: addServer((RowInfo)m.obj); break;
-                    case 1: delServer((PoolServer)m.obj); break;
-                    case 2: updateServer((RowInfo)m.obj); break;
+                    case ADD_MSG: addServer((RowInfo)m.obj); break;
+                    case DEL_MSG: delServer((PoolServer)m.obj); break;
+                    case UPD_MSG: updateServer((RowInfo)m.obj); break;
                     }
                 }
             };
         PoolServers.addRemoteListener(new PoolServers.Listener() {
                 public void serverAdded(PoolServer s) {
                     final RowInfo info = new RowInfo(s);
-                    handler.sendMessage(Message.obtain(handler, 0, info));
-                    if (info.updatePoolNumber())
-                        handler.sendMessage(Message.obtain(handler, 2, info));
+                    handler.sendMessage(
+                        Message.obtain(handler, ADD_MSG, info));
+                    info.updatePoolNumber(handler);
                 }
                 public void serverRemoved(PoolServer s) {
-                    handler.sendMessage(Message.obtain(handler, 1, s));
+                    handler.sendMessage(Message.obtain(handler, DEL_MSG, s));
                 }
             });
     }
