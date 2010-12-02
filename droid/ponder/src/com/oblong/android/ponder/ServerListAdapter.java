@@ -2,6 +2,8 @@
 
 package com.oblong.android.ponder;
 
+import java.util.logging.Logger;
+
 import android.app.ListActivity;
 import android.content.Context;
 import android.os.Handler;
@@ -15,6 +17,7 @@ import android.widget.TextView;
 import com.oblong.jelly.PoolServer;
 
 final class ServerListAdapter extends ArrayAdapter<RowInfo> {
+
     ServerListAdapter(ListActivity parent) {
         super(parent, R.layout.server_item, R.id.server_host);
     }
@@ -31,23 +34,32 @@ final class ServerListAdapter extends ArrayAdapter<RowInfo> {
     }
 
     static void fillView(View v, RowInfo i) {
-        ((TextView)v.findViewById(R.id.server_host)).setText(i.name());
+        final String host =
+            i.name() + " (" + i.server().address().host() + ")";
+        final TextView hv = (TextView)v.findViewById(R.id.server_host);
+        hv.setText(host);
         final TextView pcv = (TextView)v.findViewById(R.id.pool_count);
-        if (i.connectionError())
+        if (i.connectionError()) {
             pcv.setError("Error connecting to the pool");
-        else
-            pcv.setText(i.pools());
-        i.view = v;
+        } else {
+            final int pn = i.poolNumber();
+            final String txt = pn < 0 ?
+                "" : pn + " pool" + (pn == 1 ? "" : "s");
+            pcv.setText(txt);
+        }
+        i.view(v);
     }
 }
 
 final class RowInfo {
-    final PoolServer server;
-    volatile int poolNumber;
-    volatile View view;
 
     RowInfo(PoolServer s) {
+        this(s, s.name());
+    }
+
+    RowInfo(PoolServer s, String n) {
         server = s;
+        name = n;
         poolNumber = UNINITIALIZED;
         view = null;
     }
@@ -58,6 +70,7 @@ final class RowInfo {
                     try {
                         poolNumber = server.pools().size();
                     } catch (Exception e) {
+                        Logger.getLogger("Ponder").warning("---> " + e);
                         poolNumber = CON_ERR;
                     }
                     hdl.sendMessage(
@@ -67,19 +80,17 @@ final class RowInfo {
         th.start();
     }
 
-    String name() {
-        return server.name() + " (" + server.address().host() + ")";
-    }
+    String name() { return name; }
+    int poolNumber() { return poolNumber; }
+    View view() { return view; }
+    void view(View v) { view = v; }
+    PoolServer server() { return server; }
+    boolean connectionError() { return poolNumber == CON_ERR; }
 
-    String pools() {
-        return poolNumber < 0
-            ? ""
-            : poolNumber + " pool" + (poolNumber == 1 ? "" : "s");
-    }
-
-    boolean connectionError() {
-        return poolNumber == CON_ERR;
-    }
+    private final PoolServer server;
+    private volatile int poolNumber;
+    private volatile View view;
+    private volatile String name;
 
     private static final int CON_ERR = -2;
     private static final int UNINITIALIZED = -1;

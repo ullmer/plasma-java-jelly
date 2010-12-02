@@ -6,8 +6,13 @@ import android.app.ListActivity;
 import android.content.Context;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+
+import com.oblong.jelly.PoolServer;
 
 /**
  *
@@ -19,6 +24,8 @@ public class Ponder extends ListActivity {
 
     @Override public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        serverDialog = new ServerDialog(this);
 
         final WifiManager wifi =
             (WifiManager)getSystemService(Context.WIFI_SERVICE);
@@ -38,5 +45,26 @@ public class Ponder extends ListActivity {
         table.deactivate();
     }
 
+    @Override public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.server_list, menu);
+        return true;
+    }
+
+    @Override public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+        case R.id.add_server:
+            serverDialog.show();
+            return true;
+        default:
+            return super.onOptionsItemSelected(item);
+        }
+    }
+
+    void registerServer(PoolServer server, String name) {
+        table.registerServer(new RowInfo(server, name));
+    }
+
     private ServerTable table;
+    private ServerDialog serverDialog;
 }

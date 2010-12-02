@@ -24,8 +24,8 @@ final class ServerTable {
 
     ServerTable(ListActivity la, WifiManager wifi) {
         infos = new ConcurrentHashMap<String, RowInfo>();
-        rows = new ServerListAdapter(la);
-        la.setListAdapter(rows);
+        adapter = new ServerListAdapter(la);
+        la.setListAdapter(adapter);
         wifiMngr = wifi;
         mcLock = setupMulticastLock();
         setupListener();
@@ -43,7 +43,7 @@ final class ServerTable {
         TCPServerFactory.reset();
         for (PoolServer s : PoolServers.remoteServers())
             addServer(new RowInfo(s));
-        rows.notifyDataSetChanged();
+        adapter.notifyDataSetChanged();
         setupListener();
     }
 
@@ -57,19 +57,6 @@ final class ServerTable {
     }
 
     private void setupListener() {
-        final int ADD_MSG = 0;
-        final int DEL_MSG = 1;
-        final int UPD_MSG = 2;
-
-        final Handler handler = new Handler () {
-                public void handleMessage(Message m) {
-                    switch (m.what) {
-                    case ADD_MSG: addServer((RowInfo)m.obj); break;
-                    case DEL_MSG: delServer((PoolServer)m.obj); break;
-                    case UPD_MSG: updateServer((RowInfo)m.obj); break;
-                    }
-                }
-            };
         PoolServers.addRemoteListener(new PoolServers.Listener() {
                 public void serverAdded(PoolServer s) {
                     final RowInfo info = new RowInfo(s);
@@ -83,26 +70,31 @@ final class ServerTable {
             });
     }
 
-    private void delServer(PoolServer s) {
-        final RowInfo info = infos.remove(s.name());
-        if (info != null) {
-            rows.remove(info);
-            rows.notifyDataSetChanged();
-        }
+    void registerServer(RowInfo info) {
+        addServer(info);
+        info.updatePoolNumber(handler, UPD_MSG);
     }
 
     private void addServer(RowInfo info) {
-        if (infos.get(info.server.name()) == null) {
-            infos.put(info.server.name(), info);
-            rows.add(info);
-            rows.notifyDataSetChanged();
+        if (infos.get(info.name()) == null) {
+            infos.put(info.name(), info);
+            adapter.add(info);
+            adapter.notifyDataSetChanged();
+        }
+    }
+
+    private void delServer(PoolServer s) {
+        final RowInfo info = infos.remove(s.name());
+        if (info != null) {
+            adapter.remove(info);
+            adapter.notifyDataSetChanged();
         }
     }
 
     private void updateServer(RowInfo info) {
-        if (info.view != null) {
-            ServerListAdapter.fillView(info.view, info);
-            rows.notifyDataSetChanged();
+        if (info.view() != null) {
+            ServerListAdapter.fillView(info.view(), info);
+            adapter.notifyDataSetChanged();
         }
     }
 
@@ -115,8 +107,22 @@ final class ServerTable {
         return buf.toString();
     }
 
+    private static final int ADD_MSG = 0;
+    private static final int DEL_MSG = 1;
+    private static final int UPD_MSG = 2;
+
+    private final Handler handler = new Handler () {
+        public void handleMessage(Message m) {
+            switch (m.what) {
+            case ADD_MSG: addServer((RowInfo)m.obj); break;
+            case DEL_MSG: delServer((PoolServer)m.obj); break;
+            case UPD_MSG: updateServer((RowInfo)m.obj); break;
+            }
+        }
+    };
+
     private final ConcurrentHashMap<String, RowInfo> infos;
-    private final ServerListAdapter rows;
+    private final ServerListAdapter adapter;
     private final MulticastLock mcLock;
     private final WifiManager wifiMngr;
 }
