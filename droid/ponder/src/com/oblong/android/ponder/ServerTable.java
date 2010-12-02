@@ -2,6 +2,8 @@
 
 package com.oblong.android.ponder;
 
+import java.util.Set;
+import java.util.HashSet;
 import java.util.concurrent.ConcurrentHashMap;
 
 import android.app.ListActivity;
@@ -24,6 +26,7 @@ final class ServerTable {
 
     ServerTable(ListActivity la, WifiManager wifi) {
         infos = new ConcurrentHashMap<String, RowInfo>();
+        localInfos = new HashSet<RowInfo>();
         adapter = new ServerListAdapter(la);
         la.setListAdapter(adapter);
         wifiMngr = wifi;
@@ -40,11 +43,46 @@ final class ServerTable {
     }
 
     void reset() {
-        TCPServerFactory.reset();
-        for (PoolServer s : PoolServers.remoteServers())
-            addServer(new RowInfo(s));
-        adapter.notifyDataSetChanged();
-        setupListener();
+        infos.clear();
+        adapter.clear();
+        final Thread th = new Thread (new Runnable () {
+                @Override public void run() {
+                    TCPServerFactory.reset();
+                    for (RowInfo i : localInfos) notifyNewServer(i);
+                    for (PoolServer s : PoolServers.remoteServers())
+                        notifyNewServer(s);
+                    setupListener();
+                }
+            });
+        th.start();
+    }
+
+    void registerServer(RowInfo info) {
+        int k = 1;
+        while (infos.get(info.name()) != null) info.nextName(++k);
+        info.clearPools();
+        localInfos.add(info);
+        addServer(info);
+        updatePoolNumber(info);
+    }
+
+    void refreshServer(int position) {
+        final RowInfo info = adapter.getItem(position);
+        if (info != null) {
+            info.clearPools();
+            adapter.notifyDataSetChanged();
+            updatePoolNumber(info);
+        }
+    }
+
+    void delServer(int position) {
+        final RowInfo info = adapter.getItem(position);
+        if (info != null) {
+            infos.remove(info.name());
+            localInfos.remove(info);
+            adapter.remove(info);
+            adapter.notifyDataSetChanged();
+        }
     }
 
     private MulticastLock setupMulticastLock () {
@@ -56,41 +94,32 @@ final class ServerTable {
         return lk;
     }
 
+    private void updatePoolNumber(RowInfo i) {
+        i.updatePoolNumber(handler, UPD_MSG);
+    }
+
+    private void notifyNewServer(PoolServer server) {
+        notifyNewServer(new RowInfo(server));
+    }
+
+    private void notifyNewServer(RowInfo info) {
+        handler.sendMessage(Message.obtain(handler, ADD_MSG, info));
+        updatePoolNumber(info);
+    }
+
+    private void notifyGoneServer(PoolServer server) {
+        handler.sendMessage(Message.obtain(handler, DEL_MSG, server));
+    }
+
     private void setupListener() {
         PoolServers.addRemoteListener(new PoolServers.Listener() {
                 public void serverAdded(PoolServer s) {
-                    final RowInfo info = new RowInfo(s);
-                    handler.sendMessage(
-                        Message.obtain(handler, ADD_MSG, info));
-                    info.updatePoolNumber(handler, UPD_MSG);
+                    notifyNewServer(s);
                 }
                 public void serverRemoved(PoolServer s) {
-                    handler.sendMessage(Message.obtain(handler, DEL_MSG, s));
+                    notifyGoneServer(s);
                 }
             });
-    }
-
-    void registerServer(RowInfo info) {
-        addServer(info);
-        info.updatePoolNumber(handler, UPD_MSG);
-    }
-
-    void refreshServer(int position) {
-        final RowInfo info = adapter.getItem(position);
-        if (info != null) {
-            info.clearPools();
-            adapter.notifyDataSetChanged();
-            info.updatePoolNumber(handler, UPD_MSG);
-        }
-    }
-
-    void delServer(int position) {
-        final RowInfo info = adapter.getItem(position);
-        if (info != null) {
-            infos.remove(info.name());
-            adapter.remove(info);
-            adapter.notifyDataSetChanged();
-        }
     }
 
     private void addServer(RowInfo info) {
@@ -140,6 +169,7 @@ final class ServerTable {
     };
 
     private final ConcurrentHashMap<String, RowInfo> infos;
+    private final Set<RowInfo> localInfos;
     private final ServerListAdapter adapter;
     private final MulticastLock mcLock;
     private final WifiManager wifiMngr;

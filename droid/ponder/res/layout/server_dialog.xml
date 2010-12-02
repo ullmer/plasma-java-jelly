@@ -51,5 +51,5 @@
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
         android:singleLine="true"
-        android:text="" />
+        android:text="Pool server" />
 </RelativeLayout>

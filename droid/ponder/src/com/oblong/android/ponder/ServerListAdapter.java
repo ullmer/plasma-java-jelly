@@ -43,8 +43,12 @@ final class ServerListAdapter extends ArrayAdapter<RowInfo> {
             pcv.setError("Error connecting to the pool");
         } else {
             final int pn = i.poolNumber();
-            final String txt = pn < 0 ?
-                "" : pn + " pool" + (pn == 1 ? "" : "s");
+            String txt;
+            switch (pn) {
+            case RowInfo.UNINITIALIZED: txt = "scanning"; break;
+            case 1: txt = "1 pool"; break;
+            default: txt = pn + " pools"; break;
+            }
             pcv.setText(txt);
         }
         i.view(v);
@@ -64,13 +68,19 @@ final class RowInfo {
         view = null;
     }
 
+    @Override public boolean equals(Object o) {
+        if (!(o instanceof RowInfo)) return false;
+        return name.equals(((RowInfo)o).name());
+    }
+
     void updatePoolNumber(final Handler hdl, final int msg) {
-        Thread th = new Thread (new Runnable () {
+        final Thread th = new Thread (new Runnable () {
                 @Override public void run() {
                     try {
                         poolNumber = server.pools().size();
                     } catch (Exception e) {
-                        Logger.getLogger("Ponder").warning("---> " + e);
+                        Logger.getLogger("Ponder").info(
+                            "Error connection to server: " + e.getMessage());
                         poolNumber = CON_ERR;
                     }
                     hdl.sendMessage(
@@ -80,6 +90,9 @@ final class RowInfo {
         th.start();
     }
 
+    static final int CON_ERR = -2;
+    static final int UNINITIALIZED = -1;
+
     String name() { return name; }
     int poolNumber() { return poolNumber; }
     View view() { return view; }
@@ -87,13 +100,11 @@ final class RowInfo {
     PoolServer server() { return server; }
     boolean connectionError() { return poolNumber == CON_ERR; }
     void clearPools() { poolNumber = UNINITIALIZED; }
+    void nextName(int n) { name = name + " #" + n; }
 
     private final PoolServer server;
     private volatile int poolNumber;
     private volatile View view;
     private volatile String name;
-
-    private static final int CON_ERR = -2;
-    private static final int UNINITIALIZED = -1;
 }
 

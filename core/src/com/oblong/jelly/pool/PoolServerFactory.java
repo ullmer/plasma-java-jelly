@@ -64,6 +64,9 @@ public abstract class PoolServerFactory {
     }
 
     public static PoolServerFactory unregister(String scheme) {
+        for (PoolServerAddress a : servers.keySet()) {
+            if (a.scheme().equals(scheme)) servers.remove(a);
+        }
         return factories.remove(scheme);
     }
 

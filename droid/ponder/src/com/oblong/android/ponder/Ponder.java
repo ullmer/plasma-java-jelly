@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.oblong.jelly.PoolServer;
 
@@ -38,6 +39,10 @@ public class Ponder extends ListActivity {
         final ListView lv = getListView();
         lv.setTextFilterEnabled(true);
         registerForContextMenu(lv);
+
+        refreshToast = Toast.makeText(getApplicationContext(),
+                                      "Scanning in progress...",
+                                      Toast.LENGTH_LONG);
     }
 
     @Override public void onResume() {
@@ -60,6 +65,10 @@ public class Ponder extends ListActivity {
         switch (item.getItemId()) {
         case R.id.add_server:
             serverDialog.show();
+            return true;
+        case R.id.search_servers:
+            refreshToast.show();
+            table.reset();
             return true;
         default:
             return super.onOptionsItemSelected(item);
@@ -85,8 +94,8 @@ public class Ponder extends ListActivity {
             table.refreshServer(info.position);
             return true;
         case R.id.show_server:
-            // deleteNote(info.id);
-            return true;
+            // TODO
+            return false;
         case R.id.close_menu:
             return true;
         default:
@@ -100,4 +109,5 @@ public class Ponder extends ListActivity {
 
     private ServerTable table;
     private ServerDialog serverDialog;
+    private Toast refreshToast;
 }
