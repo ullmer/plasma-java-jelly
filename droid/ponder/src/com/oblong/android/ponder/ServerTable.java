@@ -35,26 +35,43 @@ final class ServerTable {
     }
 
     void activate() {
-        if (!mcLock.isHeld()) mcLock.acquire();
+        mcLock.acquire();
+        rescan();
     }
 
     void deactivate() {
-        if (mcLock.isHeld()) mcLock.release();
+        mcLock.release();
+    }
+
+    void rescan() {
+        final Thread th = new Thread (new Runnable () {
+                @Override public void run() {
+                    for (PoolServer s : PoolServers.remoteServers())
+                        notifyNewServer(s);
+                }
+            });
+        th.start();
     }
 
     void reset() {
-        infos.clear();
-        adapter.clear();
+        for (RowInfo i : infos.values()) i.clearPools();
+        adapter.notifyDataSetChanged();
         final Thread th = new Thread (new Runnable () {
                 @Override public void run() {
                     TCPServerFactory.reset();
-                    for (RowInfo i : localInfos) notifyNewServer(i);
-                    for (PoolServer s : PoolServers.remoteServers())
+                    for (PoolServer s : PoolServers.remoteServers()) {
                         notifyNewServer(s);
+                    }
+                    for (RowInfo i : infos.values()) updatePoolNumber(i);
                     setupListener();
                 }
             });
         th.start();
+    }
+
+    void deleteUnreachable() {
+        for (RowInfo i : infos.values())
+            if (i.connectionError()) delServer(i);
     }
 
     void registerServer(RowInfo info) {
@@ -76,7 +93,10 @@ final class ServerTable {
     }
 
     void delServer(int position) {
-        final RowInfo info = adapter.getItem(position);
+        delServer(adapter.getItem(position));
+    }
+
+    void delServer(RowInfo info) {
         if (info != null) {
             infos.remove(info.name());
             localInfos.remove(info);
@@ -89,7 +109,7 @@ final class ServerTable {
         final int address = wifiMngr.getDhcpInfo().ipAddress;
         System.setProperty("net.mdns.interface", getHost(address));
         MulticastLock lk = wifiMngr.createMulticastLock("_ponder-lock");
-        lk.setReferenceCounted(true);
+        lk.setReferenceCounted(false);
         lk.acquire();
         return lk;
     }
@@ -98,8 +118,10 @@ final class ServerTable {
         i.updatePoolNumber(handler, UPD_MSG);
     }
 
-    private void notifyNewServer(PoolServer server) {
-        notifyNewServer(new RowInfo(server));
+    private RowInfo notifyNewServer(PoolServer server) {
+        final RowInfo info = new RowInfo(server);
+        notifyNewServer(info);
+        return info;
     }
 
     private void notifyNewServer(RowInfo info) {
@@ -141,8 +163,8 @@ final class ServerTable {
     private void updateServer(RowInfo info) {
         if (info.view() != null) {
             ServerListAdapter.fillView(info.view(), info);
-            adapter.notifyDataSetChanged();
         }
+        adapter.notifyDataSetChanged();
     }
 
     private static String getHost(int addr) {

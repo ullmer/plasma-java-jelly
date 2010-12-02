@@ -32,13 +32,16 @@ public class Ponder extends ListActivity {
 
         serverDialog = new ServerDialog(this);
 
+        final ListView lv = getListView();
+        registerForContextMenu(lv);
+
+        helpView =
+            getLayoutInflater().inflate(R.layout.server_list_help, null);
+        lv.addFooterView(helpView, null, false);
+
         final WifiManager wifi =
             (WifiManager)getSystemService(Context.WIFI_SERVICE);
         table = new ServerTable(this, wifi);
-
-        final ListView lv = getListView();
-        lv.setTextFilterEnabled(true);
-        registerForContextMenu(lv);
 
         refreshToast = Toast.makeText(getApplicationContext(),
                                       "Scanning in progress...",
@@ -47,6 +50,9 @@ public class Ponder extends ListActivity {
 
     @Override public void onResume() {
         super.onResume();
+
+        final int MAX_VIEWS = 5;
+        if (MAX_VIEWS < ++helpViews) getListView().removeFooterView(helpView);
         table.activate();
     }
 
@@ -69,6 +75,9 @@ public class Ponder extends ListActivity {
         case R.id.search_servers:
             refreshToast.show();
             table.reset();
+            return true;
+        case R.id.cleanup:
+            table.deleteUnreachable();
             return true;
         default:
             return super.onOptionsItemSelected(item);
@@ -110,4 +119,6 @@ public class Ponder extends ListActivity {
     private ServerTable table;
     private ServerDialog serverDialog;
     private Toast refreshToast;
+    private View helpView;
+    private int helpViews = 0;
 }

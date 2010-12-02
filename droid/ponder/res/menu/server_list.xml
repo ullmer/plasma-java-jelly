@@ -6,4 +6,7 @@
     <item android:id="@+id/search_servers"
           android:icon="@drawable/ic_menu_search"
           android:title="Search servers" />
+    <item android:id="@+id/cleanup"
+          android:icon="@drawable/ic_menu_delete"
+          android:title="Remove unreachable" />
 </menu>

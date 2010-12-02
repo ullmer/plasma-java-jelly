@@ -70,24 +70,26 @@ final class RowInfo {
 
     @Override public boolean equals(Object o) {
         if (!(o instanceof RowInfo)) return false;
-        return name.equals(((RowInfo)o).name());
+        return name.equals(((RowInfo)o).name);
+    }
+
+    void updatePoolNumber () {
+        try {
+            poolNumber = server.pools().size();
+        } catch (Exception e) {
+            Logger.getLogger("Ponder").info(
+                "Error connection to server: " + e.getMessage());
+            poolNumber = CON_ERR;
+        }
     }
 
     void updatePoolNumber(final Handler hdl, final int msg) {
-        final Thread th = new Thread (new Runnable () {
+        new Thread (new Runnable () {
                 @Override public void run() {
-                    try {
-                        poolNumber = server.pools().size();
-                    } catch (Exception e) {
-                        Logger.getLogger("Ponder").info(
-                            "Error connection to server: " + e.getMessage());
-                        poolNumber = CON_ERR;
-                    }
-                    hdl.sendMessage(
-                        Message.obtain(hdl, msg, RowInfo.this));
+                    updatePoolNumber();
+                    hdl.sendMessage(Message.obtain(hdl, msg, RowInfo.this));
                 }
-            });
-        th.start();
+            }).start();
     }
 
     static final int CON_ERR = -2;
