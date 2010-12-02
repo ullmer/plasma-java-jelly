@@ -86,6 +86,7 @@ final class RowInfo {
     void view(View v) { view = v; }
     PoolServer server() { return server; }
     boolean connectionError() { return poolNumber == CON_ERR; }
+    void clearPools() { poolNumber = UNINITIALIZED; }
 
     private final PoolServer server;
     private volatile int poolNumber;

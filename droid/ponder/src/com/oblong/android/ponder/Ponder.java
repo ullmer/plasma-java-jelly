@@ -6,9 +6,13 @@ import android.app.ListActivity;
 import android.content.Context;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -33,6 +37,7 @@ public class Ponder extends ListActivity {
 
         final ListView lv = getListView();
         lv.setTextFilterEnabled(true);
+        registerForContextMenu(lv);
     }
 
     @Override public void onResume() {
@@ -58,6 +63,34 @@ public class Ponder extends ListActivity {
             return true;
         default:
             return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override public void onCreateContextMenu(ContextMenu menu,
+                                              View v,
+                                              ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.server_context, menu);
+    }
+
+    @Override public boolean onContextItemSelected(MenuItem item) {
+        AdapterContextMenuInfo info =
+            (AdapterContextMenuInfo) item.getMenuInfo();
+        switch (item.getItemId()) {
+        case R.id.delete_server:
+            table.delServer(info.position);
+            return true;
+        case R.id.refresh_server:
+            table.refreshServer(info.position);
+            return true;
+        case R.id.show_server:
+            // deleteNote(info.id);
+            return true;
+        case R.id.close_menu:
+            return true;
+        default:
+            return super.onContextItemSelected(item);
         }
     }
 

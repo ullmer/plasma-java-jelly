@@ -5,7 +5,6 @@ package com.oblong.android.ponder;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,12 +15,6 @@ import com.oblong.jelly.PoolServer;
 import com.oblong.jelly.PoolServerAddress;
 import com.oblong.jelly.PoolServers;
 
-/**
- *
- * Created: Fri Sep 10 03:57:32 2010
- *
- * @author jao
- */
 final class ServerDialog implements DialogInterface.OnClickListener,
                                     DialogInterface.OnDismissListener {
 

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/delete_server"
+          android:title="Delete server from list"
+          android:titleCondensed="Delete server" />
+    <item android:id="@+id/refresh_server"
+          android:title="Refresh server data"
+          android:titleCondensed="Refresh server" />
+    <item android:id="@+id/show_server"
+          android:title="Show server details"
+          android:titleCondensed="Show server" />
+    <item android:id="@+id/close_menu"
+          android:title="Cancel" />
+</menu>

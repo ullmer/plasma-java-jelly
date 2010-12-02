@@ -75,6 +75,24 @@ final class ServerTable {
         info.updatePoolNumber(handler, UPD_MSG);
     }
 
+    void refreshServer(int position) {
+        final RowInfo info = adapter.getItem(position);
+        if (info != null) {
+            info.clearPools();
+            adapter.notifyDataSetChanged();
+            info.updatePoolNumber(handler, UPD_MSG);
+        }
+    }
+
+    void delServer(int position) {
+        final RowInfo info = adapter.getItem(position);
+        if (info != null) {
+            infos.remove(info.name());
+            adapter.remove(info);
+            adapter.notifyDataSetChanged();
+        }
+    }
+
     private void addServer(RowInfo info) {
         if (infos.get(info.name()) == null) {
             infos.put(info.name(), info);
