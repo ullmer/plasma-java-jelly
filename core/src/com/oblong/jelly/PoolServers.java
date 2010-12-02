@@ -37,6 +37,19 @@ public final class PoolServers {
     }
 
     /**
+     * Convenience method that construct a PoolServerAddress and calls
+     * {@link #get(PoolServerAddress) get} on it, returning null if
+     * the URI is malformed.
+     */
+    public static PoolServer get(String uri) {
+        try {
+            return get(PoolServerAddress.fromURI(uri));
+        } catch (BadAddressException e) {
+            return null;
+        }
+    }
+
+    /**
      * Lists the currently known servers for the given scheme.
      *
      * Of particular interest are those schemes, such as "tcp",

@@ -103,8 +103,8 @@ public class Ponder extends ListActivity {
             table.refreshServer(info.position);
             return true;
         case R.id.show_server:
-            // TODO
-            return false;
+            Pools.launch(this, table.getItem(info.position));
+            return true;
         case R.id.close_menu:
             return true;
         default:
@@ -113,7 +113,7 @@ public class Ponder extends ListActivity {
     }
 
     void registerServer(PoolServer server, String name) {
-        table.registerServer(new RowInfo(server, name));
+        table.registerServer(new ServerInfoRow(server, name));
     }
 
     private ServerTable table;

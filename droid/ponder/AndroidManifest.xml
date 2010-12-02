@@ -8,12 +8,19 @@
                android:icon="@drawable/icon"
                android:debuggable="true">
         <activity android:name="com.oblong.android.ponder.Ponder"
-                  android:label="@string/app_name">
+                  android:label="Ponder - Pool servers"
+                  android:screenOrientation="portrait">
           <intent-filter>
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.LAUNCHER" />
           </intent-filter>
         </activity>
+
+        <activity android:name="com.oblong.android.ponder.Pools"
+                  android:label="Ponder - Server details"
+                  android:screenOrientation="portrait">
+        </activity>
+
   </application>
 
   <uses-sdk android:minSdkVersion="8" />
