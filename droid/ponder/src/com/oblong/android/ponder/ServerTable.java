@@ -158,11 +158,7 @@ final class ServerTable {
     }
 
     private void delServer(PoolServer s) {
-        final ServerInfoRow info = infos.remove(s.name());
-        if (info != null) {
-            adapter.remove(info);
-            adapter.notifyDataSetChanged();
-        }
+        delServer(infos.remove(s.name()));
     }
 
     private void updateServer(ServerInfoRow info) {
