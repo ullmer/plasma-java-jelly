@@ -16,6 +16,42 @@ import android.widget.TextView;
 
 import com.oblong.jelly.PoolServer;
 
+final class ServerInfoRow {
+
+    ServerInfoRow(PoolServer s) {
+        this(s, s.name());
+    }
+
+    ServerInfoRow(PoolServer s, String n) {
+        info = new ServerInfo(s, n);
+        view = null;
+    }
+
+    @Override public boolean equals(Object o) {
+        if (!(o instanceof ServerInfoRow)) return false;
+        return info.equals(((ServerInfoRow)o).info);
+    }
+
+    ServerInfo info() { return info; }
+
+    View view() { return view; }
+    void view(View v) { view = v; }
+
+    void updatePoolNumber(final Handler hdl, final int msg) {
+        new Thread (new Runnable () {
+                @Override public void run() {
+                    info.updatePools();
+                    hdl.sendMessage(Message.obtain(hdl,
+                                                   msg,
+                                                   ServerInfoRow.this));
+                }
+            }).start();
+    }
+
+    private final ServerInfo info;
+    private volatile View view;
+}
+
 final class ServerListAdapter extends ArrayAdapter<ServerInfoRow> {
 
     ServerListAdapter(ListActivity parent) {
@@ -35,21 +71,14 @@ final class ServerListAdapter extends ArrayAdapter<ServerInfoRow> {
 
     static void fillView(View v, ServerInfoRow i) {
         final String host =
-            i.name() + " (" + i.server().address().host() + ")";
+            i.info().name() + " (" + i.info().server().address().host() + ")";
         final TextView hv = (TextView)v.findViewById(R.id.server_host);
         hv.setText(host);
         final TextView pcv = (TextView)v.findViewById(R.id.pool_count);
-        if (i.connectionError()) {
+        if (i.info().connectionError()) {
             pcv.setError("Error connecting to the pool");
         } else {
-            final int pn = i.poolNumber();
-            String txt;
-            switch (pn) {
-            case ServerInfo.UNINITIALIZED: txt = "scanning"; break;
-            case 1: txt = "1 pool"; break;
-            default: txt = pn + " pools"; break;
-            }
-            pcv.setText(txt);
+            pcv.setText(i.info().poolNumberStr());
         }
         i.view(v);
     }

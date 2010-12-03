@@ -87,7 +87,7 @@ public class Ponder extends ListActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.server_context, menu);
         final int pos = ((AdapterContextMenuInfo)menuInfo).position;
-        final String title = table.getItem(pos).name();
+        final String title = table.getItem(pos).info().name();
         if (title != null) menu.setHeaderTitle(title);
     }
 

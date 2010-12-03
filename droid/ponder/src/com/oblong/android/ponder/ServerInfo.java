@@ -39,16 +39,44 @@ final class ServerInfo {
         }
     }
 
-    static final int CON_ERR = -2;
-    static final int UNINITIALIZED = -1;
+    void updatePools(final Handler hdl, final int msg) {
+        new Thread (new Runnable () {
+                @Override public void run() {
+                    updatePools();
+                    if (poolNumber() > 0) {
+                        for (String p : pools)
+                            hdl.sendMessage(Message.obtain(hdl, msg, p));
+                    }
+                }
+            }).start();
+    }
 
     String name() { return name; }
+
     Set<String> pools() { return pools; }
+
     int poolNumber() { return poolNumber; }
+
+    String poolNumberStr() {
+        String txt;
+        switch (poolNumber) {
+        case UNINITIALIZED: txt = "scanning"; break;
+        case 1: txt = "1 pool"; break;
+        default: txt = poolNumber + " pools"; break;
+        }
+        return txt;
+    }
+
     PoolServer server() { return server; }
+
     boolean connectionError() { return poolNumber == CON_ERR; }
+
     void clearPools() { poolNumber = UNINITIALIZED; }
+
     void nextName(int n) { name = name + " #" + n; }
+
+    private static final int CON_ERR = -2;
+    private static final int UNINITIALIZED = -1;
 
     private final PoolServer server;
     private volatile Set<String> pools;

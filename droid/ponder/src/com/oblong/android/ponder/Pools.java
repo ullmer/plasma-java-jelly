@@ -25,22 +25,30 @@ public final class Pools extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.pools);
         host = (TextView)findViewById(R.id.hostname_entry);
-        port = (TextView)findViewById(R.id.port_entry);
-        name = (TextView)findViewById(R.id.name_entry);
+        name = (TextView)findViewById(R.id.pool_name_entry);
+        poolNo = (TextView)findViewById(R.id.pool_no_entry);
         poolList = (ListView)findViewById(R.id.pool_list);
     }
 
     @Override public void onStart() {
         super.onStart();
-        host.setText(serverInfo.server().address().host());
-        port.setText(serverInfo.server().address().port() + "");
         name.setText(serverInfo.name());
+        host.setText(serverInfo.server().address().toString());
+        updatePoolNo();
+    }
+
+    private void updatePoolNo () {
+        if (serverInfo.connectionError()) {
+            poolNo.setError("Error connecting to the pool");
+        } else {
+            poolNo.setText(serverInfo.poolNumberStr());
+        }
     }
 
     private static ServerInfo serverInfo;
 
     private TextView host;
-    private TextView port;
     private TextView name;
+    private TextView poolNo;
     private ListView poolList;
 }

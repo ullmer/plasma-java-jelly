@@ -54,7 +54,7 @@ final class ServerTable {
     }
 
     void reset() {
-        for (ServerInfoRow i : infos.values()) i.clearPools();
+        for (ServerInfoRow i : infos.values()) i.info().clearPools();
         adapter.notifyDataSetChanged();
         final Thread th = new Thread (new Runnable () {
                 @Override public void run() {
@@ -72,24 +72,24 @@ final class ServerTable {
 
     void deleteUnreachable() {
         for (ServerInfoRow i : infos.values())
-            if (i.connectionError()) delServer(i);
+            if (i.info().connectionError()) delServer(i);
     }
 
-    void registerServer(ServerInfoRow info) {
+    void registerServer(ServerInfoRow row) {
         int k = 1;
-        while (infos.get(info.name()) != null) info.nextName(++k);
-        info.clearPools();
-        localInfos.add(info);
-        addServer(info);
-        updatePoolNumber(info);
+        while (infos.get(row.info().name()) != null) row.info().nextName(++k);
+        row.info().clearPools();
+        localInfos.add(row);
+        addServer(row);
+        updatePoolNumber(row);
     }
 
     void refreshServer(int position) {
-        final ServerInfoRow info = adapter.getItem(position);
-        if (info != null) {
-            info.clearPools();
+        final ServerInfoRow row = adapter.getItem(position);
+        if (row != null) {
+            row.info().clearPools();
             adapter.notifyDataSetChanged();
-            updatePoolNumber(info);
+            updatePoolNumber(row);
         }
     }
 
@@ -97,11 +97,11 @@ final class ServerTable {
         delServer(adapter.getItem(position));
     }
 
-    void delServer(ServerInfoRow info) {
-        if (info != null) {
-            infos.remove(info.name());
-            localInfos.remove(info);
-            adapter.remove(info);
+    void delServer(ServerInfoRow row) {
+        if (row != null) {
+            infos.remove(row.info().name());
+            localInfos.remove(row);
+            adapter.remove(row);
             adapter.notifyDataSetChanged();
         }
     }
@@ -149,10 +149,10 @@ final class ServerTable {
             });
     }
 
-    private void addServer(ServerInfoRow info) {
-        if (infos.get(info.name()) == null) {
-            infos.put(info.name(), info);
-            adapter.add(info);
+    private void addServer(ServerInfoRow row) {
+        if (infos.get(row.info().name()) == null) {
+            infos.put(row.info().name(), row);
+            adapter.add(row);
             adapter.notifyDataSetChanged();
         }
     }

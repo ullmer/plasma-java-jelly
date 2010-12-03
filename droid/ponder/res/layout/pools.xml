@@ -4,55 +4,50 @@
                 android:layout_height="fill_parent"
                 android:stretchColumns="1">
 
-    <TextView android:id="@+id/hostname_label"
+    <TextView android:id="@+id/pool_name_entry"
               android:layout_width="fill_parent"
               android:layout_height="wrap_content"
-              android:layout_margin="10dp"
-              android:gravity="center_horizontal"
-              android:text="Host and port" />
-
-    <TextView android:id="@+id/port_entry"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_below="@id/hostname_label"
-              android:layout_alignRight="@id/hostname_label"
-              android:padding="5dp"
-              android:singleLine="true"
+              android:layout_margin="5dp"
+              android:gravity="left"
+              android:textSize="20sp"
               android:text="" />
 
     <TextView android:id="@+id/hostname_entry"
-              android:layout_width="fill_parent"
+              android:layout_width="wrap_content"
               android:layout_height="wrap_content"
-              android:layout_marginLeft="5dp"
-              android:layout_below="@id/hostname_label"
-              android:layout_toLeftOf="@id/port_entry"
-              android:padding="5dp"
+              android:layout_margin="5dp"
+              android:layout_marginLeft="0dp"
+              android:layout_below="@id/pool_name_entry"
+              android:padding="0dp"
               android:singleLine="true"
+              android:textSize="15sp"
               android:text="" />
 
-    <TextView android:id="@+id/server_label"
+    <TextView android:id="@+id/pool_no_entry"
               android:layout_width="fill_parent"
               android:layout_height="wrap_content"
-              android:layout_margin="10dp"
+              android:layout_toRightOf="@id/hostname_entry"
+              android:layout_below="@id/pool_name_entry"
+              android:layout_margin="5dp"
+              android:padding="0dp"
+              android:gravity="right"
+              android:singleLine="true"
+              android:textSize="12sp"
+              android:text="" />
+
+    <TextView android:id="@+id/pools_label"
+              android:layout_width="fill_parent"
+              android:layout_height="wrap_content"
+              android:layout_margin="20dp"
               android:layout_below="@id/hostname_entry"
               android:gravity="center_horizontal"
-              android:text="Name" />
-
-    <TextView android:id="@+id/name_entry"
-              android:layout_width="fill_parent"
-              android:layout_height="wrap_content"
-              android:layout_below="@id/server_label"
-              android:padding="5dp"
-              android:layout_marginLeft="5dp"
-              android:layout_marginRight="5dp"
-              android:gravity="center_horizontal"
-              android:singleLine="true"
-              android:text="" />
+              android:textSize="15sp"
+              android:text="Pools" />
 
     <ListView android:id="@+id/pool_list"
               android:layout_width="fill_parent"
               android:layout_height="fill_parent"
-              android:layout_below="@id/name_entry"
+              android:layout_below="@id/pools_label"
               android:layout_marginLeft="5dp"
               android:layout_marginRight="5dp" />
 
