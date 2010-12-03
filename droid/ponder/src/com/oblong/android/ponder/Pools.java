@@ -13,15 +13,12 @@ import com.oblong.jelly.PoolServers;
 
 public final class Pools extends Activity {
 
-    static final String NAME_KEY = "com.oblong.android.ponder.Name";
-    static final String URI_KEY = "com.oblong.android.ponder.URI";
-
-
-    static void launch(Activity launcher, ServerInfoRow info) {
-        final Intent intent = new Intent(launcher, Pools.class);
-        intent.putExtra(NAME_KEY, info.name());
-        intent.putExtra(URI_KEY, info.server().address().toString());
-        launcher.startActivity(intent);
+    static void launch(Activity launcher, ServerInfo info) {
+        if (info != null) {
+            final Intent intent = new Intent(launcher, Pools.class);
+            serverInfo = info;
+            launcher.startActivity(intent);
+        }
     }
 
     @Override public void onCreate(Bundle savedInstanceState) {
@@ -35,14 +32,12 @@ public final class Pools extends Activity {
 
     @Override public void onStart() {
         super.onStart();
-        final Intent intent = getIntent();
-        final PoolServer srv =
-            PoolServers.get(intent.getStringExtra(URI_KEY));
-        host.setText(srv.address().host());
-        port.setText(srv.address().port() + "");
-        name.setText(intent.getStringExtra(NAME_KEY));
+        host.setText(serverInfo.server().address().host());
+        port.setText(serverInfo.server().address().port() + "");
+        name.setText(serverInfo.name());
     }
 
+    private static ServerInfo serverInfo;
 
     private TextView host;
     private TextView port;

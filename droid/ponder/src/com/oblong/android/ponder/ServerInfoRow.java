@@ -49,6 +49,8 @@ final class ServerInfoRow {
             }).start();
     }
 
+    ServerInfo info() { return info; }
+
     String name() { return info.name(); }
     Set<String> pools() { return info.pools(); }
     int poolNumber() { return info.poolNumber(); }

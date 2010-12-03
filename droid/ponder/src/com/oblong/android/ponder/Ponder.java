@@ -13,6 +13,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView.AdapterContextMenuInfo;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -30,14 +31,7 @@ public class Ponder extends ListActivity {
     @Override public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        serverDialog = new ServerDialog(this);
-
-        final ListView lv = getListView();
-        registerForContextMenu(lv);
-
-        helpView =
-            getLayoutInflater().inflate(R.layout.server_list_help, null);
-        lv.addFooterView(helpView, null, false);
+        setUpListView();
 
         final WifiManager wifi =
             (WifiManager)getSystemService(Context.WIFI_SERVICE);
@@ -46,7 +40,9 @@ public class Ponder extends ListActivity {
         refreshToast = Toast.makeText(getApplicationContext(),
                                       "Scanning in progress...",
                                       Toast.LENGTH_LONG);
+        serverDialog = new ServerDialog(this);
     }
+
 
     @Override public void onResume() {
         super.onResume();
@@ -103,7 +99,7 @@ public class Ponder extends ListActivity {
             table.refreshServer(info.position);
             return true;
         case R.id.show_server:
-            Pools.launch(this, table.getItem(info.position));
+            launchPoolBrowser(info.position);
             return true;
         case R.id.close_menu:
             return true;
@@ -114,6 +110,25 @@ public class Ponder extends ListActivity {
 
     void registerServer(PoolServer server, String name) {
         table.registerServer(new ServerInfoRow(server, name));
+    }
+
+    private void launchPoolBrowser(int position) {
+        Pools.launch(this, table.getItem(position).info());
+    }
+
+    private void setUpListView() {
+        final ListView lv = getListView();
+        registerForContextMenu(lv);
+
+        helpView =
+            getLayoutInflater().inflate(R.layout.server_list_help, null);
+        lv.addFooterView(helpView, null, false);
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                public void onItemClick(
+                    AdapterView<?> p, View view, int position, long id) {
+                    launchPoolBrowser(position);
+                }
+            });
     }
 
     private ServerTable table;
