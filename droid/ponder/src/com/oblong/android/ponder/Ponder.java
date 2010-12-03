@@ -26,7 +26,7 @@ import com.oblong.jelly.PoolServer;
  *
  * @author jao
  */
-public class Ponder extends ListActivity {
+public final class Ponder extends ListActivity {
 
     @Override public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

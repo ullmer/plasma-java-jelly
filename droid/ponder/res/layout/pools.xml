@@ -35,19 +35,10 @@
               android:textSize="12sp"
               android:text="" />
 
-    <TextView android:id="@+id/pools_label"
-              android:layout_width="fill_parent"
-              android:layout_height="wrap_content"
-              android:layout_margin="20dp"
-              android:layout_below="@id/hostname_entry"
-              android:gravity="center_horizontal"
-              android:textSize="15sp"
-              android:text="Pools" />
-
     <ListView android:id="@+id/pool_list"
               android:layout_width="fill_parent"
               android:layout_height="fill_parent"
-              android:layout_below="@id/pools_label"
+              android:layout_below="@id/hostname_entry"
               android:layout_marginLeft="5dp"
               android:layout_marginRight="5dp" />
 
