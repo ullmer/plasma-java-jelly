@@ -31,22 +31,41 @@ public final class PoolServers {
      * <p> If there's no PoolServer with the given address (for
      * instance, because its protocol is not registered), this method
      * returns null.
+     *
+     * <p> The second argument indicates whether the returned instance
+     * should be remembered, and included in the list returned by
+     * {@link #servers}.
+     */
+    public static PoolServer get(PoolServerAddress address, boolean cache) {
+        return PoolServerFactory.get(address, cache);
+    }
+
+    /**
+     * Equivalent to {@link #get(PoolServerAddress, boolean)} with
+     * caching.
      */
     public static PoolServer get(PoolServerAddress address) {
-        return PoolServerFactory.get(address);
+        return get(address, true);
     }
 
     /**
      * Convenience method that construct a PoolServerAddress and calls
-     * {@link #get(PoolServerAddress) get} on it, returning null if
-     * the URI is malformed.
+     * {@link #get(PoolServerAddress, boolean) get} on it, returning
+     * null if the URI is malformed.
      */
-    public static PoolServer get(String uri) {
+    public static PoolServer get(String uri, boolean cache) {
         try {
-            return get(PoolServerAddress.fromURI(uri));
+            return get(PoolServerAddress.fromURI(uri), cache);
         } catch (BadAddressException e) {
             return null;
         }
+    }
+
+    /**
+     * Equivalent to {@link #get(String, boolean)} with caching.
+     */
+    public static PoolServer get(String uri) {
+        return get(uri, true);
     }
 
     /**
@@ -61,6 +80,7 @@ public final class PoolServers {
     public static Set<PoolServer> servers(String scheme) {
         return PoolServerFactory.servers(scheme);
     }
+
 
     /**
      * Lists the currently discovered remote servers.

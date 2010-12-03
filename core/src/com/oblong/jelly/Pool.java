@@ -43,7 +43,7 @@ public final class Pool {
      * @deprecated
      */
     public static PoolServer getServer(PoolServerAddress address) {
-        return com.oblong.jelly.pool.PoolServerFactory.get(address);
+        return PoolServers.get(address);
     }
 
     /**

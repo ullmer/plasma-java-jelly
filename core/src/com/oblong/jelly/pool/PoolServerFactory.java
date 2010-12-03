@@ -17,15 +17,18 @@ public abstract class PoolServerFactory {
     public abstract boolean addListener(PoolServers.Listener listener);
     public abstract boolean isRemote();
 
-    public static PoolServer get(PoolServerAddress address) {
+    public static PoolServer get(PoolServerAddress address, boolean cache) {
         PoolServer server = servers.get(address);
         if (server == null) {
             final String scheme = address.scheme();
             final PoolServerFactory f = getFactory(scheme);
             if (f != null) {
                 server = f.getServer(address);
-                final PoolServer old = servers.putIfAbsent(address, server);
-                if (old != null) server = old;
+                if (cache) {
+                    final PoolServer old =
+                        servers.putIfAbsent(address, server);
+                    if (old != null) server = old;
+                }
             }
         }
         return server;
