@@ -129,7 +129,7 @@ public final class PoolServers {
      *
      * <p>The listener will only react to additions or removals of
      * servers with the given scheme. See also {@link
-     * addRemoteListener}.
+     * #addRemoteListener}.
      */
     public static boolean addListener(String scheme, Listener listener) {
         return PoolServerFactory.addListener(scheme, listener);

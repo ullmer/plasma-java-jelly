@@ -18,6 +18,12 @@ package com.oblong.jelly;
  */
 public final class MetadataRequest {
 
+    /**
+     * Factory creating an array of requests for a consecutive range
+     * of @c size indexes, starting at @c idx. Each request is created
+     * using {@link #MetadataRequest(long)}. Handy for quickly creating
+     * the argument to {@link Hose#metadata(MetadataRequest...)}.
+     */
     public static final MetadataRequest[] range(long idx, int size) {
         final MetadataRequest[] reqs = new MetadataRequest[size];
         for (int i = 0; i < size; ++i) reqs[i] = new MetadataRequest(idx + i);
