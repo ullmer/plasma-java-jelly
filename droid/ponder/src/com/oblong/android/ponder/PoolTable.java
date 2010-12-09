@@ -40,16 +40,20 @@ final class PoolTable {
 
     private void fill(ServerInfo info) {
         adapter.clear();
-        if (info.connectionError()) {
-            noView.setError("Error connecting to the pool");
-        } else {
-            noView.setText(info.poolNumberStr());
-            for (String p : info.pools()) {
-                if (adapter.getPosition(p) < 0) adapter.add(p);
+        if (info != null) {
+            if (info.connectionError()) {
+                noView.setError("Error connecting to the pool");
+            } else {
+                noView.setText(info.poolNumberStr());
+                if (info.pools() != null) {
+                    for (String p : info.pools()) {
+                        if (adapter.getPosition(p) < 0) adapter.add(p);
+                    }
+                }
             }
+            noView.invalidate();
+            adapter.notifyDataSetChanged();
         }
-        noView.invalidate();
-        adapter.notifyDataSetChanged();
     }
 
     private final ListView poolView;
