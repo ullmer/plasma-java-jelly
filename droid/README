@@ -23,7 +23,7 @@
        $ android update project -p $PWD
 
     run inside the app directory. That's it: you can use ant to
-    compile and install the application. Use `ant help' for a list
+    compile and install the application. Use `ant -p` for a list
     of targets.
 
 *** Using Eclipse
