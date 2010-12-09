@@ -21,6 +21,11 @@
                   android:screenOrientation="portrait">
         </activity>
 
+        <activity android:name="com.oblong.android.ponder.Pool"
+                  android:label="Ponder - Pool details"
+                  android:screenOrientation="portrait">
+        </activity>
+
   </application>
 
   <uses-sdk android:minSdkVersion="8" />

@@ -18,6 +18,12 @@ package com.oblong.jelly;
  */
 public final class MetadataRequest {
 
+    public static final MetadataRequest[] range(long idx, int size) {
+        final MetadataRequest[] reqs = new MetadataRequest[size];
+        for (int i = 0; i < size; ++i) reqs[i] = new MetadataRequest(idx + i);
+        return reqs;
+    }
+
     /**
      * Full constructor specifying all fields. Negative values of
      * <code>dataStart</code> and <code>dataLength</code> are

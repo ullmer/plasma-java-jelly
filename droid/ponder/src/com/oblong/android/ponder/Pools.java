@@ -13,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.oblong.jelly.PoolAddress;
 import com.oblong.jelly.PoolServer;
 import com.oblong.jelly.PoolServers;
 
@@ -30,12 +31,12 @@ public final class Pools extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.pools);
         host = (TextView)findViewById(R.id.hostname_entry);
-        name = (TextView)findViewById(R.id.pool_name_entry);
+        name = (TextView)findViewById(R.id.server_name_entry);
         final TextView poolNo = (TextView)findViewById(R.id.pool_no_entry);
         final ListView poolList = (ListView)findViewById(R.id.pool_list);
         final View title =
             getLayoutInflater().inflate(R.layout.pools_title, null);
-        if (title != null) poolList.addHeaderView(title);
+        if (title != null) poolList.addHeaderView(title, null, false);
         table = new PoolTable(poolList,
                               poolNo,
                               new AdapterView.OnItemClickListener () {
@@ -72,8 +73,14 @@ public final class Pools extends Activity {
         }
     }
 
-    private void launchProteinBrowser(int position) {
-        // TODO
+    private void launchProteinBrowser(int pos) {
+        if (pos < 1) return;
+        try {
+            Pool.launch(this, new PoolAddress(serverInfo.server().address(),
+                                              table.getPool(pos - 1)));
+        } catch (Exception e) {
+            Ponder.logger().severe("Error launching Pool: " + e);
+        }
     }
 
     private static ServerInfo serverInfo;

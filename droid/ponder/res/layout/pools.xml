@@ -4,7 +4,7 @@
                 android:layout_height="fill_parent"
                 android:stretchColumns="1">
 
-    <TextView android:id="@+id/pool_name_entry"
+    <TextView android:id="@+id/server_name_entry"
               android:layout_width="fill_parent"
               android:layout_height="wrap_content"
               android:layout_margin="5dp"
@@ -17,7 +17,7 @@
               android:layout_height="wrap_content"
               android:layout_margin="5dp"
               android:layout_marginLeft="0dp"
-              android:layout_below="@id/pool_name_entry"
+              android:layout_below="@id/server_name_entry"
               android:padding="0dp"
               android:singleLine="true"
               android:textSize="15sp"
@@ -27,7 +27,7 @@
               android:layout_width="fill_parent"
               android:layout_height="wrap_content"
               android:layout_toRightOf="@id/hostname_entry"
-              android:layout_below="@id/pool_name_entry"
+              android:layout_below="@id/server_name_entry"
               android:layout_margin="5dp"
               android:padding="0dp"
               android:gravity="right"

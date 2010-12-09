@@ -2,6 +2,8 @@
 
 package com.oblong.android.ponder;
 
+import java.util.logging.Logger;
+
 import android.app.ListActivity;
 import android.content.Context;
 import android.net.wifi.WifiManager;
@@ -27,6 +29,10 @@ import com.oblong.jelly.PoolServer;
  * @author jao
  */
 public final class Ponder extends ListActivity {
+
+    static Logger logger() {
+        return Logger.getLogger("Ponder");
+    }
 
     @Override public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
