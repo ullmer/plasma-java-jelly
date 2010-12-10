@@ -20,7 +20,19 @@ final class MetadataFetcher {
     MetadataFetcher(Hose hose) throws PoolException {
         this.hose = hose;
         for (int i = 0; i < pages.length; ++i) pages[i] = new Page();
-        requery();
+        firstIndex = -1;
+        lastIndex = -1;
+        prepared = false;
+    }
+
+    void prepareForAdapter() {
+        prepared = false;
+        try {
+            requery();
+            prepared = true;
+        } catch (PoolException e) {
+            prepared = false;
+        }
     }
 
     void close() {
@@ -37,10 +49,13 @@ final class MetadataFetcher {
     }
 
     void requery() throws PoolException {
-        if (isClosed()) hose = hose.dup();
-        firstIndex = hose.oldestIndex();
-        lastIndex = hose.newestIndex();
-        if (count() > 0) prefetchPage(0);
+        if (!prepared) {
+            if (isClosed()) hose = hose.dup();
+            firstIndex = hose.oldestIndex();
+            lastIndex = hose.newestIndex();
+            if (count() > 0) get(0);
+            prepared = false;
+        }
     }
 
     ProteinMetadata get(int pos) {
@@ -150,7 +165,8 @@ final class MetadataFetcher {
     }
 
     private Hose hose;
-    private long firstIndex;
-    private long lastIndex;
+    private volatile long firstIndex;
+    private volatile long lastIndex;
+    private volatile boolean prepared;
     private final Page[] pages = new Page[PAGE_NO];
 }

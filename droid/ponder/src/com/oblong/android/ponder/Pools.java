@@ -3,8 +3,11 @@
 package com.oblong.android.ponder;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -14,8 +17,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.oblong.jelly.PoolAddress;
-import com.oblong.jelly.PoolServer;
-import com.oblong.jelly.PoolServers;
+import com.oblong.jelly.PoolException;
 
 public final class Pools extends Activity {
 
@@ -75,12 +77,34 @@ public final class Pools extends Activity {
 
     private void launchProteinBrowser(int pos) {
         if (pos < 1) return;
+        final String pool = table.getPool(pos - 1);
+        final String msg = String.format("Connecting to '%s' ...", pool);
         try {
-            Pool.launch(this, new PoolAddress(serverInfo.server().address(),
-                                              table.getPool(pos - 1)));
-        } catch (Exception e) {
+            final PoolAddress address =
+                new PoolAddress(serverInfo.server().address(), pool);
+            launcher(address, ProgressDialog.show(this, "", msg)).start();
+        } catch (PoolException e) {
             Ponder.logger().severe("Error launching Pool: " + e);
         }
+    }
+
+    private Thread launcher(final PoolAddress address,
+                            final ProgressDialog dlg) {
+        final Handler hdl = new Handler() {
+            public void handleMessage(Message m) {
+                if (m.obj != null) {
+                    dlg.dismiss();
+                    Pool.launch(Pools.this, (PoolAddress)m.obj);
+                }
+            }
+        };
+        return new Thread(new Runnable() {
+                public void run() {
+                    final PoolCursor c = PoolCursor.get(address);
+                    c.prepareForAdapter();
+                    hdl.sendMessage(Message.obtain(hdl, 0, address));
+                }
+            });
     }
 
     private static ServerInfo serverInfo;

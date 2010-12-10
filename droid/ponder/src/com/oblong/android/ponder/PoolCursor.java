@@ -90,7 +90,7 @@ final class PoolCursor implements Cursor {
 
     @Override public String getString(int n) {
         final ProteinMetadata md = fetcher.get(current);
-        if (md == null) return "";
+        if (md == null) return null;
         switch (n) {
         case 0: return String.format("%-10d", md.index());
         case 1: return Double.toString(md.timestamp());
@@ -102,7 +102,7 @@ final class PoolCursor implements Cursor {
         case 7: return formatSize(md.dataSize());
         default: assert isNull(n);
         }
-        return "";
+        return null;
     }
 
     @Override public byte[] getBlob(int n) {
@@ -110,7 +110,20 @@ final class PoolCursor implements Cursor {
     }
 
     @Override public void copyStringToBuffer(int n, CharArrayBuffer buffer) {
-        buffer = new CharArrayBuffer(getString(n).toCharArray());
+        String result = getString(n);
+        if (result != null) {
+            final char[] data = buffer.data;
+            if (data == null || data.length < result.length()) {
+                buffer.data = result.toCharArray();
+            } else {
+                result.getChars(0, result.length(), data, 0);
+            }
+            buffer.sizeCopied = result.length();
+        }
+    }
+
+    void prepareForAdapter() {
+        fetcher.prepareForAdapter();
     }
 
     private double getTimestamp() {
