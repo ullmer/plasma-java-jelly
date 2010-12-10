@@ -2,6 +2,7 @@
 
 package com.oblong.android.ponder;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -15,8 +16,11 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import com.oblong.jelly.Hose;
+import com.oblong.jelly.PoolAddress;
 import com.oblong.jelly.PoolException;
 import com.oblong.jelly.ProteinMetadata;
+
+import static com.oblong.jelly.Pool.participate;
 
 /**
  *
@@ -26,8 +30,22 @@ import com.oblong.jelly.ProteinMetadata;
  */
 final class PoolCursor implements Cursor {
 
+    static PoolCursor get(PoolAddress address) {
+        PoolCursor cs = cursors.get(address);
+        if (cs == null)
+            try {
+                cs = new PoolCursor(participate(address));
+                cursors.put(address, cs);
+            } catch (PoolException e) {
+                Ponder.logger().severe("Couldn't connect to " + address
+                                       + ": " + e.getMessage());
+            }
+        return cs;
+    }
+
     PoolCursor(Hose hose) throws PoolException {
         fetcher = new MetadataFetcher(hose);
+        current = -1;
     }
 
     static final String[] COLUMNS = {
@@ -71,7 +89,8 @@ final class PoolCursor implements Cursor {
     }
 
     @Override public String getString(int n) {
-        return "" + ((n == 1) ? getTimestamp() : getLong(n));
+        return (n == 1) ?
+            Double.toString(getTimestamp()) : Long.toString(getLong(n));
     }
 
     @Override public byte[] getBlob(int n) {
@@ -100,6 +119,7 @@ final class PoolCursor implements Cursor {
         try {
             fetcher.requery();
         } catch (PoolException e) {
+            Ponder.logger().severe("Cursor query failed: " + e.getMessage());
             return false;
         }
         for (DataSetObserver o : dataObservers) o.onChanged();
@@ -150,7 +170,7 @@ final class PoolCursor implements Cursor {
     }
 
     @Override public boolean moveToPosition(int n) {
-        if (n < -1 || n >= current) return false;
+        if (n < -1 || n > fetcher.count()) return false;
         current = n;
         return true;
     }
@@ -240,4 +260,7 @@ final class PoolCursor implements Cursor {
         new HashSet<DataSetObserver>();
     private final MetadataFetcher fetcher;
     private int current;
+
+    private static final HashMap<PoolAddress, PoolCursor> cursors =
+        new HashMap<PoolAddress, PoolCursor>();
 }

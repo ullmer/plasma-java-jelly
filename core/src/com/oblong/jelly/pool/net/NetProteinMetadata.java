@@ -52,6 +52,11 @@ public final class NetProteinMetadata implements ProteinMetadata {
         }
     }
 
+    @Override public String toString() {
+        return "NetMeta:: " + index() + "/" + timestamp() + "/" + size()
+            + " (" + descripsNumber() + "d, " + ingestsNumber() + "i)";
+    }
+
     Protein partialProtein() {
         return protein;
     }
@@ -87,7 +92,8 @@ public final class NetProteinMetadata implements ProteinMetadata {
     NetProteinMetadata(Slaw m, Hose h) {
         map = m;
         final Slaw sp = map.find(PROTEIN_KEY);
-        final Protein p = sp.isProtein() ? sp.toProtein() : null;
+        final Protein p = sp != null && sp.isProtein()
+            ? sp.toProtein() : null;
         protein = p == null ?
             null : new PoolProtein(p, index(), timestamp(), h);
     }

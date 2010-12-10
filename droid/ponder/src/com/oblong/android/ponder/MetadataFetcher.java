@@ -28,25 +28,27 @@ final class MetadataFetcher {
     }
 
     boolean isClosed() {
-        return hose.isConnected();
+        return !hose.isConnected();
     }
 
     int count() {
+        if (firstIndex < 0 || lastIndex < 0) return 0;
         return (int)(1 + lastIndex - firstIndex);
     }
 
     void requery() throws PoolException {
+        if (isClosed()) hose = hose.dup();
         firstIndex = hose.oldestIndex();
         lastIndex = hose.newestIndex();
-        for (int i = 0; i < pages.length; ++i) pages[i].pageNumber = -1;
-        prefetchPage(0);
+        if (count() > 0) prefetchPage(0);
     }
 
     ProteinMetadata get(int pos) {
-        final Page p = getPage(pos);
+        final int pn = pos2page(pos);
+        final Page p = getPage(pn);
         if (p == null) return null;
         final int off = pageOffset(pos);
-        if (off > PREFETCH_THRESHOLD) prefetchPage(pos + 1);
+        maybePrefetch(pn, off);
         synchronized (p) {
             return p.data[off];
         }
@@ -54,7 +56,7 @@ final class MetadataFetcher {
 
     private static class Page {
         public int pageNumber = -1;
-        public ProteinMetadata[] data = null;
+        public ProteinMetadata[] data = new ProteinMetadata[PAGE_SIZE];
     }
 
     private static int pos2page(int pos) {
@@ -66,7 +68,7 @@ final class MetadataFetcher {
     }
 
     private static final int PAGE_SIZE = 50;
-    private static final int PREFETCH_THRESHOLD = 32;
+    private static final int PREFETCH_THRESHOLD = 25;
     private static final int PAGE_NO = 3;
 
     private Page findPage(int pn) {
@@ -86,13 +88,29 @@ final class MetadataFetcher {
                 MetadataRequest.range(firstIndex(p), PAGE_SIZE);
             final List<ProteinMetadata> md = hose.metadata(r);
             final int no = md.size();
-            for (int i = 0; i < no; ++i) p.data[i] = md.get(i);
+            Ponder.logger().info("Fetched page " + p.pageNumber +
+                                 ", with " + no + " entries found.");
+            for (int i = 0; i < no; ++i) {
+                p.data[i] = md.get(i);
+                if (p.data[i] == null)
+                    Ponder.logger().warning(i + "th entry was null!");
+                else
+                    Ponder.logger().info("- " + p.data[i]);
+            }
             for (int i = no; i < p.data.length; ++i) p.data[i] = null;
             return p;
         } catch (PoolException e) {
             p.pageNumber = -1;
             return null;
         }
+    }
+
+    private void maybePrefetch(int pn, int off) {
+        if (PAGE_SIZE - off < PREFETCH_THRESHOLD &&
+            count() > PAGE_SIZE * (pn + 1))
+            prefetchPage(pn + 1);
+        else if (off < PREFETCH_THRESHOLD && pn > 0)
+            prefetchPage(pn - 1);
     }
 
     private void prefetchPage(int pn) {
@@ -131,7 +149,7 @@ final class MetadataFetcher {
         return firstIndex + (p.pageNumber * PAGE_SIZE);
     }
 
-    private final Hose hose;
+    private Hose hose;
     private long firstIndex;
     private long lastIndex;
     private final Page[] pages = new Page[PAGE_NO];
