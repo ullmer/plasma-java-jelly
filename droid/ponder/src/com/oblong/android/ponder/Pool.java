@@ -22,7 +22,6 @@ public class Pool extends Activity {
     static void launch(Activity launcher, PoolAddress address) {
         final Intent intent = new Intent(launcher, Pool.class);
         poolAddress = address;
-        poolCursor = PoolCursor.get(address);
         launcher.startActivity(intent);
     }
 
@@ -43,16 +42,15 @@ public class Pool extends Activity {
     @Override public void onStart() {
         super.onStart();
         name.setText(poolAddress.poolName());
-        if (adapter.getCursor() != poolCursor)
-            adapter.changeCursor(poolCursor);
-        if (poolCursor != null && proteinsTitle != null) {
-            proteinsTitle.setText(poolCursor.getCount() + " protein"
-                                  + (poolCursor.getCount() == 1 ? "" : "s"));
+        final PoolCursor cursor = PoolCursor.get(poolAddress);
+        if (adapter.getCursor() != cursor) adapter.changeCursor(cursor);
+        if (cursor != null && proteinsTitle != null) {
+            proteinsTitle.setText(cursor.getCount() + " protein"
+                                  + (cursor.getCount() == 1 ? "" : "s"));
         }
     }
 
     private static PoolAddress poolAddress;
-    private static PoolCursor poolCursor;
 
     private static final String[] COLUMNS = {
         "_id", "descrip_no", "ingest_no", "size"
