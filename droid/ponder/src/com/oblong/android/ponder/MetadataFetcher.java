@@ -67,8 +67,8 @@ final class MetadataFetcher {
         return pos % PAGE_SIZE;
     }
 
-    private static final int PAGE_SIZE = 50;
-    private static final int PREFETCH_THRESHOLD = 25;
+    private static final int PAGE_SIZE = 75;
+    private static final int PREFETCH_THRESHOLD = 40;
     private static final int PAGE_NO = 3;
 
     private Page findPage(int pn) {

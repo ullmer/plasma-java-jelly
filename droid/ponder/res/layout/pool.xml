@@ -12,6 +12,15 @@
               android:textSize="20sp"
               android:text="" />
 
+    <TextView android:id="@+id/protein_no"
+              android:layout_width="fill_parent"
+              android:layout_height="wrap_content"
+              android:padding="2dp"
+              android:gravity="center_horizontal"
+              android:text=""
+              android:textSize="12sp" >
+    </TextView>
+
     <ListView android:id="@+id/protein_list"
               android:layout_width="fill_parent"
               android:layout_height="fill_parent"

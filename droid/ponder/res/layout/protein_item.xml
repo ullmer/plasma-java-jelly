@@ -9,31 +9,37 @@
               android:layout_height="wrap_content"
               android:layout_margin="5dp"
               android:gravity="left"
+              android:textColor="#33aa66"
+              android:textStyle="bold"
               android:textSize="15sp"
+              android:typeface="monospace"
               android:text="" />
 
     <TextView android:id="@+id/protein_size"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:layout_margin="5dp"
-              android:gravity="left"
+              android:gravity="right"
               android:textSize="15sp"
+              android:typeface="monospace"
               android:text="" />
 
     <TextView android:id="@+id/protein_descrip_no"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:layout_margin="5dp"
-              android:gravity="left"
+              android:gravity="right"
               android:textSize="15sp"
+              android:typeface="monospace"
               android:text="" />
 
     <TextView android:id="@+id/protein_ingest_no"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:layout_margin="5dp"
-              android:gravity="left"
+              android:gravity="right"
               android:textSize="15sp"
+              android:typeface="monospace"
               android:text="" />
 
 </LinearLayout>

@@ -2,8 +2,8 @@
 
 package com.oblong.android.ponder;
 
-import java.util.Set;
 import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import android.app.ListActivity;
@@ -11,6 +11,7 @@ import android.net.wifi.WifiManager;
 import android.net.wifi.WifiManager.MulticastLock;
 import android.os.Handler;
 import android.os.Message;
+import android.text.format.Formatter;
 
 import com.oblong.jelly.PoolServer;
 import com.oblong.jelly.PoolServers;
@@ -112,7 +113,8 @@ final class ServerTable {
 
     private MulticastLock setupMulticastLock () {
         final int address = wifiMngr.getDhcpInfo().ipAddress;
-        System.setProperty("net.mdns.interface", getHost(address));
+        System.setProperty("net.mdns.interface",
+                           Formatter.formatIpAddress(address));
         MulticastLock lk = wifiMngr.createMulticastLock("_ponder-lock");
         lk.setReferenceCounted(false);
         lk.acquire();
@@ -166,15 +168,6 @@ final class ServerTable {
             ServerListAdapter.fillView(info.view(), info);
         }
         adapter.notifyDataSetChanged();
-    }
-
-    private static String getHost(int addr) {
-        StringBuffer buf = new StringBuffer();
-        buf.append(addr  & 0xff).append('.').
-            append((addr >>>= 8) & 0xff).append('.').
-            append((addr >>>= 8) & 0xff).append('.').
-            append((addr >>>= 8) & 0xff);
-        return buf.toString();
     }
 
     private static final int ADD_MSG = 0;

@@ -31,6 +31,7 @@ public class Pool extends Activity {
         setContentView(R.layout.pool);
         name = (TextView)findViewById(R.id.pool_name_entry);
         proteins = (ListView)findViewById(R.id.protein_list);
+        proteinsTitle = (TextView)findViewById(R.id.protein_no);
         adapter = new SimpleCursorAdapter(proteins.getContext(),
                                           R.layout.protein_item,
                                           null,
@@ -44,6 +45,10 @@ public class Pool extends Activity {
         name.setText(poolAddress.poolName());
         if (adapter.getCursor() != poolCursor)
             adapter.changeCursor(poolCursor);
+        if (poolCursor != null && proteinsTitle != null) {
+            proteinsTitle.setText(poolCursor.getCount() + " protein"
+                                  + (poolCursor.getCount() == 1 ? "" : "s"));
+        }
     }
 
     private static PoolAddress poolAddress;
@@ -61,5 +66,6 @@ public class Pool extends Activity {
 
     private TextView name;
     private ListView proteins;
+    private TextView proteinsTitle;
     private SimpleCursorAdapter adapter;
 }
