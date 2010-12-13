@@ -4,8 +4,8 @@
           android:icon="@drawable/ic_menu_add"
           android:title="Add server" />
     <item android:id="@+id/search_servers"
-          android:icon="@drawable/ic_menu_search"
-          android:title="Search servers" />
+          android:icon="@drawable/ic_menu_refresh"
+          android:title="Scan servers" />
     <item android:id="@+id/cleanup"
           android:icon="@drawable/ic_menu_delete"
           android:title="Remove unreachable" />

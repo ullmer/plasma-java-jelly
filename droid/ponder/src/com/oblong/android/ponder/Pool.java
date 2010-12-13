@@ -5,6 +5,7 @@ package com.oblong.android.ponder;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
@@ -37,6 +38,10 @@ public class Pool extends Activity {
                                           COLUMNS,
                                           IDS);
         proteins.setAdapter(adapter);
+        findViewById(R.id.server_refresh_button).setOnClickListener(
+            new View.OnClickListener () {
+                public void onClick(View b) { displayInfo(); }
+            });
     }
 
     @Override public void onStart() {
@@ -48,6 +53,9 @@ public class Pool extends Activity {
             proteinsTitle.setText(cursor.getCount() + " protein"
                                   + (cursor.getCount() == 1 ? "" : "s"));
         }
+    }
+
+    private void displayInfo() {
     }
 
     private static PoolAddress poolAddress;

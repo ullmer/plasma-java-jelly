@@ -49,6 +49,10 @@ public final class Pools extends Activity {
                                       launchProteinBrowser(position);
                                   }
                               });
+        findViewById(R.id.server_refresh_button).setOnClickListener(
+            new View.OnClickListener () {
+                public void onClick(View b) { refresh(); }
+            });
     }
 
     @Override public void onStart() {
@@ -67,12 +71,16 @@ public final class Pools extends Activity {
     @Override public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
         case R.id.refresh:
-            serverInfo.clearPools();
-            table.update(serverInfo);
+            refresh();
             return true;
         default:
             return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void refresh() {
+        serverInfo.clearPools();
+        table.update(serverInfo);
     }
 
     private void launchProteinBrowser(int pos) {
