@@ -30,30 +30,10 @@ import static com.oblong.jelly.Pool.participate;
  */
 final class PoolCursor implements Cursor {
 
-    static PoolCursor get(PoolAddress address) {
-        PoolCursor cs = cursors.get(address);
-        if (cs == null)
-            try {
-                cs = new PoolCursor(participate(address));
-                cursors.put(address, cs);
-            } catch (PoolException e) {
-                Ponder.logger().severe("Couldn't connect to " + address
-                                       + ": " + e.getMessage());
-            }
-        return cs;
-    }
-
     PoolCursor(Hose hose) throws PoolException {
         fetcher = new MetadataFetcher(hose);
         current = -1;
     }
-
-    static final String[] COLUMNS = {
-        "_id", "timestamp", "size",
-        "descrip_no", "descrip_size",
-        "ingest_no", "ingests_size",
-        "data_size"
-    };
 
     @Override public short getShort(int n) {
         return (short)getLong(n);
@@ -94,12 +74,12 @@ final class PoolCursor implements Cursor {
         switch (n) {
         case 0: return String.format("%-10d", md.index());
         case 1: return Double.toString(md.timestamp());
-        case 2: return formatSize(md.size());
+        case 2: return Utils.formatSize(md.size());
         case 3: return String.format("%3d d", md.descripsNumber());
-        case 4: return formatSize(md.descripsSize());
+        case 4: return Utils.formatSize(md.descripsSize());
         case 5: return String.format("%3d i", md.ingestsNumber());
-        case 6: return formatSize(md.ingestsSize());
-        case 7: return formatSize(md.dataSize());
+        case 6: return Utils.formatSize(md.ingestsSize());
+        case 7: return Utils.formatSize(md.dataSize());
         default: assert isNull(n);
         }
         return null;
@@ -279,41 +259,20 @@ final class PoolCursor implements Cursor {
         return Bundle.EMPTY;
     }
 
-    private static String formatSize(long number) {
-        float result = number;
-        String suffix = "b";
-        if (result > 900) {
-            suffix = "Kb";
-            result = result / 1024;
-        }
-        if (result > 900) {
-            suffix = "Mb";
-            result = result / 1024;
-        }
-        if (result > 900) {
-            suffix = "Gb";
-            result = result / 1024;
-        }
-        if (result > 900) {
-            suffix = "Tb";
-            result = result / 1024;
-        }
-        if (result > 900) {
-            suffix = "Pb";
-            result = result / 1024;
-        }
-        String value;
-        if (result < 1) {
-            value = String.format("%.2f %s", result, suffix);
-        } else if (result < 10) {
-            value = String.format("%.1f %s", result, suffix);
-        } else if (result < 100) {
-            value = String.format("%.0f %s", result, suffix);
-        } else {
-            value = String.format("%.0f %s", result, suffix);
-        }
-        return value;
+    long firstIndex() {
+        return fetcher.firstIndex();
     }
+
+    long lastIndex() {
+        return fetcher.lastIndex();
+    }
+
+    static final String[] COLUMNS = {
+        "_id", "timestamp", "size",
+        "descrip_no", "descrip_size",
+        "ingest_no", "ingests_size",
+        "data_size"
+    };
 
 
     private final Set<ContentObserver> contentObservers =
@@ -322,8 +281,5 @@ final class PoolCursor implements Cursor {
         new HashSet<DataSetObserver>();
     private final MetadataFetcher fetcher;
     private int current;
-
-    private static final HashMap<PoolAddress, PoolCursor> cursors =
-        new HashMap<PoolAddress, PoolCursor>();
 
 }

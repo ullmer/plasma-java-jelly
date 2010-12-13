@@ -60,15 +60,6 @@ public interface Hose {
     int version();
 
     /**
-     * Returns a map with keyed pieces of information on the backing
-     * pool. Keys are (Slaw) strings and include size, size-used,
-     * index-capacity, index-count, mmap-pool-version, type, and
-     * terminal. Additional information may be available, depending on
-     * the target server's version.
-     */
-    Slaw info();
-
-    /**
      * This Hose's name. This is a local name that bears no relation
      * to the pool URI, except for the fact that it's initialized to
      * that value as a default. You can however modify the hose's name
@@ -192,6 +183,11 @@ public interface Hose {
      * will return the first available protein in the pool.
      */
     void rewind() throws PoolException;
+
+    /**
+     * Returns generic metadata about the pool we're connected to.
+     */
+    PoolMetadata metadata() throws PoolException;
 
     /**
      * Tries to deposit the give protein at the end of the pool.

@@ -1,7 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-          android:layout_width="fill_parent"
-          android:layout_height="fill_parent"
-          android:padding="10dp"
-          android:textSize="16sp" >
-</TextView>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+    <TextView android:id="@+id/pool_size"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_margin="5dp"
+              android:layout_alignParentRight="true"
+              android:gravity="right"
+              android:textSize="12sp"
+              android:text="" />
+
+    <TextView android:id="@+id/protein_no"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_margin="5dp"
+              android:layout_toLeftOf="@id/pool_size"
+              android:gravity="right"
+              android:textSize="12sp"
+              android:text="" />
+
+    <TextView android:id="@+id/pool_name"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_margin="5dp"
+              android:gravity="left"
+              android:layout_toLeftOf="@id/protein_no"
+              android:textColor="#33aa66"
+              android:textStyle="bold"
+              android:textSize="15sp"
+              android:text="" />
+
+</RelativeLayout>

@@ -33,7 +33,9 @@ public final class FilteredHose implements Hose {
 
     @Override public int version() { return hose.version(); }
 
-    @Override public Slaw info() { return hose.info(); }
+    @Override public PoolMetadata metadata() throws PoolException {
+        return hose.metadata();
+    }
 
     @Override public PoolAddress poolAddress() { return hose.poolAddress(); }
 

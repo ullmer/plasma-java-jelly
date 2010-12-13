@@ -18,6 +18,7 @@ import com.oblong.jelly.NumericIlk;
 import com.oblong.jelly.Pool;
 import com.oblong.jelly.PoolAddress;
 import com.oblong.jelly.PoolException;
+import com.oblong.jelly.PoolMetadata;
 import com.oblong.jelly.Protein;
 import com.oblong.jelly.ProteinMetadata;
 import com.oblong.jelly.Slaw;
@@ -31,13 +32,9 @@ final class NetHose implements Hose {
         return connection.version();
     }
 
-    @Override public Slaw info() {
-        try {
-            final Slaw res = Request.INFO.send(connection, longSlaw(-1));
-            return res.nth(1).toProtein().ingests();
-        } catch (Throwable e) {
-            return factory.map();
-        }
+    @Override public PoolMetadata metadata() throws PoolException {
+        final Slaw res = Request.INFO.send(connection, longSlaw(-1));
+        return new NetPoolMetadata(res.nth(1).toProtein().ingests());
     }
 
     @Override public String name() {

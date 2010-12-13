@@ -11,6 +11,7 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
 import com.oblong.jelly.PoolAddress;
+import com.oblong.jelly.PoolException;
 
 /**
  *
@@ -38,7 +39,7 @@ public class Pool extends Activity {
                                           COLUMNS,
                                           IDS);
         proteins.setAdapter(adapter);
-        findViewById(R.id.server_refresh_button).setOnClickListener(
+        findViewById(R.id.pool_info_button).setOnClickListener(
             new View.OnClickListener () {
                 public void onClick(View b) { displayInfo(); }
             });
@@ -47,11 +48,17 @@ public class Pool extends Activity {
     @Override public void onStart() {
         super.onStart();
         name.setText(poolAddress.poolName());
-        final PoolCursor cursor = PoolCursor.get(poolAddress);
-        if (adapter.getCursor() != cursor) adapter.changeCursor(cursor);
-        if (cursor != null && proteinsTitle != null) {
-            proteinsTitle.setText(cursor.getCount() + " protein"
-                                  + (cursor.getCount() == 1 ? "" : "s"));
+        try {
+            final PoolCursor cursor = PoolInfo.get(poolAddress).cursor();
+            if (adapter.getCursor() != cursor) adapter.changeCursor(cursor);
+            if (cursor != null && proteinsTitle != null) {
+                proteinsTitle.setText(cursor.getCount() + " protein"
+                                      + (cursor.getCount() == 1 ? "" : "s"));
+            }
+        } catch (PoolException e) {
+            if (proteinsTitle != null) {
+                proteinsTitle.setError("Error connecting to pool " + e);
+            }
         }
     }
 

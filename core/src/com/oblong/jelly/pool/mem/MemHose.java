@@ -15,6 +15,7 @@ import com.oblong.jelly.NoSuchProteinException;
 import com.oblong.jelly.Pool;
 import com.oblong.jelly.PoolAddress;
 import com.oblong.jelly.PoolException;
+import com.oblong.jelly.PoolMetadata;
 import com.oblong.jelly.PoolServerAddress;
 import com.oblong.jelly.Protein;
 import com.oblong.jelly.ProteinMetadata;
@@ -25,7 +26,9 @@ final class MemHose implements Hose {
 
     @Override public int version() { return 3; }
 
-    @Override public Slaw info() { return Slaw.map(); }
+    @Override public PoolMetadata metadata() {
+        return nullMetadata;
+    }
 
     @Override public String name() { return name; }
 
@@ -244,4 +247,12 @@ final class MemHose implements Hose {
     private MemPool pool;
     private PoolProtein polled;
     private long polledIndex;
+
+    private static final PoolMetadata nullMetadata =
+        new PoolMetadata() {
+            public long size() { return 0; }
+            public long usedSize() { return 0; }
+            public long indexCapacity() { return -1; }
+            public long usedIndexCapacity() { return 0; }
+        };
 }

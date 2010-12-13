@@ -4,19 +4,18 @@ package com.oblong.android.ponder;
 
 import android.os.Handler;
 import android.os.Message;
-
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.oblong.jelly.PoolServerAddress;
 
 final class PoolTable {
 
     PoolTable(ListView v, TextView nv, AdapterView.OnItemClickListener lst) {
         poolView = v;
         noView = nv;
-        adapter =
-            new ArrayAdapter<String>(v.getContext(), R.layout.pool_item);
+        adapter = new PoolListAdapter(v.getContext());
         v.setAdapter(adapter);
         v.setOnItemClickListener(lst);
     }
@@ -36,7 +35,7 @@ final class PoolTable {
             }).start();
     }
 
-    String getPool(int position) { return adapter.getItem(position); }
+    String getPool(int position) { return adapter.getItem(position).name; }
 
     private void fill(ServerInfo info) {
         adapter.clear();
@@ -46,9 +45,8 @@ final class PoolTable {
             } else {
                 noView.setText(info.poolNumberStr());
                 if (info.pools() != null) {
-                    for (String p : info.pools()) {
-                        if (adapter.getPosition(p) < 0) adapter.add(p);
-                    }
+                    final PoolServerAddress a = info.server().address();
+                    for (String p : info.pools()) adapter.add(a, p);
                 }
             }
             noView.invalidate();
@@ -58,5 +56,5 @@ final class PoolTable {
 
     private final ListView poolView;
     private final TextView noView;
-    private final ArrayAdapter<String> adapter;
+    private final PoolListAdapter adapter;
 }

@@ -102,17 +102,27 @@ public final class Pools extends Activity {
             public void handleMessage(Message m) {
                 if (m.obj != null) {
                     dlg.dismiss();
-                    Pool.launch(Pools.this, (PoolAddress)m.obj);
+                    if (m.what == 0)
+                        Pool.launch(Pools.this, (PoolAddress)m.obj);
+                    else
+                        displayError(address, (PoolException)m.obj);
                 }
             }
         };
         return new Thread(new Runnable() {
                 public void run() {
-                    final PoolCursor c = PoolCursor.get(address);
-                    c.prepareForAdapter();
-                    hdl.sendMessage(Message.obtain(hdl, 0, address));
+                    try {
+                        final PoolCursor c = PoolInfo.get(address).cursor();
+                        c.prepareForAdapter();
+                        hdl.sendMessage(Message.obtain(hdl, 0, address));
+                    } catch (PoolException e) {
+                        hdl.sendMessage(Message.obtain(hdl, 1, e));
+                    }
                 }
             });
+    }
+
+    private void displayError(PoolAddress addr, PoolException e) {
     }
 
     private static ServerInfo serverInfo;

@@ -48,6 +48,10 @@ final class MetadataFetcher {
         return (int)(1 + lastIndex - firstIndex);
     }
 
+    long firstIndex() { return firstIndex; }
+
+    long lastIndex() { return lastIndex; }
+
     void requery() throws PoolException {
         if (!prepared) {
             if (isClosed()) hose = hose.dup();
