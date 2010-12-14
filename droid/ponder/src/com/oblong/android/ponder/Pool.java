@@ -30,6 +30,7 @@ public class Pool extends Activity {
     @Override public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.pool);
+        jumpDialog = new JumpDialog(this);
         name = (TextView)findViewById(R.id.pool_name_entry);
         proteins = (ListView)findViewById(R.id.protein_list);
         proteinsTitle = (TextView)findViewById(R.id.protein_no);
@@ -41,7 +42,7 @@ public class Pool extends Activity {
         proteins.setAdapter(adapter);
         findViewById(R.id.pool_goto).setOnClickListener(
             new View.OnClickListener () {
-                public void onClick(View b) { gotoProtein(); }
+                public void onClick(View b) { jumpDialog.show(poolAddress); }
             });
     }
 
@@ -62,6 +63,11 @@ public class Pool extends Activity {
         }
     }
 
+    void setSelection(int position) {
+        proteins.setSelection(position);
+        proteins.invalidate();
+    }
+
     private void gotoProtein() {
     }
 
@@ -70,19 +76,10 @@ public class Pool extends Activity {
 
     private static PoolAddress poolAddress;
 
-    // private static final String[] COLUMNS = {
-    //     "_id", "descrip_no", "ingest_no", "size"
-    // };
-    // private static final int[] IDS = {
-    //     R.id.protein_id,
-    //     R.id.protein_descrip_no,
-    //     R.id.protein_ingest_no,
-    //     R.id.protein_size
-    // };
-
     private static final String[] COLUMNS = {
         "_id", "info"
     };
+
     private static final int[] IDS = {
         R.id.protein_id,
         R.id.protein_info,
@@ -92,4 +89,5 @@ public class Pool extends Activity {
     private ListView proteins;
     private TextView proteinsTitle;
     private SimpleCursorAdapter adapter;
+    private JumpDialog jumpDialog;
 }

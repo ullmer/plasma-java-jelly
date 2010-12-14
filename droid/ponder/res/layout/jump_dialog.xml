@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/jump_dialog"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+  <TextView android:id="@+id/limits_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:padding="0dp"
+            android:gravity="center_horizontal"
+            android:textSize="15sp"
+            android:text="" />
+
+  <Button android:id="@+id/last_button"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_below="@id/limits_label"
+          android:layout_alignParentRight="true"
+          android:layout_marginRight="5dp"
+          android:textSize="12sp"
+          android:text="   Last   " />
+
+  <Button android:id="@+id/first_button"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_below="@id/limits_label"
+          android:layout_toLeftOf="@id/last_button"
+          android:textSize="12sp"
+          android:text="   First   " />
+
+  <EditText android:id="@+id/index_entry"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:drawable/editbox_background"
+            android:layout_below="@id/limits_label"
+            android:layout_toLeftOf="@id/first_button"
+            android:layout_margin="5dp"
+            android:padding="4dp"
+            android:gravity="center_horizontal"
+            android:numeric="decimal"
+            android:maxLength="15"
+            android:textSize="15sp"
+            android:singleLine="true"
+            android:text="" />
+
+
+  <TextView android:id="@+id/error_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:layout_marginLeft="8dp"
+            android:layout_below="@id/index_entry"
+            android:padding="0dp"
+            android:gravity="left"
+            android:textSize="15sp"
+            android:textColor="#f6de65"
+            android:text="" />
+
+</RelativeLayout>
