@@ -1,43 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:orientation="vertical">
 
+    <ImageButton android:id="@+id/pool_info_button"
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:layout_weight="0"
+                 android:layout_marginTop="10dp"
+                 android:layout_marginLeft="10dp"
+                 android:layout_marginRight="5dp"
+                 android:layout_alignParentRight="true"
+                 android:scaleType="fitEnd"
+                 android:background="#000000"
+                 android:gravity="right"
+                 android:src="@drawable/ic_menu_info_details" />
+
     <TextView android:id="@+id/pool_name_entry"
-              android:layout_width="match_parent"
+              android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:layout_margin="5dp"
+              android:layout_alignParentLeft="true"
+              android:layout_toLeftOf="@id/pool_info_button"
               android:gravity="left"
-              android:textSize="20sp"
+              android:textSize="18sp"
               android:text="" />
 
     <TextView android:id="@+id/protein_no"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:layout_below="@id/pool_name_entry"
-              android:padding="2dp"
+              android:layout_alignParentLeft="true"
+              android:layout_margin="5dp"
               android:text=""
               android:textSize="12sp" >
     </TextView>
 
-    <ImageButton android:id="@+id/pool_info_button"
-                 android:layout_width="match_parent"
-                 android:layout_height="wrap_content"
-                 android:layout_weight="0"
-                 android:layout_marginTop="10dp"
-                 android:layout_marginLeft="10dp"
-                 android:layout_marginRight="5dp"
-                 android:scaleType="fitEnd"
-                 android:layout_alignParentRight="true"
-                 android:background="#000000"
-                 android:gravity="right"
-                 android:layout_toRightOf="@id/protein_no"
-                 android:src="@drawable/ic_menu_info_details" />
-
     <ListView android:id="@+id/protein_list"
-              android:layout_width="fill_parent"
-              android:layout_height="fill_parent"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
               android:layout_below="@id/protein_no"
               android:layout_marginTop="10dp"
               android:layout_marginLeft="5dp"
