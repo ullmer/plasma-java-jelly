@@ -10,7 +10,11 @@ package com.oblong.android.ponder;
  */
 final class Utils {
 
-   static String formatSize(long number) {
+    static String formatNumber(long number, String str) {
+        return number + " " + (number == 1 ? str : str + "s");
+    }
+
+    static String formatSize(long number) {
         float result = number;
         String suffix = "b";
         if (result > 900) {

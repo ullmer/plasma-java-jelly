@@ -39,9 +39,9 @@ public class Pool extends Activity {
                                           COLUMNS,
                                           IDS);
         proteins.setAdapter(adapter);
-        findViewById(R.id.pool_info_button).setOnClickListener(
+        findViewById(R.id.pool_goto).setOnClickListener(
             new View.OnClickListener () {
-                public void onClick(View b) { displayInfo(); }
+                public void onClick(View b) { gotoProtein(); }
             });
     }
 
@@ -52,8 +52,8 @@ public class Pool extends Activity {
             final PoolCursor cursor = PoolInfo.get(poolAddress).cursor();
             if (adapter.getCursor() != cursor) adapter.changeCursor(cursor);
             if (cursor != null && proteinsTitle != null) {
-                proteinsTitle.setText(cursor.getCount() + " protein"
-                                      + (cursor.getCount() == 1 ? "" : "s"));
+                proteinsTitle.setText(
+                    Utils.formatNumber(cursor.getCount(), "protein"));
             }
         } catch (PoolException e) {
             if (proteinsTitle != null) {
@@ -62,19 +62,30 @@ public class Pool extends Activity {
         }
     }
 
+    private void gotoProtein() {
+    }
+
     private void displayInfo() {
     }
 
     private static PoolAddress poolAddress;
 
+    // private static final String[] COLUMNS = {
+    //     "_id", "descrip_no", "ingest_no", "size"
+    // };
+    // private static final int[] IDS = {
+    //     R.id.protein_id,
+    //     R.id.protein_descrip_no,
+    //     R.id.protein_ingest_no,
+    //     R.id.protein_size
+    // };
+
     private static final String[] COLUMNS = {
-        "_id", "descrip_no", "ingest_no", "size"
+        "_id", "info"
     };
     private static final int[] IDS = {
         R.id.protein_id,
-        R.id.protein_descrip_no,
-        R.id.protein_ingest_no,
-        R.id.protein_size
+        R.id.protein_info,
     };
 
     private TextView name;

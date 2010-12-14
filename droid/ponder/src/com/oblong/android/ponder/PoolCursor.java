@@ -55,6 +55,7 @@ final class PoolCursor implements Cursor {
         case 5: return md.ingestsNumber();
         case 6: return md.ingestsSize();
         case 7: return md.dataSize();
+        case 8: return 0;
         default: assert isNull(n);
         }
         return 0;
@@ -72,7 +73,7 @@ final class PoolCursor implements Cursor {
         final ProteinMetadata md = fetcher.get(current);
         if (md == null) return null;
         switch (n) {
-        case 0: return String.format("%-10d", md.index());
+        case 0: return String.format("%d", md.index());
         case 1: return Double.toString(md.timestamp());
         case 2: return Utils.formatSize(md.size());
         case 3: return String.format("%3d d", md.descripsNumber());
@@ -80,6 +81,12 @@ final class PoolCursor implements Cursor {
         case 5: return String.format("%3d i", md.ingestsNumber());
         case 6: return Utils.formatSize(md.ingestsSize());
         case 7: return Utils.formatSize(md.dataSize());
+        case 8: return String.format("%3d (%s) %3d (%s)  %s",
+                                     md.descripsNumber(),
+                                     Utils.formatSize(md.descripsSize()),
+                                     md.ingestsNumber(),
+                                     Utils.formatSize(md.ingestsSize()),
+                                     Utils.formatSize(md.size()));
         default: assert isNull(n);
         }
         return null;
@@ -271,7 +278,7 @@ final class PoolCursor implements Cursor {
         "_id", "timestamp", "size",
         "descrip_no", "descrip_size",
         "ingest_no", "ingests_size",
-        "data_size"
+        "data_size", "info"
     };
 
 
