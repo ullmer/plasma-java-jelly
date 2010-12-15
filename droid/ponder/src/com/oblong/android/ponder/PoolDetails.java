@@ -10,8 +10,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
@@ -26,13 +26,17 @@ import com.oblong.jelly.ProteinMetadata;
  *
  * @author jao
  */
-public class PoolDetails extends Activity
+public class PoolDetails extends PonderActivity
     implements AdapterView.OnItemClickListener {
 
     static void launch(Activity launcher, PoolAddress address) {
         final Intent intent = new Intent(launcher, PoolDetails.class);
         poolAddress = address;
         launcher.startActivity(intent);
+    }
+
+    public PoolDetails() {
+        super("Error retrieving protein");
     }
 
     @Override public void onCreate(Bundle savedInstanceState) {
@@ -79,59 +83,27 @@ public class PoolDetails extends Activity
             showProtein(info.cursor().getFirstIndex() + pos, pos);
     }
 
-    @Override protected Dialog onCreateDialog(int id, Bundle b) {
-        final String title = "Error retrieving protein";
-        final Dialog d = PoolExceptionAlert.create(this, id, title, b);
-        return d == null ? super.onCreateDialog(id, b) : d;
-    }
-
-    @Override protected void onPrepareDialog(int id, Dialog d, Bundle b) {
-        if (!PoolExceptionAlert.prepare(id, d, b))
-            super.onPrepareDialog(id, d, b);
-    }
-
     void showProtein(final long idx, final int position) {
         final PoolInfo info = PoolInfo.tryGet(poolAddress);
-        if (info != null) {
-            final String m =
-                String.format("Retrieving protein no. %d ...", idx);
-            final ProgressDialog dlg = ProgressDialog.show(this, "", m);
-            // final ListView noRealClosures = proteins;
-            final String name = poolAddress.poolName();
-            final Handler hdl = new Handler() {
-                    public void handleMessage(Message m) {
-                        if (m.obj != null) {
-                            dlg.dismiss();
-                            // noRealClosures.setSelection(position);
-                            if (m.what == 0)
-                                ProteinDetails.launch(PoolDetails.this,
-                                                      (ProteinMetadata)m.obj,
-                                                      name);
-                            else
-                                displayError(idx, (PoolException)m.obj);
-                        }
-                    }
-                };
-            new Thread(new Runnable() {
-                    public void run() {
-                        try {
-                            hdl.sendMessage(
-                                Message.obtain(hdl, 0, info.metadata(idx)));
-                        } catch (PoolException e) {
-                            hdl.sendMessage(Message.obtain(hdl, 1, e));
-                        }
-                    }
-                }).start();
-        }
+        if (info == null) return;
+        final Task task = new Task() {
+                public Object run() throws PoolException {
+                    return info.metadata(idx);
+                }
+            };
+        final String name = poolAddress.poolName();
+        final Acceptor handler = new Acceptor() {
+                public void accept(Object md) {
+                    ProteinDetails.launch(PoolDetails.this,
+                                          (ProteinMetadata)md,
+                                          name);
+                }
+            };
+        final String m = String.format("Retrieving protein no. %d ...", idx);
+        launchAsyncTask(task, handler, m);
     }
 
     private void displayInfo() {
-    }
-
-    private void displayError(long idx, PoolException e) {
-        Ponder.logger().severe("Error retrieving protein " + idx
-                               + ": " + e.getMessage());
-        PoolExceptionAlert.show(this, e);
     }
 
     private static PoolAddress poolAddress;

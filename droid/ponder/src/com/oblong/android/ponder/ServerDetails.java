@@ -3,8 +3,8 @@
 package com.oblong.android.ponder;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -21,7 +21,7 @@ import com.oblong.jelly.PoolAddress;
 import com.oblong.jelly.PoolException;
 
 public final class ServerDetails
-    extends Activity implements AdapterView.OnItemClickListener {
+    extends PonderActivity implements AdapterView.OnItemClickListener {
 
     static void launch(Activity launcher, ServerInfo info) {
         if (info != null) {
@@ -29,6 +29,10 @@ public final class ServerDetails
             serverInfo = info;
             launcher.startActivity(intent);
         }
+    }
+
+    public ServerDetails() {
+        super("Error connecting to server");
     }
 
     @Override public void onCreate(Bundle savedInstanceState) {
@@ -76,17 +80,6 @@ public final class ServerDetails
         showPoolDetails(position);
     }
 
-    @Override protected Dialog onCreateDialog(int id, Bundle b) {
-        final String title = "Error contacting pool";
-        final Dialog d = PoolExceptionAlert.create(this, id, title, b);
-        return d == null ? super.onCreateDialog(id, b) : d;
-    }
-
-    @Override protected void onPrepareDialog(int id, Dialog d, Bundle b) {
-        if (!PoolExceptionAlert.prepare(id, d, b))
-            super.onPrepareDialog(id, d, b);
-    }
-
     private void refresh() {
         serverInfo.clearPools();
         table.update(serverInfo);
@@ -96,47 +89,21 @@ public final class ServerDetails
         if (pos < 1) return;
         final String pool = table.getPool(pos - 1);
         final String msg = String.format("Connecting to '%s' ...", pool);
-        try {
-            final PoolAddress address =
-                new PoolAddress(serverInfo.server().address(), pool);
-            launcher(address, ProgressDialog.show(this, "", msg)).start();
-        } catch (PoolException e) {
-            Ponder.logger().severe("Error launching Pool: " + e);
-            PoolExceptionAlert.show(this, e);
-        }
-    }
-
-    private Thread launcher(final PoolAddress address,
-                            final ProgressDialog dlg) {
-        final Handler hdl = new Handler() {
-            public void handleMessage(Message m) {
-                if (m.obj != null) {
-                    dlg.dismiss();
-                    if (m.what == 0)
-                        PoolDetails.launch(ServerDetails.this,
-                                           (PoolAddress)m.obj);
-                    else
-                        displayError(address, (PoolException)m.obj);
+        final Task task = new Task () {
+                public Object run() throws PoolException {
+                    final PoolAddress address =
+                        new PoolAddress(serverInfo.server().address(), pool);
+                    final PoolCursor c = PoolInfo.get(address).cursor();
+                    c.prepareForAdapter();
+                    return address;
                 }
-            }
-        };
-        return new Thread(new Runnable() {
-                public void run() {
-                    try {
-                        final PoolCursor c = PoolInfo.get(address).cursor();
-                        c.prepareForAdapter();
-                        hdl.sendMessage(Message.obtain(hdl, 0, address));
-                    } catch (PoolException e) {
-                        hdl.sendMessage(Message.obtain(hdl, 1, e));
+            };
+        final Acceptor handler = new Acceptor () {
+                    public void accept(Object a) {
+                        PoolDetails.launch(ServerDetails.this, (PoolAddress)a);
                     }
-                }
-            });
-    }
-
-    private void displayError(PoolAddress addr, PoolException e) {
-        Ponder.logger().severe("Error connecting pool " + addr
-                               + ": " + e.getMessage());
-        PoolExceptionAlert.show(this, e);
+            };
+        launchAsyncTask(task, handler, msg);
     }
 
     private static ServerInfo serverInfo;
