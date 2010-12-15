@@ -19,17 +19,17 @@ import com.oblong.jelly.PoolException;
  *
  * @author jao
  */
-public class Pool extends Activity {
+public class PoolDetails extends Activity {
 
     static void launch(Activity launcher, PoolAddress address) {
-        final Intent intent = new Intent(launcher, Pool.class);
+        final Intent intent = new Intent(launcher, PoolDetails.class);
         poolAddress = address;
         launcher.startActivity(intent);
     }
 
     @Override public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.pool);
+        setContentView(R.layout.pool_details);
         jumpDialog = new JumpDialog(this);
         name = (TextView)findViewById(R.id.pool_name_entry);
         proteins = (ListView)findViewById(R.id.protein_list);

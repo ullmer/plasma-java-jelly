@@ -19,11 +19,11 @@ import android.widget.TextView;
 import com.oblong.jelly.PoolAddress;
 import com.oblong.jelly.PoolException;
 
-public final class Pools extends Activity {
+public final class ServerDetails extends Activity {
 
     static void launch(Activity launcher, ServerInfo info) {
         if (info != null) {
-            final Intent intent = new Intent(launcher, Pools.class);
+            final Intent intent = new Intent(launcher, ServerDetails.class);
             serverInfo = info;
             launcher.startActivity(intent);
         }
@@ -31,7 +31,7 @@ public final class Pools extends Activity {
 
     @Override public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.pools);
+        setContentView(R.layout.server_details);
         host = (TextView)findViewById(R.id.hostname_entry);
         name = (TextView)findViewById(R.id.server_name_entry);
         final TextView poolNo = (TextView)findViewById(R.id.pool_no_entry);
@@ -103,7 +103,8 @@ public final class Pools extends Activity {
                 if (m.obj != null) {
                     dlg.dismiss();
                     if (m.what == 0)
-                        Pool.launch(Pools.this, (PoolAddress)m.obj);
+                        PoolDetails.launch(ServerDetails.this,
+                                           (PoolAddress)m.obj);
                     else
                         displayError(address, (PoolException)m.obj);
                 }

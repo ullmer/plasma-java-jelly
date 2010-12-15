@@ -31,6 +31,7 @@
               android:textColor="#33aa66"
               android:textStyle="bold"
               android:textSize="15sp"
+              android:singleLine="true"
               android:text="" />
 
 </RelativeLayout>

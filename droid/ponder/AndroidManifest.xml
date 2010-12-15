@@ -21,10 +21,15 @@
                   android:screenOrientation="portrait">
         </activity>
 
-        <activity android:name="com.oblong.android.ponder.Pool"
+        <activity android:name="com.oblong.android.ponder.PoolDetails"
                   android:label="Ponder - Pool details"
                   android:screenOrientation="portrait">
         </activity>
+
+        <!-- <activity android:name="com.oblong.android.ponder.ProteinDetails" -->
+        <!--           android:label="Ponder - Protein details" -->
+        <!--           android:screenOrientation="portrait"> -->
+        <!-- </activity> -->
 
   </application>
 

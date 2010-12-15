@@ -26,17 +26,17 @@ final class JumpDialog implements TextWatcher,
                                   DialogInterface.OnClickListener,
                                   View.OnClickListener {
 
-    JumpDialog(Pool p) {
+    JumpDialog(PoolDetails p) {
         parent = p;
         createDialog();
     }
 
     void show(PoolAddress address) {
         PoolInfo info = PoolInfo.tryGet(address);
-        if (info != null) {
+        if (info != null && info.cursor().getCount() > 0) {
             firstIndex = info.cursor().firstIndex();
             lastIndex = info.cursor().lastIndex();
-            limitsLabel.setText(String.format("Min: %d  Max: %d",
+            limitsLabel.setText(String.format("First: %d  Last: %d",
                                               firstIndex, lastIndex));
             final int c = (int)(firstIndex + info.cursor().getPosition());
             indexEntry.setText(String.format("%d", c));
@@ -110,7 +110,7 @@ final class JumpDialog implements TextWatcher,
         firstButton.setOnClickListener(this);
     }
 
-    private final Pool parent;
+    private final PoolDetails parent;
     private AlertDialog dialog;
     private TextView limitsLabel;
     private EditText indexEntry;

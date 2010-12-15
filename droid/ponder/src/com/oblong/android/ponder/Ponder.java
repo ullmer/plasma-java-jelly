@@ -108,7 +108,7 @@ public final class Ponder extends ListActivity {
             table.refreshServer(info.position);
             return true;
         case R.id.show_server:
-            launchPoolBrowser(info.position);
+            launchServerDetails(info.position);
             return true;
         case R.id.close_menu:
             return true;
@@ -121,8 +121,8 @@ public final class Ponder extends ListActivity {
         table.registerServer(new ServerInfoRow(server, name));
     }
 
-    private void launchPoolBrowser(int position) {
-        Pools.launch(this, table.getItem(position).info());
+    private void launchServerDetails(int position) {
+        ServerDetails.launch(this, table.getItem(position).info());
     }
 
     private void setUpListView() {
@@ -135,7 +135,7 @@ public final class Ponder extends ListActivity {
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 public void onItemClick(
                     AdapterView<?> p, View view, int position, long id) {
-                    launchPoolBrowser(position);
+                    launchServerDetails(position);
                 }
             });
     }

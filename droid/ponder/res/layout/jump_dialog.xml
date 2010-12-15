@@ -19,6 +19,7 @@
           android:layout_below="@id/limits_label"
           android:layout_alignParentRight="true"
           android:layout_marginRight="5dp"
+          android:layout_marginTop="1dp"
           android:textSize="12sp"
           android:text="   Last   " />
 
@@ -27,6 +28,7 @@
           android:layout_height="wrap_content"
           android:layout_below="@id/limits_label"
           android:layout_toLeftOf="@id/last_button"
+          android:layout_marginTop="1dp"
           android:textSize="12sp"
           android:text="   First   " />
 
@@ -36,12 +38,12 @@
             android:background="@android:drawable/editbox_background"
             android:layout_below="@id/limits_label"
             android:layout_toLeftOf="@id/first_button"
-            android:layout_margin="5dp"
-            android:padding="4dp"
-            android:gravity="center_horizontal"
+            android:layout_marginLeft="5dp"
+            android:padding="6dp"
+            android:gravity="center_vertical"
             android:numeric="decimal"
             android:maxLength="15"
-            android:textSize="15sp"
+            android:textSize="25sp"
             android:singleLine="true"
             android:text="" />
 
@@ -49,7 +51,7 @@
   <TextView android:id="@+id/error_label"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
+            android:layout_marginTop="5dp"
             android:layout_marginLeft="8dp"
             android:layout_below="@id/index_entry"
             android:padding="0dp"
