@@ -4,34 +4,42 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-    <TextView android:id="@+id/pool_size"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_margin="5dp"
-              android:layout_alignParentRight="true"
-              android:gravity="right"
-              android:textSize="12sp"
-              android:text="" />
-
-    <TextView android:id="@+id/protein_no"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_margin="5dp"
-              android:layout_toLeftOf="@id/pool_size"
-              android:gravity="right"
-              android:textSize="12sp"
-              android:text="" />
-
     <TextView android:id="@+id/pool_name"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:layout_margin="5dp"
+              android:layout_marginTop="5dp"
+              android:layout_marginBottom="1dp"
+              android:layout_marginLeft="5dp"
+              android:layout_marginRight="5dp"
               android:gravity="left"
-              android:layout_toLeftOf="@id/protein_no"
               android:textColor="#33aa66"
               android:textStyle="bold"
               android:textSize="15sp"
               android:singleLine="true"
+              android:text="" />
+
+    <TextView android:id="@+id/pool_size"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_marginTop="1dp"
+              android:layout_marginBottom="3dp"
+              android:layout_marginRight="5dp"
+              android:layout_below="@id/pool_name"
+              android:layout_alignParentRight="true"
+              android:gravity="right"
+              android:textSize="12sp"
+              android:text="Click for info" />
+
+    <TextView android:id="@+id/protein_no"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_marginTop="1dp"
+              android:layout_marginBottom="3dp"
+              android:layout_marginRight="5dp"
+              android:layout_below="@id/pool_name"
+              android:layout_toLeftOf="@id/pool_size"
+              android:gravity="right"
+              android:textSize="12sp"
               android:text="" />
 
 </RelativeLayout>

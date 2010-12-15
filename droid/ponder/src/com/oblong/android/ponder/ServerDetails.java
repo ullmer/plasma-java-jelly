@@ -19,7 +19,8 @@ import android.widget.TextView;
 import com.oblong.jelly.PoolAddress;
 import com.oblong.jelly.PoolException;
 
-public final class ServerDetails extends Activity {
+public final class ServerDetails
+    extends Activity implements AdapterView.OnItemClickListener {
 
     static void launch(Activity launcher, ServerInfo info) {
         if (info != null) {
@@ -39,16 +40,7 @@ public final class ServerDetails extends Activity {
         final View title =
             getLayoutInflater().inflate(R.layout.pools_title, null);
         if (title != null) poolList.addHeaderView(title, null, false);
-        table = new PoolTable(poolList,
-                              poolNo,
-                              new AdapterView.OnItemClickListener () {
-                                  public void onItemClick(AdapterView<?> p,
-                                                          View v,
-                                                          int position,
-                                                          long i) {
-                                      launchProteinBrowser(position);
-                                  }
-                              });
+        table = new PoolTable(poolList, poolNo, this);
         findViewById(R.id.server_refresh_button).setOnClickListener(
             new View.OnClickListener () {
                 public void onClick(View b) { refresh(); }
@@ -78,12 +70,17 @@ public final class ServerDetails extends Activity {
         }
     }
 
+    @Override
+    public void onItemClick(AdapterView<?> p, View v, int position, long i) {
+        showPoolDetails(position);
+    }
+
     private void refresh() {
         serverInfo.clearPools();
         table.update(serverInfo);
     }
 
-    private void launchProteinBrowser(int pos) {
+    private void showPoolDetails(int pos) {
         if (pos < 1) return;
         final String pool = table.getPool(pos - 1);
         final String msg = String.format("Connecting to '%s' ...", pool);
@@ -124,6 +121,9 @@ public final class ServerDetails extends Activity {
     }
 
     private void displayError(PoolAddress addr, PoolException e) {
+        // TODO
+        Ponder.logger().severe("Error connecting pool " + addr
+                               + ": " + e.getMessage());
     }
 
     private static ServerInfo serverInfo;

@@ -3,15 +3,21 @@
 package com.oblong.android.ponder;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.View;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
 import com.oblong.jelly.PoolAddress;
 import com.oblong.jelly.PoolException;
+import com.oblong.jelly.ProteinMetadata;
 
 /**
  *
@@ -19,7 +25,8 @@ import com.oblong.jelly.PoolException;
  *
  * @author jao
  */
-public class PoolDetails extends Activity {
+public class PoolDetails extends Activity
+    implements AdapterView.OnItemClickListener {
 
     static void launch(Activity launcher, PoolAddress address) {
         final Intent intent = new Intent(launcher, PoolDetails.class);
@@ -39,6 +46,7 @@ public class PoolDetails extends Activity {
                                           null,
                                           COLUMNS,
                                           IDS);
+        proteins.setOnItemClickListener(this);
         proteins.setAdapter(adapter);
         findViewById(R.id.pool_goto).setOnClickListener(
             new View.OnClickListener () {
@@ -63,15 +71,55 @@ public class PoolDetails extends Activity {
         }
     }
 
-    void setSelection(int position) {
-        proteins.setSelection(position);
-        proteins.invalidate();
+    @Override
+    public void onItemClick(AdapterView<?> p, View v, int pos, long i) {
+        final PoolInfo info = PoolInfo.tryGet(poolAddress);
+        if (info != null)
+            showProtein(info.cursor().getFirstIndex() + pos, pos);
     }
 
-    private void gotoProtein() {
+    void showProtein(final long idx, final int position) {
+        final PoolInfo info = PoolInfo.tryGet(poolAddress);
+        if (info != null) {
+            final String m =
+                String.format("Retrieving protein no. %d ...", idx);
+            final ProgressDialog dlg = ProgressDialog.show(this, "", m);
+            // final ListView noRealClosures = proteins;
+            final String name = poolAddress.poolName();
+            final Handler hdl = new Handler() {
+                    public void handleMessage(Message m) {
+                        if (m.obj != null) {
+                            dlg.dismiss();
+                            // noRealClosures.setSelection(position);
+                            if (m.what == 0)
+                                ProteinDetails.launch(PoolDetails.this,
+                                                      (ProteinMetadata)m.obj,
+                                                      name);
+                            else
+                                displayError(idx, (PoolException)m.obj);
+                        }
+                    }
+                };
+            new Thread(new Runnable() {
+                    public void run() {
+                        try {
+                            hdl.sendMessage(
+                                Message.obtain(hdl, 0, info.metadata(idx)));
+                        } catch (PoolException e) {
+                            hdl.sendMessage(Message.obtain(hdl, 1, e));
+                        }
+                    }
+                }).start();
+        }
     }
 
     private void displayInfo() {
+    }
+
+    private void displayError(long idx, PoolException e) {
+        // TODO
+        Ponder.logger().severe("Error retrieving protein " + idx
+                               + ": " + e.getMessage());
     }
 
     private static PoolAddress poolAddress;

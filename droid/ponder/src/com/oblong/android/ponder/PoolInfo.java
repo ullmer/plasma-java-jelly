@@ -5,12 +5,13 @@ package com.oblong.android.ponder;
 import java.util.HashMap;
 
 import com.oblong.jelly.Hose;
+import com.oblong.jelly.MetadataRequest;
+import com.oblong.jelly.Pool;
 import com.oblong.jelly.PoolAddress;
 import com.oblong.jelly.PoolException;
 import com.oblong.jelly.PoolMetadata;
+import com.oblong.jelly.ProteinMetadata;
 import com.oblong.jelly.Slaw;
-
-import static com.oblong.jelly.Pool.participate;
 
 /**
  *
@@ -37,8 +38,12 @@ final class PoolInfo {
     PoolCursor cursor() { return cursor; }
     PoolMetadata metadata() { return metadata; }
 
+    ProteinMetadata metadata(long idx) throws PoolException {
+        return hose.metadata(new MetadataRequest(idx, true, true, 0, -1));
+    }
+
     private PoolInfo(PoolAddress addr) throws PoolException {
-        final Hose hose = participate(addr);
+        hose = Pool.participate(addr);
         metadata = hose.metadata();
         cursor = new PoolCursor(hose);
         address = addr;
@@ -47,6 +52,7 @@ final class PoolInfo {
     private final PoolAddress address;
     private final PoolMetadata metadata;
     private final PoolCursor cursor;
+    private final Hose hose;
 
     private static final HashMap<PoolAddress, PoolInfo> infos =
         new HashMap<PoolAddress, PoolInfo>();

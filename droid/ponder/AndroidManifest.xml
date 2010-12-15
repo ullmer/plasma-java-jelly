@@ -16,7 +16,7 @@
           </intent-filter>
         </activity>
 
-        <activity android:name="com.oblong.android.ponder.Pools"
+        <activity android:name="com.oblong.android.ponder.ServerDetails"
                   android:label="Ponder - Server details"
                   android:screenOrientation="portrait">
         </activity>
@@ -26,10 +26,10 @@
                   android:screenOrientation="portrait">
         </activity>
 
-        <!-- <activity android:name="com.oblong.android.ponder.ProteinDetails" -->
-        <!--           android:label="Ponder - Protein details" -->
-        <!--           android:screenOrientation="portrait"> -->
-        <!-- </activity> -->
+        <activity android:name="com.oblong.android.ponder.ProteinDetails"
+                  android:label="Ponder - Protein details"
+                  android:screenOrientation="portrait">
+        </activity>
 
   </application>
 

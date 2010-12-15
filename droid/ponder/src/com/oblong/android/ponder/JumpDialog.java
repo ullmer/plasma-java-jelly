@@ -48,7 +48,7 @@ final class JumpDialog implements TextWatcher,
         switch (id) {
         case DialogInterface.BUTTON_POSITIVE:
             final long p = Long.parseLong(indexEntry.getText().toString());
-            parent.setSelection((int)(p - firstIndex));
+            parent.showProtein(p, (int) (p - firstIndex));
             break;
         case DialogInterface.BUTTON_NEGATIVE:
             break;

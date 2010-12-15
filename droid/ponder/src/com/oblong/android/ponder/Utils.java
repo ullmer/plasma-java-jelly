@@ -18,23 +18,23 @@ final class Utils {
         float result = number;
         String suffix = "b";
         if (result > 900) {
-            suffix = "Kb";
+            suffix = "K";
             result = result / 1024;
         }
         if (result > 900) {
-            suffix = "Mb";
+            suffix = "M";
             result = result / 1024;
         }
         if (result > 900) {
-            suffix = "Gb";
+            suffix = "G";
             result = result / 1024;
         }
         if (result > 900) {
-            suffix = "Tb";
+            suffix = "T";
             result = result / 1024;
         }
         if (result > 900) {
-            suffix = "Pb";
+            suffix = "P";
             result = result / 1024;
         }
         String value;

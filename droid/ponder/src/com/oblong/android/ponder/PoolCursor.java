@@ -113,6 +113,14 @@ final class PoolCursor implements Cursor {
         fetcher.prepareForAdapter();
     }
 
+    long getProteinIndex() {
+        return getLong(0);
+    }
+
+    long getFirstIndex() {
+        return fetcher.firstIndex();
+    }
+
     private double getTimestamp() {
         final ProteinMetadata md = fetcher.get(current);
         return (md == null) ? 0 : md.timestamp();

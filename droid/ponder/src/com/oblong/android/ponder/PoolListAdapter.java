@@ -61,7 +61,7 @@ final class PoolListAdapter extends ArrayAdapter<PoolListRow> {
         final PoolInfo i = PoolInfo.tryGet(r.address);
         if (i != null) {
             final TextView pv = (TextView)v.findViewById(R.id.protein_no);
-            pv.setText(String.format("%6d p", i.cursor().getCount()));
+            pv.setText(String.format("%6d", i.cursor().getCount()));
             final String s = Utils.formatSize(i.metadata().size());
             final String us = Utils.formatSize(i.metadata().usedSize());
             final TextView sv = (TextView)v.findViewById(R.id.pool_size);
