@@ -3,6 +3,7 @@
 package com.oblong.android.ponder;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -78,6 +79,17 @@ public class PoolDetails extends Activity
             showProtein(info.cursor().getFirstIndex() + pos, pos);
     }
 
+    @Override protected Dialog onCreateDialog(int id, Bundle b) {
+        final String title = "Error retrieving protein";
+        final Dialog d = PoolExceptionAlert.create(this, id, title, b);
+        return d == null ? super.onCreateDialog(id, b) : d;
+    }
+
+    @Override protected void onPrepareDialog(int id, Dialog d, Bundle b) {
+        if (!PoolExceptionAlert.prepare(id, d, b))
+            super.onPrepareDialog(id, d, b);
+    }
+
     void showProtein(final long idx, final int position) {
         final PoolInfo info = PoolInfo.tryGet(poolAddress);
         if (info != null) {
@@ -117,9 +129,9 @@ public class PoolDetails extends Activity
     }
 
     private void displayError(long idx, PoolException e) {
-        // TODO
         Ponder.logger().severe("Error retrieving protein " + idx
                                + ": " + e.getMessage());
+        PoolExceptionAlert.show(this, e);
     }
 
     private static PoolAddress poolAddress;

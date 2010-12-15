@@ -4,6 +4,7 @@ package com.oblong.android.ponder;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -75,6 +76,17 @@ public final class ServerDetails
         showPoolDetails(position);
     }
 
+    @Override protected Dialog onCreateDialog(int id, Bundle b) {
+        final String title = "Error contacting pool";
+        final Dialog d = PoolExceptionAlert.create(this, id, title, b);
+        return d == null ? super.onCreateDialog(id, b) : d;
+    }
+
+    @Override protected void onPrepareDialog(int id, Dialog d, Bundle b) {
+        if (!PoolExceptionAlert.prepare(id, d, b))
+            super.onPrepareDialog(id, d, b);
+    }
+
     private void refresh() {
         serverInfo.clearPools();
         table.update(serverInfo);
@@ -90,6 +102,7 @@ public final class ServerDetails
             launcher(address, ProgressDialog.show(this, "", msg)).start();
         } catch (PoolException e) {
             Ponder.logger().severe("Error launching Pool: " + e);
+            PoolExceptionAlert.show(this, e);
         }
     }
 
@@ -121,9 +134,9 @@ public final class ServerDetails
     }
 
     private void displayError(PoolAddress addr, PoolException e) {
-        // TODO
         Ponder.logger().severe("Error connecting pool " + addr
                                + ": " + e.getMessage());
+        PoolExceptionAlert.show(this, e);
     }
 
     private static ServerInfo serverInfo;
