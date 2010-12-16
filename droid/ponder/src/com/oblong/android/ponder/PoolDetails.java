@@ -16,6 +16,7 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
+import com.oblong.jelly.NoSuchPoolException;
 import com.oblong.jelly.PoolAddress;
 import com.oblong.jelly.PoolException;
 import com.oblong.jelly.ProteinMetadata;
@@ -84,10 +85,11 @@ public class PoolDetails extends PonderActivity
     }
 
     void showProtein(final long idx, final int position) {
-        final PoolInfo info = PoolInfo.tryGet(poolAddress);
-        if (info == null) return;
         final Task task = new Task() {
                 public Object run() throws PoolException {
+                    final PoolInfo info = PoolInfo.tryGet(poolAddress);
+                    if (info == null)
+                        throw new NoSuchPoolException("Server disappeared");
                     return info.metadata(idx);
                 }
             };

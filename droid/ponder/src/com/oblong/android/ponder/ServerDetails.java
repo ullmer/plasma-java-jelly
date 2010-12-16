@@ -100,7 +100,8 @@ public final class ServerDetails
             };
         final Acceptor handler = new Acceptor () {
                     public void accept(Object a) {
-                        PoolDetails.launch(ServerDetails.this, (PoolAddress)a);
+                        PoolDetails.launch(ServerDetails.this,
+                                           (PoolAddress)a);
                     }
             };
         launchAsyncTask(task, handler, msg);
