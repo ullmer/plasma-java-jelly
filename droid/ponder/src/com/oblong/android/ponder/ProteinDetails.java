@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.widget.TextView;
 
 import com.oblong.jelly.ProteinMetadata;
+import com.oblong.jelly.Slaw;
 
 /**
  *
@@ -44,23 +45,28 @@ public final class ProteinDetails extends Activity {
         title.setText(String.format("Protein %d", proteinMetadata.index()));
         origin.setText(String.format("from %s", poolName));
 
-        final String d =
-            Utils.formatNumber(proteinMetadata.descripsNumber(), "descrip");
-        final String ds = Utils.formatSize(proteinMetadata.descripsSize());
-        descTitle.setText(String.format("%s (%s)", d, ds));
-        if (proteinMetadata.descripsNumber() > 0)
-            descDetail.setText(proteinMetadata.descrips().toString());
+        showSlaw("descrip", descTitle, descDetail,
+                 proteinMetadata.descrips(), proteinMetadata.descripsSize());
 
-        final String i =
-            Utils.formatNumber(proteinMetadata.ingestsNumber(), "ingest");
-        final String is = Utils.formatSize(proteinMetadata.ingestsSize());
-        ingTitle.setText(String.format("%s (%s)", i, is));
-        if (proteinMetadata.ingestsNumber() > 0)
-            ingDetail.setText(proteinMetadata.ingests().toString());
+        showSlaw("ingest", ingTitle, ingDetail,
+                 proteinMetadata.ingests(), proteinMetadata.ingestsSize());
 
         final long n = proteinMetadata.dataSize();
         final String s = n > 0 ? Utils.formatSize(n) + " of" : "No";
         dataTitle.setText(String.format("%s rude data", s));
+    }
+
+    private static void showSlaw(String kind, TextView title, TextView dets,
+                                 Slaw s, long size) {
+        if (size > 0 && s != null) {
+            final String cstr = Utils.formatNumber(s.count(), kind);
+            final String sstr = Utils.formatSize(size);
+            title.setText(String.format("%s (%s)", cstr, sstr));
+            dets.setText(s.toString());
+        } else {
+            title.setText(String.format("No %ss", kind));
+            dets.setText("");
+        }
     }
 
     private static ProteinMetadata proteinMetadata;
