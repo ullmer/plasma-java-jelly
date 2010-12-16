@@ -52,7 +52,6 @@ public final class Ponder extends ListActivity {
 
     @Override public void onResume() {
         super.onResume();
-
         final int MAX_VIEWS = 5;
         if (MAX_VIEWS < ++helpViews) getListView().removeFooterView(helpView);
         table.activate();

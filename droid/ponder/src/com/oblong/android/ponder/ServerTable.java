@@ -137,7 +137,12 @@ final class ServerTable {
     }
 
     private void notifyGoneServer(PoolServer server) {
-        handler.sendMessage(Message.obtain(handler, DEL_MSG, server));
+        final ServerInfoRow row = infos.get(server.name());
+        if (row != null) row.info().updatePools();
+        if (row != null && row.info().connectionError())
+            handler.sendMessage(Message.obtain(handler, DEL_MSG, server));
+        else if (row != null)
+            handler.sendMessage(Message.obtain(handler, UPD_MSG, row));
     }
 
     private void setupListener() {
