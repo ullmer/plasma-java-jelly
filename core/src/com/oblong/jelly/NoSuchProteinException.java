@@ -15,8 +15,12 @@ import net.jcip.annotations.Immutable;
 @Immutable
 public class NoSuchProteinException extends PoolException {
 
+    public NoSuchProteinException(String msg) {
+        super(Kind.NO_SUCH_PROTEIN, 0, msg);
+    }
+
     public NoSuchProteinException(long sc) {
-        super(Kind.NO_SUCH_PROTEIN, sc, "Server code was " + sc);
+        super(Kind.NO_SUCH_PROTEIN, sc);
     }
 
     private static final long serialVersionUID = -7648502586498969925L;

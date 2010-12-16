@@ -18,8 +18,12 @@ import net.jcip.annotations.Immutable;
 @Immutable
 public class NoSuchPoolException extends PoolException {
 
+    public NoSuchPoolException(String msg) {
+        super(Kind.NO_SUCH_POOL, 0, msg);
+    }
+
     public NoSuchPoolException(long sc) {
-        super(Kind.NO_SUCH_POOL, sc, "Server code was " + sc);
+        super(Kind.NO_SUCH_POOL, sc);
     }
 
     private static final long serialVersionUID = 1648502586498969925L;

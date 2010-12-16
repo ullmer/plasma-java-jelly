@@ -17,7 +17,7 @@ import net.jcip.annotations.Immutable;
 public class PoolExistsException extends PoolException {
 
     public PoolExistsException(long sc) {
-        super(Kind.POOL_EXISTS, sc, "Server code was " + sc);
+        super(Kind.POOL_EXISTS, sc);
     }
 
     private static final long serialVersionUID = -949502586422969925L;

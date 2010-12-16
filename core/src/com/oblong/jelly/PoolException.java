@@ -136,15 +136,14 @@ public class PoolException extends Exception {
     public final long serverCode() { return serverCode; }
 
     @Override public String getMessage() {
-        return kind + " (" + kind.description + ", server code " +
-            serverCode + "): " + info;
+        return kind + " (" + kind.description + "): " + info;
     }
 
     public PoolException(String msg) {
         this(Kind.UNCLASSIFIED, msg);
     }
 
-    protected PoolException(Kind kind, String info) {
+    public PoolException(Kind kind, String info) {
         this(kind, 0, info);
     }
 
@@ -164,6 +163,10 @@ public class PoolException extends Exception {
         this.kind = kind;
         this.info = info;
         this.serverCode = sc;
+    }
+
+    protected PoolException(Kind kind, long sc) {
+        this(kind, sc, sc == 0 ? "" : ("Server code was: " + sc));
     }
 
     protected PoolException(Kind kind, long sc, Throwable cause) {
