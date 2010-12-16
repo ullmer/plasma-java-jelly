@@ -57,8 +57,7 @@ final class MetadataFetcher {
             if (isClosed()) hose = hose.dup();
             firstIndex = hose.oldestIndex();
             lastIndex = hose.newestIndex();
-            if (count() > 0) get(0);
-            prepared = false;
+            if (count() > 0) get(count() - 1);
         }
     }
 

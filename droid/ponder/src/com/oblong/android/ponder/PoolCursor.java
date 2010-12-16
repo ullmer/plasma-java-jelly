@@ -44,7 +44,7 @@ final class PoolCursor implements Cursor {
     }
 
     @Override public long getLong(int n) {
-        final ProteinMetadata md = fetcher.get(current);
+        final ProteinMetadata md = currentMeta();
         if (md == null) return 0;
         switch (n) {
         case 0: return md.index();
@@ -70,7 +70,7 @@ final class PoolCursor implements Cursor {
     }
 
     @Override public String getString(int n) {
-        final ProteinMetadata md = fetcher.get(current);
+        final ProteinMetadata md = currentMeta();
         if (md == null) return null;
         switch (n) {
         case 0: return String.format("%d", md.index());
@@ -117,8 +117,8 @@ final class PoolCursor implements Cursor {
         return getLong(0);
     }
 
-    long getFirstIndex() {
-        return fetcher.firstIndex();
+    long getLastIndex() {
+        return fetcher.lastIndex();
     }
 
     private double getTimestamp() {
@@ -289,6 +289,10 @@ final class PoolCursor implements Cursor {
         "data_size", "info"
     };
 
+
+    private ProteinMetadata currentMeta() {
+        return fetcher.get(fetcher.count() - current - 1);
+    }
 
     private final Set<ContentObserver> contentObservers =
         new HashSet<ContentObserver>();

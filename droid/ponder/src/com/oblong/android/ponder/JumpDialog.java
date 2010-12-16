@@ -38,7 +38,7 @@ final class JumpDialog implements TextWatcher,
             lastIndex = info.cursor().lastIndex();
             limitsLabel.setText(String.format("First: %d  Last: %d",
                                               firstIndex, lastIndex));
-            final int c = (int)(firstIndex + info.cursor().getPosition());
+            final int c = (int)(lastIndex - info.cursor().getPosition());
             indexEntry.setText(String.format("%d", c));
             dialog.show();
         }
@@ -48,7 +48,7 @@ final class JumpDialog implements TextWatcher,
         switch (id) {
         case DialogInterface.BUTTON_POSITIVE:
             final long p = Long.parseLong(indexEntry.getText().toString());
-            parent.showProtein(p, (int) (p - firstIndex));
+            parent.showProtein(p, (int) (p - lastIndex));
             break;
         case DialogInterface.BUTTON_NEGATIVE:
             break;
@@ -66,7 +66,12 @@ final class JumpDialog implements TextWatcher,
     }
 
     @Override public void afterTextChanged(Editable e) {
-        final long idx = Long.parseLong(indexEntry.getText().toString());
+        long idx;
+        try {
+            idx = Long.parseLong(indexEntry.getText().toString());
+        } catch (Throwable x) {
+            idx = -1;
+        }
         final boolean valid = idx <= lastIndex && idx >= firstIndex;
         errorLabel.setText(valid ? "" : "Invalid index");
         final Button b = dialog.getButton(DialogInterface.BUTTON_POSITIVE);

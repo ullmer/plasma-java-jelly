@@ -81,7 +81,7 @@ public class PoolDetails extends PonderActivity
     public void onItemClick(AdapterView<?> p, View v, int pos, long i) {
         final PoolInfo info = PoolInfo.tryGet(poolAddress);
         if (info != null)
-            showProtein(info.cursor().getFirstIndex() + pos, pos);
+            showProtein(info.cursor().getLastIndex() - pos, pos);
     }
 
     void showProtein(final long idx, final int position) {
