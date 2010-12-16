@@ -39,7 +39,7 @@ public final class TCPServerFactory
             final JmDNS dns = jmDNS();
             if (dns != null) {
                 for (ServiceInfo inf : dns.list(SCM_SRV)) {
-                    final PoolServer server = fromInfo(inf, true);
+                    final PoolServer server = fromInfo(inf);
                     if (server != null)
                         result.add(PoolServerFactory.cache(server));
                 }
@@ -80,21 +80,18 @@ public final class TCPServerFactory
         register();
     }
 
-    private PoolServer fromInfo(ServiceInfo inf, boolean adding) {
+    private PoolServer fromInfo(ServiceInfo inf) {
         try {
             final String url = inf.getURL(SCM);
             final String name = inf.getName();
             final PoolServerAddress addr = PoolServerAddress.fromURI(url);
-            final PoolServer cached =
-                adding ? PoolServerFactory.cached(addr) : null;
+            final PoolServer cached = PoolServerFactory.remove(addr);
             final Set<String> subtypes = cached == null ?
                 new HashSet<String>() : cached.subtypes();
             final String subtype = inf.getSubtype();
-            logger.info("Service with subtype: " + subtype);
             if (subtype != null && subtype.length() > 0)
                 subtypes.add(subtype);
-            final PoolServer srv = new Server(factory, addr, name, subtypes);
-            return srv;
+            return new Server(factory, addr, name, subtypes);
         } catch (PoolException e) {
             logger.warning("Unable to extract server from info " + inf
                            + ", error: " + e.getMessage());
@@ -108,16 +105,13 @@ public final class TCPServerFactory
 
     @Override synchronized public void serviceRemoved(ServiceEvent e) {
         logger.info("Service removed event: " + e);
-        final PoolServer s = fromInfo(e.getInfo(), false);
-        if (s != null) {
-            PoolServerFactory.remove(s.name());
-            for (Listener l : listeners) l.serverRemoved(s);
-        }
+        final PoolServer s = fromInfo(e.getInfo());
+        if (s != null) for (Listener l : listeners) l.serverRemoved(s);
     }
 
     @Override synchronized public void serviceResolved(ServiceEvent e) {
         logger.info("Service resolved event: " + e);
-        final PoolServer s = fromInfo(e.getInfo(), true);
+        final PoolServer s = fromInfo(e.getInfo());
         if (s != null) {
             PoolServerFactory.cache(s);
             for (Listener l : listeners) l.serverAdded(s);

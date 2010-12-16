@@ -94,7 +94,7 @@ public final class ServerDetails
         ((TextView)d.findViewById(R.id.port)).setText(
             String.format("%d", srv.address().port()));
         ((TextView)d.findViewById(R.id.subtypes)).setText(
-            Utils.join(srv.subtypes(), "\n"));
+            Utils.join(srv.subtypes(), ", "));
         ((TextView)d.findViewById(R.id.poolno)).setText(
             String.format("%d", serverInfo.poolNumber()));
     }

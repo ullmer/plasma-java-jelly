@@ -53,6 +53,7 @@ final class ServerInfo {
     }
 
     PoolServer server() { return server; }
+    void server(PoolServer s) { server = s; }
 
     boolean connectionError() { return poolNumber == CON_ERR; }
 
@@ -63,7 +64,7 @@ final class ServerInfo {
     private static final int CON_ERR = -2;
     private static final int UNINITIALIZED = -1;
 
-    private final PoolServer server;
+    private volatile PoolServer server;
     private volatile Set<String> pools;
     private volatile int poolNumber;
     private volatile String name;

@@ -157,10 +157,13 @@ final class ServerTable {
     }
 
     private void addServer(ServerInfoRow row) {
-        if (infos.get(row.info().name()) == null) {
+        final ServerInfoRow old = infos.get(row.info().name());
+        if (old == null) {
             infos.put(row.info().name(), row);
             adapter.add(row);
             adapter.notifyDataSetChanged();
+        } else {
+            old.info().server(row.info().server());
         }
     }
 

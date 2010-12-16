@@ -95,11 +95,8 @@ public abstract class PoolServerFactory {
         return server;
     }
 
-    public static PoolServer remove(String name) {
-        for (PoolServer s : servers.values()) {
-            if (s.name().equals(name)) return servers.remove(s.address());
-        }
-        return null;
+    public static PoolServer remove(PoolServerAddress address) {
+        return servers.remove(address);
     }
 
     private static final
