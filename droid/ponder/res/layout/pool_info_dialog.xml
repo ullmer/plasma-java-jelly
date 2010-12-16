@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             android:layout_width="fill_parent"
+             android:layout_height="fill_parent"
+             android:padding="5dp"
+             android:stretchColumns="1">
+
+    <TableRow>
+        <TextView android:text="Size"
+                  android:textStyle="italic"
+                  android:padding="3dip" />
+        <TextView android:id="@+id/size"
+                  android:text=""
+                  android:gravity="right"
+                  android:padding="3dip" />
+    </TableRow>
+
+    <TableRow>
+        <TextView android:text="Proteins"
+                  android:textStyle="italic"
+                  android:padding="3dip" />
+        <TextView android:id="@+id/proteins"
+                  android:text=""
+                  android:gravity="right"
+                  android:padding="3dip" />
+    </TableRow>
+
+    <TableRow>
+        <TextView android:text="Index capacity"
+                  android:textStyle="italic"
+                  android:padding="3dip" />
+        <TextView android:id="@+id/index"
+                  android:text=""
+                  android:gravity="right"
+                  android:padding="3dip" />
+    </TableRow>
+
+</TableLayout>

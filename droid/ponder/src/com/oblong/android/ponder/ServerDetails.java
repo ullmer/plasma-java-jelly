@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.oblong.jelly.PoolAddress;
 import com.oblong.jelly.PoolException;
+import com.oblong.jelly.PoolServer;
 
 public final class ServerDetails
     extends PonderActivity implements AdapterView.OnItemClickListener {
@@ -33,13 +34,16 @@ public final class ServerDetails
 
     public ServerDetails() {
         super("Error connecting to server");
+        infoSetup(R.layout.server_info_dialog);
     }
 
     @Override public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.server_details);
         host = (TextView)findViewById(R.id.hostname_entry);
+        host.setOnClickListener(infoListener);
         name = (TextView)findViewById(R.id.server_name_entry);
+        name.setOnClickListener(infoListener);
         final TextView poolNo = (TextView)findViewById(R.id.pool_no_entry);
         final ListView poolList = (ListView)findViewById(R.id.pool_list);
         final View title =
@@ -70,6 +74,9 @@ public final class ServerDetails
         case R.id.refresh:
             refresh();
             return true;
+        case R.id.details:
+            displayInfo();
+            return true;
         default:
             return super.onOptionsItemSelected(item);
         }
@@ -80,9 +87,16 @@ public final class ServerDetails
         showPoolDetails(position);
     }
 
-    private void refresh() {
-        serverInfo.clearPools();
-        table.update(serverInfo);
+    @Override protected void prepareInfo(Dialog d) {
+        final PoolServer srv = serverInfo.server();
+        d.setTitle(srv.name());
+        ((TextView)d.findViewById(R.id.host)).setText(srv.address().host());
+        ((TextView)d.findViewById(R.id.port)).setText(
+            String.format("%d", srv.address().port()));
+        ((TextView)d.findViewById(R.id.subtypes)).setText(
+            Utils.join(srv.subtypes(), "\n"));
+        ((TextView)d.findViewById(R.id.poolno)).setText(
+            String.format("%d", serverInfo.poolNumber()));
     }
 
     private void showPoolDetails(int pos) {
@@ -99,12 +113,17 @@ public final class ServerDetails
                 }
             };
         final Acceptor handler = new Acceptor () {
-                    public void accept(Object a) {
-                        PoolDetails.launch(ServerDetails.this,
-                                           (PoolAddress)a);
-                    }
+                public void accept(Object a) {
+                    PoolDetails.launch(ServerDetails.this,
+                                       (PoolAddress)a);
+                }
             };
         launchAsyncTask(task, handler, msg);
+    }
+
+    private void refresh() {
+        serverInfo.clearPools();
+        table.update(serverInfo);
     }
 
     private static ServerInfo serverInfo;

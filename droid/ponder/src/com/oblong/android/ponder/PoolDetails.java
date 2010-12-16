@@ -4,11 +4,8 @@ package com.oblong.android.ponder;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -19,6 +16,7 @@ import android.widget.TextView;
 import com.oblong.jelly.NoSuchPoolException;
 import com.oblong.jelly.PoolAddress;
 import com.oblong.jelly.PoolException;
+import com.oblong.jelly.PoolMetadata;
 import com.oblong.jelly.ProteinMetadata;
 
 /**
@@ -38,6 +36,7 @@ public class PoolDetails extends PonderActivity
 
     public PoolDetails() {
         super("Error retrieving protein");
+        infoSetup(R.layout.pool_info_dialog);
     }
 
     @Override public void onCreate(Bundle savedInstanceState) {
@@ -45,6 +44,7 @@ public class PoolDetails extends PonderActivity
         setContentView(R.layout.pool_details);
         jumpDialog = new JumpDialog(this);
         name = (TextView)findViewById(R.id.pool_name_entry);
+        name.setOnClickListener(infoListener);
         proteins = (ListView)findViewById(R.id.protein_list);
         proteinsTitle = (TextView)findViewById(R.id.protein_no);
         adapter = new SimpleCursorAdapter(proteins.getContext(),
@@ -80,8 +80,26 @@ public class PoolDetails extends PonderActivity
     @Override
     public void onItemClick(AdapterView<?> p, View v, int pos, long i) {
         final PoolInfo info = PoolInfo.tryGet(poolAddress);
-        if (info != null)
-            showProtein(info.cursor().getLastIndex() - pos, pos);
+        if (info != null) showProtein(info.cursor().lastIndex() - pos, pos);
+    }
+
+    @Override protected void prepareInfo(Dialog d) {
+        d.setTitle(poolAddress.poolName());
+        final PoolInfo info = PoolInfo.tryGet(poolAddress);
+        final String prots = String.format("From %d to %d",
+                                           info.cursor().firstIndex(),
+                                           info.cursor().lastIndex());
+        ((TextView)d.findViewById(R.id.proteins)).setText(prots);
+        final PoolMetadata md = info.metadata();
+        final long icap = md.indexCapacity();
+        final String idx = icap > 0
+            ? String.format("%d / %d", icap, md.usedIndexCapacity())
+            : "No index";
+        ((TextView)d.findViewById(R.id.index)).setText(idx);
+        final String sstr = String.format("%s / %s",
+                                          Utils.formatSize(md.usedSize()),
+                                          Utils.formatSize(md.size()));
+        ((TextView)d.findViewById(R.id.size)).setText(sstr);
     }
 
     void showProtein(final long idx, final int position) {
@@ -103,9 +121,6 @@ public class PoolDetails extends PonderActivity
             };
         final String m = String.format("Retrieving protein no. %d ...", idx);
         launchAsyncTask(task, handler, m);
-    }
-
-    private void displayInfo() {
     }
 
     private static PoolAddress poolAddress;

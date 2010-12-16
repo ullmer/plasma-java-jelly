@@ -86,7 +86,7 @@ final class JumpDialog implements TextWatcher,
     }
 
     private void createDialog() {
-        LayoutInflater inflater = (LayoutInflater)
+        final LayoutInflater inflater = (LayoutInflater)
             parent.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         final ViewGroup group =
@@ -98,7 +98,7 @@ final class JumpDialog implements TextWatcher,
         indexEntry.addTextChangedListener(this);
         errorLabel = (TextView) layout.findViewById(R.id.error_label);
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(parent);
+        final AlertDialog.Builder builder = new AlertDialog.Builder(parent);
         builder.setView(layout);
         builder.setTitle("Jump to protein");
         builder.setPositiveButton("Jump", this);

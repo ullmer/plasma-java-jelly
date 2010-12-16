@@ -11,7 +11,6 @@ import com.oblong.jelly.PoolAddress;
 import com.oblong.jelly.PoolException;
 import com.oblong.jelly.PoolMetadata;
 import com.oblong.jelly.ProteinMetadata;
-import com.oblong.jelly.Slaw;
 
 /**
  *

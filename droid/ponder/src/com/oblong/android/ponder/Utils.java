@@ -2,6 +2,8 @@
 
 package com.oblong.android.ponder;
 
+import java.util.Set;
+
 /**
  *
  * Created: Mon Dec 13 20:41:46 2010
@@ -9,6 +11,15 @@ package com.oblong.android.ponder;
  * @author jao
  */
 final class Utils {
+
+    static String join(Set<String> s, String sep) {
+        if (s.size() == 0) return "";
+        final String[] es = s.toArray(new String[0]);
+        final StringBuilder b = new StringBuilder();
+        b.append(es[0]);
+        for (int i = 1; i < es.length; ++i) b.append(sep).append(es[i]);
+        return b.toString();
+    }
 
     static String formatNumber(long number, String str) {
         return number + " " + (number == 1 ? str : str + "s");

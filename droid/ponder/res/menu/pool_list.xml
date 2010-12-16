@@ -4,4 +4,8 @@
           android:icon="@drawable/ic_menu_refresh"
           android:titleCondensed="Refresh"
           android:title="Refresh pools" />
+    <item android:id="@+id/details"
+          android:icon="@drawable/ic_menu_info_details"
+          android:titleCondensed="Details"
+          android:title="Server details" />
 </menu>

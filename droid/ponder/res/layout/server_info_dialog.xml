@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             android:layout_width="fill_parent"
+             android:layout_height="fill_parent"
+             android:padding="5dp"
+             android:stretchColumns="1">
+    <TableRow>
+        <TextView android:text="Host"
+                  android:textStyle="italic"
+                  android:padding="3dip" />
+        <TextView android:id="@+id/host"
+                  android:text=""
+                  android:gravity="right"
+                  android:padding="3dip" />
+    </TableRow>
+
+    <TableRow>
+        <TextView android:text="Port"
+                  android:textStyle="italic"
+                  android:padding="3dip" />
+        <TextView android:id="@+id/port"
+                  android:text=""
+                  android:gravity="right"
+                  android:padding="3dip" />
+    </TableRow>
+
+    <TableRow>
+        <TextView android:text="Subtypes"
+                  android:textStyle="italic"
+                  android:padding="3dip" />
+        <TextView android:id="@+id/subtypes"
+                  android:text=""
+                  android:gravity="right"
+                  android:padding="3dip" />
+    </TableRow>
+
+    <TableRow>
+        <TextView android:text="Pools"
+                  android:textStyle="italic"
+                  android:padding="3dip" />
+        <TextView android:id="@+id/poolno"
+                  android:text=""
+                  android:gravity="right"
+                  android:padding="3dip" />
+    </TableRow>
+
+</TableLayout>

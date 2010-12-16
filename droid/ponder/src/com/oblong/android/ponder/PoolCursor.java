@@ -109,23 +109,6 @@ final class PoolCursor implements Cursor {
         }
     }
 
-    void prepareForAdapter() {
-        fetcher.prepareForAdapter();
-    }
-
-    long getProteinIndex() {
-        return getLong(0);
-    }
-
-    long getLastIndex() {
-        return fetcher.lastIndex();
-    }
-
-    private double getTimestamp() {
-        final ProteinMetadata md = fetcher.get(current);
-        return (md == null) ? 0 : md.timestamp();
-    }
-
     @Override public void deactivate() {
         close();
         for (DataSetObserver o : dataObservers) o.onInvalidated();
@@ -274,6 +257,13 @@ final class PoolCursor implements Cursor {
         return Bundle.EMPTY;
     }
 
+    static final String[] COLUMNS = {
+        "_id", "timestamp", "size",
+        "descrip_no", "descrip_size",
+        "ingest_no", "ingests_size",
+        "data_size", "info"
+    };
+
     long firstIndex() {
         return fetcher.firstIndex();
     }
@@ -282,13 +272,18 @@ final class PoolCursor implements Cursor {
         return fetcher.lastIndex();
     }
 
-    static final String[] COLUMNS = {
-        "_id", "timestamp", "size",
-        "descrip_no", "descrip_size",
-        "ingest_no", "ingests_size",
-        "data_size", "info"
-    };
+    void prepareForAdapter() {
+        fetcher.prepareForAdapter();
+    }
 
+    long getProteinIndex() {
+        return getLong(0);
+    }
+
+    private double getTimestamp() {
+        final ProteinMetadata md = fetcher.get(current);
+        return (md == null) ? 0 : md.timestamp();
+    }
 
     private ProteinMetadata currentMeta() {
         return fetcher.get(fetcher.count() - current - 1);
