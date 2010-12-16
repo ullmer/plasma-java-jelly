@@ -66,7 +66,13 @@ public final class TCPServerFactory
     public static void unregister() {
         final TCPServerFactory f =
             (TCPServerFactory)PoolServerFactory.unregister(SCM);
-        if (f != null && f.jmDNS != null) f.jmDNS.close();
+        if (f != null && f.jmDNS != null) {
+            try {
+                f.jmDNS.close();
+            } catch (IOException e) {
+                logger.severe("Error closing jmDNS: " + e);
+            }
+        }
     }
 
     public static void reset() {
@@ -84,6 +90,7 @@ public final class TCPServerFactory
             final Set<String> subtypes = cached == null ?
                 new HashSet<String>() : cached.subtypes();
             final String subtype = inf.getSubtype();
+            logger.info("Service with subtype: " + subtype);
             if (subtype != null && subtype.length() > 0)
                 subtypes.add(subtype);
             final PoolServer srv = new Server(factory, addr, name, subtypes);
