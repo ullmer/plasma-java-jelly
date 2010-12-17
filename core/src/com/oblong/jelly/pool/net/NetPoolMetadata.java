@@ -2,7 +2,6 @@
 
 package com.oblong.jelly.pool.net;
 
-import com.oblong.jelly.NumericIlk;
 import com.oblong.jelly.PoolMetadata;
 import com.oblong.jelly.Slaw;
 

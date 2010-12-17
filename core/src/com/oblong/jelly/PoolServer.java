@@ -40,8 +40,9 @@ public interface PoolServer {
     PoolServerAddress address();
 
     /**
-     * Name of the server, for display purposes. It's not guaranteed
-     * to be unique.
+     * Name of the server, for display purposes. It's guaranteed to be
+     * unique within a given scheme, but servers with different names
+     * can have the same address.
      *
      * <p> For remote servers discovered via zeroconf, this name
      * corresponds to the service name.
@@ -59,7 +60,13 @@ public interface PoolServer {
      * <p> For remote servers discovered via zeroconf, these subtypes
      * correspond to the server's service subtypes.
      */
-    Set<String> subtypes();
+    String subtype();
+
+    /**
+     * A name taking into account the server's subtype and guaranteed
+     * to be unique.
+     */
+    String qualifiedName();
 
     /**
      * Creates a new pool, with the given name and options, in this

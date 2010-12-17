@@ -26,26 +26,28 @@ import com.oblong.jelly.slaw.SlawFactory;
 public final class Server implements PoolServer {
 
     public Server(NetConnectionFactory cf, PoolServerAddress addr) {
-        this(cf, addr, addr.toString(), new HashSet<String>());
+        this(cf, addr, addr.toString(), "");
     }
 
     public Server(NetConnectionFactory cf,
                   PoolServerAddress addr,
                   String serverName,
-                  Set<String> st) {
+                  String st) {
         address = addr;
         connectionFactory = cf;
         name = serverName;
-        subtypes = st;
+        subtype = st == null ? "" : st;
+    }
+
+    @Override public String qualifiedName() {
+        return qualifiedName(name, subtype, connectionFactory);
     }
 
     @Override public PoolServerAddress address() { return address; }
 
     @Override public String name() { return name; }
 
-    @Override public Set<String> subtypes() {
-        return new HashSet<String>(subtypes);
-    }
+    @Override public String subtype() { return subtype; }
 
     @Override public void create(String name, PoolOptions opts)
         throws PoolException {
@@ -98,6 +100,14 @@ public final class Server implements PoolServer {
         return "<Server: " + name + " @ " + address + ">";
     }
 
+    public static String qualifiedName(String name,
+                                       String subtype,
+                                       NetConnectionFactory factory) {
+        final String st = subtype == null || subtype.length() == 0 ?
+            "" : String.format("_%s._sub.", subtype);
+        return String.format("'%s'.%s%s", name, st, factory.serviceName());
+    }
+
     private static final Slaw optSlaw(PoolOptions opts) {
         return opts == null ? NULL_OPTS : opts.toProtein();
     }
@@ -107,5 +117,5 @@ public final class Server implements PoolServer {
     private final PoolServerAddress address;
     private final NetConnectionFactory connectionFactory;
     private final String name;
-    private final Set<String> subtypes;
+    private final String subtype;
 }

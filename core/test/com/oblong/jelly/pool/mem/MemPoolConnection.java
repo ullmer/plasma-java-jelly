@@ -36,6 +36,10 @@ final class MemPoolConnection implements NetConnection {
         @Override public NetConnection get(PoolServerAddress addr) {
             return new MemPoolConnection(addr);
         }
+
+        @Override public String serviceName() {
+            return "_pool-server._tcp";
+        }
     }
 
     public MemPoolConnection(PoolServerAddress addr) {

@@ -2,7 +2,6 @@
 
 package com.oblong.jelly.pool.mem;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import com.oblong.jelly.Hose;
@@ -19,7 +18,9 @@ final class MemPoolServer implements PoolServer {
 
     @Override public String name() { return address.toString(); }
 
-    @Override public Set<String> subtypes() { return new HashSet<String>(); }
+    @Override public String qualifiedName() { return name(); }
+
+    @Override public String subtype() { return ""; }
 
     @Override public void create(String name, PoolOptions opts)
         throws PoolException {

@@ -6,4 +6,5 @@ import com.oblong.jelly.PoolException;
 public interface NetConnectionFactory {
 
     NetConnection get(PoolServerAddress address) throws PoolException;
+    String serviceName();
 }

@@ -24,18 +24,19 @@ public class PoolAddressTest {
         a = PoolAddress.fromURI("mem://host/foo/p ddfd`");
         checkSelf(a);
         assertEquals("foo/p ddfd`", a.poolName());
-        assertEquals("mem://host", a.serverAddress().toString());
+        assertEquals("mem://host:65456", a.serverAddress().toString());
     }
 
     @Test public void noServer() throws PoolException {
         PoolAddress a = PoolAddress.fromURI("pool");
         checkSelf(a);
         assertEquals("pool", a.poolName());
-        assertEquals("tcp://localhost", a.serverAddress().toString());
+        assertEquals("tcp://localhost:65456", a.serverAddress().toString());
         a = PoolAddress.fromURI("pool/bar/baz");
         checkSelf(a);
         assertEquals("pool/bar/baz", a.poolName());
-        assertEquals("tcp://localhost", a.serverAddress().toString());
+        assertEquals("tcp://localhost:" + PoolServerAddress.DEFAULT_PORT, 
+                     a.serverAddress().toString());
     }
 
     private void checkSelf(PoolAddress a) throws PoolException {

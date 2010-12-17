@@ -12,26 +12,16 @@ import com.oblong.jelly.PoolServerAddress;
 
 public abstract class PoolServerFactory {
 
-    public abstract PoolServer getServer(PoolServerAddress address);
+    public abstract PoolServer getServer(PoolServerAddress address,
+                                         String subtype);
     public abstract Set<PoolServer> servers();
     public abstract boolean addListener(PoolServers.Listener listener);
     public abstract boolean isRemote();
 
-    public static PoolServer get(PoolServerAddress address, boolean cache) {
-        PoolServer server = servers.get(address);
-        if (server == null) {
-            final String scheme = address.scheme();
-            final PoolServerFactory f = getFactory(scheme);
-            if (f != null) {
-                server = f.getServer(address);
-                if (cache) {
-                    final PoolServer old =
-                        servers.putIfAbsent(address, server);
-                    if (old != null) server = old;
-                }
-            }
-        }
-        return server;
+    public static PoolServer get(PoolServerAddress address, String st) {
+        final String scheme = address.scheme();
+        final PoolServerFactory f = getFactory(scheme);
+        return f != null ? f.getServer(address, st) : null;
     }
 
     public static Set<PoolServer> servers(String scheme) {
@@ -67,9 +57,6 @@ public abstract class PoolServerFactory {
     }
 
     public static PoolServerFactory unregister(String scheme) {
-        for (PoolServerAddress a : servers.keySet()) {
-            if (a.scheme().equals(scheme)) servers.remove(a);
-        }
         return factories.remove(scheme);
     }
 
@@ -78,33 +65,7 @@ public abstract class PoolServerFactory {
         return factories.put(scheme, factory) == null;
     }
 
-    public static Set<PoolServer> cached(String scheme) {
-        final Set<PoolServer> result = new HashSet<PoolServer>();
-        for (PoolServer s : servers.values()) {
-            if (s.address().scheme().equals(scheme)) result.add(s);
-        }
-        return result;
-    }
-
-    public static PoolServer cached(PoolServerAddress addr) {
-        return servers.get(addr);
-    }
-
-    public static PoolServer cache(PoolServer server) {
-        servers.put(server.address(), server);
-        return server;
-    }
-
-    public static PoolServer remove(PoolServerAddress address) {
-        return servers.remove(address);
-    }
-
     private static final
     ConcurrentHashMap<String, PoolServerFactory> factories =
         new ConcurrentHashMap<String, PoolServerFactory>();
-
-    private static final
-    ConcurrentHashMap<PoolServerAddress, PoolServer> servers =
-        new ConcurrentHashMap<PoolServerAddress, PoolServer>();
-
 }

@@ -97,6 +97,10 @@ final class TCPConnection implements NetConnection {
             throws PoolException {
             return new TCPConnection(addr);
         }
+
+        @Override public String serviceName() {
+            return "_pool-server._tcp";
+        }
     }
 
     static byte[] supportedToData(Set<Request> supp) {

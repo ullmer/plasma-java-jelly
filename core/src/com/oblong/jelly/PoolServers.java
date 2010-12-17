@@ -23,49 +23,45 @@ public final class PoolServers {
     /**
      * Provides an object implementing PoolServer given its address.
      *
-     * <p> Pool servers are uniquely identified by their address,
-     * which acts in this respect as a URI. This method actually
-     * returns the same object when called repeatedly with the same
-     * argument.
+     * <p> Pool servers are identified by their address, which acts in
+     * this respect as a URI.
      *
      * <p> If there's no PoolServer with the given address (for
      * instance, because its protocol is not registered), this method
      * returns null.
      *
-     * <p> The second argument indicates whether the returned instance
-     * should be remembered, and included in the list returned by
-     * {@link #servers}.
+     * <p> The second argument indicates the server subtype. It is
+     * safe to pass null for a generic server instance.
      */
-    public static PoolServer get(PoolServerAddress address, boolean cache) {
-        return PoolServerFactory.get(address, cache);
+    public static PoolServer get(PoolServerAddress address, String subtype) {
+        return PoolServerFactory.get(address, subtype);
     }
 
     /**
-     * Equivalent to {@link #get(PoolServerAddress, boolean)} with
-     * caching.
+     * Equivalent to {@link #get(PoolServerAddress, null)}.
      */
     public static PoolServer get(PoolServerAddress address) {
-        return get(address, true);
+        return get(address, null);
     }
 
     /**
      * Convenience method that construct a PoolServerAddress and calls
-     * {@link #get(PoolServerAddress, boolean) get} on it, returning
+     * {@link #get(PoolServerAddress, subtype) get} on it, returning
      * null if the URI is malformed.
      */
-    public static PoolServer get(String uri, boolean cache) {
+    public static PoolServer get(String uri, String subtype) {
         try {
-            return get(PoolServerAddress.fromURI(uri), cache);
+            return get(PoolServerAddress.fromURI(uri), subtype);
         } catch (BadAddressException e) {
             return null;
         }
     }
 
     /**
-     * Equivalent to {@link #get(String, boolean)} with caching.
+     * Equivalent to {@link #get(String, null)}.
      */
     public static PoolServer get(String uri) {
-        return get(uri, true);
+        return get(uri, null);
     }
 
     /**
