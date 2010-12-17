@@ -19,7 +19,7 @@ import com.oblong.jelly.PoolServer;
 final class ServerInfoRow {
 
     ServerInfoRow(PoolServer s) {
-        this(s, s.name());
+        this(s, s.qualifiedName());
     }
 
     ServerInfoRow(PoolServer s, String n) {
@@ -55,7 +55,7 @@ final class ServerInfoRow {
 final class ServerListAdapter extends ArrayAdapter<ServerInfoRow> {
 
     ServerListAdapter(ListActivity parent) {
-        super(parent, R.layout.server_item, R.id.server_host);
+        super(parent, R.layout.server_item, R.id.server_name);
     }
 
     @Override public View getView(int n, View v, ViewGroup g) {
@@ -70,10 +70,11 @@ final class ServerListAdapter extends ArrayAdapter<ServerInfoRow> {
     }
 
     static void fillView(View v, ServerInfoRow i) {
-        final String host =
-            i.info().name() + " (" + i.info().server().address().host() + ")";
-        final TextView hv = (TextView)v.findViewById(R.id.server_host);
-        hv.setText(host);
+        final String st = i.info().server().subtype();
+        final String name = String.format("%s (%s)",
+                                          i.info().server().name(),
+                                          st.length() == 0 ? "generic" : st);
+        ((TextView)v.findViewById(R.id.server_name)).setText(name);
         final TextView pcv = (TextView)v.findViewById(R.id.pool_count);
         if (i.info().connectionError()) {
             pcv.setError("Error connecting to the pool");

@@ -60,12 +60,12 @@ final class ServerTable {
         final Thread th = new Thread (new Runnable () {
                 @Override public void run() {
                     TCPServerFactory.reset();
+                    setupListener();
                     for (PoolServer s : PoolServers.remoteServers()) {
                         notifyNewServer(s);
                     }
                     for (ServerInfoRow i : infos.values())
                         updatePoolNumber(i);
-                    setupListener();
                 }
             });
         th.start();
@@ -137,8 +137,10 @@ final class ServerTable {
     }
 
     private void notifyGoneServer(PoolServer server) {
-        final ServerInfoRow row = infos.get(server.name());
+        Ponder.logger().info("Server gone: " + server.qualifiedName());
+        final ServerInfoRow row = infos.get(server.qualifiedName());
         if (row != null) row.info().updatePools();
+        else Ponder.logger().info("Not registered server!");
         if (row != null && row.info().connectionError())
             handler.sendMessage(Message.obtain(handler, DEL_MSG, server));
         else if (row != null)
@@ -157,18 +159,15 @@ final class ServerTable {
     }
 
     private void addServer(ServerInfoRow row) {
-        final ServerInfoRow old = infos.get(row.info().name());
-        if (old == null) {
+        if (infos.get(row.info().name()) == null) {
             infos.put(row.info().name(), row);
             adapter.add(row);
             adapter.notifyDataSetChanged();
-        } else {
-            old.info().server(row.info().server());
         }
     }
 
     private void delServer(PoolServer s) {
-        delServer(infos.remove(s.name()));
+        delServer(infos.remove(s.qualifiedName()));
     }
 
     private void updateServer(ServerInfoRow info) {

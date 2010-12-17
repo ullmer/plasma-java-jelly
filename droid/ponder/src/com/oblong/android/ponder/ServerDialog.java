@@ -54,7 +54,7 @@ final class ServerDialog implements DialogInterface.OnClickListener,
             if (p < 0 || p > 65456) return null;
             final PoolServerAddress sa =
                 new PoolServerAddress("tcp", host.getText().toString(), p);
-            return PoolServers.get(sa, false);
+            return PoolServers.get(sa);
         } catch (PoolException e) {
             return null;
         }

@@ -58,7 +58,7 @@ public final class ServerDetails
 
     @Override public void onStart() {
         super.onStart();
-        name.setText(serverInfo.name());
+        name.setText(serverInfo.server().name());
         host.setText(serverInfo.server().address().toString());
         table.update(serverInfo);
     }
@@ -93,8 +93,7 @@ public final class ServerDetails
         ((TextView)d.findViewById(R.id.host)).setText(srv.address().host());
         ((TextView)d.findViewById(R.id.port)).setText(
             String.format("%d", srv.address().port()));
-        ((TextView)d.findViewById(R.id.subtypes)).setText(
-            Utils.join(srv.subtypes(), ", "));
+        ((TextView)d.findViewById(R.id.subtypes)).setText(srv.subtype());
         ((TextView)d.findViewById(R.id.poolno)).setText(
             String.format("%d", serverInfo.poolNumber()));
     }

@@ -10,7 +10,7 @@ import com.oblong.jelly.PoolServer;
 final class ServerInfo {
 
     ServerInfo(PoolServer s) {
-        this(s, s.name());
+        this(s, s.qualifiedName());
     }
 
     ServerInfo(PoolServer s, String n) {
@@ -53,7 +53,6 @@ final class ServerInfo {
     }
 
     PoolServer server() { return server; }
-    void server(PoolServer s) { server = s; }
 
     boolean connectionError() { return poolNumber == CON_ERR; }
 
