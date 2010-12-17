@@ -67,28 +67,12 @@ public final class TCPServerFactory
 
     @Override synchronized public void serviceResolved(ServiceEvent e) {
         logger.info("Service resolved event: " + e);
-        final Server s = fromInfo(e.getInfo());
-        if (s != null && !cache.contains(s)) {
-            cache.add(s);
-            for (Listener l : listeners) l.serverAdded(s);
-        }
+        serverAdded(cache.add(fromInfo(e.getInfo())));
     }
 
     @Override synchronized public void serviceRemoved(ServiceEvent e) {
         logger.info("Service removed event: " + e);
-        final Server s = fromInfo(e.getInfo());
-        if (s != null) {
-            cache.remove(s.qualifiedName());
-            for (Listener l : listeners) l.serverRemoved(s);
-        }
-    }
-
-    static void cache(PoolServer s) {
-        cache.add(s);
-    }
-
-    static void uncache(PoolServerAddress a, String n, String t) {
-        cache.remove(a, n, t);
+        serverRemoved(cache.remove(fromInfo(e.getInfo())));
     }
 
     public static void register() {
@@ -105,6 +89,22 @@ public final class TCPServerFactory
     public static void reset() {
         unregister();
         register();
+    }
+
+    static void cache(PoolServer s) {
+        final TCPServerFactory f =
+            (TCPServerFactory)PoolServerFactory.getFactory(SCM);
+        if (f != null) f.serverAdded(cache.add(s));
+    }
+
+    private PoolServer serverAdded(PoolServer s) {
+        if (s != null) for (Listener l : listeners) l.serverAdded(s);
+        return s;
+    }
+
+    private PoolServer serverRemoved(PoolServer s) {
+        if (s != null) for (Listener l : listeners) l.serverRemoved(s);
+        return s;
     }
 
     private Server fromInfo(ServiceInfo inf) {

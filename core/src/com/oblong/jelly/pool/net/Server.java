@@ -96,7 +96,8 @@ public final class Server implements PoolServer {
      }
 
     @Override public String toString() {
-        return "<Server: " + name + " @ " + address + ">";
+        return
+            "<Server: " + name + " @ " + address + ", sub: " + subtype + ">";
     }
 
     @Override public boolean equals(Object o) {
@@ -115,11 +116,12 @@ public final class Server implements PoolServer {
                                        NetConnectionFactory factory) {
         final String st = subtype == null || subtype.length() == 0 ?
             "" : String.format("_%s._sub.", subtype);
-        return String.format("'%s'.%s%s.%s",
+        return String.format("'%s'.%s%s.%s:%d",
                              name == null ? addr.host() : name,
                              st,
                              factory.serviceName(),
-                             addr.toString());
+                             addr.host(),
+                             addr.port());
     }
 
     private static final Slaw optSlaw(PoolOptions opts) {

@@ -25,7 +25,13 @@ public class PoolServerCache {
     }
 
     public boolean contains(PoolServer s) {
-        return servers.contains(s.qualifiedName());
+        return servers.containsValue(s);
+    }
+
+    public boolean contains(PoolServerAddress a, String n, String s) {
+        for (PoolServer srv : servers.values())
+            if (check(srv, a, n, s)) return true;
+        return false;
     }
 
     public PoolServer get(String n, String s) {
@@ -52,6 +58,10 @@ public class PoolServerCache {
         return servers.remove(qname);
     }
 
+    public PoolServer remove(PoolServer s) {
+        return remove(s.qualifiedName());
+    }
+
     public Set<PoolServer> remove(PoolServerAddress a, String n, String s) {
         Set<PoolServer> result = new HashSet<PoolServer>();
         for (PoolServer srv : servers.values())
@@ -61,6 +71,16 @@ public class PoolServerCache {
     }
 
     public void clear() { servers.clear(); }
+
+    public int size() { return servers.size(); }
+
+    public String dump() {
+        StringBuilder b = new StringBuilder();
+        b.append(servers.size());
+        b.append(" servers");
+        for (String s : servers.keySet()) b.append("\n - ").append(s);
+        return b.toString();
+    }
 
     public Set<PoolServer> servers() {
         return new HashSet<PoolServer>(servers.values());
