@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+  <RelativeLayout android:layout_width="wrap_content"
+                  android:layout_height="wrap_content">
 
     <TextView android:id="@+id/protein_idx"
               android:layout_width="wrap_content"
@@ -42,7 +45,7 @@
               android:layout_alignParentLeft="true"
               android:layout_marginLeft="10dp"
               android:singleLine="false"
-              android:text=""
+              android:typeface="monospace"
               android:textSize="13sp" />
 
     <TextView android:id="@+id/protein_ingests"
@@ -63,6 +66,7 @@
               android:layout_alignParentLeft="true"
               android:layout_marginLeft="10dp"
               android:singleLine="false"
+              android:typeface="monospace"
               android:text=""
               android:textSize="13sp" />
 
@@ -85,6 +89,8 @@
               android:layout_marginLeft="10dp"
               android:singleLine="false"
               android:text=""
+              android:typeface="monospace"
               android:textSize="13sp" />
 
-</RelativeLayout>
+  </RelativeLayout>
+</ScrollView>
