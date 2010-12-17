@@ -13,6 +13,7 @@ import net.jcip.annotations.NotThreadSafe;
 import com.oblong.jelly.Hose;
 import com.oblong.jelly.NumericIlk;
 import com.oblong.jelly.PoolException;
+import com.oblong.jelly.PoolServer;
 import com.oblong.jelly.PoolServerAddress;
 import com.oblong.jelly.Protein;
 import com.oblong.jelly.Slaw;
@@ -33,8 +34,8 @@ import static com.oblong.jelly.pool.net.NetProteinMetadata.*;
 final class MemPoolConnection implements NetConnection {
 
     static class Factory implements NetConnectionFactory {
-        @Override public NetConnection get(PoolServerAddress addr) {
-            return new MemPoolConnection(addr);
+        @Override public NetConnection get(PoolServer srv) {
+            return new MemPoolConnection(srv);
         }
 
         @Override public String serviceName() {
@@ -42,8 +43,8 @@ final class MemPoolConnection implements NetConnection {
         }
     }
 
-    public MemPoolConnection(PoolServerAddress addr) {
-        address = addr;
+    public MemPoolConnection(PoolServer srv) {
+        address = srv.address();
         pool = null;
         index = Protein.NO_INDEX;
         open = true;

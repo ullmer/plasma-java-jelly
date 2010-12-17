@@ -13,28 +13,45 @@ import com.oblong.jelly.PoolServerAddress;
 public abstract class PoolServerFactory {
 
     public abstract PoolServer getServer(PoolServerAddress address,
+                                         String name,
                                          String subtype);
-    public abstract Set<PoolServer> servers();
+    public abstract Set<PoolServer> servers(PoolServerAddress address,
+                                            String name,
+                                            String subtype);
     public abstract boolean addListener(PoolServers.Listener listener);
     public abstract boolean isRemote();
 
-    public static PoolServer get(PoolServerAddress address, String st) {
+    public static PoolServer get(PoolServerAddress address,
+                                 String name,
+                                 String subtype) {
         final String scheme = address.scheme();
         final PoolServerFactory f = getFactory(scheme);
-        return f != null ? f.getServer(address, st) : null;
+        return f != null ? f.getServer(address, name, subtype) : null;
     }
 
-    public static Set<PoolServer> servers(String scheme) {
+    public static Set<PoolServer> servers(String scheme,
+                                          PoolServerAddress address,
+                                          String name,
+                                          String subtype) {
         final PoolServerFactory f = getFactory(scheme);
-        return f == null ? new HashSet<PoolServer>() : f.servers();
+        return f == null
+            ? new HashSet<PoolServer>()
+            : f.servers(address, name, subtype);
     }
 
-    public static Set<PoolServer> remoteServers() {
-        final Set<PoolServer> result = new HashSet<PoolServer>();
+    public static Set<PoolServer> remoteServers(PoolServerAddress address,
+                                                String name,
+                                                String subtype) {
+        Set<PoolServer> result = null;
         for (PoolServerFactory f : factories.values()) {
-            if (f.isRemote()) result.addAll(f.servers());
+            if (f.isRemote()) {
+                if (result == null)
+                    result = f.servers(address, name, subtype);
+                else
+                    result.addAll(f.servers(address, name, subtype));
+            }
         }
-        return result;
+        return result == null ? new HashSet<PoolServer>() : result;
     }
 
     public static boolean addListener(String scheme,

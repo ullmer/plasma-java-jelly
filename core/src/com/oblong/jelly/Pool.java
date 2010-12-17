@@ -38,9 +38,7 @@ import java.util.Set;
  */
 public final class Pool {
     /**
-     * An alias to {@link PoolServers#get}, q.v.
-     *
-     * @deprecated
+     * An alias to {@link PoolServers#get(PoolServerAddress)}, q.v.
      */
     public static PoolServer getServer(PoolServerAddress address) {
         return PoolServers.get(address);

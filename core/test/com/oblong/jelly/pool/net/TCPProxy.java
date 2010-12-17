@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import com.oblong.jelly.PoolException;
+import com.oblong.jelly.PoolServer;
 import com.oblong.jelly.PoolServerAddress;
 
 
@@ -21,16 +22,12 @@ import com.oblong.jelly.PoolServerAddress;
  */
 public final class TCPProxy implements Runnable {
 
-    public TCPProxy(NetConnectionFactory factory, PoolServerAddress addr)
-        throws IOException {
-        this(factory, addr, PoolServerAddress.DEFAULT_PORT);
-    }
-
-    public TCPProxy(
-        NetConnectionFactory factory, PoolServerAddress address, int port)
+    public TCPProxy(NetConnectionFactory factory,
+                    PoolServerAddress address,
+                    int port)
         throws IOException {
         this.factory = factory;
-        this.address = address;
+        this.server = new Server(factory, address, "TCP Proxy Server", "");
         this.socket = new ServerSocket(port);
         this.exit = false;
         this.handlers = new ArrayList<TCPProxyHandler>();
@@ -41,7 +38,7 @@ public final class TCPProxy implements Runnable {
         exit = false;
         while (!exit) {
             try {
-                launchHandler(socket.accept(), factory.get(address));
+                launchHandler(socket.accept(), factory.get(server));
             } catch (Exception e) {
                 if (!socket.isClosed())
                     log.severe("Exception launching handler: "
@@ -90,7 +87,7 @@ public final class TCPProxy implements Runnable {
 
     private final ServerSocket socket;
     private final NetConnectionFactory factory;
-    private final PoolServerAddress address;
+    private final PoolServer server;
     private final List<TCPProxyHandler> handlers;
     private final List<Thread> threads;
     private volatile boolean exit;

@@ -2,15 +2,14 @@
 
 package com.oblong.jelly.pool.mem;
 
-import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 import net.jcip.annotations.ThreadSafe;
 
 import com.oblong.jelly.PoolServer;
 import com.oblong.jelly.PoolServerAddress;
 import com.oblong.jelly.PoolServers;
+import com.oblong.jelly.pool.PoolServerCache;
 import com.oblong.jelly.pool.PoolServerFactory;
 
 @ThreadSafe
@@ -21,18 +20,16 @@ public final class MemServerFactory extends PoolServerFactory {
     @Override public boolean isRemote() { return false; }
 
     @Override
-    public PoolServer getServer(PoolServerAddress address, String st) {
-        PoolServer srv = servers.get(address);
-        if (srv == null) {
-            srv = new MemPoolServer(address);
-            final PoolServer old = servers.putIfAbsent(address, srv);
-            if (old != null) srv = old;
-        }
-        return srv;
+    public PoolServer getServer(PoolServerAddress a, String n, String st) {
+        final String qname = MemPoolServer.qualifiedName(a, n, st);
+        final PoolServer s = cache.get(qname);
+        return s == null ? cache.add(new MemPoolServer(a, n, st)) : s;
     }
 
-    @Override public Set<PoolServer> servers() {
-        return new HashSet<PoolServer>(servers.values());
+    @Override public Set<PoolServer> servers(PoolServerAddress address,
+                                             String name,
+                                             String subtype) {
+        return cache.get(address, name, subtype);
     }
 
     @Override public boolean addListener(PoolServers.Listener listener) {
@@ -47,6 +44,5 @@ public final class MemServerFactory extends PoolServerFactory {
         return register(scheme, new MemServerFactory());
     }
 
-    private static ConcurrentHashMap<PoolServerAddress, PoolServer> servers =
-        new ConcurrentHashMap<PoolServerAddress, PoolServer>();
+    private static PoolServerCache cache = new PoolServerCache();
 }

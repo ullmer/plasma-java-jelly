@@ -20,6 +20,7 @@ import net.jcip.annotations.ThreadSafe;
 import com.oblong.jelly.PoolServer;
 import com.oblong.jelly.PoolServers.Listener;
 import com.oblong.jelly.PoolServerAddress;
+import com.oblong.jelly.pool.PoolServerCache;
 import com.oblong.jelly.pool.PoolServerFactory;
 
 @ThreadSafe
@@ -29,70 +30,48 @@ public final class TCPServerFactory
     @Override public boolean isRemote() { return true; }
 
     @Override
-    public PoolServer getServer(PoolServerAddress address, String subtype) {
-        final String name = address.toString();
-        final String qname = Server.qualifiedName(name, subtype, factory);
-        PoolServer srv = cache.get(qname);
-        if (srv == null) {
-            srv = new Server(factory, address, name, subtype);
-            final PoolServer old = cache.putIfAbsent(qname, srv);
-            if (old != null) srv = old;
-        }
-        return srv;
+    public PoolServer getServer(PoolServerAddress address,
+                                String name,
+                                String subtype) {
+        final String qname = Server.qualifiedName(address,
+                                                  name,
+                                                  subtype,
+                                                  factory);
+        final PoolServer s = cache.get(qname);
+        return s == null ? new Server(factory, address, name, subtype) : s;
     }
 
-    @Override synchronized public Set<PoolServer> servers() {
-        final Set<PoolServer> result =
-            new HashSet<PoolServer>(cache.values());
+    @Override synchronized
+    public Set<PoolServer> servers(PoolServerAddress a, String n, String s) {
         if (jmDNS == null) {
-            final JmDNS dns = jmDNS();
-            if (dns != null) {
-                for (ServiceInfo inf : dns.list(SCM_SRV)) {
-                    final Server server = fromInfo(inf);
-                    if (server != null) {
-                        cache.put(server.qualifiedName(), server);
-                        result.add(server);
-                    }
-                }
-                jmDNS.addServiceListener(SCM_SRV, this);
+            final JmDNS d = jmDNS();
+            if (d != null) {
+                for (ServiceInfo inf : d.list(SCM_SRV))
+                    cache.add(fromInfo(inf));
             }
         }
-        return result;
+        return cache.get(a, n, s);
     }
 
     @Override synchronized public boolean addListener(Listener listener) {
         if (jmDNS == null) {
             final JmDNS dns = jmDNS();
             if (dns == null) return false;
-            dns.addServiceListener(SCM_SRV, this);
         }
         listeners.add(listener);
         return true;
     }
 
-    public static void register() {
-        register(SCM, new TCPServerFactory());
-    }
-
-    public static void unregister() {
-        cache.clear();
-        final TCPServerFactory f =
-            (TCPServerFactory)PoolServerFactory.unregister(SCM);
-        if (f != null && f.jmDNS != null) {
-            try {
-                f.jmDNS.close();
-            } catch (IOException e) {
-                logger.severe("Error closing jmDNS: " + e);
-            }
-        }
-    }
-
-    public static void reset() {
-        unregister();
-        register();
-    }
-
     @Override public void serviceAdded(ServiceEvent e) {
+    }
+
+    @Override synchronized public void serviceResolved(ServiceEvent e) {
+        logger.info("Service resolved event: " + e);
+        final Server s = fromInfo(e.getInfo());
+        if (s != null && !cache.contains(s)) {
+            cache.add(s);
+            for (Listener l : listeners) l.serverAdded(s);
+        }
     }
 
     @Override synchronized public void serviceRemoved(ServiceEvent e) {
@@ -104,13 +83,28 @@ public final class TCPServerFactory
         }
     }
 
-    @Override synchronized public void serviceResolved(ServiceEvent e) {
-        logger.info("Service resolved event: " + e);
-        final Server s = fromInfo(e.getInfo());
-        if (s != null) {
-            cache.put(s.qualifiedName(), s);
-            for (Listener l : listeners) l.serverAdded(s);
-        }
+    static void cache(PoolServer s) {
+        cache.add(s);
+    }
+
+    static void uncache(PoolServerAddress a, String n, String t) {
+        cache.remove(a, n, t);
+    }
+
+    public static void register() {
+        register(SCM, new TCPServerFactory());
+    }
+
+    public static void unregister() {
+        final TCPServerFactory f =
+            (TCPServerFactory)PoolServerFactory.unregister(SCM);
+        if (f != null) f.closeJmDNS();
+        cache.clear();
+    }
+
+    public static void reset() {
+        unregister();
+        register();
     }
 
     private Server fromInfo(ServiceInfo inf) {
@@ -127,10 +121,23 @@ public final class TCPServerFactory
         }
     }
 
+    private synchronized void closeJmDNS() {
+        if (jmDNS != null) {
+            try {
+                jmDNS.close();
+            } catch (IOException e) {
+                logger.severe("Error closing jmDNS: " + e);
+            } finally {
+                jmDNS = null;
+            }
+        }
+    }
+
     private JmDNS jmDNS() {
         if (jmDNS == null) {
             try {
                 jmDNS = JmDNS.create();
+                jmDNS.addServiceListener(SCM_SRV, this);
             } catch (IOException e) {
                 logger.severe("Error opening zeroconf: " + e.getMessage());
             }
@@ -147,6 +154,5 @@ public final class TCPServerFactory
     private static final Logger logger =
         Logger.getLogger(TCPServerFactory.class.getName());
 
-    private static final ConcurrentHashMap<String, PoolServer> cache =
-        new ConcurrentHashMap<String, PoolServer>();
+    private static final PoolServerCache cache = new PoolServerCache();
 }

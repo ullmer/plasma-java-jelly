@@ -16,11 +16,13 @@ final class MemPoolServer implements PoolServer {
 
     @Override public PoolServerAddress address() { return address; }
 
-    @Override public String name() { return address.toString(); }
+    @Override public String name() { return name; }
 
-    @Override public String qualifiedName() { return name(); }
+    @Override public String subtype() { return subtype; }
 
-    @Override public String subtype() { return ""; }
+    @Override public String qualifiedName() {
+        return qualifiedName(address, name, subtype);
+    }
 
     @Override public void create(String name, PoolOptions opts)
         throws PoolException {
@@ -47,9 +49,19 @@ final class MemPoolServer implements PoolServer {
         return MemPool.names();
     }
 
-    MemPoolServer(PoolServerAddress address) {
-    	this.address = address;
+    static String qualifiedName(PoolServerAddress a, String n, String s) {
+        if (n == null) n = "";
+        if (s == null) s = "";
+        return a + "/" + n + "#" + s;
+    }
+
+    MemPoolServer(PoolServerAddress a, String n, String st) {
+    	address = a;
+        name = n == null ? "" : n;
+        subtype = st == null ? "" : st;
     }
 
     private final PoolServerAddress address;
+    private final String name;
+    private final String subtype;
 }

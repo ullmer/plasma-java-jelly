@@ -16,6 +16,7 @@ import com.oblong.jelly.Hose;
 import com.oblong.jelly.InOutException;
 import com.oblong.jelly.InvalidOperationException;
 import com.oblong.jelly.NumericIlk;
+import com.oblong.jelly.PoolServer;
 import com.oblong.jelly.PoolServerAddress;
 import com.oblong.jelly.PoolException;
 import com.oblong.jelly.Protein;
@@ -93,14 +94,17 @@ final class TCPConnection implements NetConnection {
     @Override public void setHose(Hose h) { hose = h; }
 
     static class Factory implements NetConnectionFactory {
-        @Override public NetConnection get(PoolServerAddress addr)
+        @Override public NetConnection get(PoolServer srv)
             throws PoolException {
-            return new TCPConnection(addr);
+            final NetConnection c = new TCPConnection(srv);
+            TCPServerFactory.cache(srv);
+            return c;
         }
 
         @Override public String serviceName() {
             return "_pool-server._tcp";
         }
+
     }
 
     static byte[] supportedToData(Set<Request> supp) {
@@ -132,10 +136,10 @@ final class TCPConnection implements NetConnection {
         return result;
     }
 
-    private TCPConnection(PoolServerAddress addr) throws PoolException {
+    private TCPConnection(PoolServer srv) throws PoolException {
         try {
-            address = addr;
-            socket = new Socket(addr.host(), addr.port());
+            address = srv.address();
+            socket = new Socket(address.host(), address.port());
             input = socket.getInputStream();
             output = socket.getOutputStream();
             sendPreamble(output);

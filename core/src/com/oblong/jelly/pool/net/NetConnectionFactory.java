@@ -1,10 +1,12 @@
 package com.oblong.jelly.pool.net;
 
-import com.oblong.jelly.PoolServerAddress;
 import com.oblong.jelly.PoolException;
+import com.oblong.jelly.PoolServer;
+import com.oblong.jelly.PoolServerAddress;
 
 public interface NetConnectionFactory {
 
-    NetConnection get(PoolServerAddress address) throws PoolException;
+    NetConnection get(PoolServer srv) throws PoolException;
     String serviceName();
+
 }
