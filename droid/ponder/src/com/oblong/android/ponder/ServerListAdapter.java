@@ -37,6 +37,8 @@ final class ServerInfoRow {
     View view() { return view; }
     void view(View v) { view = v; }
 
+    String key() { return info.server().qualifiedName(); }
+
     void updatePoolNumber(final Handler hdl, final int msg) {
         new Thread (new Runnable () {
                 @Override public void run() {

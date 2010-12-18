@@ -10,7 +10,7 @@ import com.oblong.jelly.PoolServer;
 final class ServerInfo {
 
     ServerInfo(PoolServer s) {
-        this(s, s.qualifiedName());
+        this(s, s.name());
     }
 
     ServerInfo(PoolServer s, String n) {

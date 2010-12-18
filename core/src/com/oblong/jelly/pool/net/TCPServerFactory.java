@@ -72,7 +72,11 @@ public final class TCPServerFactory
 
     @Override synchronized public void serviceRemoved(ServiceEvent e) {
         logger.info("Service removed event: " + e);
-        serverRemoved(cache.remove(fromInfo(e.getInfo())));
+        final PoolServer server = fromInfo(e.getInfo());
+        if (server != null) {
+            for (PoolServer s : cache.remove(null, server.name(), null))
+                serverRemoved(s);
+        }
     }
 
     public static void register() {
