@@ -96,9 +96,7 @@ final class TCPConnection implements NetConnection {
     static class Factory implements NetConnectionFactory {
         @Override public NetConnection get(PoolServer srv)
             throws PoolException {
-            final NetConnection c = new TCPConnection(srv);
-            TCPServerFactory.cache(srv);
-            return c;
+            return new TCPConnection(srv);
         }
 
         @Override public String serviceName() {

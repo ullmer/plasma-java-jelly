@@ -67,7 +67,11 @@ public final class TCPServerFactory
 
     @Override synchronized public void serviceResolved(ServiceEvent e) {
         logger.info("Service resolved event: " + e);
-        serverAdded(cache.add(fromInfo(e.getInfo())));
+        final String name = e.getName();
+        final ServiceInfo info = e.getInfo();
+        if (name != null && name.equals(info.getName()))
+            // The test above can fail, probably due to jmDNS bugs
+            serverAdded(cache.add(fromInfo(info)));
     }
 
     @Override synchronized public void serviceRemoved(ServiceEvent e) {
@@ -93,12 +97,6 @@ public final class TCPServerFactory
     public static void reset() {
         unregister();
         register();
-    }
-
-    static void cache(PoolServer s) {
-        final TCPServerFactory f =
-            (TCPServerFactory)PoolServerFactory.getFactory(SCM);
-        if (f != null) f.serverAdded(cache.add(s));
     }
 
     private PoolServer serverAdded(PoolServer s) {

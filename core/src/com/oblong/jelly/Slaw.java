@@ -569,7 +569,7 @@ public abstract class Slaw implements Iterable<Slaw> {
      * are immutable).
      *
      */
-    public final Iterator<Slaw> iterator() {
+    @Override public final Iterator<Slaw> iterator() {
         class SlawIterator implements Iterator<Slaw> {
             public SlawIterator(Slaw s) { slaw = s; }
             public boolean hasNext() { return n < slaw.count(); }
