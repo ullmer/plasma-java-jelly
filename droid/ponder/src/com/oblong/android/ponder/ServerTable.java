@@ -27,8 +27,7 @@ import com.oblong.jelly.pool.net.TCPServerFactory;
 final class ServerTable {
 
     ServerTable(ListActivity la, WifiManager wifi) {
-        infos = new ConcurrentHashMap<String, ServerInfoRow>();
-        localInfos = new HashSet<ServerInfoRow>();
+        localInfos = new HashSet<ServerInfo>();
         servers = new PoolServerCache();
         adapter = new ServerListAdapter(la);
         la.setListAdapter(adapter);
@@ -50,14 +49,14 @@ final class ServerTable {
         final Thread th = new Thread (new Runnable () {
                 @Override public void run() {
                     for (PoolServer s : PoolServers.remoteServers())
-                        notifyNewServer(s);
+                        if (!servers.contains(s)) notifyNewServer(s);
                 }
             });
         th.start();
     }
 
     void reset() {
-        for (ServerInfoRow i : infos.values()) i.info().clearPools();
+        for (ServerInfo i : adapter) i.clearPools();
         adapter.notifyDataSetChanged();
         new Thread (new Runnable () {
                 @Override public void run() {
@@ -65,34 +64,32 @@ final class ServerTable {
                     for (PoolServer s : PoolServers.remoteServers()) {
                         notifyNewServer(s);
                     }
-                    for (ServerInfoRow i : infos.values())
-                        updatePoolNumber(i);
+                    for (ServerInfo i : adapter) updatePoolNumber(i);
                     setupListener();
                 }
             }).start();
     }
 
     void deleteUnreachable() {
-        for (ServerInfoRow i : infos.values())
-            if (i.info().connectionError()) delServer(i);
+        for (ServerInfo i : adapter) if (i.connectionError()) delServer(i);
     }
 
-    void registerServer(ServerInfoRow row) {
+    void registerServer(ServerInfo info) {
         int k = 1;
-        while (infos.get(row.info().name()) != null)
-            row.info().nextName(++k);
-        row.info().clearPools();
-        localInfos.add(row);
-        addServer(row);
-        updatePoolNumber(row);
+        info.clearPools();
+        while (localInfos.contains(info)) info.nextName(k++);
+        localInfos.add(info);
+        adapter.add(info);
+        adapter.notifyDataSetChanged();
+        checkInfo(info);
     }
 
     void refreshServer(int position) {
-        final ServerInfoRow row = adapter.getItem(position);
-        if (row != null) {
-            row.info().clearPools();
+        final ServerInfo info = adapter.getItem(position);
+        if (info != null) {
+            info.clearPools();
             adapter.notifyDataSetChanged();
-            updatePoolNumber(row);
+            updatePoolNumber(info);
         }
     }
 
@@ -100,17 +97,16 @@ final class ServerTable {
         delServer(adapter.getItem(position));
     }
 
-    void delServer(ServerInfoRow row) {
-        if (row != null) {
-            infos.remove(row.key());
-            localInfos.remove(row);
-            servers.remove(row.info().server());
-            adapter.remove(row);
+    void delServer(ServerInfo info) {
+        if (info != null) {
+            localInfos.remove(info);
+            servers.remove(info.server());
+            adapter.remove(info);
             adapter.notifyDataSetChanged();
         }
     }
 
-    ServerInfoRow getItem(int position) {
+    ServerInfo getItem(int position) {
         return adapter.getItem(position);
     }
 
@@ -124,20 +120,21 @@ final class ServerTable {
         return lk;
     }
 
-    private void updatePoolNumber(ServerInfoRow row) {
-        row.info().clearPools();
-        row.updatePoolNumber(handler, UPD_MSG);
+    private static boolean isGeneric(PoolServer s) {
+        return s.subtype().length() == 0;
+    }
+
+    private void updatePoolNumber(ServerInfo info) {
+        info.clearPools();
+        info.updatePoolNumber(handler, UPD_MSG);
     }
 
     private void sendMessage(int msg, Object arg) {
-        Ponder.logger().info("Sending message " + msg);
-        Ponder.logger().info(" ... with arg: " + arg);
         handler.sendMessage(Message.obtain(handler, msg, arg));
     }
 
     private void notifyNewServer(PoolServer server) {
-        final ServerInfoRow row = new ServerInfoRow(server);
-        sendMessage(ADD_MSG, row);
+        sendMessage(ADD_MSG, server);
     }
 
     private void notifyGoneServer(PoolServer server) {
@@ -155,47 +152,52 @@ final class ServerTable {
             });
     }
 
-    private void checkRow(ServerInfoRow row) {
-        if (row != null) {
-            row.info().clearPools();
+    private void checkInfo(ServerInfo info) {
+        if (info != null) {
+            info.clearPools();
             adapter.notifyDataSetChanged();
-            row.updatePoolNumber(handler, CHK_MSG);
+            info.updatePoolNumber(handler, CHK_MSG);
+            if (!isGeneric(info.server()) && !localInfos.contains(info)) {
+                final PoolServer gs = servers.get(info.server().name(), "");
+                final ServerInfo gi = adapter.getItem(gs);
+                if (gi != null) adapter.remove(gi);
+                adapter.notifyDataSetChanged();
+            }
         }
     }
 
-    private void addServer(ServerInfoRow row) {
-        if (infos.get(row.key()) == null) {
-            infos.put(row.key(), row);
-            servers.add(row.info().server());
-            adapter.add(row);
-            checkRow(row);
+    private void addServer(PoolServer server) {
+        if (!servers.contains(server)) {
+            final boolean c =
+                servers.contains(server.address(), server.name(), null);
+            servers.add(server);
+            if (!(isGeneric(server) && c)) {
+                final ServerInfo info = new ServerInfo(server);
+                adapter.add(info);
+                checkInfo(info);
+            }
         }
     }
 
     private void delServer(PoolServer server) {
-        checkRow(infos.get(server.qualifiedName()));
+        checkInfo(adapter.getItem(server));
     }
 
-    private void onCheckServer(ServerInfoRow row) {
-        if (row.info().connectionError()) {
+    private void onCheckServer(ServerInfo info) {
+        if (info.connectionError() && !localInfos.contains(info)) {
             for (PoolServer s :
-                     servers.get(null, row.info().server().name(), null)) {
-                ServerInfoRow r = infos.get(s.qualifiedName());
-                if (r != null && r.info().connectionError()) {
+                     servers.get(null, info.server().name(), null)) {
+                ServerInfo i = adapter.getItem(s);
+                if (i != null && i.connectionError()) {
                     servers.remove(s);
-                    adapter.remove(infos.remove(s.qualifiedName()));
+                    adapter.remove(i);
                 }
             }
-            adapter.notifyDataSetChanged();
-        } else {
-            updateServer(row);
         }
+        adapter.notifyDataSetChanged();
     }
 
-    private void updateServer(ServerInfoRow info) {
-        if (info.view() != null) {
-            ServerListAdapter.fillView(info.view(), info);
-        }
+    private void updateServer(ServerInfo info) {
         adapter.notifyDataSetChanged();
     }
 
@@ -206,12 +208,11 @@ final class ServerTable {
 
     private final Handler handler = new Handler () {
         public void handleMessage(Message m) {
-            Ponder.logger().info("Received message no. " + m.what);
             switch (m.what) {
-            case ADD_MSG: addServer((ServerInfoRow)m.obj); break;
+            case ADD_MSG: addServer((PoolServer)m.obj); break;
             case DEL_MSG: delServer((PoolServer)m.obj); break;
-            case UPD_MSG: updateServer((ServerInfoRow)m.obj); break;
-            case CHK_MSG: onCheckServer((ServerInfoRow)m.obj); break;
+            case UPD_MSG: updateServer((ServerInfo)m.obj); break;
+            case CHK_MSG: onCheckServer((ServerInfo)m.obj); break;
             default:
                 Ponder.logger().warning(
                     "Unexpected message to ServerTable: " + m.what);
@@ -220,8 +221,7 @@ final class ServerTable {
         }
     };
 
-    private final ConcurrentHashMap<String, ServerInfoRow> infos;
-    private final Set<ServerInfoRow> localInfos;
+    private final Set<ServerInfo> localInfos;
     private final PoolServerCache servers;
     private final ServerListAdapter adapter;
     private final MulticastLock mcLock;

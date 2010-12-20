@@ -2,6 +2,8 @@
 
 package com.oblong.android.ponder;
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.logging.Logger;
 
 import android.app.ListActivity;
@@ -16,48 +18,25 @@ import android.widget.TextView;
 
 import com.oblong.jelly.PoolServer;
 
-final class ServerInfoRow {
+final class ServerListAdapter extends ArrayAdapter<ServerInfo>
+    implements Iterable<ServerInfo> {
 
-    ServerInfoRow(PoolServer s) {
-        this(s, s.qualifiedName());
-    }
-
-    ServerInfoRow(PoolServer s, String n) {
-        info = new ServerInfo(s, n);
-        view = null;
-    }
-
-    @Override public boolean equals(Object o) {
-        if (!(o instanceof ServerInfoRow)) return false;
-        return info.equals(((ServerInfoRow)o).info);
-    }
-
-    ServerInfo info() { return info; }
-
-    View view() { return view; }
-    void view(View v) { view = v; }
-
-    String key() { return info.server().qualifiedName(); }
-
-    void updatePoolNumber(final Handler hdl, final int msg) {
-        new Thread (new Runnable () {
-                @Override public void run() {
-                    info.updatePools();
-                    hdl.sendMessage(Message.obtain(hdl,
-                                                   msg,
-                                                   ServerInfoRow.this));
-                }
-            }).start();
-    }
-
-    private final ServerInfo info;
-    private volatile View view;
-}
-
-final class ServerListAdapter extends ArrayAdapter<ServerInfoRow> {
-
-    ServerListAdapter(ListActivity parent) {
-        super(parent, R.layout.server_item, R.id.server_name);
+    @Override public Iterator<ServerInfo> iterator() {
+        class SIterator implements Iterator<ServerInfo> {
+            public SIterator(ServerListAdapter a) { adapter = a; }
+            public boolean hasNext() { return n < adapter.getCount(); }
+            public ServerInfo next() {
+                if (n >= adapter.getCount())
+                    throw new NoSuchElementException();
+                return adapter.getItem(n++);
+            }
+            public void remove() {
+                adapter.remove(adapter.getItem(n));
+            }
+            private int n = 0;
+            private final ServerListAdapter adapter;
+        };
+        return new SIterator(this);
     }
 
     @Override public View getView(int n, View v, ViewGroup g) {
@@ -71,18 +50,28 @@ final class ServerListAdapter extends ArrayAdapter<ServerInfoRow> {
         return v;
     }
 
-    static void fillView(View v, ServerInfoRow i) {
-        final String st = i.info().server().subtype();
-        final String name = String.format("%s (%s)",
-                                          i.info().server().name(),
+    ServerListAdapter(ListActivity parent) {
+        super(parent, R.layout.server_item, R.id.server_name);
+    }
+
+    boolean contains(ServerInfo i) { return getPosition(i) >= 0; }
+
+    ServerInfo getItem(PoolServer s) {
+        for (int i = 0, c = getCount(); i < c; ++i)
+            if (getItem(i).server().equals(s)) return getItem(i);
+        return null;
+    }
+
+    static void fillView(View v, ServerInfo i) {
+        final String st = i.server().subtype();
+        final String name = String.format("%s (%s)", i.name(),
                                           st.length() == 0 ? "generic" : st);
         ((TextView)v.findViewById(R.id.server_name)).setText(name);
         final TextView pcv = (TextView)v.findViewById(R.id.pool_count);
-        if (i.info().connectionError()) {
+        if (i.connectionError()) {
             pcv.setError("Error connecting to the pool");
         } else {
-            pcv.setText(i.info().poolNumberStr());
+            pcv.setText(i.poolNumberStr());
         }
-        i.view(v);
     }
 }

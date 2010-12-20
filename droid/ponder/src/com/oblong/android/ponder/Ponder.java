@@ -92,7 +92,7 @@ public final class Ponder extends ListActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.server_context, menu);
         final int pos = ((AdapterContextMenuInfo)menuInfo).position;
-        final String title = table.getItem(pos).info().server().name();
+        final String title = table.getItem(pos).server().name();
         if (title != null) menu.setHeaderTitle(title);
     }
 
@@ -117,11 +117,11 @@ public final class Ponder extends ListActivity {
     }
 
     void registerServer(PoolServer server, String name) {
-        table.registerServer(new ServerInfoRow(server, name));
+        table.registerServer(new ServerInfo(server, name));
     }
 
     private void launchServerDetails(int position) {
-        ServerDetails.launch(this, table.getItem(position).info());
+        ServerDetails.launch(this, table.getItem(position));
     }
 
     private void setUpListView() {

@@ -5,6 +5,9 @@ package com.oblong.android.ponder;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import android.os.Handler;
+import android.os.Message;
+
 import com.oblong.jelly.PoolServer;
 
 final class ServerInfo {
@@ -22,7 +25,7 @@ final class ServerInfo {
 
     @Override public boolean equals(Object o) {
         if (!(o instanceof ServerInfo)) return false;
-        return name.equals(((ServerInfo)o).name);
+        return server.equals(((ServerInfo)o).server);
     }
 
     void updatePools () {
@@ -34,6 +37,15 @@ final class ServerInfo {
                 "Error connection to server: " + e.getMessage());
             poolNumber = CON_ERR;
         }
+    }
+
+    void updatePoolNumber(final Handler hd, final int msg) {
+        new Thread (new Runnable () {
+                @Override public void run() {
+                    updatePools();
+                    hd.sendMessage(Message.obtain(hd, msg, ServerInfo.this));
+                }
+            }).start();
     }
 
     String name() { return name; }
