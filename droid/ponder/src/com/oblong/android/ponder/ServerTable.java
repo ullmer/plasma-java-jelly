@@ -64,7 +64,7 @@ final class ServerTable {
     void registerServer(ServerInfo info) {
         int k = 1;
         info.clearPools();
-        adapter.add(info);
+        adapter.insert(info, 0);
         adapter.notifyDataSetChanged();
         checkInfo(info);
     }

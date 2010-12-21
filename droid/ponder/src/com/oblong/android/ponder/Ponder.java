@@ -159,10 +159,11 @@ public final class Ponder extends ListActivity {
 
     private ServerTable setupServerTable() {
         preferences = getSharedPreferences(PREFS_FILE, 0);
-        final ServerTable t = new ServerTable(this);
+        final ServerTable tbl = new ServerTable(this);
         final List<ServerInfo> infs = Serializer.readServers(preferences);
-        for (ServerInfo i : infs) t.registerServer(i);
-        return t;
+        for (int i = infs.size() - 1; i >= 0; --i)
+            tbl.registerServer(infs.get(i));
+        return tbl;
     }
 
     private ServerTable table;
