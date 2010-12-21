@@ -13,14 +13,15 @@ import com.oblong.jelly.PoolServer;
 final class ServerInfo {
 
     ServerInfo(PoolServer s) {
-        this(s, s.name());
+        this(s, s.name(), false);
     }
 
-    ServerInfo(PoolServer s, String n) {
+    ServerInfo(PoolServer s, String n, boolean udef) {
         server = s;
         name = n;
         poolNumber = UNINITIALIZED;
         pools = null;
+        user = udef;
     }
 
     @Override public boolean equals(Object o) {
@@ -68,6 +69,8 @@ final class ServerInfo {
 
     boolean connectionError() { return poolNumber == CON_ERR; }
 
+    boolean userDefined() { return user; }
+
     void clearPools() { poolNumber = UNINITIALIZED; }
 
     void nextName(int n) { name = name + " #" + n; }
@@ -79,5 +82,6 @@ final class ServerInfo {
     private volatile Set<String> pools;
     private volatile int poolNumber;
     private volatile String name;
+    private final boolean user;
 }
 

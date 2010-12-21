@@ -101,7 +101,7 @@ public final class Ponder extends ListActivity {
             (AdapterContextMenuInfo) item.getMenuInfo();
         switch (item.getItemId()) {
         case R.id.delete_server:
-            table.delServer(info.position);
+            table.removeServer(info.position, true);
             return true;
         case R.id.refresh_server:
             table.refreshServer(info.position);
@@ -117,7 +117,7 @@ public final class Ponder extends ListActivity {
     }
 
     void registerServer(PoolServer server, String name) {
-        table.registerServer(new ServerInfo(server, name));
+        table.registerServer(new ServerInfo(server, name, true));
     }
 
     private void launchServerDetails(int position) {

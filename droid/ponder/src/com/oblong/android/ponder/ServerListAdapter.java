@@ -63,9 +63,9 @@ final class ServerListAdapter extends ArrayAdapter<ServerInfo>
     }
 
     static void fillView(View v, ServerInfo i) {
-        final String st = i.server().subtype();
-        final String name = String.format("%s (%s)", i.name(),
-                                          st.length() == 0 ? "generic" : st);
+        final String st = i.server().subtype().length() == 0 ?
+            "" : String.format(" (%s)", i.server().subtype());
+        final String name = String.format("%s%s", i.name(), st);
         ((TextView)v.findViewById(R.id.server_name)).setText(name);
         final TextView pcv = (TextView)v.findViewById(R.id.pool_count);
         if (i.connectionError()) {

@@ -27,7 +27,6 @@ import com.oblong.jelly.pool.net.TCPServerFactory;
 final class ServerTable {
 
     ServerTable(ListActivity la, WifiManager wifi) {
-        localInfos = new HashSet<ServerInfo>();
         servers = new PoolServerCache();
         adapter = new ServerListAdapter(la);
         la.setListAdapter(adapter);
@@ -46,13 +45,12 @@ final class ServerTable {
     }
 
     void rescan() {
-        final Thread th = new Thread (new Runnable () {
+        new Thread (new Runnable () {
                 @Override public void run() {
                     for (PoolServer s : PoolServers.remoteServers())
                         if (!servers.contains(s)) notifyNewServer(s);
                 }
-            });
-        th.start();
+            }).start();
     }
 
     void reset() {
@@ -71,14 +69,13 @@ final class ServerTable {
     }
 
     void deleteUnreachable() {
-        for (ServerInfo i : adapter) if (i.connectionError()) delServer(i);
+        for (ServerInfo i : adapter)
+            if (i.connectionError()) removeServer(i, true);
     }
 
     void registerServer(ServerInfo info) {
         int k = 1;
         info.clearPools();
-        while (localInfos.contains(info)) info.nextName(k++);
-        localInfos.add(info);
         adapter.add(info);
         adapter.notifyDataSetChanged();
         checkInfo(info);
@@ -93,17 +90,8 @@ final class ServerTable {
         }
     }
 
-    void delServer(int position) {
-        delServer(adapter.getItem(position));
-    }
-
-    void delServer(ServerInfo info) {
-        if (info != null) {
-            localInfos.remove(info);
-            servers.remove(info.server());
-            adapter.remove(info);
-            adapter.notifyDataSetChanged();
-        }
+    void removeServer(int position, boolean force) {
+        removeServer(adapter.getItem(position), force);
     }
 
     ServerInfo getItem(int position) {
@@ -122,6 +110,16 @@ final class ServerTable {
 
     private static boolean isGeneric(PoolServer s) {
         return s.subtype().length() == 0;
+    }
+
+    private void removeServer(ServerInfo info, boolean force) {
+        if (info != null) {
+            servers.remove(info.server());
+            if (force || !info.userDefined()) {
+                adapter.remove(info);
+            }
+            adapter.notifyDataSetChanged();
+        }
     }
 
     private void updatePoolNumber(ServerInfo info) {
@@ -157,11 +155,9 @@ final class ServerTable {
             info.clearPools();
             adapter.notifyDataSetChanged();
             info.updatePoolNumber(handler, CHK_MSG);
-            if (!isGeneric(info.server()) && !localInfos.contains(info)) {
+            if (!isGeneric(info.server())) {
                 final PoolServer gs = servers.get(info.server().name(), "");
-                final ServerInfo gi = adapter.getItem(gs);
-                if (gi != null) adapter.remove(gi);
-                adapter.notifyDataSetChanged();
+                removeServer(adapter.getItem(gs), false);
             }
         }
     }
@@ -179,19 +175,16 @@ final class ServerTable {
         }
     }
 
-    private void delServer(PoolServer server) {
+    private void removeServer(PoolServer server) {
         checkInfo(adapter.getItem(server));
     }
 
     private void onCheckServer(ServerInfo info) {
-        if (info.connectionError() && !localInfos.contains(info)) {
+        if (info.connectionError() && !info.userDefined()) {
             for (PoolServer s :
                      servers.get(null, info.server().name(), null)) {
                 ServerInfo i = adapter.getItem(s);
-                if (i != null && i.connectionError()) {
-                    servers.remove(s);
-                    adapter.remove(i);
-                }
+                if (i != null && i.connectionError()) removeServer(i, false);
             }
         }
         adapter.notifyDataSetChanged();
@@ -210,7 +203,7 @@ final class ServerTable {
         public void handleMessage(Message m) {
             switch (m.what) {
             case ADD_MSG: addServer((PoolServer)m.obj); break;
-            case DEL_MSG: delServer((PoolServer)m.obj); break;
+            case DEL_MSG: removeServer((PoolServer)m.obj); break;
             case UPD_MSG: updateServer((ServerInfo)m.obj); break;
             case CHK_MSG: onCheckServer((ServerInfo)m.obj); break;
             default:
@@ -221,7 +214,6 @@ final class ServerTable {
         }
     };
 
-    private final Set<ServerInfo> localInfos;
     private final PoolServerCache servers;
     private final ServerListAdapter adapter;
     private final MulticastLock mcLock;
