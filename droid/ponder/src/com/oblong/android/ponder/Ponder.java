@@ -2,12 +2,16 @@
 
 package com.oblong.android.ponder;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 import android.app.ListActivity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.wifi.WifiManager;
+import android.net.wifi.WifiManager.MulticastLock;
 import android.os.Bundle;
+import android.text.format.Formatter;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
@@ -38,10 +42,8 @@ public final class Ponder extends ListActivity {
         super.onCreate(savedInstanceState);
 
         setUpListView();
-
-        final WifiManager wifi =
-            (WifiManager)getSystemService(Context.WIFI_SERVICE);
-        table = new ServerTable(this, wifi);
+        mcLock = setupMulticastLock();
+        table = setupServerTable();
 
         refreshToast = Toast.makeText(getApplicationContext(),
                                       "Scanning in progress...",
@@ -54,12 +56,14 @@ public final class Ponder extends ListActivity {
         super.onResume();
         final int MAX_VIEWS = 5;
         if (MAX_VIEWS < ++helpViews) getListView().removeFooterView(helpView);
-        table.activate();
+        mcLock.acquire();
+        table.rescan();
     }
 
     @Override public void onStop() {
         super.onStop();
-        table.deactivate();
+        mcLock.release();
+        Serializer.saveServers(preferences, table.registeredServers());
     }
 
     @Override public boolean onCreateOptionsMenu(Menu menu) {
@@ -116,6 +120,8 @@ public final class Ponder extends ListActivity {
         }
     }
 
+    static final String PREFS_FILE = "Ponder.preferences";
+
     void registerServer(PoolServer server, String name) {
         table.registerServer(new ServerInfo(server, name, true));
     }
@@ -139,9 +145,31 @@ public final class Ponder extends ListActivity {
             });
     }
 
+    private MulticastLock setupMulticastLock () {
+        final WifiManager wifiMngr =
+            (WifiManager)getSystemService(Context.WIFI_SERVICE);
+        final int address = wifiMngr.getDhcpInfo().ipAddress;
+        System.setProperty("net.mdns.interface",
+                           Formatter.formatIpAddress(address));
+        MulticastLock lk = wifiMngr.createMulticastLock("_ponder-lock");
+        lk.setReferenceCounted(false);
+        lk.acquire();
+        return lk;
+    }
+
+    private ServerTable setupServerTable() {
+        preferences = getSharedPreferences(PREFS_FILE, 0);
+        final ServerTable t = new ServerTable(this);
+        final List<ServerInfo> infs = Serializer.readServers(preferences);
+        for (ServerInfo i : infs) t.registerServer(i);
+        return t;
+    }
+
     private ServerTable table;
     private ServerDialog serverDialog;
     private Toast refreshToast;
     private View helpView;
     private int helpViews = 0;
+    private MulticastLock mcLock;
+    private SharedPreferences preferences;
 }

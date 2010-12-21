@@ -2,16 +2,15 @@
 
 package com.oblong.android.ponder;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import android.app.ListActivity;
-import android.net.wifi.WifiManager;
-import android.net.wifi.WifiManager.MulticastLock;
 import android.os.Handler;
 import android.os.Message;
-import android.text.format.Formatter;
 
 import com.oblong.jelly.PoolServer;
 import com.oblong.jelly.PoolServers;
@@ -26,22 +25,11 @@ import com.oblong.jelly.pool.net.TCPServerFactory;
  */
 final class ServerTable {
 
-    ServerTable(ListActivity la, WifiManager wifi) {
+    ServerTable(ListActivity la) {
         servers = new PoolServerCache();
         adapter = new ServerListAdapter(la);
         la.setListAdapter(adapter);
-        wifiMngr = wifi;
-        mcLock = setupMulticastLock();
         setupListener();
-    }
-
-    void activate() {
-        mcLock.acquire();
-        rescan();
-    }
-
-    void deactivate() {
-        mcLock.release();
     }
 
     void rescan() {
@@ -81,6 +69,12 @@ final class ServerTable {
         checkInfo(info);
     }
 
+    List<ServerInfo> registeredServers() {
+        final List<ServerInfo> r = new ArrayList<ServerInfo>();
+        for (ServerInfo i : adapter) if (i.userDefined()) r.add(i);
+        return r;
+    }
+
     void refreshServer(int position) {
         final ServerInfo info = adapter.getItem(position);
         if (info != null) {
@@ -96,16 +90,6 @@ final class ServerTable {
 
     ServerInfo getItem(int position) {
         return adapter.getItem(position);
-    }
-
-    private MulticastLock setupMulticastLock () {
-        final int address = wifiMngr.getDhcpInfo().ipAddress;
-        System.setProperty("net.mdns.interface",
-                           Formatter.formatIpAddress(address));
-        MulticastLock lk = wifiMngr.createMulticastLock("_ponder-lock");
-        lk.setReferenceCounted(false);
-        lk.acquire();
-        return lk;
     }
 
     private static boolean isGeneric(PoolServer s) {
@@ -216,6 +200,4 @@ final class ServerTable {
 
     private final PoolServerCache servers;
     private final ServerListAdapter adapter;
-    private final MulticastLock mcLock;
-    private final WifiManager wifiMngr;
 }
