@@ -3,6 +3,8 @@
 package com.oblong.android.ponder;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import android.content.SharedPreferences;
@@ -18,12 +20,6 @@ import com.oblong.jelly.PoolServers;
  * @author jao
  */
 final class Serializer {
-
-    static class Bmk {
-        ServerInfo info;
-        String pool;
-        Bmk(ServerInfo i, String p) { info = i; pool = p; }
-    }
 
     static List<ServerInfo> readServers(SharedPreferences prefs) {
         final List<ServerInfo> result = new ArrayList<ServerInfo>();
@@ -45,18 +41,19 @@ final class Serializer {
         ed.commit();
     }
 
-    static List<Bmk> readBookmarks(SharedPreferences prefs) {
-        final List<Bmk> result = new ArrayList<Bmk>();
+    static List<Bookmark> readBookmarks(SharedPreferences prefs) {
+        final List<Bookmark> result = new ArrayList<Bookmark>();
         final int no = prefs.getInt(noKey(K_POL), 0);
         for (int i = 0; i < no; ++i) {
             final ServerInfo s = readServer(prefs, K_POL, i);
             final String p = prefs.getString(poolNameKey(K_POL, i), null);
-            if (s != null && p != null) result.add(new Bmk(s, p));
+            if (s != null) result.add(new Bookmark(s, p));
         }
+        Collections.sort(result, CMP);
         return result;
     }
 
-    static void saveBookmarks(SharedPreferences prefs, List<Bmk> bmk) {
+    static void saveBookmarks(SharedPreferences prefs, List<Bookmark> bmk) {
         SharedPreferences.Editor ed = prefs.edit();
         final int oldSize = prefs.getInt(noKey(K_POL), 0);
         final int newSize = bmk.size();
@@ -70,6 +67,15 @@ final class Serializer {
             ed.remove(poolNameKey(K_POL, i));
         }
         ed.commit();
+    }
+
+    static boolean addBookmark(SharedPreferences prefs, Bookmark bmk) {
+        List<Bookmark> bmks = readBookmarks(prefs);
+        for (int i = 0, c = bmks.size(); i < c; ++i)
+            if (bmks.get(i).equals(bmk)) return false;
+        bmks.add(bmk);
+        saveBookmarks(prefs, bmks);
+        return true;
     }
 
     private static ServerInfo readServer(
@@ -117,6 +123,18 @@ final class Serializer {
 
     private static final String K_SRV = "servers";
     private static final String K_POL = "pools";
+
+    private static final Comparator<Bookmark> CMP =
+        new Comparator<Bookmark>() {
+          public int compare(Bookmark b0, Bookmark b1) {
+              if (b0.pool == null && b1.pool == null)
+                  return b0.info.name().compareTo(b1.info.name());
+              if (b0.pool == null) return 1;
+              if (b1.pool == null) return -1;
+              int r = b0.pool.compareTo(b1.pool);
+              return r == 0 ? b0.info.name().compareTo(b1.info.name()) : r;
+          }
+    };
 
     private Serializer() {}
 }

@@ -62,7 +62,7 @@ final class ServerListAdapter extends ArrayAdapter<ServerInfo>
         return null;
     }
 
-    static void fillView(View v, ServerInfo i) {
+    private static void fillView(View v, ServerInfo i) {
         final String st = i.server().subtype().length() == 0 ?
             "" : String.format(" (%s)", i.server().subtype());
         final String name = String.format("%s%s", i.name(), st);

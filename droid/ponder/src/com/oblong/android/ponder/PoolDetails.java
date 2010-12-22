@@ -69,18 +69,28 @@ public class PoolDetails extends PonderActivity
     @Override public void onStart() {
         super.onStart();
         name.setText(poolAddress.poolName());
-        try {
-            final PoolCursor cursor = PoolInfo.get(poolAddress).cursor();
-            if (adapter.getCursor() != cursor) adapter.changeCursor(cursor);
-            if (cursor != null && proteinsTitle != null) {
-                proteinsTitle.setText(
-                    Utils.formatNumber(cursor.getCount(), "protein"));
-            }
-        } catch (PoolException e) {
-            if (proteinsTitle != null) {
-                proteinsTitle.setError("Error connecting to pool " + e);
-            }
-        }
+        final Task task = new Task() {
+                public Object run() throws PoolException {
+                    final PoolCursor cursor =
+                        PoolInfo.get(poolAddress).cursor();
+                    cursor.prepareForAdapter();
+                    return cursor;
+                }
+            };
+        final Acceptor hdl = new Acceptor() {
+                public void accept(Object o) { accept((PoolCursor)o); }
+                private void accept(PoolCursor cursor) {
+                    if (adapter.getCursor() != cursor)
+                        adapter.changeCursor(cursor);
+                    if (cursor != null && proteinsTitle != null) {
+                        proteinsTitle.setText(
+                            Utils.formatNumber(cursor.getCount(), "protein"));
+                    }
+                }
+            };
+        final String msg = String.format("Connecting to '%s' ...",
+                                         poolAddress.poolName());
+        launchAsyncTask(task, hdl, msg);
     }
 
     @Override public boolean onCreateOptionsMenu(Menu menu) {

@@ -116,8 +116,6 @@ public final class Ponder extends ListActivity {
         case R.id.show_server:
             launchServerDetails(info.position);
             return true;
-        case R.id.close_menu:
-            return true;
         default:
             return super.onContextItemSelected(item);
         }

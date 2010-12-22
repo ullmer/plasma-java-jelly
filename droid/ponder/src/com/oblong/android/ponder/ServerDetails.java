@@ -107,24 +107,13 @@ public final class ServerDetails
     private void showPoolDetails(int pos) {
         if (pos < 1) return;
         final String pool = table.getPool(pos - 1);
-        final String msg = String.format("Connecting to '%s' ...", pool);
-        final Task task = new Task () {
-                public Object run() throws PoolException {
-                    final PoolAddress address =
-                        new PoolAddress(serverInfo.server().address(), pool);
-                    final PoolCursor c = PoolInfo.get(address).cursor();
-                    c.prepareForAdapter();
-                    return address;
-                }
-            };
-        final Acceptor handler = new Acceptor () {
-                public void accept(Object a) {
-                    PoolDetails.launch(ServerDetails.this,
-                                       serverInfo,
-                                       (PoolAddress)a);
-                }
-            };
-        launchAsyncTask(task, handler, msg);
+        try {
+            final PoolAddress address =
+                new PoolAddress(serverInfo.server().address(), pool);
+            PoolDetails.launch(ServerDetails.this, serverInfo, address);
+        } catch (PoolException e) {
+            showError(e);
+        }
     }
 
     private void refresh() {

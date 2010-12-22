@@ -9,6 +9,4 @@
     <item android:id="@+id/show_server"
           android:title="Show server details"
           android:titleCondensed="Show server" />
-    <item android:id="@+id/close_menu"
-          android:title="Cancel" />
 </menu>
