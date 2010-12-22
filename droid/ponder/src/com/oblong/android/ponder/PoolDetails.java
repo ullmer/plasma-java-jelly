@@ -7,6 +7,9 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
@@ -28,9 +31,12 @@ import com.oblong.jelly.ProteinMetadata;
 public class PoolDetails extends PonderActivity
     implements AdapterView.OnItemClickListener {
 
-    static void launch(Activity launcher, PoolAddress address) {
+    static void launch(Activity launcher,
+                       ServerInfo info,
+                       PoolAddress address) {
         final Intent intent = new Intent(launcher, PoolDetails.class);
         poolAddress = address;
+        serverInfo = info;
         launcher.startActivity(intent);
     }
 
@@ -74,6 +80,25 @@ public class PoolDetails extends PonderActivity
             if (proteinsTitle != null) {
                 proteinsTitle.setError("Error connecting to pool " + e);
             }
+        }
+    }
+
+    @Override public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.pool_details, menu);
+        return true;
+    }
+
+    @Override public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+        case R.id.bookmark:
+            Bookmarks.add(this, serverInfo, poolAddress.poolName());
+            return true;
+        case R.id.goto_bookmarks:
+            Bookmarks.launch(this);
+            return true;
+        default:
+            return super.onOptionsItemSelected(item);
         }
     }
 
@@ -123,6 +148,7 @@ public class PoolDetails extends PonderActivity
         launchAsyncTask(task, handler, m);
     }
 
+    private static ServerInfo serverInfo;
     private static PoolAddress poolAddress;
 
     private static final String[] COLUMNS = {

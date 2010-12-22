@@ -65,7 +65,7 @@ public final class ServerDetails
 
     @Override public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.pool_list, menu);
+        inflater.inflate(R.menu.server_details, menu);
         return true;
     }
 
@@ -76,6 +76,12 @@ public final class ServerDetails
             return true;
         case R.id.details:
             displayInfo();
+            return true;
+        case R.id.bookmark:
+            Bookmarks.add(this, serverInfo);
+            return true;
+        case R.id.goto_bookmarks:
+            Bookmarks.launch(this);
             return true;
         default:
             return super.onOptionsItemSelected(item);
@@ -114,6 +120,7 @@ public final class ServerDetails
         final Acceptor handler = new Acceptor () {
                 public void accept(Object a) {
                     PoolDetails.launch(ServerDetails.this,
+                                       serverInfo,
                                        (PoolAddress)a);
                 }
             };

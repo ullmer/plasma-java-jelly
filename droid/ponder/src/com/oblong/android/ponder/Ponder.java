@@ -84,6 +84,9 @@ public final class Ponder extends ListActivity {
         case R.id.cleanup:
             table.deleteUnreachable();
             return true;
+        case R.id.goto_bookmarks:
+            Bookmarks.launch(this);
+            return true;
         default:
             return super.onOptionsItemSelected(item);
         }

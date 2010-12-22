@@ -9,4 +9,8 @@
     <item android:id="@+id/cleanup"
           android:icon="@drawable/ic_menu_delete"
           android:title="Remove unreachable" />
+    <item android:id="@+id/goto_bookmarks"
+          android:icon="@drawable/ic_menu_bookmark"
+          android:titleCondensed="Bookmarks"
+          android:title="Go to Bookmarks" />
 </menu>

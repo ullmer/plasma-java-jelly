@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/bookmark"
+          android:icon="@drawable/ic_menu_favorite"
+          android:titleCondensed="Bookmark"
+          android:title="Add to bookmarks" />
+    <item android:id="@+id/goto_bookmarks"
+          android:icon="@drawable/ic_menu_bookmark"
+          android:titleCondensed="Bookmarks"
+          android:title="Go to Bookmarks" />
+</menu>

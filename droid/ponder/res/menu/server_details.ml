@@ -8,4 +8,12 @@
           android:icon="@drawable/ic_menu_info_details"
           android:titleCondensed="Details"
           android:title="Server details" />
+    <item android:id="@+id/bookmark"
+          android:icon="@drawable/ic_menu_favorite"
+          android:titleCondensed="Bookmark"
+          android:title="Add to bookmarks" />
+    <item android:id="@+id/goto_bookmarks"
+          android:icon="@drawable/ic_menu_bookmark"
+          android:titleCondensed="Bookmarks"
+          android:title="Go to Bookmarks" />
 </menu>
