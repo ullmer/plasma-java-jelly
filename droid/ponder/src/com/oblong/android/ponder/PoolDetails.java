@@ -69,28 +69,7 @@ public class PoolDetails extends PonderActivity
     @Override public void onStart() {
         super.onStart();
         name.setText(poolAddress.poolName());
-        final Task task = new Task() {
-                public Object run() throws PoolException {
-                    final PoolCursor cursor =
-                        PoolInfo.get(poolAddress).cursor();
-                    cursor.prepareForAdapter();
-                    return cursor;
-                }
-            };
-        final Acceptor hdl = new Acceptor() {
-                public void accept(Object o) { accept((PoolCursor)o); }
-                private void accept(PoolCursor cursor) {
-                    if (adapter.getCursor() != cursor)
-                        adapter.changeCursor(cursor);
-                    if (cursor != null && proteinsTitle != null) {
-                        proteinsTitle.setText(
-                            Utils.formatNumber(cursor.getCount(), "protein"));
-                    }
-                }
-            };
-        final String msg = String.format("Connecting to '%s' ...",
-                                         poolAddress.poolName());
-        launchAsyncTask(task, hdl, msg);
+        refresh();
     }
 
     @Override public boolean onCreateOptionsMenu(Menu menu) {
@@ -101,6 +80,9 @@ public class PoolDetails extends PonderActivity
 
     @Override public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+        case R.id.refresh:
+            refresh();
+            return true;
         case R.id.bookmark:
             Bookmarks.add(this, serverInfo, poolAddress.poolName());
             return true;
@@ -156,6 +138,31 @@ public class PoolDetails extends PonderActivity
             };
         final String m = String.format("Retrieving protein no. %d ...", idx);
         launchAsyncTask(task, handler, m);
+    }
+
+    private void refresh() {
+        final Task task = new Task() {
+                public Object run() throws PoolException {
+                    final PoolCursor cursor =
+                        PoolInfo.get(poolAddress).cursor();
+                    cursor.prepareForAdapter();
+                    return cursor;
+                }
+            };
+        final Acceptor hdl = new Acceptor() {
+                public void accept(Object o) { accept((PoolCursor)o); }
+                private void accept(PoolCursor cursor) {
+                    if (adapter.getCursor() != cursor)
+                        adapter.changeCursor(cursor);
+                    if (cursor != null && proteinsTitle != null) {
+                        proteinsTitle.setText(
+                            Utils.formatNumber(cursor.getCount(), "protein"));
+                    }
+                }
+            };
+        final String msg = String.format("Connecting to '%s' ...",
+                                         poolAddress.poolName());
+        launchAsyncTask(task, hdl, msg);
     }
 
     private static ServerInfo serverInfo;
