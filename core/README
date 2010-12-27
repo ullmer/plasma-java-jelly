@@ -21,7 +21,6 @@ other packages found under it are implementation details.
 *** Run time
 
     - snakeyaml 1.7: YAML parsing.
-    - jmdns 3.2.1: Zeroconf.
 
 *** Compile time
 
