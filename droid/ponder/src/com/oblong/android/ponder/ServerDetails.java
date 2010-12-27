@@ -66,6 +66,7 @@ public final class ServerDetails
     @Override public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.server_details, menu);
+        Bookmarks.prepareMenu(this, menu, serverInfo, null);
         return true;
     }
 
@@ -78,7 +79,7 @@ public final class ServerDetails
             displayInfo();
             return true;
         case R.id.bookmark:
-            Bookmarks.add(this, serverInfo);
+            Bookmarks.toggle(this, item, serverInfo, null);
             return true;
         case R.id.goto_bookmarks:
             Bookmarks.launch(this);

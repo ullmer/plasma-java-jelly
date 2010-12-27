@@ -49,12 +49,9 @@ final class BookmarkListAdapter extends ArrayAdapter<Bookmark> {
 
     private static void fillView(View v, Bookmark bmk) {
         final String name = bmk.isPool() ? bmk.pool : bmk.info.name();
-        final String prefix = bmk.isPool()
-            ? bmk.info.name()
-            : (bmk.info.server().subtype().length() == 0 ?
-               "(generic)" : bmk.info.server().subtype());
+        final String prefix = bmk.isPool() ? bmk.info.name() + " - " : "";
         final String details =
-            String.format("%s - %s:%d",
+            String.format("%s%s:%d",
                           prefix,
                           bmk.info.server().address().host(),
                           bmk.info.server().address().port());

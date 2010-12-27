@@ -69,6 +69,10 @@ final class Serializer {
         ed.commit();
     }
 
+    static boolean find(SharedPreferences prefs, Bookmark bmk) {
+        return readBookmarks(prefs).contains(bmk);
+    }
+
     static boolean addBookmark(SharedPreferences prefs, Bookmark bmk) {
         List<Bookmark> bmks = readBookmarks(prefs);
         for (int i = 0, c = bmks.size(); i < c; ++i)
@@ -76,6 +80,13 @@ final class Serializer {
         bmks.add(bmk);
         saveBookmarks(prefs, bmks);
         return true;
+    }
+
+    static boolean toggleBookmark(SharedPreferences prefs, Bookmark bmk) {
+        List<Bookmark> bmks = readBookmarks(prefs);
+        if (bmks.contains(bmk)) bmks.remove(bmk); else bmks.add(bmk);
+        saveBookmarks(prefs, bmks);
+        return bmks.contains(bmk);
     }
 
     private static ServerInfo readServer(

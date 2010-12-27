@@ -75,6 +75,7 @@ public class PoolDetails extends PonderActivity
     @Override public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.pool_details, menu);
+        Bookmarks.prepareMenu(this, menu, serverInfo, poolAddress.poolName());
         return true;
     }
 
@@ -84,7 +85,7 @@ public class PoolDetails extends PonderActivity
             refresh();
             return true;
         case R.id.bookmark:
-            Bookmarks.add(this, serverInfo, poolAddress.poolName());
+            Bookmarks.toggle(this, item, serverInfo, poolAddress.poolName());
             return true;
         case R.id.goto_bookmarks:
             Bookmarks.launch(this);

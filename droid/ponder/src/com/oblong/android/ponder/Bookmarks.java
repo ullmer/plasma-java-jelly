@@ -11,14 +11,14 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ListView;
 import android.widget.Toast;
-
 import com.oblong.jelly.PoolAddress;
 
 /**
@@ -45,6 +45,21 @@ public final class Bookmarks extends ListActivity {
                        Toast.LENGTH_LONG).show();
     }
 
+    static void prepareMenu(Activity a, Menu m, ServerInfo i, String n) {
+        final SharedPreferences p = a.getSharedPreferences(BMK_FILE, 0);
+        final boolean hasIt = Serializer.find(p, new Bookmark(i, n));
+        setUpMenuItem(m.findItem(R.id.bookmark), hasIt);
+    }
+
+    static void toggle(Activity a, MenuItem item, ServerInfo i, String n) {
+        final SharedPreferences p = a.getSharedPreferences(BMK_FILE, 0);
+        final boolean h = Serializer.toggleBookmark(p, new Bookmark(i, n));
+        setUpMenuItem(item, h);
+        Toast.makeText(a.getApplicationContext(),
+                       h ? "Bookmark added" : "Bookmark deleted",
+                       Toast.LENGTH_LONG).show();
+    }
+
     @Override public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setupListView();
@@ -63,8 +78,11 @@ public final class Bookmarks extends ListActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.bookmark_context, menu);
         final int pos = ((AdapterContextMenuInfo)menuInfo).position;
-        // final String title = table.getItem(pos).server().name();
-        // if (title != null) menu.setHeaderTitle(title);
+        final Bookmark bmk = adapter.getItem(pos);
+        if (bmk != null) {
+            final String title = bmk.isPool() ? bmk.pool : bmk.info.name();
+            if (title != null) menu.setHeaderTitle(title);
+        }
     }
 
     @Override public boolean onContextItemSelected(MenuItem item) {
@@ -83,6 +101,14 @@ public final class Bookmarks extends ListActivity {
         default:
             return super.onContextItemSelected(item);
         }
+    }
+
+    private static void setUpMenuItem(MenuItem item, boolean hasIt) {
+        item.setIcon(hasIt
+                     ? R.drawable.ic_menu_favorite_remove
+                     : R.drawable.ic_menu_favorite_add);
+        item.setTitle(hasIt ? "Forget bookmark" : "Bookmark this item");
+        item.setTitleCondensed(hasIt ? "Forget" : "Bookmark");
     }
 
     private void openBookmark(int pos) {
