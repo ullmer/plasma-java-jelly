@@ -33,18 +33,6 @@ public final class Bookmarks extends ListActivity {
         launcher.startActivity(new Intent(launcher, Bookmarks.class));
     }
 
-    static void add(Activity adder, ServerInfo info) {
-        add(adder, info, null);
-    }
-
-    static void add(Activity adder, ServerInfo info, String name) {
-        final SharedPreferences p = adder.getSharedPreferences(BMK_FILE, 0);
-        if (p != null) Serializer.addBookmark(p, new Bookmark(info, name));
-        Toast.makeText(adder.getApplicationContext(),
-                       "Bookmark added",
-                       Toast.LENGTH_LONG).show();
-    }
-
     static void prepareMenu(Activity a, Menu m, ServerInfo i, String n) {
         final SharedPreferences p = a.getSharedPreferences(BMK_FILE, 0);
         final boolean hasIt = Serializer.find(p, new Bookmark(i, n));
@@ -90,9 +78,9 @@ public final class Bookmarks extends ListActivity {
             (AdapterContextMenuInfo) item.getMenuInfo();
         switch (item.getItemId()) {
         case R.id.delete_bmk:
-            adapter.remove(adapter.getItem(info.position));
-            Serializer.saveBookmarks(preferences,
-                                     Serializer.readBookmarks(preferences));
+            final Bookmark bmk = adapter.getItem(info.position);
+            adapter.remove(bmk);
+            Serializer.toggleBookmark(preferences, bmk);
             adapter.notifyDataSetChanged();
             return true;
         case R.id.open_bmk:
