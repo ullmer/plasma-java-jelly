@@ -701,6 +701,15 @@ public abstract class Slaw implements Iterable<Slaw> {
     public static Slaw map(Slaw... kvs) { return factory.map(kvs); }
 
     /**
+     * A factory method constructing a Slaw with ilk {@link SlawIlk#MAP}
+     * from a a explicit list of slawx. The arguments are interpreted
+     * as alternating keys and values. If any of the slawx in a
+     * key/value pair is null, the whole pair is skipped.  (The literal
+     * syntax does not seem to play nice with Clojure.)
+     */
+    public static Slaw map(List<Slaw> kvs) { return factory.map(kvs); }
+
+    /**
      * A factory method constructing a Slaw with ilk {@link
      * SlawIlk#LIST} from a native Java map. If any of the slawx in a
      * key/value pair is null, the whole pair is skipped. When
