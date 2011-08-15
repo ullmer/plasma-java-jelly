@@ -694,7 +694,7 @@ public abstract class Slaw implements Iterable<Slaw> {
 
     /**
      * A factory method constructing a Slaw with ilk {@link SlawIlk#MAP}
-     * from a a explicit list of slawx. The arguments are interpreted
+     * from an explicit list of slawx. The arguments are interpreted
      * as alternating keys and values. If any of the slawx in a
      * key/value pair is null, the whole pair is skipped.
      */
@@ -702,10 +702,9 @@ public abstract class Slaw implements Iterable<Slaw> {
 
     /**
      * A factory method constructing a Slaw with ilk {@link SlawIlk#MAP}
-     * from a a explicit list of slawx. The arguments are interpreted
+     * from a list of slawx. The arguments' elements are interpreted
      * as alternating keys and values. If any of the slawx in a
-     * key/value pair is null, the whole pair is skipped.  (The literal
-     * syntax does not seem to play nice with Clojure.)
+     * key/value pair is null, the whole pair is skipped.
      */
     public static Slaw map(List<Slaw> kvs) { return factory.map(kvs); }
 
