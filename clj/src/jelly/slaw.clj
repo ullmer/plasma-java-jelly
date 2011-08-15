@@ -2,8 +2,8 @@
   (:import (java.io FileOutputStream)
            (com.oblong.jelly Slaw Protein NumericIlk)
            (com.oblong.jelly.slaw.java SlawNil SlawBool SlawString SlawNumber
-				       SlawCons SlawComplex SlawList SlawMap
-				       SlawVector SlawArray)))
+                                       SlawCons SlawComplex SlawList SlawMap
+                                       SlawVector SlawArray)))
 
 ;; Slaw constructors
 (defmulti slaw (fn [& args] (into [] (map class args))))
