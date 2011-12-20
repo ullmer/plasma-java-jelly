@@ -3,7 +3,7 @@
   (:import (com.oblong.jelly Pool PoolAddress PoolServerAddress
                              PoolServer PoolServers PoolOptions)))
 
-(declare *current-server*)
+(declare ^:dynamic *current-server*)
 
 (defn get-server [svr]
   (cond (not svr) *current-server*
@@ -12,7 +12,7 @@
         (instance? PoolAddress svr) (PoolServers/get (.serverAddress svr))
         (instance? PoolServer svr) svr))
 
-(def *current-server* (get-server "tcp://localhost:65456"))
+(def ^:dynamic *current-server* (get-server "tcp://localhost:65456"))
 
 (defmacro with-server [s & body]
   `(binding [*current-server* (get-server ~s)]
@@ -73,12 +73,13 @@
   (seek-by .seekBy [hose offset])
   (deposit .deposit [hose prot])
   (current-protein .current [hose])
-  (nth-protein .nth [hose idx])
-  (previous-protein .previous [hose])
-  (next-protein .next [hose]))
+  (nth-protein .nth [hose idx]))
 
 (def pool-info (comp slaw-value raw-info))
 
-(defn next-matching [hose descrip] (.next hose (slaw descrip)))
+(defn into-array-o-slaw [& x] (into-array (map slaw x)))
 
-(defn previous-matching [hose descrip] (.previous hose (slaw descrip)))
+(defn next-matching [hose descrip] (.next hose (into-array-o-slaw descrip)))
+(defn previous-matching
+  "Seeks the previous descrip that matches the given slaw"
+  [hose descrip] (.previous hose (into-array-o-slaw descrip)))
