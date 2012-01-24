@@ -60,6 +60,8 @@
 (defmethod slaw [clojure.lang.PersistentList] [v] (Slaw/list (map slaw v)))
 (defmethod slaw [clojure.lang.PersistentList$EmptyList] [v] (Slaw/list '()))
 
+(defmethod slaw [clojure.lang.LazySeq] [v] (Slaw/list (doall (map slaw v))))
+
 (defmethod slaw [clojure.lang.PersistentVector] [v]
   (Slaw/array (map slaw v)))
 
