@@ -1,4 +1,4 @@
-(defproject jelly "0.1.4-SNAPSHOT"
+(defproject jelly "0.1.5-SNAPSHOT"
   :description "jelly's Clojure bindings and REPL"
 
   :dependencies [[org.clojure/clojure "1.3.0"]

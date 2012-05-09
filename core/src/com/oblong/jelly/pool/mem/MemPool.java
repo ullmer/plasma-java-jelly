@@ -9,6 +9,7 @@ import net.jcip.annotations.ThreadSafe;
 
 import com.oblong.jelly.Protein;
 import com.oblong.jelly.Slaw;
+import com.oblong.jelly.PoolOptions;
 import com.oblong.jelly.pool.PoolProtein;
 
 @ThreadSafe
@@ -18,9 +19,9 @@ final class MemPool {
         return pools.containsKey(name);
     }
 
-    static MemPool create(String name) {
+    static MemPool create(String name, PoolOptions opts) {
         if (exists(name)) return null;
-        final MemPool p = new MemPool(name);
+        final MemPool p = new MemPool(name, opts.poolSize());
         final MemPool old = pools.putIfAbsent(name, p);
         return old == null ? p : old;
     }
@@ -133,6 +134,9 @@ final class MemPool {
         synchronized (proteins) {
             final PoolProtein pp =
                 new PoolProtein(p, proteins.size(), stamp, null);
+            //  If we've hit the size limit, start dropping from the front
+            if (proteins.size() >= max_size)
+                proteins.remove(0);
             proteins.add(pp);
             proteins.notifyAll();
             return pp;
@@ -141,6 +145,12 @@ final class MemPool {
 
     private MemPool(String name) {
         this.name = name;
+        this.max_size = 10000000; //  10 MB default max pool size.  Arbitrary.
+    }
+
+    private MemPool(String name, long size) {
+        this.name = name;
+        this.max_size = size;
     }
 
     private PoolProtein findBack(int index, Slaw[] descrip) {
@@ -169,6 +179,7 @@ final class MemPool {
     private final String name;
     private final ArrayList<PoolProtein> proteins =
         new ArrayList<PoolProtein>();
+    private final long max_size;
 
     private static ConcurrentHashMap<String, MemPool> pools =
         new ConcurrentHashMap<String, MemPool>();

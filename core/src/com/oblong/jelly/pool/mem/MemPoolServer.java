@@ -26,7 +26,7 @@ final class MemPoolServer implements PoolServer {
 
     @Override public void create(String name, PoolOptions opts)
         throws PoolException {
-        if (MemPool.create(name) == null) throw new PoolExistsException(0);
+        if (MemPool.create(name, opts) == null) throw new PoolExistsException(0);
     }
 
     @Override public void dispose(String name) throws PoolException {
@@ -41,7 +41,7 @@ final class MemPoolServer implements PoolServer {
 
     @Override public Hose participate(String name, PoolOptions opts)
         throws PoolException {
-        MemPool.create(name);
+        MemPool.create(name, opts);
         return participate(name);
     }
 

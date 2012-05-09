@@ -13,6 +13,7 @@ import net.jcip.annotations.NotThreadSafe;
 import com.oblong.jelly.Hose;
 import com.oblong.jelly.NumericIlk;
 import com.oblong.jelly.PoolException;
+import com.oblong.jelly.PoolOptions;
 import com.oblong.jelly.PoolServer;
 import com.oblong.jelly.PoolServerAddress;
 import com.oblong.jelly.Protein;
@@ -90,7 +91,7 @@ final class MemPoolConnection implements NetConnection {
     private Slaw poolRequest(Request request, String poolName) {
         switch (request) {
         case CREATE:
-            MemPool p = MemPool.create(poolName);
+            MemPool p = MemPool.create(poolName, PoolOptions.MEDIUM);
             open = false;
             return makeResponse(p == null ? POOL_EXISTS : OK);
         case DISPOSE:
@@ -103,7 +104,7 @@ final class MemPoolConnection implements NetConnection {
             return makeResponse(open ? OK : NO_SUCH_POOL);
         case PARTICIPATE_C:
             pool = MemPool.exists(poolName) ?
-                MemPool.get(poolName) :  MemPool.create(poolName);
+                MemPool.get(poolName) :  MemPool.create(poolName, PoolOptions.MEDIUM);
             open = pool != null;
             return makeResponse(OK);
         default:
