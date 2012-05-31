@@ -35,15 +35,15 @@ final class PoolCursor implements Cursor {
         current = -1;
     }
 
-    @Override public short getShort(int n) {
+     public short getShort(int n) {
         return (short)getLong(n);
     }
 
-    @Override public int getInt(int n) {
+     public int getInt(int n) {
         return (int)getLong(n);
     }
 
-    @Override public long getLong(int n) {
+     public long getLong(int n) {
         final ProteinMetadata md = currentMeta();
         if (md == null) return 0;
         switch (n) {
@@ -61,15 +61,15 @@ final class PoolCursor implements Cursor {
         return 0;
     }
 
-    @Override public float getFloat(int n) {
+     public float getFloat(int n) {
         return (float)getDouble(n);
     }
 
-    @Override public double getDouble(int n) {
+     public double getDouble(int n) {
         return (n == 1) ? getTimestamp() : (double)getLong(n);
     }
 
-    @Override public String getString(int n) {
+     public String getString(int n) {
         final ProteinMetadata md = currentMeta();
         if (md == null) return null;
         switch (n) {
@@ -92,11 +92,11 @@ final class PoolCursor implements Cursor {
         return null;
     }
 
-    @Override public byte[] getBlob(int n) {
+     public byte[] getBlob(int n) {
         throw new UnsupportedOperationException("getBlob is not supported");
     }
 
-    @Override public void copyStringToBuffer(int n, CharArrayBuffer buffer) {
+     public void copyStringToBuffer(int n, CharArrayBuffer buffer) {
         String result = getString(n);
         if (result != null) {
             final char[] data = buffer.data;
@@ -109,16 +109,16 @@ final class PoolCursor implements Cursor {
         }
     }
 
-    @Override public void deactivate() {
+     public void deactivate() {
         close();
         for (DataSetObserver o : dataObservers) o.onInvalidated();
     }
 
-    @Override public boolean isNull(int n) {
+     public boolean isNull(int n) {
         return n < 0 || n >= COLUMNS.length;
     }
 
-    @Override public boolean requery() {
+     public boolean requery() {
         try {
             fetcher.requery();
         } catch (PoolException e) {
@@ -130,39 +130,39 @@ final class PoolCursor implements Cursor {
         return true;
     }
 
-    @Override public void close() {
+     public void close() {
         fetcher.close();
     }
 
-    @Override public boolean isClosed() {
+     public boolean isClosed() {
         return fetcher.isClosed();
     }
 
-    @Override public int getCount() {
+     public int getCount() {
         return fetcher.count();
     }
 
-    @Override public int getPosition() {
+     public int getPosition() {
         return current;
     }
 
-    @Override public boolean isFirst() {
+     public boolean isFirst() {
         return current == 0;
     }
 
-    @Override public boolean isLast() {
+     public boolean isLast() {
         return current == getCount() - 1;
     }
 
-    @Override public boolean isBeforeFirst() {
+     public boolean isBeforeFirst() {
         return current < 0;
     }
 
-    @Override public boolean isAfterLast() {
+     public boolean isAfterLast() {
         return current >= fetcher.count();
     }
 
-    @Override public boolean move(int offset) {
+     public boolean move(int offset) {
         int n = current + offset;
         final boolean result = n > -1 && n < getCount();
         if (!result) {
@@ -172,88 +172,88 @@ final class PoolCursor implements Cursor {
         return result;
     }
 
-    @Override public boolean moveToPosition(int n) {
+     public boolean moveToPosition(int n) {
         if (n < -1 || n > fetcher.count()) return false;
         current = n;
         return true;
     }
 
-    @Override public boolean moveToFirst() {
+     public boolean moveToFirst() {
         current = 0;
         return fetcher.count() > 0;
     }
 
-    @Override public boolean moveToLast() {
+     public boolean moveToLast() {
         current = fetcher.count() - 1;
         return fetcher.count() > 0;
     }
 
-    @Override public boolean moveToNext() {
+     public boolean moveToNext() {
         if (current == fetcher.count()) return false;
         ++current;
         return true;
     }
 
-    @Override public boolean moveToPrevious() {
+     public boolean moveToPrevious() {
         if (current < 0) return false;
         --current;
         return true;
     }
 
-    @Override public int getColumnIndex(String name) {
+     public int getColumnIndex(String name) {
         for (int i = 0; i < COLUMNS.length; ++i)
             if (COLUMNS[i].equals(name)) return i;
         return -1;
     }
 
-    @Override public int getColumnIndexOrThrow(String name)
+     public int getColumnIndexOrThrow(String name)
         throws IllegalArgumentException {
         final int col = getColumnIndex(name);
         if (col < 0) throw new IllegalArgumentException();
         return col;
     }
 
-    @Override public String getColumnName(int n) {
+     public String getColumnName(int n) {
         return (n < 0 || n >= COLUMNS.length) ? null : COLUMNS[n];
     }
 
-    @Override public String[] getColumnNames() {
+     public String[] getColumnNames() {
         return COLUMNS;
     }
 
-    @Override public int getColumnCount() {
+     public int getColumnCount() {
         return COLUMNS.length;
     }
 
-    @Override public void registerContentObserver(ContentObserver o) {
+     public void registerContentObserver(ContentObserver o) {
         contentObservers.add(o);
     }
 
-    @Override public void unregisterContentObserver(ContentObserver o) {
+     public void unregisterContentObserver(ContentObserver o) {
         contentObservers.remove(o);
     }
 
-    @Override public void registerDataSetObserver(DataSetObserver o) {
+     public void registerDataSetObserver(DataSetObserver o) {
         dataObservers.add(o);
     }
 
-    @Override public void unregisterDataSetObserver(DataSetObserver o) {
+     public void unregisterDataSetObserver(DataSetObserver o) {
         dataObservers.remove(o);
     }
 
-    @Override public void setNotificationUri(ContentResolver cr, Uri uri) {
+     public void setNotificationUri(ContentResolver cr, Uri uri) {
 
     }
 
-    @Override public boolean getWantsAllOnMoveCalls() {
+     public boolean getWantsAllOnMoveCalls() {
         return false;
     }
 
-    @Override public Bundle getExtras() {
+     public Bundle getExtras() {
         return Bundle.EMPTY;
     }
 
-    @Override public Bundle respond(Bundle bundle) {
+     public Bundle respond(Bundle bundle) {
         return Bundle.EMPTY;
     }
 

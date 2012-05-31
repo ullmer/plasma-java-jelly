@@ -21,7 +21,7 @@ import com.oblong.jelly.PoolServer;
 final class ServerListAdapter extends ArrayAdapter<ServerInfo>
     implements Iterable<ServerInfo> {
 
-    @Override public Iterator<ServerInfo> iterator() {
+     public Iterator<ServerInfo> iterator() {
         class SIterator implements Iterator<ServerInfo> {
             public SIterator(ServerListAdapter a) { adapter = a; }
             public boolean hasNext() { return n < adapter.getCount(); }
@@ -39,7 +39,7 @@ final class ServerListAdapter extends ArrayAdapter<ServerInfo>
         return new SIterator(this);
     }
 
-    @Override public View getView(int n, View v, ViewGroup g) {
+     public View getView(int n, View v, ViewGroup g) {
         if (v == null || v.getId() != R.layout.server_item) {
             final Context c = g.getContext();
             final LayoutInflater i = (LayoutInflater)

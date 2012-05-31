@@ -24,7 +24,7 @@ final class ServerInfo {
         user = udef;
     }
 
-    @Override public boolean equals(Object o) {
+     public boolean equals(Object o) {
         if (!(o instanceof ServerInfo)) return false;
         return server.equals(((ServerInfo)o).server);
     }
@@ -42,7 +42,7 @@ final class ServerInfo {
 
     void updatePoolNumber(final Handler hd, final int msg) {
         new Thread (new Runnable () {
-                @Override public void run() {
+                 public void run() {
                     updatePools();
                     hd.sendMessage(Message.obtain(hd, msg, ServerInfo.this));
                 }

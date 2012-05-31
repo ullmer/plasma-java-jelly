@@ -59,7 +59,7 @@ public class Sender extends Activity implements View.OnClickListener {
         ImageStore.clear();
     }
 
-    @Override public void onClick(View button) {
+    public void onClick(View button) {
         senderDialog.show();
     }
 

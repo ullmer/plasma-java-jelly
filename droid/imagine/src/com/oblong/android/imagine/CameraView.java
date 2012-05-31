@@ -21,7 +21,8 @@ import android.view.SurfaceView;
 public class CameraView extends SurfaceView
     implements SurfaceHolder.Callback, Camera.PictureCallback {
 
-    public CameraView(Context context, AttributeSet attr) {
+    @SuppressWarnings("deprecation")
+	public CameraView(Context context, AttributeSet attr) {
         super(context, attr);
 
         // Install a SurfaceHolder.Callback so we get notified when the
@@ -31,7 +32,7 @@ public class CameraView extends SurfaceView
         surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
     }
 
-    @Override public void surfaceCreated(SurfaceHolder holder) {
+    public void surfaceCreated(SurfaceHolder holder) {
         // The Surface has been created, acquire the camera and tell it where
         // to draw.
         try {
@@ -45,7 +46,7 @@ public class CameraView extends SurfaceView
         }
     }
 
-    @Override public void surfaceDestroyed(SurfaceHolder holder) {
+    public void surfaceDestroyed(SurfaceHolder holder) {
         // Surface will be destroyed when we return, so stop the
         // preview. Because the CameraDevice object is not a shared
         // resource, it's very important to release it when the
@@ -57,7 +58,7 @@ public class CameraView extends SurfaceView
         }
     }
 
-    @Override public void surfaceChanged(SurfaceHolder holder,
+    public void surfaceChanged(SurfaceHolder holder,
                                          int format, int w, int h) {
         // Now that the size is known, set up the camera parameters and begin
         // the preview.
@@ -75,7 +76,7 @@ public class CameraView extends SurfaceView
     }
 
     // PictureCallback
-    @Override public void onPictureTaken(byte[] jpeg, Camera camera) {
+    public void onPictureTaken(byte[] jpeg, Camera camera) {
         if (pictHandler != null && jpeg != null) {
             pictHandler.handleImage(jpeg);
         }

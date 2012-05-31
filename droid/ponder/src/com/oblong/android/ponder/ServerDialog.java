@@ -29,7 +29,7 @@ final class ServerDialog implements DialogInterface.OnClickListener,
         dialog.show();
     }
 
-    @Override public void onClick(DialogInterface dialog, int id) {
+     public void onClick(DialogInterface dialog, int id) {
         switch (id) {
         case DialogInterface.BUTTON_POSITIVE:
             server = getPoolServer();
@@ -41,7 +41,7 @@ final class ServerDialog implements DialogInterface.OnClickListener,
         dialog.dismiss();
     }
 
-    @Override public void onDismiss(DialogInterface dlg) {
+     public void onDismiss(DialogInterface dlg) {
         if (server != null) {
             parent.registerServer(server, name.getText().toString());
             server = null;

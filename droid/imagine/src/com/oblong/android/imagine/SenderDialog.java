@@ -36,7 +36,7 @@ final class SenderDialog implements DialogInterface.OnClickListener,
         dialog.show();
     }
 
-    @Override public void onClick(DialogInterface dialog, int id) {
+    public void onClick(DialogInterface dialog, int id) {
         switch (id) {
         case DialogInterface.BUTTON_POSITIVE:
             address = getPoolAddress();
@@ -48,7 +48,7 @@ final class SenderDialog implements DialogInterface.OnClickListener,
         dialog.dismiss();
     }
 
-    @Override public void onDismiss(DialogInterface dlg) {
+    public void onDismiss(DialogInterface dlg) {
         if (address != null) {
         	savePreferences();
         	parent.send(address);

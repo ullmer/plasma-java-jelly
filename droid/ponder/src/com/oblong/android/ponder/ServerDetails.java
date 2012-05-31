@@ -37,7 +37,7 @@ public final class ServerDetails
         infoSetup(R.layout.server_info_dialog);
     }
 
-    @Override public void onCreate(Bundle savedInstanceState) {
+     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.server_details);
         host = (TextView)findViewById(R.id.hostname_entry);
@@ -56,21 +56,21 @@ public final class ServerDetails
             });
     }
 
-    @Override public void onStart() {
+     public void onStart() {
         super.onStart();
         name.setText(serverInfo.server().name());
         host.setText(serverInfo.server().address().toString());
         table.update(serverInfo);
     }
 
-    @Override public boolean onCreateOptionsMenu(Menu menu) {
+     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.server_details, menu);
         Bookmarks.prepareMenu(this, menu, serverInfo, null);
         return true;
     }
 
-    @Override public boolean onOptionsItemSelected(MenuItem item) {
+     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
         case R.id.refresh:
             refresh();
@@ -89,12 +89,12 @@ public final class ServerDetails
         }
     }
 
-    @Override
+    
     public void onItemClick(AdapterView<?> p, View v, int position, long i) {
         showPoolDetails(position);
     }
 
-    @Override protected void prepareInfo(Dialog d) {
+     protected void prepareInfo(Dialog d) {
         final PoolServer srv = serverInfo.server();
         d.setTitle(srv.name());
         ((TextView)d.findViewById(R.id.host)).setText(srv.address().host());
