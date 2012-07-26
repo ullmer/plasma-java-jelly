@@ -9,6 +9,8 @@ import org.junit.Test;
 import com.oblong.jelly.Protein;
 import com.oblong.jelly.Slaw;
 import com.oblong.jelly.pool.PoolProtein;
+import com.oblong.jelly.PoolOptions;
+
 
 /**
  *  Unit Test for class MemPool
@@ -30,12 +32,12 @@ public class MemPoolTest {
         assertEquals(0, MemPool.slawNames().length);
         for (String n : names) {
             assertFalse(MemPool.exists(n));
-            assertNotNull(MemPool.create(n));
+            assertNotNull(MemPool.create(n, PoolOptions.MEDIUM));
             assertTrue(MemPool.exists(n));
         }
         assertEquals(names.length, MemPool.slawNames().length);
         for (String n : names) {
-            assertNull(MemPool.create(n));
+            assertNull(MemPool.create(n, PoolOptions.MEDIUM));
             final MemPool pool = MemPool.get(n);
             assertNotNull(pool);
             assertEquals(n, pool.name());
@@ -49,7 +51,7 @@ public class MemPoolTest {
 
     @Test public void deposit() {
         final Protein p = Slaw.protein(null, null, null);
-        final MemPool pool = MemPool.create("pool");
+        final MemPool pool = MemPool.create("pool", PoolOptions.MEDIUM);
         assertNotNull(pool);
         final int PN = 5;
         final PoolProtein[] deps = new PoolProtein[PN];
@@ -69,7 +71,7 @@ public class MemPoolTest {
     }
 
     @Test public void find() {
-        final MemPool pool = MemPool.create("pool");
+        final MemPool pool = MemPool.create("pool", PoolOptions.MEDIUM);
         assertNotNull(pool);
         final int PN = 5;
         final PoolProtein[] deps = new PoolProtein[PN];

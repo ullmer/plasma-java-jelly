@@ -1,7 +1,7 @@
 (ns jelly.pool
   (:use [jelly.slaw])
-  (:import (com.oblong.jelly Pool PoolAddress PoolServerAddress
-                             PoolServer PoolServers PoolOptions)))
+  (:import [com.oblong.jelly Pool Slaw PoolAddress PoolServerAddress
+                             PoolServer PoolServers PoolOptions]))
 
 (declare ^:dynamic *current-server*)
 
@@ -48,38 +48,71 @@
   ([name opts] (participate* name opts false))
   ([name opts server] (Pool/participate (make-address server name) opts)))
 
+(defn participate-creatingly
+  ([name] (try (create name)
+               (catch Exception e))
+          (participate name))
+  ([name opts] (try (create name opts)
+                    (catch Exception e))
+               (participate name)))
+
 (defmacro with-hose [hs & body]
   `(let [~(first hs) (participate ~(second hs))]
      (try ~@body (finally (withdraw ~(first hs))))))
 
 (defmacro def-hose-funs [& ps]
-  `(do ~@(map (fn [x] `(defn ~(first x) ~(nth x 2) (~(second x) ~@(nth x 2))))
-              ps)))
+ `(do ~@(map (fn [x] `(defn ~(first x) ~(nth x 2) (~(second x) ~@(nth x 2))))
+             ps)))
+
+; todo: think about wrapping exceptions
 
 (def-hose-funs
+  (version .version [hose])
   (hose-name .name [hose])
   (set-hose-name! .setName [hose new-name])
-  (version .version [hose])
-  (raw-info .info [hose])
+  (is-connected .isConnected [hose])
   (withdraw .withdraw [hose])
-  (connected? .isConnected [hose])
-  (oldest-index .oldestIndex [hose])
-  (newest-index .newestIndex [hose])
   (current-index .index [hose])
+  (seek-to .seekTo [hose idx])
+  (seek-by .seekBy [hose offset])
   (to-last .toLast [hose])
   (run-out .runOut [hose])
   (rewind .rewind [hose])
-  (seek-to .seekTo [hose idx])
-  (seek-by .seekBy [hose offset])
   (deposit .deposit [hose prot])
-  (current-protein .current [hose])
-  (nth-protein .nth [hose idx]))
+  (nth-protein .nth [hose idx])
+  (current-protein .current [hose]))
 
-(def pool-info (comp slaw-value raw-info))
+(defn newest-index [hose] 
+  (try (.newestIndex hose)
+       (catch Exception e -1)))
 
-(defn into-array-o-slaw [& x] (into-array (map slaw x)))
+(defn oldest-index [hose] 
+  (try (.oldestIndex hose)
+       (catch Exception e -1)))
 
-(defn next-matching [hose descrip] (.next hose (into-array-o-slaw descrip)))
+(defn await-next 
+  ([hose] (try (.awaitNext hose)
+               (catch Exception e nil)))
+  ([hose seconds]
+    (try (.awaitNext hose seconds java.util.concurrent.TimeUnit/SECONDS)
+         (catch Exception e nil))))
+
+(defn make-slaw-vararg [pattern]
+  (cond (string? pattern) (into-array Slaw (slaw pattern))
+        (nil? pattern)    (into-array Slaw '())
+        :else             (into-array Slaw (map slaw pattern))))
+
+(defn next-matching 
+  "Seeks the next protein whose descrip matches the given slaw"
+  [hose descrip]
+  (try (.next hose (make-slaw-vararg descrip))
+       (catch Exception e nil)))
+
 (defn previous-matching
-  "Seeks the previous descrip that matches the given slaw"
-  [hose descrip] (.previous hose (into-array-o-slaw descrip)))
+  "Seeks the previous protein whose descrip matches the given slaw"
+  [hose descrip]
+  (try (.previous hose (make-slaw-vararg descrip))
+       (catch Exception e nil)))
+
+(defn protein-matches [p pattern]
+  (.matches p (make-slaw-vararg pattern)))

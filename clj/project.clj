@@ -1,4 +1,4 @@
-(defproject jelly "0.1-SNAPSHOT"
+(defproject jelly "0.1.5-SNAPSHOT"
   :description "jelly's Clojure bindings and REPL"
 
   :dependencies [[org.clojure/clojure "1.3.0"]
@@ -7,7 +7,7 @@
                  [net.jcip/jcip-annotations "1.0"]]
 
   :dev-dependencies [[swank-clojure "1.3.4"]
-                     [lein-marginalia "0.6.1"]]
+                     [lein-marginalia "0.7.0"]]
 
   :disable-implicit-clean false
 
