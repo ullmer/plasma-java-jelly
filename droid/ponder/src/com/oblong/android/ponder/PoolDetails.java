@@ -45,7 +45,7 @@ public class PoolDetails extends PonderActivity
         infoSetup(R.layout.pool_info_dialog);
     }
 
-    @Override public void onCreate(Bundle savedInstanceState) {
+     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.pool_details);
         jumpDialog = new JumpDialog(this);
@@ -66,20 +66,20 @@ public class PoolDetails extends PonderActivity
             });
     }
 
-    @Override public void onStart() {
+     public void onStart() {
         super.onStart();
         name.setText(poolAddress.poolName());
         refresh();
     }
 
-    @Override public boolean onCreateOptionsMenu(Menu menu) {
+     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.pool_details, menu);
         Bookmarks.prepareMenu(this, menu, serverInfo, poolAddress.poolName());
         return true;
     }
 
-    @Override public boolean onOptionsItemSelected(MenuItem item) {
+     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
         case R.id.refresh:
             refresh();
@@ -95,13 +95,13 @@ public class PoolDetails extends PonderActivity
         }
     }
 
-    @Override
+    
     public void onItemClick(AdapterView<?> p, View v, int pos, long i) {
         final PoolInfo info = PoolInfo.tryGet(poolAddress);
         if (info != null) showProtein(info.cursor().lastIndex() - pos, pos);
     }
 
-    @Override protected void prepareInfo(Dialog d) {
+     protected void prepareInfo(Dialog d) {
         d.setTitle(poolAddress.poolName());
         final PoolInfo info = PoolInfo.tryGet(poolAddress);
         final String prots = String.format("From %d to %d",

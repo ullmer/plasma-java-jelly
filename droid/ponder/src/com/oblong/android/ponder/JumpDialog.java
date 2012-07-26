@@ -44,7 +44,7 @@ final class JumpDialog implements TextWatcher,
         }
     }
 
-    @Override public void onClick(DialogInterface dialog, int id) {
+     public void onClick(DialogInterface dialog, int id) {
         switch (id) {
         case DialogInterface.BUTTON_POSITIVE:
             final long p = Long.parseLong(indexEntry.getText().toString());
@@ -56,7 +56,7 @@ final class JumpDialog implements TextWatcher,
         dialog.dismiss();
     }
 
-    @Override public void onClick(View button) {
+     public void onClick(View button) {
         long idx = -1;
         switch (button.getId()) {
         case R.id.first_button: idx = firstIndex; break;
@@ -65,7 +65,7 @@ final class JumpDialog implements TextWatcher,
         if (idx > -1) indexEntry.setText(String.format("%d", idx));
     }
 
-    @Override public void afterTextChanged(Editable e) {
+     public void afterTextChanged(Editable e) {
         long idx;
         try {
             idx = Long.parseLong(indexEntry.getText().toString());
@@ -78,11 +78,11 @@ final class JumpDialog implements TextWatcher,
         if (b != null) b.setEnabled(valid);
     }
 
-    @Override
+    
     public void beforeTextChanged(CharSequence e, int s, int c, int a) {
     }
 
-    @Override public void onTextChanged(CharSequence e, int s, int b, int c) {
+     public void onTextChanged(CharSequence e, int s, int b, int c) {
     }
 
     private void createDialog() {

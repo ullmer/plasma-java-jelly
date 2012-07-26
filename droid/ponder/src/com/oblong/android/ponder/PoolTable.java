@@ -23,12 +23,12 @@ final class PoolTable {
     void update(final ServerInfo info) {
         fill(info);
         final Handler hdl = new Handler () {
-                @Override public void handleMessage(Message m) {
+                 public void handleMessage(Message m) {
                     if (m.what == 0) fill(info);
                 }
             };
         new Thread(new Runnable () {
-                @Override public void run() {
+                 public void run() {
                     info.updatePools();
                     hdl.sendMessage(Message.obtain(hdl, 0, null));
                 }

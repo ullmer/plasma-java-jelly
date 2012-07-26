@@ -39,11 +39,11 @@ public class Imagine extends Activity
         return super.onCreateDialog(d);
     }
 
-    @Override public void onClick(View button) {
+    public void onClick(View button) {
         cameraView.takePicture(this);
     }
 
-    @Override public void handleImage(byte[] jpg) {
+    public void handleImage(byte[] jpg) {
         if (jpg != null) {
             ImageStore.storeImage(jpg);
             progressDialog.show();

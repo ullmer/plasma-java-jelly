@@ -34,7 +34,7 @@ final class ServerTable {
 
     void rescan() {
         new Thread (new Runnable () {
-                @Override public void run() {
+                 public void run() {
                     for (PoolServer s : PoolServers.remoteServers())
                         if (!servers.contains(s)) notifyNewServer(s);
                 }
@@ -45,7 +45,7 @@ final class ServerTable {
         for (ServerInfo i : adapter) i.clearPools();
         adapter.notifyDataSetChanged();
         new Thread (new Runnable () {
-                @Override public void run() {
+                 public void run() {
                     TCPServerFactory.reset();
                     for (PoolServer s : PoolServers.remoteServers()) {
                         notifyNewServer(s);
