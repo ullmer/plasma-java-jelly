@@ -17,21 +17,20 @@
 
 (def trans-num (atom 100))
 (def fake-provenance "android-87ac0542-abbd-4385-911b-xxxxxxxxxxxx")
-(defn make-req-descrips
-  "Given a req-type (e.g. 'mez-state', 'close-dossier'),
+(defn make-request-descrips
+  "Given a @request-name (e.g. 'mez-state', 'close-dossier'),
    return a Slaw for the proper descrips."
-  [req-type]
-  (slaw ["mezzanine" "prot-spec v2.0" "request" req-type
+  [request-name]
+  (slaw ["mezzanine" "prot-spec v2.0" "request" request-name
          "from:" [fake-provenance (Slaw/int32 (swap! trans-num inc))]]))
 
-(defn make-request
-  "Create a request protein.
-   @req-type: the name of the request (e.g. 'mez-state').
-   @ingests: optional hash (e.g. 'uid':'flurbl')."
-  ([req-type]
-     (make-request req-type {}))
-  ([req-type ingests]
-     (protein (make-req-descrips req-type) (slaw ingests))))
+(defn make-request-protein
+  "Return a request protein
+   of type @request-name w/ optional @ingests hash."
+  ([request-name]
+     (make-request-protein request-name {}))
+  ([request-name ingests]
+     (protein (make-request-descrips request-name) (slaw ingests))))
 
 (defn await-next-matching
   "Receive proteins as they arrive.
@@ -67,7 +66,7 @@
   ([hoses request-name response-name]
      (let [response-agent (start-protein-agent (:recv hoses) response-name)]
        (. Thread (sleep 100))  ; necessary?
-       (deposit (:send hoses) (make-request request-name))
+       (deposit (:send hoses) (make-request-protein request-name))
        (await response-agent)
        (write-protein-to-file @response-agent (str "./" response-name ".txt"))
        @response-agent)))
@@ -123,7 +122,7 @@
   "Request deletion of a single dossier with @uid.
    (Return request protein -- ignored.)"
   [hoses uid]
-  (let [delete-protein (make-request "delete-dossier" {"uid" uid})]
+  (let [delete-protein (make-request-protein "delete-dossier" {"uid" uid})]
     (deposit (:send hoses) delete-protein)))
 
 (defn delete-dossiers-with-name
