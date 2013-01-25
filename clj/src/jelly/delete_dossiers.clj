@@ -17,26 +17,26 @@
 
 (def trans-num (atom 100))
 (def fake-provenance "android-87ac0542-abbd-4385-911b-xxxxxxxxxxxx")
-(defn mk-req-descrips
+(defn make-req-descrips
   "Given a req-type (e.g. 'mez-state', 'close-dossier'),
    return a Slaw for the proper descrips."
   [req-type]
   (slaw ["mezzanine" "prot-spec v2.0" "request" req-type
          "from:" [fake-provenance (Slaw/int32 (swap! trans-num inc))]]))
 
-(defn mk-request
+(defn make-request
   "Create a request protein.
    @req-type: the name of the request (e.g. 'mez-state').
    @ingests: optional hash (e.g. 'uid':'flurbl')."
   ([req-type]
-     (mk-request req-type {}))
+     (make-request req-type {}))
   ([req-type ingests]
-     (protein (mk-req-descrips req-type) (slaw ingests))))
+     (protein (make-req-descrips req-type) (slaw ingests))))
 
 (defn await-next-matching
   "Receive proteins as they arrive.
    Ignore those which don't match @pattern.
-   Return first protein which does match."
+   Return the first protein which does match."
   [hose pattern]
   (println (str "-- awaiting next '" pattern "' from rec-hose --"))
   (first (filter #(protein-matches? % pattern)
@@ -44,7 +44,7 @@
 
 (defn start-protein-agent
   "Create agent (thread).
-   Start it looking for matching protein.
+   Start it looking for protein to match @pattern.
    When it finishes, it holds a protein."
   [hose pattern]
   (let [a (agent hose)]
@@ -53,7 +53,7 @@
 
 (defn write-protein-to-file
   "For debugging.
-   Write protein @p to file @f-name.  Return unit."
+   Write protein @p to file with name @f-name.  Return unit."
   [p f-name]
   (with-open [wrtr (writer f-name)]
     (.write wrtr (.toString p))))
@@ -67,7 +67,7 @@
   ([hoses request-name response-name]
      (let [response-agent (start-protein-agent (:recv hoses) response-name)]
        (. Thread (sleep 100))  ; necessary?
-       (deposit (:send hoses) (mk-request request-name))
+       (deposit (:send hoses) (make-request request-name))
        (await response-agent)
        (write-protein-to-file @response-agent (str "./" response-name ".txt"))
        @response-agent)))
@@ -123,7 +123,7 @@
   "Request deletion of a single dossier with @uid.
    (Return request protein -- ignored.)"
   [hoses uid]
-  (let [delete-protein (mk-request "delete-dossier" {"uid" uid})]
+  (let [delete-protein (make-request "delete-dossier" {"uid" uid})]
     (deposit (:send hoses) delete-protein)))
 
 (defn delete-dossiers-with-name
