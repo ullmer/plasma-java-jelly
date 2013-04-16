@@ -1,7 +1,7 @@
 (defproject jelly "0.1.5-SNAPSHOT"
   :description "jelly's Clojure bindings and REPL"
 
-  :dependencies [[org.clojure/clojure "1.3.0"]
+  :dependencies [[org.clojure/clojure "1.4.0"]
                  [org.clojure/data.codec "0.1.0"]
                  [org.yaml/snakeyaml "1.7"]
                  [net.jcip/jcip-annotations "1.0"]]
