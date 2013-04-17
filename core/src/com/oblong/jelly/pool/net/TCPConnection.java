@@ -1,7 +1,10 @@
-// Copyright (c) 2010 Oblong Industries
+
+/* (c)  oblong industries */
 
 package com.oblong.jelly.pool.net;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -138,8 +141,8 @@ final class TCPConnection implements NetConnection {
         try {
             address = srv.address();
             socket = new Socket(address.host(), address.port());
-            input = socket.getInputStream();
-            output = socket.getOutputStream();
+            input = new BufferedInputStream (socket.getInputStream());
+            output = new BufferedOutputStream (socket.getOutputStream());
             sendPreamble(output);
             version = readVersions(input);
             supported = readSupported(input, version);
@@ -157,6 +160,7 @@ final class TCPConnection implements NetConnection {
     private Slaw send(Protein p) throws PoolException {
         try {
             externalizer.extern(p, output);
+            output.flush ();
         } catch (Exception e) {
             throw new InOutException(e);
         }
