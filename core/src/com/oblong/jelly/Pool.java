@@ -1,6 +1,5 @@
-// Copyright (c) 2010 Oblong Industries
-// Created: Thu Jun  3 10:08:24 2010
 
+/* (c)  oblong industries */
 
 package com.oblong.jelly;
 
@@ -37,6 +36,13 @@ import java.util.Set;
  * @author jao
  */
 public final class Pool {
+    private static PoolOptions goodopts (PoolOptions opts) {
+        if (opts == null)
+            return new PoolOptions (64 * 1024); // default to 64K pool
+        else
+            return opts;
+    }
+
     /**
      * An alias to {@link PoolServers#get(PoolServerAddress)}, q.v.
      */
@@ -68,7 +74,8 @@ public final class Pool {
      */
     public static void create(PoolAddress addr, PoolOptions opts)
         throws PoolException {
-        getServer(addr.serverAddress()).create(addr.poolName(), opts);
+        getServer(addr.serverAddress()).create(addr.poolName(),
+                                               goodopts (opts));
     }
 
     /**
@@ -144,7 +151,7 @@ public final class Pool {
     public static Hose participate(PoolAddress addr, PoolOptions opts)
         throws PoolException {
         return getServer(addr.serverAddress())
-                          .participate(addr.poolName(), opts);
+            .participate(addr.poolName(), goodopts (opts));
     }
 
     /**
