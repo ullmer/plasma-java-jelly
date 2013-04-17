@@ -1,4 +1,5 @@
-// Copyright (c) 2010 Oblong Industries
+
+/* (c)  oblong industries */
 
 package com.oblong.jelly.pool.mem;
 
@@ -231,7 +232,11 @@ final class MemHose implements Hose {
 
     private PoolProtein partialProtein(long idx, boolean d,
                                        boolean i, boolean r) {
-        return new PoolProtein(pool.nth(idx, d, i, r ? 0 : -1, -1), this);
+        PoolProtein p = pool.nth (idx, d, i, r  ?  0  :  -1, -1);
+        if (p == null)
+            return null;
+        else
+            return new PoolProtein (p, this);
     }
 
     private Protein checkProtein(PoolProtein p)
