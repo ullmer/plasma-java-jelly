@@ -1,5 +1,5 @@
-// Copyright (c) 2010 Oblong Industries
-// Created: Mon May 17 14:25:51 2010
+
+/* (c)  oblong industries */
 
 package com.oblong.jelly;
 
@@ -70,7 +70,20 @@ public abstract class Protein extends Slaw {
 
     /**
      * A protein matches the given slaw list if its descrips contain
-     * them in the same order (although not necessarily contiguosly.
+     * them in the same order (although not necessarily contiguously).
+     * Protein.matches does not expect a Slaw.list, but rather a list
+     * of slaws, or a Java Array of slaws.  So...
+     *
+     * <pre>
+     *   Slaw descrips = Slaw.list(Slaw.string("1"), Slaw.string("2"));
+     *   Slaw ingests = Slaw.string("junk");
+     *   // The following fails
+     *   Protein.protein(descrips, ingests).matches (descrips);
+     *   // The following succeeds
+     *   Protein.protein(descrips, ingests).matches (Slaw.string("1"), Slaw.string("2"));
+     *   // The following succeeds
+     *   Protein.protein(descrips, ingests).matches (descrips.emitArray());
+     * </pre>
      */
     public final boolean matches(Slaw... slawx) {
         if (slawx.length == 0) return true;
