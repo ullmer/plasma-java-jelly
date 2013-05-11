@@ -192,7 +192,7 @@ public enum Request {
     }
 
     private Slaw checkRetort(Slaw res, int v) throws PoolException {
-    	if (res.count() < responseArity)
+        if (res.count() < responseArity)
             throw new ProtocolException(res, "Wrong response arity in "
                                         + this + "\n" + res + "\n("
                                         + responseArity + " expected)");
