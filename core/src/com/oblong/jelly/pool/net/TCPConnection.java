@@ -34,6 +34,10 @@ import static com.oblong.jelly.pool.net.Request.*;
 
 final class TCPConnection implements NetConnection {
 
+    /* This is the line you need to change, to make Jelly refuse
+     * to connect to non-Greenhouse servers, as discussed in bug 8353. */
+    static boolean RESTRICT_TO_GREENHOUSE = false;
+
     @Override public PoolServerAddress address() { return address; }
     @Override public int version() { return version; }
     @Override public SlawFactory factory() { return factory; }
@@ -155,6 +159,11 @@ final class TCPConnection implements NetConnection {
         } catch (IllegalArgumentException e) {
             throw new InOutException(e);
         }
+
+        if (RESTRICT_TO_GREENHOUSE  &&
+            ! supportedRequests () . contains (Request.GREENHOUSE))
+            throw new PoolException (srv . address () +
+                                     " is not a Greenhouse server");
     }
 
     private Slaw send(Protein p) throws PoolException {

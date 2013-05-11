@@ -1,4 +1,5 @@
-// Copyright (c) 2010 Oblong Industries
+
+/* (c)  oblong industries */
 
 package com.oblong.jelly.pool.net;
 
@@ -126,6 +127,11 @@ public enum Request {
         Slaw getRetort(Slaw res, int v) throws ProtocolException {
             list(index(index(res, 2), 1), 0);
             return Slaw.int64(0);
+        }
+    },
+    GREENHOUSE(31, 0, 0) {
+        Slaw getRetort(Slaw res, int v) throws ProtocolException {
+            throw new ProtocolException (res, "GREENHOUSE is a dummy command");
         }
     };
 
