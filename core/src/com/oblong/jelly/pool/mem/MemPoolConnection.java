@@ -1,4 +1,5 @@
-// Copyright (c) 2010 Oblong Industries
+
+/* (c)  oblong industries */
 
 package com.oblong.jelly.pool.mem;
 
@@ -6,6 +7,7 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 
 import net.jcip.annotations.NotThreadSafe;
@@ -18,6 +20,7 @@ import com.oblong.jelly.PoolServer;
 import com.oblong.jelly.PoolServerAddress;
 import com.oblong.jelly.Protein;
 import com.oblong.jelly.Slaw;
+import com.oblong.jelly.pool.Configuration;
 import com.oblong.jelly.pool.PoolProtein;
 import com.oblong.jelly.pool.ServerErrorCode;
 import com.oblong.jelly.pool.net.NetConnection;
@@ -60,7 +63,15 @@ final class MemPoolConnection implements NetConnection {
 
     @Override public PoolServerAddress address() { return address; }
 
-    @Override public Set<Request> supportedRequests() { return SUPPORTED; }
+    @Override public Set<Request> supportedRequests() {
+        if (Configuration.GREENHOUSE) {
+            Set<Request> ret = new TreeSet<Request>(SUPPORTED);
+            ret . add (GREENHOUSE);
+            return ret;
+        } else {
+            return SUPPORTED;
+        }
+    }
 
     @Override public boolean isOpen() { return open; }
 
