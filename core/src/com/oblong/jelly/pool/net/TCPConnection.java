@@ -27,16 +27,13 @@ import com.oblong.jelly.Slaw;
 import com.oblong.jelly.slaw.SlawExternalizer;
 import com.oblong.jelly.slaw.SlawFactory;
 import com.oblong.jelly.slaw.SlawInternalizer;
+import com.oblong.jelly.pool.Configuration;
 import com.oblong.jelly.pool.PoolProtein;
 import com.oblong.jelly.util.ByteReader;
 
 import static com.oblong.jelly.pool.net.Request.*;
 
 final class TCPConnection implements NetConnection {
-
-    /* This is the line you need to change, to make Jelly refuse
-     * to connect to non-Greenhouse servers, as discussed in bug 8353. */
-    static boolean RESTRICT_TO_GREENHOUSE = false;
 
     @Override public PoolServerAddress address() { return address; }
     @Override public int version() { return version; }
@@ -160,7 +157,7 @@ final class TCPConnection implements NetConnection {
             throw new InOutException(e);
         }
 
-        if (RESTRICT_TO_GREENHOUSE  &&
+        if (Configuration.GREENHOUSE  &&
             ! supportedRequests () . contains (Request.GREENHOUSE))
             throw new PoolException (srv . address () +
                                      " is not a Greenhouse server");
