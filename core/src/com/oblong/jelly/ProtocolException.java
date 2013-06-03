@@ -43,7 +43,7 @@ public class ProtocolException extends PoolException {
     }
 
     public ProtocolException(Slaw res, long sc) {
-        super(Kind.PROTOCOL_ERROR, sc, "Server rejected request");
+        super(Kind.PROTOCOL_ERROR, sc, "Server rejected request with " + sc);
         response = res;
     }
 
