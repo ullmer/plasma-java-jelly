@@ -1,4 +1,5 @@
-// Copyright (c) 2010 Oblong Industries
+
+/* (c)  oblong industries */
 
 package com.oblong.jelly;
 
@@ -81,6 +82,7 @@ public class AsyncHoseTestBase extends PoolServerTestBase {
         Hose h = Pool.participate(pa);
         Protein p = h.deposit(protein(nil(), list(int8(1))));
         th.join();
+        h . withdraw ();
         Pool.dispose(pa);
         assertEquals(p, aw.getProtein());
     }

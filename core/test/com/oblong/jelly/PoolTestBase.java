@@ -1,4 +1,5 @@
-// Copyright (c) 2010 Oblong Industries
+
+/* (c)  oblong industries */
 
 package com.oblong.jelly;
 
@@ -37,13 +38,14 @@ public class PoolTestBase extends PoolServerTestBase {
         Pool.create(fa, null);
         Hose fh = Pool.participate(fa);
         Hose fhd = Pool.participate(fa, PoolOptions.SMALL);
-        fhd = Pool.participate(fa);
+        // fhd = Pool.participate(fa);
         assertEquals(fa, fh.poolAddress());
         assertEquals(fa, fhd.poolAddress());
         fh.withdraw();
         assertTrue(fhd.isConnected());
         assertFalse(fh.isConnected());
         assertTrue(server.pools().contains(fa.poolName()));
+        fhd . withdraw ();
     }
 
     @Test public void funnyNames() throws PoolException {
