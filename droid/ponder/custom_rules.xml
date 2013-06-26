@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="custom_rules">
+<target name="-pre-build">
+   <ant dir="../../core/" antfile="build.xml" target="standalone-jar"/>
+  <copy todir="${jar.libs.dir}">
+    <fileset 
+      dir="../../core/dist" 
+      includes="jelly-standalone*.jar" />
+  </copy>
+</target>
+</project>
+

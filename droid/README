@@ -22,10 +22,25 @@
 
        $ android update project -p $PWD
 
+     more complete command for applications:
+
+       $ android update project --subprojects -p ./ -n ${PWD##*/} --target android-8
+
+     or for librabries
+
+       $ android update lib-project -p ./ 
+
     run inside the app directory. That's it: you can use ant to
     compile and install the application. Use `ant -p` for a list
-    of targets.
+    of targets. For example to compile in debug mode:
+    
+        $ ant debug
+        
+    or you can compile and install the app to a connected device
 
+        $ ant debug install
+
+ 
 *** Using Eclipse
 
     After installing the ADT plugin, just create a new Android
