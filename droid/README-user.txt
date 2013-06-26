@@ -2,8 +2,7 @@
 
   This folder contains Oblong's Android apps using Jelly.
 
-  - core: shared code, in the form of an android library. You don't
-    need to compile it individually: each application compiles it.
+  - libs: jelly-standalone-0.1.jar, a copy of jelly bundled together with some libraries these demos depend on
 
   - imagine: a demo sending images to a remote pool.
 
@@ -40,6 +39,9 @@
 
         $ ant debug install
 
+*** Complete example on Ubuntu 12.04
+
+    The script ubuntu-build-demo.sh installs the Android SDK and prerequisites, then builds the samples.
 
 *** Using Eclipse
 >>>> Recent eclipse version (Juno, recommended):
@@ -47,10 +49,6 @@
      Once you have setup the environment and installed the ADT plugin open eclipse in a workspace then go to
      file -> import -> existing android code
      navigate to the folder you have downloaded jelly /droid and then chose one of the apps.
-
-     if not present create a libs folder at the root of the project
-     copy/paste jelly-standalone**?.jar to the libs folder
-     the jar is located in jelly/core/dist
 
 >>>> older eclipse versions:
 
