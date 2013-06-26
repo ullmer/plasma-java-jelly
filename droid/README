@@ -48,6 +48,10 @@
      file -> import -> existing android code 
      navigate to the folder you have downloaded jelly /droid and then chose one of the apps.
 
+     if not present create a libs folder et the root of the project
+     copy/paste jelly-standalone**?.jar to the libs folder
+     the jar is located in jelly/core/dist
+
 >>>> older eclipse versions: 
 
     After installing the ADT plugin, just create a new Android
