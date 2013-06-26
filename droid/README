@@ -42,6 +42,13 @@
 
  
 *** Using Eclipse
+>>>> Recent eclipse version (Juno, recommended):
+
+     Once you have setup the environment and installed the ADT plugin open eclipse in a workspace then go to 
+     file -> import -> existing android code 
+     navigate to the folder you have downloaded jelly /droid and then chose one of the apps.
+
+>>>> older eclipse versions: 
 
     After installing the ADT plugin, just create a new Android
     project, and direct the wizard to use existing sources, pointing
