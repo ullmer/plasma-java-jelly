@@ -41,7 +41,7 @@ import net.jcip.annotations.Immutable;
  * @author jao
  */
 @Immutable
-public abstract class Protein extends Slaw /*implements ISlawMap*/ {
+public abstract class Protein extends Slaw implements ISlawMap {
     /**
      * Proteins that have not yet been deposited in a pool will return
      * this value as their index.
@@ -270,7 +270,8 @@ public abstract class Protein extends Slaw /*implements ISlawMap*/ {
         return a == null ? b == null : a.equals(b);
     }
 
-    public <Type> Type getIngest(JellyField<Type> field) {
+	@Override
+    public <Type> Type get(JellyField<Type> field) {
         return field.get((SlawMap) this.ingests());
     }
 }
