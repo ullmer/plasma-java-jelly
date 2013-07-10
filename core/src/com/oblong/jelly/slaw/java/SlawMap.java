@@ -9,14 +9,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+//import com.oblong.jelly.ISlawMap;
 import com.oblong.jelly.NumericIlk;
 import com.oblong.jelly.Slaw;
 import com.oblong.jelly.SlawIlk;
 
+import com.oblong.jelly.fields.JellyField;
 import net.jcip.annotations.Immutable;
 
 @Immutable
-final class SlawMap extends JavaSlaw {
+public final class SlawMap extends JavaSlaw /*implements ISlawMap*/ {
 
     static Slaw valueOf(Map<Slaw,Slaw> map) {
         if (map == null) return EMPTY_MAP;
@@ -97,4 +99,9 @@ final class SlawMap extends JavaSlaw {
     }
 
     private final SlawList conses;
+
+//	@Override
+	public <Type> Type get(JellyField<Type> field) {
+		return field.get(this);
+	}
 }

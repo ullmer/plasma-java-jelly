@@ -11,6 +11,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import com.oblong.jelly.fields.JellyField;
+import com.oblong.jelly.slaw.java.SlawMap;
 import net.jcip.annotations.Immutable;
 
 /**
@@ -39,7 +41,7 @@ import net.jcip.annotations.Immutable;
  * @author jao
  */
 @Immutable
-public abstract class Protein extends Slaw {
+public abstract class Protein extends Slaw /*implements ISlawMap*/ {
     /**
      * Proteins that have not yet been deposited in a pool will return
      * this value as their index.
@@ -266,5 +268,9 @@ public abstract class Protein extends Slaw {
 
     private static boolean eqRefs(Object a, Object b) {
         return a == null ? b == null : a.equals(b);
+    }
+
+    public <Type> Type getIngest(JellyField<Type> field) {
+        return field.get((SlawMap) this.ingests());
     }
 }
