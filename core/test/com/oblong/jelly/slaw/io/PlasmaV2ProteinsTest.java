@@ -7,6 +7,8 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 import static org.junit.Assert.*;
+
+import com.oblong.jelly.util.ExceptionHandler;
 import org.junit.Test;
 
 import com.oblong.jelly.*;

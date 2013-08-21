@@ -2,6 +2,7 @@
 
 package com.oblong.jelly.pool.net;
 
+import com.oblong.jelly.util.ExceptionHandler;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import static org.junit.Assert.*;

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import com.oblong.jelly.util.ExceptionHandler;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;

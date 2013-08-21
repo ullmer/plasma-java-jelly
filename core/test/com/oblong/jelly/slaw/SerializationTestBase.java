@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 
 import com.oblong.jelly.*;
+import com.oblong.jelly.util.ExceptionHandler;
+
 import static org.junit.Assert.*;
 
 public class SerializationTestBase {

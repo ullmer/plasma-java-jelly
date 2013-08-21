@@ -2,6 +2,8 @@
 
 package com.oblong.jelly;
 
+import com.oblong.jelly.util.ExceptionHandler;
+
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
