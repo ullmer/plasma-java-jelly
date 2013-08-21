@@ -4,6 +4,8 @@
 
 package javax.jmdns.impl;
 
+import com.oblong.jelly.util.ExceptionHandler;
+
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
@@ -205,7 +207,8 @@ public class JmDNSImpl extends JmDNS implements DNSStatefulObject
         }
         catch (Exception e)
         {
-            version = "RUNNING.IN.IDE.FULL";
+	        ExceptionHandler.handleException(e);
+	        version = "RUNNING.IN.IDE.FULL";
         }
         System.out.println("JmDNS version \"" + version + "\"");
         System.out.println(" ");

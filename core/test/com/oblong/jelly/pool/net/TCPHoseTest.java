@@ -26,6 +26,7 @@ public class TCPHoseTest extends HoseTests.Tests<TCPConnection> {
             proxyThread.start();
             initTests(proxy.tcpAddress());
         } catch (Exception e) {
+	        ExceptionHandler.handleException(e);
             fail("Initialization error: " + e);
         }
     }
@@ -33,7 +34,9 @@ public class TCPHoseTest extends HoseTests.Tests<TCPConnection> {
     @AfterClass public static void closeProxy() {
         cleanUpTests();
         proxy.exit();
-        try { proxyThread.join(10); } catch (Exception e) {}
+        try { proxyThread.join(10); } catch (Exception e) {
+	        ExceptionHandler.handleException(e);
+        }
     }
 
     private static TCPMemProxy proxy;

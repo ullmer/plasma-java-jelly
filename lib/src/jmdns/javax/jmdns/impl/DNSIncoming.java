@@ -4,6 +4,9 @@
 
 package javax.jmdns.impl;
 
+import com.oblong.jelly.util.ExceptionHandler;
+import com.sun.xml.internal.ws.handler.HandlerException;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -434,7 +437,8 @@ public final class DNSIncoming extends DNSMessage
                                 }
                                 catch (Exception exception)
                                 {
-                                    logger.warning("Malformed OPT answer. Option code: Owner data: " + this._hexString(optiondata));
+	                                ExceptionHandler.handleException(exception);
+	                                logger.warning("Malformed OPT answer. Option code: Owner data: " + this._hexString(optiondata));
                                 }
                                 if (logger.isLoggable(Level.FINE))
                                 {

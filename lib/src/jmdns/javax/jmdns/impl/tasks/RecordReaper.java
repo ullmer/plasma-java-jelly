@@ -4,6 +4,8 @@
 
 package javax.jmdns.impl.tasks;
 
+import com.oblong.jelly.util.ExceptionHandler;
+
 import java.util.Timer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -87,7 +89,8 @@ public class RecordReaper extends DNSTask
             }
             catch (Exception exception)
             {
-                logger.log(Level.SEVERE, this.getName() + ".Error while reaping records: " + entry, exception);
+	            ExceptionHandler.handleException(exception);
+	            logger.log(Level.SEVERE, this.getName() + ".Error while reaping records: " + entry, exception);
                 logger.severe(this.getDns().toString());
             }
         }

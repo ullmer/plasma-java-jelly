@@ -34,6 +34,7 @@ final class ServerInfo {
             pools = server.pools();
             poolNumber = pools.size();
         } catch (Exception e) {
+	        ExceptionHandler.handleException(e);
             Logger.getLogger("Ponder").info(
                 "Error connection to server: " + e.getMessage());
             poolNumber = CON_ERR;

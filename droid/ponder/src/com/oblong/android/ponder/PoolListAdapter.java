@@ -40,6 +40,7 @@ final class PoolListAdapter extends ArrayAdapter<PoolListRow> {
                 new PoolListRow(name, new PoolAddress(addr, name));
             if (getPosition(r) < 0) add(r);
         } catch (Exception e) {
+	        ExceptionHandler.handleException(e);
             Ponder.logger().severe("Error creating address: " + e);
         }
     }

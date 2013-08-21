@@ -4,6 +4,8 @@
 
 package javax.jmdns.impl;
 
+import com.oblong.jelly.util.ExceptionHandler;
+
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.Inet4Address;
@@ -147,7 +149,8 @@ public class HostInfo implements DNSStatefulObject
             }
             catch (Exception exception)
             {
-                logger.log(Level.SEVERE, "LocalHostInfo() exception ", exception);
+	            ExceptionHandler.handleException(exception);
+	            logger.log(Level.SEVERE, "LocalHostInfo() exception ", exception);
             }
         }
     }

@@ -93,16 +93,21 @@ public class HoseTests {
     public HoseTests(PoolServerAddress addr) throws PoolException {
         address = addr;
         final PoolAddress pa = new PoolAddress(address, "default-pool");
-        try { Pool.dispose(pa); } catch (NoSuchPoolException e) {}
+        try { Pool.dispose(pa); } catch (NoSuchPoolException e) {
+	        ExceptionHandler.handleException(e);
+        }
         defHose = Pool.participate(pa, null);
         depProteins = deposit(defHose, -1);
     }
 
     public void cleanUp() {
-        try { defHose.withdraw(); } catch (Exception e) {}
+        try { defHose.withdraw(); } catch (Exception e) {
+	        ExceptionHandler.handleException(e);
+        }
         try {
             Pool.dispose(defHose.poolAddress());
         } catch (PoolException e) {
+	        ExceptionHandler.handleException(e);
         }
     }
 

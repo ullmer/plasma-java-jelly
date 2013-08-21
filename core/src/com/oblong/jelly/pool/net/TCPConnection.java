@@ -30,6 +30,7 @@ import com.oblong.jelly.slaw.SlawInternalizer;
 import com.oblong.jelly.pool.Configuration;
 import com.oblong.jelly.pool.PoolProtein;
 import com.oblong.jelly.util.ByteReader;
+import com.oblong.jelly.util.ExceptionHandler;
 
 import static com.oblong.jelly.pool.net.Request.*;
 
@@ -84,7 +85,7 @@ final class TCPConnection implements NetConnection {
                 while (input.available() > 0) input.read();
             }
         } catch (Exception e) {
-            // ignore
+            ExceptionHandler.handleException(e, "polled() - e.g. input.read()");
         }
         return asynchronousProtein;
     }

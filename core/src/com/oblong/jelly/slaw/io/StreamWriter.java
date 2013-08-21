@@ -5,6 +5,7 @@ package com.oblong.jelly.slaw.io;
 import java.io.OutputStream;
 import java.util.logging.Logger;
 
+import com.oblong.jelly.util.ExceptionHandler;
 import net.jcip.annotations.NotThreadSafe;
 
 import com.oblong.jelly.Slaw;
@@ -21,6 +22,7 @@ class StreamWriter implements SlawWriter {
             externalizer.extern(s, stream);
             return true;
         } catch (Exception e) {
+	        ExceptionHandler.handleException(e);
             logWarning("Error serializing slaw: ", e);
             return false;
         }
@@ -31,6 +33,7 @@ class StreamWriter implements SlawWriter {
             stream.close();
             return true;
         } catch (Exception e) {
+	        ExceptionHandler.handleException(e);
             logWarning("Error closing stream: ", e);
             return false;
         }

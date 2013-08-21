@@ -91,6 +91,7 @@ public class HoseGangTest {
             proxyThread.join(100);
             proxyThread2.join(100);
         } catch (Exception e) {
+	        ExceptionHandler.handleException(e);
         }
     }
 
@@ -101,6 +102,7 @@ public class HoseGangTest {
             thread.start();
             return Pair.create(proxy, thread);
         } catch (Exception e) {
+	        ExceptionHandler.handleException(e);
             fail("Initialization error: " + e);
             return null;
         }

@@ -3,6 +3,8 @@
  */
 package javax.jmdns.impl;
 
+import com.oblong.jelly.util.ExceptionHandler;
+
 import java.lang.reflect.Method;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -42,7 +44,8 @@ public class NetworkTopologyDiscoveryImpl implements NetworkTopologyDiscovery
         }
         catch (Exception exception)
         {
-            // We do not want to throw anything if the method does not exist.
+	        ExceptionHandler.handleException(exception);
+	        // We do not want to throw anything if the method does not exist.
             isUp = null;
         }
         _isUp = isUp;
@@ -53,7 +56,8 @@ public class NetworkTopologyDiscoveryImpl implements NetworkTopologyDiscovery
         }
         catch (Exception exception)
         {
-            // We do not want to throw anything if the method does not exist.
+	        ExceptionHandler.handleException(exception);
+	        // We do not want to throw anything if the method does not exist.
             supportsMulticast = null;
         }
         _supportsMulticast = supportsMulticast;
@@ -116,7 +120,8 @@ public class NetworkTopologyDiscoveryImpl implements NetworkTopologyDiscovery
                 }
                 catch (Exception exception)
                 {
-                    // We should hide that exception.
+	                ExceptionHandler.handleException(exception);
+	                // We should hide that exception.
                 }
             }
             if (_supportsMulticast != null)
@@ -130,7 +135,9 @@ public class NetworkTopologyDiscoveryImpl implements NetworkTopologyDiscovery
                 }
                 catch (Exception exception)
                 {
-                    // We should hide that exception.
+	                ExceptionHandler.handleException(exception);
+
+	                // We should hide that exception.
                 }
             }
             if (interfaceAddress.isLoopbackAddress())
@@ -141,7 +148,8 @@ public class NetworkTopologyDiscoveryImpl implements NetworkTopologyDiscovery
         }
         catch (Exception exception)
         {
-            return false;
+	        ExceptionHandler.handleException(exception);
+	        return false;
         }
     }
 

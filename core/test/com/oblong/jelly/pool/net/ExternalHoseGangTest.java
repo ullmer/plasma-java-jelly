@@ -80,7 +80,9 @@ public class ExternalHoseGangTest {
     @Ignore("unrelated test for bug hunting")
     @Test public void foo() throws Exception {
         final PoolAddress addr = new PoolAddress(TCP_ADDR, "foo");
-        try { com.oblong.jelly.Pool.dispose(addr); } catch (Exception e) {}
+        try { com.oblong.jelly.Pool.dispose(addr); } catch (Exception e) {
+	        ExceptionHandler.handleException(e);
+        }
         com.oblong.jelly.Pool.create(addr, null);
         final com.oblong.jelly.Protein[] ps = HoseGangTests.deposit(addr, 2);
         final com.oblong.jelly.Hose h =

@@ -3,6 +3,8 @@
  */
 package javax.jmdns.impl;
 
+import com.oblong.jelly.util.ExceptionHandler;
+
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.ArrayList;
@@ -604,7 +606,8 @@ public class JmmDNSImpl implements JmmDNS, NetworkTopologyListener, ServiceInfoI
         }
         catch (Exception e)
         {
-            logger.warning("Unexpected unhandled exception: " + e);
+	        ExceptionHandler.handleException(e);
+	        logger.warning("Unexpected unhandled exception: " + e);
         }
     }
 
@@ -645,7 +648,8 @@ public class JmmDNSImpl implements JmmDNS, NetworkTopologyListener, ServiceInfoI
         }
         catch (Exception e)
         {
-            logger.warning("Unexpected unhandled exception: " + e);
+	        ExceptionHandler.handleException(e);
+	        logger.warning("Unexpected unhandled exception: " + e);
         }
     }
 
@@ -707,7 +711,8 @@ public class JmmDNSImpl implements JmmDNS, NetworkTopologyListener, ServiceInfoI
             }
             catch (Exception e)
             {
-                logger1.warning("Unexpected unhandled exception: " + e);
+	            ExceptionHandler.handleException(e);
+	            logger1.warning("Unexpected unhandled exception: " + e);
             }
         }
 

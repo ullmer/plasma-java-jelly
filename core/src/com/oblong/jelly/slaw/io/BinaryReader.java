@@ -5,6 +5,7 @@ package com.oblong.jelly.slaw.io;
 import java.io.InputStream;
 import java.util.logging.Logger;
 
+import com.oblong.jelly.util.ExceptionHandler;
 import net.jcip.annotations.NotThreadSafe;
 
 import com.oblong.jelly.Slaw;
@@ -42,7 +43,8 @@ final class BinaryReader implements SlawReader {
             stream.close();
             return true;
         } catch (Exception e) {
-            logWarning("Error closing stream: ", e);
+	        ExceptionHandler.handleException(e);
+	        logWarning("Error closing stream: ", e);
             return false;
         }
     }
@@ -62,6 +64,7 @@ final class BinaryReader implements SlawReader {
         try {
             return internalizer.internSlaw(stream, factory, littleEndian);
         } catch (Exception e) {
+	        ExceptionHandler.handleException(e);
             return null;
         }
     }

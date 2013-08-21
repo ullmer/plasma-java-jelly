@@ -649,7 +649,7 @@ public abstract class Slaw implements Iterable<Slaw> {
         try {
             externalizer.extern(this, os);
         } catch (Exception e) {
-            return "";
+            return "(Exception during toString: "+e+")";
         }
         return os.toString();
     }

@@ -115,6 +115,7 @@ public class HoseGangTests {
                 } catch (InterruptedException e) {
                     awaken = true;
                 } catch (Exception e) {
+	                ExceptionHandler.handleException(e);
                     fail(e.getMessage());
                 }
             }
@@ -171,6 +172,7 @@ public class HoseGangTests {
                         --number;
                         // System.out.println("Read, " + number + " left");
                     } catch (Exception e) {
+	                    ExceptionHandler.handleException(e);
                         fail(e.toString());
                     }
                 }

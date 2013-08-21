@@ -108,6 +108,7 @@ public final class Bookmarks extends ListActivity {
                         new PoolAddress(b.info.server().address(), b.pool);
                     PoolDetails.launch(this, b.info, a);
                 } catch (Exception e) {
+	                ExceptionHandler.handleException(e);
                     Ponder.logger().info("Error making address: " + e);
                 }
             } else {

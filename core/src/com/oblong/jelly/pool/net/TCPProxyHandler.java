@@ -22,7 +22,9 @@ import com.oblong.jelly.slaw.io.BinaryExternalizer;
 import com.oblong.jelly.slaw.io.BinaryInternalizer;
 import com.oblong.jelly.slaw.java.JavaSlawFactory;
 import com.oblong.jelly.util.ByteReader;
+import com.oblong.jelly.util.ExceptionHandler;
 import com.oblong.util.Pair;
+import com.sun.xml.internal.ws.handler.HandlerException;
 
 /**
  *
@@ -49,6 +51,7 @@ final class TCPProxyHandler implements Runnable {
             try {
                 reply(forward(next()));
             } catch (Exception e) {
+	            ExceptionHandler.handleException(e);
                 if (connection.isOpen()) {
                     log.warning("Connection error (closing handler): " + e);
                     connection.close();
@@ -58,6 +61,7 @@ final class TCPProxyHandler implements Runnable {
         try {
             if (socket.isConnected()) socket.close();
         } catch (Exception e) {
+	        ExceptionHandler.handleException(e);
             log.warning("Exception closing socket (ignored): "
                         + e.getMessage());
         }

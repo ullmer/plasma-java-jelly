@@ -112,6 +112,7 @@ public class PlasmaV2ProteinsTest extends SerializationTestBase {
             final Protein s2 = internalizer.internProtein(is, factory);
             assertEquals(s, s2);
         } catch (Exception e) {
+	        ExceptionHandler.handleException(e);
             fail(e.toString());
         }
     }
