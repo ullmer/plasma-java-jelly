@@ -24,7 +24,6 @@ import com.oblong.jelly.slaw.java.JavaSlawFactory;
 import com.oblong.jelly.util.ByteReader;
 import com.oblong.jelly.util.ExceptionHandler;
 import com.oblong.util.Pair;
-import com.sun.xml.internal.ws.handler.HandlerException;
 
 /**
  *

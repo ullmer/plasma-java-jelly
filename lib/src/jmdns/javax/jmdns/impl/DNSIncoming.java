@@ -5,7 +5,6 @@
 package javax.jmdns.impl;
 
 import com.oblong.jelly.util.ExceptionHandler;
-import com.sun.xml.internal.ws.handler.HandlerException;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
