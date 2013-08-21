@@ -20,6 +20,7 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ListView;
 import android.widget.Toast;
 import com.oblong.jelly.PoolAddress;
+import com.oblong.jelly.util.ExceptionHandler;
 
 /**
  *

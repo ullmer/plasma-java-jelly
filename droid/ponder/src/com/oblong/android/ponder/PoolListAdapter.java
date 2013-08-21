@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.oblong.jelly.PoolAddress;
 import com.oblong.jelly.PoolServerAddress;
+import com.oblong.jelly.util.ExceptionHandler;
 
 final class PoolListRow {
     String name;

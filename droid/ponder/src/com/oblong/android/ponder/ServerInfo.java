@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.os.Message;
 
 import com.oblong.jelly.PoolServer;
+import com.oblong.jelly.util.ExceptionHandler;
 
 final class ServerInfo {
 
