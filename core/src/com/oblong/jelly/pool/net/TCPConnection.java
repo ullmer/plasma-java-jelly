@@ -3,6 +3,7 @@
 
 package com.oblong.jelly.pool.net;
 
+import java.security.GeneralSecurityException;
 import com.oblong.jelly.*;
 import com.oblong.jelly.pool.Configuration;
 import com.oblong.jelly.slaw.SlawExternalizer;
@@ -71,7 +72,10 @@ final class TCPConnection implements NetConnection {
     static class Factory implements NetConnectionFactory {
         @Override public NetConnection get(PoolServer srv)
             throws PoolException {
-            return new TCPConnection(srv);
+            final TCPConnection t = new TCPConnection (srv);
+            if (srv . address () . scheme () . equals ("tcps"))
+                t . startTLS ();
+            return t;
         }
 
         @Override public String serviceName() {
@@ -117,6 +121,7 @@ final class TCPConnection implements NetConnection {
             address = srv.address();
 	        if(log.d()) log.d("Server :  "+ srv.toString());
             socket = new Socket(address.host(), address.port());
+            rawInput = socket . getInputStream ();
             input = new BufferedInputStream (socket.getInputStream());
             output = new BufferedOutputStream (socket.getOutputStream());
             sendPreamble(output);
@@ -239,12 +244,31 @@ final class TCPConnection implements NetConnection {
         }
     }
 
-    private final int version;
+    private void startTLS () throws PoolException {
+        Request.STARTTLS . send (this, factory . nil ());
+        try {
+            socket = TLS.startTLS (socket, address . host (), address. port ());
+            input = new BufferedInputStream (socket . getInputStream ());
+            output = new BufferedOutputStream (socket . getOutputStream ());
+            output . write (MAX_TCP_VERSION);
+            output . write (MAX_SLAW_VERSION);
+            output . flush ();
+            version = readVersions (input);
+            supported = readSupported (input, version);
+        } catch (IOException e) {
+            throw new InOutException (e);
+        } catch (GeneralSecurityException e) {
+            throw new InOutException (e);
+        }
+    }
+
+    private int version;
     private final PoolServerAddress address;
-    private final Socket socket;
-    private final OutputStream output;
-    private final InputStream input;
-    private final Set<Request> supported;
+    private Socket socket;
+    private OutputStream output;
+    private InputStream input;
+    private final InputStream rawInput; // the real socket SSLSocket wraps
+    private Set<Request> supported;
     private final SlawExternalizer externalizer;
     private final SlawInternalizer internalizer;
     private Hose hose;
