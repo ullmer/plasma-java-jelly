@@ -49,4 +49,16 @@ public abstract class ExceptionHandler {
 	public static void setExceptionHandler(ExceptionHandler exceptionHandlerParam) {
 		exceptionHandler = exceptionHandlerParam;
 	}
+
+	public static <T> void assertEquals(String message, T expected, T actual) {
+		if ( ! expected.equals(actual) ) { /* TODO: use safeEquals */
+			handleException("assertEquals failed: expected: " + expected + " ; actual: " + actual);
+		}
+	}
+
+	public static void handleException(String msg) {
+		handleException(new JustToGetStackTrace(), msg);
+	}
+
+	private static class JustToGetStackTrace extends Exception { /*nothing*/ }
 }
