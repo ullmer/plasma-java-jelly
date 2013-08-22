@@ -20,6 +20,7 @@ import com.oblong.jelly.PoolAddress;
 import com.oblong.jelly.PoolException;
 import com.oblong.jelly.Protein;
 import com.oblong.jelly.Slaw;
+import com.oblong.jelly.util.ExceptionHandler;
 
 /**
  *
@@ -142,6 +143,7 @@ public class Sender extends Activity implements View.OnClickListener {
         try {
             view.setImageBitmap(ImageStore.imageBitmap());
         } catch (Throwable e) {
+            ExceptionHandler.handleException(e);
             Log.e("Sender", "Error reading image file", e);
             finish();
         }
@@ -158,6 +160,7 @@ public class Sender extends Activity implements View.OnClickListener {
                 //     Slaw.protein(DESCRIPS, null, ImageStore.toJPG());
                 ImageStore.clear();
             } catch (Throwable e) {
+                ExceptionHandler.handleException(e);
                 Log.e("Sender", "Error converting image", e);
                 return null;
             }

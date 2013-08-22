@@ -11,6 +11,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import com.oblong.jelly.util.ExceptionHandler;
 
 /**
  *
@@ -40,6 +41,7 @@ public class CameraView extends SurfaceView
             camera.setDisplayOrientation(90);
             camera.setPreviewDisplay(holder);
         } catch (Throwable e) {
+            ExceptionHandler.handleException(e);
             if (camera != null) camera.release();
             camera = null;
             Log.e("CameraView", "Error accessing camera", e);

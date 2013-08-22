@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import com.oblong.jelly.util.ExceptionHandler;
 import net.jcip.annotations.NotThreadSafe;
 
 import org.yaml.snakeyaml.Yaml;
@@ -65,6 +66,7 @@ final class YamlReader implements SlawReader {
             while (s == null && nodes.hasNext()) s = parse(nodes.next());
             return s;
         } catch (Throwable e) { // hasNext() may throw
+            ExceptionHandler.handleException(e);
             reportError(e.getMessage());
             return null;
         }
@@ -164,6 +166,7 @@ final class YamlReader implements SlawReader {
         try {
             return factory.complex(slawx[0], slawx[1]);
         } catch (Throwable e) {
+            ExceptionHandler.handleException(e);
             return null;
         }
     }
@@ -176,6 +179,7 @@ final class YamlReader implements SlawReader {
         try {
             return factory.vector(slawx);
         } catch (Throwable e) {
+            ExceptionHandler.handleException(e);
             return null;
         }
     }
@@ -184,6 +188,7 @@ final class YamlReader implements SlawReader {
         try {
             return factory.multivector(slawx);
         } catch (Throwable e) {
+            ExceptionHandler.handleException(e);
             return null;
         }
     }

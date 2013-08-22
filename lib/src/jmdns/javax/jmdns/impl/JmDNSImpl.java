@@ -1582,6 +1582,7 @@ public class JmDNSImpl extends JmDNS implements DNSStatefulObject
             }
             catch (Throwable exception)
             {
+                ExceptionHandler.handleException(exception);
                 System.err.println("Error while shuting down. " + exception);
             }
         }

@@ -6,6 +6,7 @@ package com.oblong.jelly;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import com.oblong.jelly.util.ExceptionHandler;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -52,7 +53,11 @@ public class AsyncHoseTestBase extends PoolServerTestBase {
             } catch (TimeoutException e) {
                 fail(e.getMessage());
             } finally {
-                try { hose.withdraw(); } catch (Throwable e) {}
+                try {
+                    hose.withdraw();
+                } catch (Throwable e) {
+                    ExceptionHandler.handleException(e);
+                }
             }
         }
 

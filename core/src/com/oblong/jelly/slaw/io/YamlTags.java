@@ -12,6 +12,8 @@ import com.oblong.jelly.NumericIlk;
 import static com.oblong.jelly.NumericIlk.*;
 import com.oblong.jelly.Slaw;
 import com.oblong.jelly.SlawIlk;
+import com.oblong.jelly.util.ExceptionHandler;
+
 import static com.oblong.jelly.SlawIlk.*;
 
 final class YamlTags {
@@ -174,6 +176,7 @@ final class YamlTags {
                         EMPTY_ARRAYS.put(tag, s);
                         EMPTY_TAGS.put(s, tag);
                     } catch (Throwable e) {
+                        ExceptionHandler.handleException(e);
                         System.out.println("Auch: " + e + "i: " + i +
                                            ", ni: " + ni + ", d: " + d);
                     }

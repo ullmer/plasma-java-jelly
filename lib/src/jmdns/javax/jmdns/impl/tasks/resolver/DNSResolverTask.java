@@ -1,6 +1,8 @@
 //Licensed under Apache License version 2.0
 package javax.jmdns.impl.tasks.resolver;
 
+import com.oblong.jelly.util.ExceptionHandler;
+
 import java.io.IOException;
 import java.util.Timer;
 import java.util.logging.Level;
@@ -101,6 +103,7 @@ public abstract class DNSResolverTask extends DNSTask
         }
         catch (Throwable e)
         {
+            ExceptionHandler.handleException(e);
             logger.log(Level.WARNING, this.getName() + ".run() exception ", e);
             this.getDns().recover();
         }

@@ -4,6 +4,8 @@
 
 package javax.jmdns.impl.tasks;
 
+import com.oblong.jelly.util.ExceptionHandler;
+
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Timer;
@@ -181,8 +183,9 @@ public class Responder extends DNSTask
             }
             catch (Throwable e)
             {
+                ExceptionHandler.handleException(e);
                 logger.log(Level.WARNING, "run() exception ", e);
-                this.getDns().close();
+                    this.getDns().close();
             }
         }
     }
