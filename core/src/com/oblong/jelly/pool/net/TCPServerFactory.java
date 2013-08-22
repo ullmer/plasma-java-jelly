@@ -15,6 +15,7 @@ import javax.jmdns.ServiceEvent;
 import javax.jmdns.ServiceInfo;
 import javax.jmdns.ServiceListener;
 
+import com.oblong.jelly.util.ExceptionHandler;
 import net.jcip.annotations.ThreadSafe;
 
 import com.oblong.jelly.PoolServer;
@@ -117,6 +118,7 @@ public final class TCPServerFactory
             final String subtype = inf.getSubtype();
             return new Server(factory, addr, name, subtype);
         } catch (Throwable e) {
+            ExceptionHandler.handleException(e);
             logger.warning("Unable to extract server from info " + inf
                            + ", error: " + e.getMessage());
             return null;

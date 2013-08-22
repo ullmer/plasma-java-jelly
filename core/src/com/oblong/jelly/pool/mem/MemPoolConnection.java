@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 
+import com.oblong.jelly.util.ExceptionHandler;
 import net.jcip.annotations.NotThreadSafe;
 
 import com.oblong.jelly.Hose;
@@ -279,6 +280,7 @@ final class MemPoolConnection implements NetConnection {
                                        PROTEIN_KEY, prot);
             return Pair.create(new Long(idx), r);
         } catch (Throwable e) {
+            ExceptionHandler.handleException(e);
             e.printStackTrace();
             return null;
         }

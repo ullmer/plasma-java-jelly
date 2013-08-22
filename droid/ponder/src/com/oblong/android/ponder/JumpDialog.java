@@ -15,6 +15,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.oblong.jelly.PoolAddress;
+import com.oblong.jelly.util.ExceptionHandler;
 
 /**
  *
@@ -70,6 +71,7 @@ final class JumpDialog implements TextWatcher,
         try {
             idx = Long.parseLong(indexEntry.getText().toString());
         } catch (Throwable x) {
+            ExceptionHandler.handleException(x);
             idx = -1;
         }
         final boolean valid = idx <= lastIndex && idx >= firstIndex;

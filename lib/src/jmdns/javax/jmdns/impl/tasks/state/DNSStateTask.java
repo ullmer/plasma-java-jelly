@@ -1,6 +1,8 @@
 //Licensed under Apache License version 2.0
 package javax.jmdns.impl.tasks.state;
 
+import com.oblong.jelly.util.ExceptionHandler;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -166,6 +168,7 @@ public abstract class DNSStateTask extends DNSTask
         }
         catch (Throwable e)
         {
+            ExceptionHandler.handleException(e);
             logger1.log(Level.WARNING, this.getName() + ".run() exception ", e);
             this.recoverTask(e);
         }
