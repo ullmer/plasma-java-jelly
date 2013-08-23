@@ -8,13 +8,20 @@ import java.net.*;
 import java.security.*;
 import java.security.cert.CertificateException;
 import javax.net.ssl.*;
+import com.oblong.tls.verifier.*;
 
 final class TLS {
     public static Socket startTLS (Socket sock, String host, int port)
         throws IOException,
                GeneralSecurityException {
         SSLSocketFactory fact = getFactory ();
-        return fact . createSocket (sock, host, port, true);
+        SSLSocket ssock = (SSLSocket)
+            fact . createSocket (sock, host, port, true);
+
+        ssock . startHandshake ();
+        X509HostnameVerifier vfy = new BrowserCompatHostnameVerifier ();
+        vfy . verify (host, ssock); // throws IOException if not valid
+        return ssock;
     }
 
     private static synchronized SSLSocketFactory getFactory ()
