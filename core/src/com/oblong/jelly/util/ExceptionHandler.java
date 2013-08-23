@@ -52,7 +52,7 @@ public abstract class ExceptionHandler {
 
 	public static <T> void assertEquals(String message, T expected, T actual) {
 		if ( ! expected.equals(actual) ) { /* TODO: use safeEquals */
-			handleException("assertEquals failed: expected: " + expected + " ; actual: " + actual);
+			handleException("assertEquals failed: expected: " + expected + " ; actual: " + actual+" message : "+message);
 		}
 	}
 
