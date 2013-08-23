@@ -1,3 +1,6 @@
+
+/* (c)  oblong industries */
+
 package com.oblong.jelly.slaw.java;
 
 import net.jcip.annotations.Immutable;
@@ -16,7 +19,7 @@ final class SlawString extends AtomicSlaw {
 
     @Override public String emitString() { return val; }
 
-	@Override public String toString() { return emitString(); }
+    @Override public String toString() { return emitString(); }
 
     @Override public boolean slawEquals(Slaw o) {
         return o.emitString().equals(val);

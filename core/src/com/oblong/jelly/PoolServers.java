@@ -87,7 +87,7 @@ public final class PoolServers {
 
     /**
      * Lists the currently discovered remote servers. Works as {@link
-     * servers(String, PoolServerAddress, String, String)}, but
+     * #servers(String, PoolServerAddress, String, String)}, but
      * including all registered schemes corresponding to remote
      * servers. Any of the arguments can be null to denote 'any
      * value'.
@@ -105,7 +105,7 @@ public final class PoolServers {
     /**
      * Lists all currently known remote servers.
      *
-     * Equivalent to calling {@link remoteServers(PoolServerAddress,
+     * Equivalent to calling {@link #remoteServers(PoolServerAddress,
      * String, String)}, with all three arguments equal to null.
      */
     public static Set<PoolServer> remoteServers() {
