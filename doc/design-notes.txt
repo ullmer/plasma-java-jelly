@@ -1,0 +1,24 @@
+https://status.oblong.com/getfile/kjhollen-20130815T185724-6p64zmm.jpeg
+
+There is this interface, NetConnectionFactory.  There are two classes
+that implement it: MemPoolConnection.Factory and
+TCPConnection.Factory.  There are two classes that use it: TCPProxy
+and Server.  But as near as I can tell, MemPoolConnection.Factory is
+only ever fed to TCPProxy, and TCPConnection.Factory is only ever fed
+to Server.  So I don't see what a NetConnectionFactory represents.  It
+is an interface for two different things, that are used in two
+different ways.
+
+I am also puzzled why the parsing of the Pool TCP Protocol is done in
+MemPoolConnection.  Why is something in the "mem" package parsing the
+network protocol?  Shouldn't that be done in the "net" package?
+
+The PoolServerFactory interface is implemented by MemServerFactory and
+TCPServerFactory.  TCPServerFactory creates a new Server and feeds
+TCPConnection.Factory to the Server.  TCPConnection is what actually
+opens the socket to the remote pool server.
+
+So, I think we want TCPServerFactory's register() method to register
+two schemes, both "tcp" and "tcps".  The TCPConnection's constructor
+gets the scheme from the server's address, and uses that to determine
+whether to initiate a TLS connection or a regular connection.

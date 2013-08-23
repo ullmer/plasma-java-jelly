@@ -1,5 +1,5 @@
-// Copyright (c) 2010 Oblong Industries
-// Created: Thu Jun 10 22:55:16 2010
+
+/* (c)  oblong industries */
 
 package com.oblong.jelly;
 
@@ -20,10 +20,10 @@ import net.jcip.annotations.NotThreadSafe;
  * metadata.
  *
  * <p> A Hose maintains some local state, relevant to the client using
- * it. Most notable, and index which denotes the position on the
+ * it.  Most notably, an index which denotes the position on the
  * pool's protein stream. This position (returned by {@link #index})
  * is used implicitly by protein retrieval methods that do not specify
- * a explicitly position in the stream.
+ * an explicit position in the stream.
  *
  * <p> A second piece of local state is a free form name that client
  * code can assign, and mutate at any time. This name can be used in
@@ -41,7 +41,7 @@ import net.jcip.annotations.NotThreadSafe;
  * consumed by a Hose should be explicitly released (using {@link
  * #withdraw}), to ensure their proper and timely management.
  *
- * <p> Regarding error reporting, this interfaces follows the usual
+ * <p> Regarding error reporting, this interface follows the usual
  * policy with pool errors in jelly: methods have a throws
  * PoolException clause and will throw all the appropriate subtypes,
  * that can be caught specifically if you so desire (see discussion
@@ -438,7 +438,7 @@ public interface Hose {
     boolean poll(Slaw... descrips) throws PoolException;
 
     /**
-     * Retrieves polled protein, if available, withouth modifying the
+     * Retrieves polled protein, if available, without modifying the
      * local index. This protein will almost always be available if a
      * previous call to {@link #poll} returned true (see note below).
      * It may also happen that it the intervening time the requested
