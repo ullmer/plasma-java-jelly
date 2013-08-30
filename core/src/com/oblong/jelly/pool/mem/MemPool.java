@@ -188,5 +188,6 @@ final public class MemPool {
     private static ConcurrentHashMap<String, MemPool> pools =
         new ConcurrentHashMap<String, MemPool>();
 
+    // WTF: that's a million, not a thousand
     private static final int THOUSAND = 1000000;
 }
