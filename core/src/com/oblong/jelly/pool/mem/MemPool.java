@@ -1,4 +1,5 @@
-// Copyright (c) 2010 Oblong Industries
+
+/* (c)  oblong industries */
 
 package com.oblong.jelly.pool.mem;
 
@@ -15,9 +16,7 @@ import com.oblong.jelly.pool.PoolProtein;
 @ThreadSafe
 final public class MemPool {
 
-
-
-	static boolean exists(String name) {
+    static boolean exists(String name) {
         return pools.containsKey(name);
     }
 
@@ -150,7 +149,7 @@ final public class MemPool {
     }
 
     private MemPool(String name) {
-	    this(name, 1000*1000 /* default max pool size.  Arbitrary.*/);
+        this (name, 1000 * 1000 /* default max pool size.  Arbitrary.*/);
     }
 
     private MemPool(String name, long size) {

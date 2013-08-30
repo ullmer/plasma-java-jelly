@@ -130,8 +130,9 @@ public class MemHose implements Hose {
 
     @Override public Protein awaitNext(long period, TimeUnit unit)
         throws PoolException, TimeoutException {
-    	final PoolProtein p = await(unit.toMillis(period)/1000.00);
-    	if (p == null) throw new TimeoutException();
+        final PoolProtein p = await (unit . toMillis (period) / 1000.00);
+        if (p == null)
+            throw new TimeoutException();
         return checkProtein(p);
     }
 
@@ -227,7 +228,8 @@ public class MemHose implements Hose {
     }
 
     private void checkConnected() throws PoolException {
-    	if (!connected) throw new NoSuchPoolException(0);
+        if (! connected)
+            throw new NoSuchPoolException (0);
     }
 
     private PoolProtein partialProtein(long idx, boolean d,
@@ -250,11 +252,11 @@ public class MemHose implements Hose {
     private boolean connected;
     private PoolAddress address;
 
-	public MemPool getPool() {
-		return pool;
-	}
+    public MemPool getPool () {
+        return pool;
+    }
 
-	private final MemPool pool;
+    private final MemPool pool;
     private PoolProtein polled;
     private long polledIndex;
 
