@@ -23,7 +23,7 @@ import com.oblong.jelly.ProteinMetadata;
 import com.oblong.jelly.Slaw;
 import com.oblong.jelly.pool.PoolProtein;
 
-final class MemHose implements Hose {
+public class MemHose implements Hose {
 
     @Override public int version() { return 3; }
 
@@ -136,7 +136,7 @@ final class MemHose implements Hose {
     }
 
     @Override public Protein awaitNext() throws PoolException {
-        return checkProtein(await(-1));
+        return checkProtein(await(-1)); // wtf -1 ?
     }
 
     @Override public Protein previous(Slaw... descrips) throws PoolException {
@@ -165,7 +165,7 @@ final class MemHose implements Hose {
         return dup();
     }
 
-    MemHose(MemPool pool, PoolServerAddress addr) {
+    public MemHose(MemPool pool, PoolServerAddress addr) {
         this.pool = pool;
         index = 0;
         connected = true;
@@ -211,7 +211,7 @@ final class MemHose implements Hose {
         return p;
     }
 
-    private PoolProtein await(double timeout) throws PoolException {
+    protected PoolProtein await(double timeout) throws PoolException {
         if (timeout == 0) return getNext();
         PoolProtein p = maybePolled();
         if (p == null) p = pool.next(index, timeout);
@@ -249,7 +249,12 @@ final class MemHose implements Hose {
     private long index;
     private boolean connected;
     private PoolAddress address;
-    private MemPool pool;
+
+	public MemPool getPool() {
+		return pool;
+	}
+
+	private final MemPool pool;
     private PoolProtein polled;
     private long polledIndex;
 
