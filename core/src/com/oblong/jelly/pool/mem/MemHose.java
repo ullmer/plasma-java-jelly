@@ -175,7 +175,7 @@ final class MemHose implements Hose {
             address = new PoolAddress(addr, pool.name());
             name = address.toString();
         } catch (BadAddressException e) {
-            assert false;
+            assert false; // wtf?
             address = null;
             name = null;
         }

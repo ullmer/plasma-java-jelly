@@ -13,13 +13,19 @@ import com.oblong.jelly.PoolOptions;
 import com.oblong.jelly.pool.PoolProtein;
 
 @ThreadSafe
-final class MemPool {
+final public class MemPool {
 
-    static boolean exists(String name) {
+
+
+	static boolean exists(String name) {
         return pools.containsKey(name);
     }
 
-    static MemPool create(String name, PoolOptions opts) {
+    public static MemPool create(String name) {
+        return create(name, PoolOptions.MEDIUM);
+    }
+
+    public static MemPool create(String name, PoolOptions opts) {
         if (exists(name)) return null;
         final MemPool p = new MemPool(name, opts.poolSize());
         final MemPool old = pools.putIfAbsent(name, p);
@@ -144,8 +150,7 @@ final class MemPool {
     }
 
     private MemPool(String name) {
-        this.name = name;
-        this.max_size = 10000000; //  10 MB default max pool size.  Arbitrary.
+	    this(name, 1000*1000 /* default max pool size.  Arbitrary.*/);
     }
 
     private MemPool(String name, long size) {
