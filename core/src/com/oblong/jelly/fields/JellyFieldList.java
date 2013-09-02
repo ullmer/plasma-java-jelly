@@ -22,4 +22,9 @@ public class JellyFieldList extends JellyField<List<Slaw>> {
 	protected List<Slaw> getCustom(Slaw containingSlaw) {
 		return containingSlaw.emitList();
 	}
+
+	@Override
+	public Slaw toSlaw(List<Slaw> value) {
+		return Slaw.list(value);
+	}
 }

@@ -128,7 +128,7 @@ public final class JavaSlawFactory implements SlawFactory {
         return SlawCons.valueOf(car, cdr);
     }
 
-    @Override public Slaw list(Slaw... sx) { return SlawList.valueOf(sx); }
+    @Override public SlawList list(Slaw... sx) { return SlawList.valueOf(sx); }
 
     @Override public Slaw list(List<Slaw> sx) {
         return SlawList.valueOf(sx);

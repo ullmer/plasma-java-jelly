@@ -17,7 +17,7 @@ import com.oblong.jelly.slaw.java.SlawMap;
 public abstract class JellyField <Type> {
 
 	private final String name;
-	private Slaw nameSlaw;
+	private final Slaw nameSlaw;
 
 	public JellyField(String name) {
 		this.name = name;
@@ -38,4 +38,9 @@ public abstract class JellyField <Type> {
 
 	protected abstract Type getCustom(Slaw slaw);
 
+	public Slaw getNameSlaw() {
+		return nameSlaw;
+	}
+
+	public abstract Slaw toSlaw(Type value);
 }

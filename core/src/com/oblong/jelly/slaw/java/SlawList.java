@@ -16,11 +16,11 @@ import com.oblong.jelly.SlawIlk;
 import net.jcip.annotations.Immutable;
 
 @Immutable
-final class SlawList extends JavaSlaw {
+public final class SlawList extends JavaSlaw {
     static final SlawList EMPTY_LIST =
         new SlawList(new ArrayList<Slaw>(), false);
 
-    static Slaw valueOf(Slaw... sx) {
+    static SlawList valueOf(Slaw... sx) {
         if (sx.length == 0) return EMPTY_LIST;
         return new SlawList(sx);
     }

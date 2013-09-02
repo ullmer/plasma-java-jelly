@@ -20,4 +20,9 @@ public class JellyFieldMap extends JellyField<SlawMap> {
 	protected SlawMap getCustom(Slaw slaw) {
 		return (SlawMap) slaw;
 	}
+
+	@Override
+	public Slaw toSlaw(SlawMap value) {
+		return value;
+	}
 }

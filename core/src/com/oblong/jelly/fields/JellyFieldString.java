@@ -20,4 +20,9 @@ public class JellyFieldString extends JellyField<String> {
 	public String getCustom(Slaw slaw) {
 		return slaw.emitString();
 	}
+
+	@Override
+	public Slaw toSlaw(String value) {
+		return Slaw.string(value);
+	}
 }

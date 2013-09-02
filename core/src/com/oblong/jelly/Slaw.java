@@ -13,6 +13,8 @@ import java.util.NoSuchElementException;
 
 import static com.oblong.jelly.NumericIlk.*;
 import static com.oblong.jelly.SlawIlk.*;
+
+import com.oblong.jelly.slaw.java.SlawList;
 import net.jcip.annotations.Immutable;
 
 /**
@@ -682,7 +684,7 @@ public abstract class Slaw implements Iterable<Slaw> {
      * discarded. Thus, <code>Slaw.list(null)</code> returns an empty
      * Slaw list, as does <code>Slaw.list()</code>.
      */
-    public static Slaw list(Slaw... s) { return factory.list(s); }
+    public static SlawList list(Slaw... s) { return factory.list(s); }
 
     /**
      * A factory method constructing a Slaw with ilk {@link

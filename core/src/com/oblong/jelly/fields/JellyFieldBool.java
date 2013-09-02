@@ -9,14 +9,19 @@ import com.oblong.jelly.Slaw;
  * Time: 2:29 PM
  * To change this template use File | Settings | File Templates.
  */
-public class JellyFieldBoolean extends JellyField<Boolean> {
+public class JellyFieldBool extends JellyField<Boolean> {
 
-	public JellyFieldBoolean(String name) {
+	public JellyFieldBool(String name) {
 		super(name);
 	}
 
 	@Override
 	protected Boolean getCustom(Slaw slaw) {
 		return slaw.emitBoolean();
+	}
+
+	@Override
+	public Slaw toSlaw(Boolean value) {
+		return Slaw.bool(value);
 	}
 }
