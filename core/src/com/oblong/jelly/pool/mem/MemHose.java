@@ -25,6 +25,8 @@ import com.oblong.jelly.pool.PoolProtein;
 
 public class MemHose implements Hose {
 
+    /* Ummm... version is an attribute of the TCP pool protocol,
+     * so I'm unclear why we have one here in MemHose. */
     @Override public int version() { return 3; }
 
     @Override public PoolMetadata metadata() {
@@ -130,13 +132,19 @@ public class MemHose implements Hose {
 
     @Override public Protein awaitNext(long period, TimeUnit unit)
         throws PoolException, TimeoutException {
-    	final PoolProtein p = await(unit.toMillis(period)/1000.00);
-    	if (p == null) throw new TimeoutException();
+        final PoolProtein p = await (unit . toMillis (period) / 1000.00);
+        if (p == null)
+            throw new TimeoutException();
         return checkProtein(p);
     }
 
     @Override public Protein awaitNext() throws PoolException {
-        return checkProtein(await(-1)); // wtf -1 ?
+        /* -1 means "wait forever", although it might be nice to have
+         * a defined constant for it, like POOL_WAIT_FOREVER which
+         * is #defined in libPlasma/c/pool.h.  And actually, Jelly
+         * does define constants for WAIT_FOREVER and NO_WAIT, but
+         * they are in NetHose, and are private. */
+        return checkProtein (await (-1));
     }
 
     @Override public Protein previous(Slaw... descrips) throws PoolException {
@@ -175,6 +183,12 @@ public class MemHose implements Hose {
             address = new PoolAddress(addr, pool.name());
             name = address.toString();
         } catch (BadAddressException e) {
+            /* The PoolAddress constructor throws BadAddressException
+             * if the pool name is empty.  I guess what Jao is asserting here
+             * is that pool.name() can't be the empty string.  This might
+             * be a good place to call your new exception handler thingy.
+             * Or my inclination would be to throw a RuntimeException that
+             * wraps the BadAddressException. */
             assert false; // wtf?
             address = null;
             name = null;
@@ -227,7 +241,8 @@ public class MemHose implements Hose {
     }
 
     private void checkConnected() throws PoolException {
-    	if (!connected) throw new NoSuchPoolException(0);
+        if (! connected)
+            throw new NoSuchPoolException (0);
     }
 
     private PoolProtein partialProtein(long idx, boolean d,
@@ -250,11 +265,11 @@ public class MemHose implements Hose {
     private boolean connected;
     private PoolAddress address;
 
-	public MemPool getPool() {
-		return pool;
-	}
+    public MemPool getPool () {
+        return pool;
+    }
 
-	private final MemPool pool;
+    private final MemPool pool;
     private PoolProtein polled;
     private long polledIndex;
 

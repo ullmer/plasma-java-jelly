@@ -376,6 +376,19 @@ public class HoseTests {
         defHose.rewind();
         for (int i = 0; i < TLEN; ++i) {
             assertTrue(defHose.poll());
+            /* Documentation for Hose.peek says:
+             * "If you call peek immediately after poll,
+             * there's a slim chance that the protein is still arriving from
+             * the server, in which case peek will return null even after a
+             * positive poll."
+             * Which means that this test is nondeterministic, and therefore,
+             * in my worldview, no good at all.  But to give it a slightly
+             * greater chance of passing, let's sleep a little first. */
+            try {
+                Thread.sleep (100);
+            } catch (InterruptedException e) {
+                throw new RuntimeException (e);
+            }
             assertEquals(depProteins[i], defHose.peek());
             defHose.oldestIndex();
             assertEquals(depProteins[i], defHose.next());
