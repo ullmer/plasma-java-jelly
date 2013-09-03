@@ -20,7 +20,7 @@ import net.jcip.annotations.Immutable;
 @Immutable
 public final class SlawMap extends JavaSlaw implements ISlawMap {
 
-    static Slaw valueOf(Map<Slaw,Slaw> map) {
+    static SlawMap valueOf(Map<Slaw,Slaw> map) {
         if (map == null) return EMPTY_MAP;
         List<Slaw> ls = new ArrayList<Slaw>(map.size());
         for (Map.Entry<Slaw,Slaw> e : map.entrySet()) {

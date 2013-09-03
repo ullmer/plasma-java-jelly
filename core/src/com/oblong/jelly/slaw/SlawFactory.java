@@ -6,11 +6,9 @@ import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
 
-import com.oblong.jelly.NumericIlk;
-import com.oblong.jelly.Protein;
-import com.oblong.jelly.Slaw;
-import com.oblong.jelly.SlawIlk;
+import com.oblong.jelly.*;
 import com.oblong.jelly.slaw.java.SlawList;
+import com.oblong.jelly.slaw.java.SlawMap;
 
 /**
  * Created: Mon Apr 26 01:28:28 2010
@@ -45,7 +43,7 @@ public interface SlawFactory {
     Slaw list(List<Slaw> s);
     SlawList list(Slaw... s);
 
-    Slaw map(Map<Slaw,Slaw> m);
+    SlawMap map(Map<Slaw,Slaw> m);
     Slaw map(Slaw... kvs);
     Slaw map(List<Slaw> s);
 

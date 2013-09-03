@@ -134,7 +134,7 @@ public final class JavaSlawFactory implements SlawFactory {
         return SlawList.valueOf(sx);
     }
 
-    @Override public Slaw map(Map<Slaw,Slaw> m) {
+    @Override public SlawMap map(Map<Slaw,Slaw> m) {
         return SlawMap.valueOf(m);
     }
 

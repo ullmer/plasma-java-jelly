@@ -2,6 +2,7 @@ package com.oblong.jelly.slaw;
 
 import com.oblong.jelly.Slaw;
 import com.oblong.jelly.fields.JellyField;
+import com.oblong.jelly.slaw.java.SlawMap;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,7 +21,7 @@ public class MapSlawToSlaw {
 		map.put(field.getNameSlaw(), field.toSlaw(value));
 	}
 
-	public Slaw toSlaw() {
+	public SlawMap toSlaw() {
 		return Slaw.map(this.map);
 	}
 }
