@@ -3,6 +3,7 @@ package com.oblong.jelly.schema;
 import com.oblong.jelly.Slaw;
 import com.oblong.jelly.schema.fields.JellyField;
 import com.oblong.jelly.slaw.MapSlawToSlaw;
+import com.oblong.jelly.slaw.java.SlawMap;
 
 /**
  * Created with IntelliJ IDEA.
@@ -26,7 +27,7 @@ public abstract class UnmarshalledSlaw {
 
 	public abstract SlawSchema getSchema();
 
-	public Slaw toSlaw() {
+	public SlawMap toSlaw() {
 		return mapSlawToSlaw.toSlaw();
 	}
 }

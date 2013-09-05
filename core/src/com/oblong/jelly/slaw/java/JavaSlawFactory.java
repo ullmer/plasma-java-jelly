@@ -26,7 +26,7 @@ public final class JavaSlawFactory implements SlawFactory {
     @Override public Slaw bool(boolean v) {
         return SlawBool.valueOf(v); }
 
-    @Override public Slaw string(String s) {
+    @Override public SlawString string(String s) {
         if (s == null) throw new IllegalArgumentException("Null string");
         return SlawString.valueOf(s);
     }

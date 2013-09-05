@@ -10,9 +10,9 @@ import com.oblong.jelly.Slaw;
 import com.oblong.jelly.SlawIlk;
 
 @Immutable
-final class SlawString extends AtomicSlaw {
+public final class SlawString extends AtomicSlaw {
 
-    static Slaw valueOf(String s) { return new SlawString(s); }
+    static SlawString valueOf(String s) { return new SlawString(s); }
 
     @Override public SlawIlk ilk() { return SlawIlk.STRING; }
     @Override public NumericIlk numericIlk() { return null; }

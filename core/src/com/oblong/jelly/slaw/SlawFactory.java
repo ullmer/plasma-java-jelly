@@ -9,6 +9,7 @@ import java.util.Map;
 import com.oblong.jelly.*;
 import com.oblong.jelly.slaw.java.SlawList;
 import com.oblong.jelly.slaw.java.SlawMap;
+import com.oblong.jelly.slaw.java.SlawString;
 
 /**
  * Created: Mon Apr 26 01:28:28 2010
@@ -19,7 +20,7 @@ public interface SlawFactory {
 
     Slaw nil();
     Slaw bool(boolean v);
-    Slaw string(String s);
+	SlawString string(String s);
 
     Slaw number(NumericIlk ilk, long n);
     Slaw number(NumericIlk ilk, double n);

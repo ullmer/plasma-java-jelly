@@ -102,6 +102,6 @@ public final class SlawMap extends JavaSlaw implements ISlawMap {
 
 	@Override
 	public <Type> Type get(JellyField<Type> field) {
-		return field.get(this);
+		return field.getFrom(this);
 	}
 }

@@ -272,6 +272,6 @@ public abstract class Protein extends Slaw implements ISlawMap {
 
 	@Override
     public <Type> Type get(JellyField<Type> field) {
-        return field.get((SlawMap) this.ingests());
+        return field.getFrom((SlawMap) this.ingests());
     }
 }

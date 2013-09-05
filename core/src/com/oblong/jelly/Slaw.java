@@ -16,6 +16,7 @@ import static com.oblong.jelly.SlawIlk.*;
 
 import com.oblong.jelly.slaw.java.SlawList;
 import com.oblong.jelly.slaw.java.SlawMap;
+import com.oblong.jelly.slaw.java.SlawString;
 import net.jcip.annotations.Immutable;
 
 /**
@@ -761,7 +762,7 @@ public abstract class Slaw implements Iterable<Slaw> {
      * A factory method creating a Slaw with ilk {@link SlawIlk#STRING}.
      * When serialized, Slaw strings are always encoded using UTF-8.
      */
-    public static Slaw string(String s) { return factory.string(s); }
+    public static SlawString string(String s) { return factory.string(s); }
 
     /**
      * Equivalent to calling <code>Slaw.number(SlawIlk.INT8, n)</code>.
