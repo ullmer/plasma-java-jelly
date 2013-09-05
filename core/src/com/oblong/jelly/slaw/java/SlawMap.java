@@ -14,7 +14,7 @@ import com.oblong.jelly.NumericIlk;
 import com.oblong.jelly.Slaw;
 import com.oblong.jelly.SlawIlk;
 
-import com.oblong.jelly.fields.JellyField;
+import com.oblong.jelly.schema.fields.JellyField;
 import net.jcip.annotations.Immutable;
 
 @Immutable

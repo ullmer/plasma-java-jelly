@@ -14,6 +14,10 @@ import com.oblong.jelly.Slaw;
 @Immutable
 final class SlawProtein extends Protein {
 
+    private final Slaw descrips;
+    private final Slaw ingests;
+    private final byte[] data;
+
     static SlawProtein valueOf(Slaw descrips, Slaw ingests, byte[] data) {
         return new SlawProtein(descrips, ingests, data);
     }
@@ -39,7 +43,4 @@ final class SlawProtein extends Protein {
         data = b == null? new byte[0] : b;
     }
 
-    private final Slaw descrips;
-    private final Slaw ingests;
-    private final byte[] data;
 }

@@ -1,7 +1,6 @@
-package com.oblong.jelly.fields;
+package com.oblong.jelly.schema.fields;
 
 import com.oblong.jelly.Slaw;
-import com.oblong.jelly.slaw.java.SlawMap;
 
 import java.util.List;
 

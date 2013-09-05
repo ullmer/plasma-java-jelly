@@ -1,6 +1,6 @@
 package com.oblong.jelly;
 
-import com.oblong.jelly.fields.JellyField;
+import com.oblong.jelly.schema.fields.JellyField;
 
 /**
 * Created with IntelliJ IDEA.

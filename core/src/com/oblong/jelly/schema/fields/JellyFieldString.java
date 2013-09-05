@@ -1,7 +1,7 @@
-package com.oblong.jelly.fields;
+package com.oblong.jelly.schema.fields;
 
 import com.oblong.jelly.Slaw;
-import com.oblong.jelly.slaw.java.SlawMap;
+import com.oblong.jelly.schema.SlawSchema;
 
 /**
  * Created with IntelliJ IDEA.
@@ -14,6 +14,10 @@ public class JellyFieldString extends JellyField<String> {
 
 	public JellyFieldString(String name) {
 		super(name);
+	}
+
+	public JellyFieldString(String name, SlawSchema schema) {
+		super(name, schema);
 	}
 
 	@Override

@@ -1,6 +1,7 @@
-package com.oblong.jelly.fields;
+package com.oblong.jelly.schema.fields;
 
 import com.oblong.jelly.Slaw;
+import com.oblong.jelly.schema.SlawSchema;
 
 /**
  * Created with IntelliJ IDEA.
@@ -11,8 +12,8 @@ import com.oblong.jelly.Slaw;
  */
 public class JellyFieldInt extends JellyField<Integer> {
 
-	public JellyFieldInt(String name) {
-		super(name);
+	public JellyFieldInt(String name, SlawSchema schema) {
+		super(name, schema);
 	}
 
 	@Override

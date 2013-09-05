@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import com.oblong.jelly.fields.JellyField;
+import com.oblong.jelly.schema.fields.JellyField;
 import com.oblong.jelly.slaw.java.SlawMap;
 import net.jcip.annotations.Immutable;
 

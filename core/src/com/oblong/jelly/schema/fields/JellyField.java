@@ -1,7 +1,8 @@
-package com.oblong.jelly.fields;
+package com.oblong.jelly.schema.fields;
 
-import com.oblong.jelly.Protein;
 import com.oblong.jelly.Slaw;
+import com.oblong.jelly.schema.SlawSchema;
+import com.oblong.jelly.schema.UnmarshalledSlaw;
 import com.oblong.jelly.slaw.java.SlawMap;
 
 /**
@@ -17,11 +18,20 @@ import com.oblong.jelly.slaw.java.SlawMap;
 public abstract class JellyField <Type> {
 
 	private final String name;
+	private final SlawSchema schema;
 	private final Slaw nameSlaw;
 
 	public JellyField(String name) {
+		this(name, null);
+	}
+
+	public JellyField(String name, SlawSchema schema) {
 		this.name = name;
+		this.schema = schema;
 		this.nameSlaw = Slaw.string(name);
+		if ( schema != null ) {
+			schema.add(this);
+		}
 	}
 
 	public String getName() {
@@ -43,4 +53,14 @@ public abstract class JellyField <Type> {
 	}
 
 	public abstract Slaw toSlaw(Type value);
+
+
+	@Override
+	public String toString() {
+		return super.toString() + ";name=" + getName();
+	}
+
+	public void set(UnmarshalledSlaw unmarshalledSlaw, Type value) {
+		unmarshalledSlaw.put(this, value);
+	}
 }
