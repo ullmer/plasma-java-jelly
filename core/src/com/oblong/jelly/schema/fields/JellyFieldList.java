@@ -1,7 +1,11 @@
 package com.oblong.jelly.schema.fields;
 
 import com.oblong.jelly.Slaw;
+import com.oblong.jelly.schema.HasToSlaw;
+import com.oblong.jelly.schema.SlawSchema;
+import com.oblong.jelly.schema.UnmarshalledSlaw;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -13,8 +17,8 @@ import java.util.List;
  */
 public class JellyFieldList extends JellyField<List<Slaw>> {
 
-	public JellyFieldList(String name) {
-		super(name);
+	public JellyFieldList(String name, SlawSchema schema) {
+		super(name, schema);
 	}
 
 	@Override
@@ -25,5 +29,13 @@ public class JellyFieldList extends JellyField<List<Slaw>> {
 	@Override
 	public Slaw toSlaw(List<Slaw> value) {
 		return Slaw.list(value);
+	}
+
+	public void putTo(UnmarshalledSlaw targetUnmarshalledSlaw, List<? extends HasToSlaw> listUSlaws) {
+		List<Slaw> listSlaws = new ArrayList<Slaw>();
+		for (HasToSlaw uSlaw : listUSlaws) {
+			listSlaws.add(uSlaw.toSlaw());
+		}
+		targetUnmarshalledSlaw.put(this, listSlaws);
 	}
 }

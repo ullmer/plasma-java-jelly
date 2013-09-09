@@ -12,7 +12,7 @@ import com.oblong.jelly.slaw.java.SlawMap;
  * Time: 3:50 PM
  * To change this template use File | Settings | File Templates.
  */
-public abstract class UnmarshalledSlaw {
+public abstract class UnmarshalledSlaw implements HasToSlaw {
 
 	protected MapSlawToSlaw mapSlawToSlaw = new MapSlawToSlaw();
 
