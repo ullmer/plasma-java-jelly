@@ -98,13 +98,14 @@ final public class MemPool {
                 while (nanos > 0 && p == null) {
                     final long start = System.currentTimeMillis();
                     try {
-                        proteins.wait(nanos/THOUSAND,
-                                      (int)(nanos % THOUSAND));
+                        proteins.wait(nanos / NANOS_PER_MILLI,
+                                      (int)(nanos % NANOS_PER_MILLI));
                     } catch (InterruptedException e) {
                         return null;
                     }
                     p = nth(index);
-                    nanos -= (System.currentTimeMillis() - start) * THOUSAND;
+                    nanos -= ((System.currentTimeMillis() - start)
+                              * NANOS_PER_MILLI);
                 }
             }
         }
@@ -188,6 +189,6 @@ final public class MemPool {
     private static ConcurrentHashMap<String, MemPool> pools =
         new ConcurrentHashMap<String, MemPool>();
 
-    // WTF: that's a million, not a thousand
-    private static final int THOUSAND = 1000000;
+    // nanoseconds per millisecond (1e6)
+    private static final int NANOS_PER_MILLI = 1000000;
 }
