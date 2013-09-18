@@ -17,6 +17,7 @@ import static com.oblong.jelly.SlawIlk.*;
 import com.oblong.jelly.slaw.java.SlawList;
 import com.oblong.jelly.slaw.java.SlawMap;
 import com.oblong.jelly.slaw.java.SlawString;
+import com.oblong.jelly.util.ExceptionHandler;
 import net.jcip.annotations.Immutable;
 
 /**
@@ -652,8 +653,10 @@ public abstract class Slaw implements Iterable<Slaw> {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         try {
             externalizer.extern(this, os);
-        } catch (Exception e) {
-            return "(Exception during toString: "+e+")";
+        } catch (Throwable e) {
+            String msg = "(Exception during Slaw::toString: " + e + ")";
+            ExceptionHandler.handleException(e, msg);
+            return msg;
         }
         return os.toString();
     }

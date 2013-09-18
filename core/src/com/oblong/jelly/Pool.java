@@ -3,6 +3,10 @@
 
 package com.oblong.jelly;
 
+import com.oblong.jelly.util.ExceptionHandler;
+import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.util.Base64Coder;
+
 import java.util.Set;
 
 /**

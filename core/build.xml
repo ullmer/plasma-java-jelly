@@ -129,6 +129,9 @@
     <unjar src="${lib.dir}/snakeyaml-1.7.jar"
            dest="${build.3rdparty.dir}"
            overwrite="true" />
+    <unjar src="${lib.dir}/jcip-annotations.jar"
+           dest="${build.3rdparty.dir}"
+           overwrite="true" />
   </target>
 
   <target name="standalone-jar" depends="compile,-manifest,-extract-3rdparty"

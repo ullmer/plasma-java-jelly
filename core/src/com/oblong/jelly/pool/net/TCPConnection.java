@@ -195,11 +195,28 @@ final class TCPConnection implements NetConnection {
     }
 
     private static Slaw getResultCode(Slaw ret) throws InOutException {
-        if (!ret.isProtein() || ret.toProtein().ingests() == null)
-            throw new InOutException("Non-protein received from server");
+        // Sorry for the bloated exception handling in this method, but we are investigating an elusive problem and
+        // we need all the debug info we can get...
+
+        if (!ret.isProtein() || ret.toProtein().ingests() == null) {
+            String safeMsg = "Non-protein received from server; ret.ilk()= " + ret.ilk();
+            ExceptionHandler.handleException(safeMsg + "; slaw will be printed in " +
+                    "subsequent line, to avoid calling complex toString method on Slaw now");
+            String msgWithDetails = safeMsg + "; (more details: ) ret.toString(): " + ret.toString();
+            ExceptionHandler.handleException(msgWithDetails);
+
+            throw new InOutException(msgWithDetails);
+        }
         final Slaw code = ret.toProtein().ingests().find(OP_KEY);
-        if (!VALID_RESULTS.contains(code))
-            throw new InOutException("Unexpected response code: " + ret);
+        if (!VALID_RESULTS.contains(code)) {
+            String safeMsg = "getResultCode: Unexpected response code. !VALID_RESULTS.contains(code). ret.ilk()=" +
+                    ret.ilk() + "; code.ilk()=" + code.ilk() + ";";
+            ExceptionHandler.handleException(safeMsg + "slaw will be printed in " +
+                    "subsequent line, to avoid calling complex toString method on Slaw now");
+            String msgWithDetails = safeMsg + " (more details: ) code=" + code + "; ret=" + ret;
+            ExceptionHandler.handleException(msgWithDetails);
+            throw new InOutException(msgWithDetails);
+        }
         return code;
     }
 
