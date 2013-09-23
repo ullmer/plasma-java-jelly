@@ -82,7 +82,17 @@ final class TCPConnection implements NetConnection {
         try {
             if (input.available() > 0) {
                 read(false);
-                while (input.available() > 0) input.read();
+	            //TODO: posssible solution commented out
+	            //since produces OutOfMemoryException
+//                if (input.available() > 0) {
+//                    ExceptionHandler.handleException(
+//                        "____disabled_ Seems like eating bytes from InputStream! while (input.available() > 0) input.read()");
+//                }
+                while (input.available() > 0) {
+                    ExceptionHandler.handleException(
+                            "_disabled_ Seems like eating bytes from InputStream! while (input.available() > 0) input.read()");
+                    input.read(); // TODO: investigate if commenting-out this fixes missing protein problem
+                }
             }
         } catch (Exception e) {
             ExceptionHandler.handleException(e, "polled() - e.g. input.read()");
@@ -188,9 +198,13 @@ final class TCPConnection implements NetConnection {
         if (CMD_RESULT.equals(code)) return args;
         if (FANCY_CMD_R1.equals(code)) return args;
         if (FANCY_CMD_R2.equals(code)) {
-            if (positiveR2(args)) return read(cont);
+            if (positiveR2(args)) {
+                return read(cont);
+            }
         }
-        if (FANCY_CMD_R3.equals(code)) updateAsync(args);
+        if (FANCY_CMD_R3.equals(code)) {
+            updateAsync(args);
+        }
         return cont ? read(cont) : null;
     }
 
@@ -254,6 +268,8 @@ final class TCPConnection implements NetConnection {
                                                   r3Index(args.nth(1)),
                                                   args.nth(0).emitDouble(),
                                                   hose);
+        } else {
+            ExceptionHandler.handleException("updateAsync: condition not fulfilled (troubleshooting)");
         }
     }
 
