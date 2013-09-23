@@ -26,7 +26,7 @@ import com.oblong.jelly.pool.PoolProtein;
 import com.oblong.jelly.slaw.SlawFactory;
 
 @NotThreadSafe
-final class NetHose implements Hose {
+public final class NetHose implements Hose {
 
     @Override public int version() {
         return connection.version();

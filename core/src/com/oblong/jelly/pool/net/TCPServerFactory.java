@@ -153,7 +153,7 @@ public final class TCPServerFactory
     private final List<Listener> listeners = new ArrayList<Listener>();
     private volatile JmDNS jmDNS = null;
 
-    private static final String SCM = "tcp";
+    public static final String SCM = "tcp";
     private static final String SCM_SRV = "_pool-server._tcp.local.";
     private static final Logger logger =
         Logger.getLogger(TCPServerFactory.class.getName());
