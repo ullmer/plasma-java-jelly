@@ -82,8 +82,8 @@ final class TCPConnection implements NetConnection {
         try {
             if (input.available() > 0) {
                 read(false);
-                //TODO: posssible solution commented out
-                //since it seems to produce one-time corruption, which manifested e.g. in OutOfMemoryException(huge one-time memory allocation attempt ~700MB)
+                // TODO: posssible solution commented out, since it seems to produce one-time corruption,
+                // which manifested itself e.g. in OutOfMemoryException (huge one-time memory allocation attempt ~700MB)
                 // and missing protein and possibly "not a protein" nibble
 //                if (input.available() > 0) {
 //                    ExceptionHandler.handleException(
