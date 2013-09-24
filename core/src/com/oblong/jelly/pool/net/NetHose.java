@@ -306,7 +306,7 @@ public final class NetHose implements Hose {
     private Protein await(long t, TimeUnit u)
         throws PoolException, TimeoutException {
         checkConnection();
-        if (t > 0) connection.setTimeout(u.toMillis(t) + 100,
+        if (t > 0) connection.setTimeout(u.toMillis(t) + 100, // wtf: why + 100 ms ?
                                          TimeUnit.MILLISECONDS);
         try {
             final Protein p = maybePolled();
