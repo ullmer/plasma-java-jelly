@@ -82,16 +82,22 @@ final class TCPConnection implements NetConnection {
         try {
             if (input.available() > 0) {
                 read(false);
-	            //TODO: posssible solution commented out
-	            //since produces OutOfMemoryException
+                //TODO: posssible solution commented out
+                //since it seems to produce one-time corruption, which manifested e.g. in OutOfMemoryException(huge one-time memory allocation attempt ~700MB)
+                // and missing protein and possibly "not a protein" nibble
 //                if (input.available() > 0) {
 //                    ExceptionHandler.handleException(
 //                        "____disabled_ Seems like eating bytes from InputStream! while (input.available() > 0) input.read()");
 //                }
+                int numBytesEaten = 0;
                 while (input.available() > 0) {
+                    numBytesEaten ++;
+                    input.read();
+                }
+                if ( numBytesEaten > 0 ) {
                     ExceptionHandler.handleException(
-                            "_disabled_ Seems like eating bytes from InputStream! while (input.available() > 0) input.read()");
-                    input.read(); // TODO: investigate if commenting-out this fixes missing protein problem
+                             "" + numBytesEaten + " bytes were eaten by polled()");
+
                 }
             }
         } catch (Exception e) {
