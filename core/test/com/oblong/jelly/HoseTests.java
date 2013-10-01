@@ -23,7 +23,17 @@ import static com.oblong.jelly.Slaw.*;
  */
 public class HoseTests {
 
-    public static class Tests<Dummy> {
+
+	private static int currentRound = 0;
+
+	public static int getLastExecutedRound() {
+		return currentRound;
+	}
+
+
+	public static class Tests<Dummy> {
+
+	    private static HoseTests tests;
 
         @Before public void maybeDisable() {
             assumeTrue(tests != null);
@@ -46,6 +56,7 @@ public class HoseTests {
         @Test public void meta() throws Exception { tests.simpleMeta(); }
         @Test public void mixMeta() throws Exception { tests.mixedMeta(); }
 
+
         @Test public void matchingAll() throws Exception {
             tests.matchingAll();
         }
@@ -56,7 +67,9 @@ public class HoseTests {
             tests.matchingSome();
         }
 
-        @Test public void poll() throws Exception { tests.poll(); }
+        @Test public void poll() throws Exception {
+	        tests.poll();
+        }
         @Test public void cancelPoll() throws Exception {
             tests.cancelledPoll();
         }
@@ -77,29 +90,59 @@ public class HoseTests {
             }
         }
 
-        protected static void initTests(PoolServerAddress addr)
-            throws Exception {
-            if (addr != null) tests = new HoseTests(addr);
-        }
-
-        private static HoseTests tests;
+	    protected static void initTests(PoolServerAddress addr)
+			    throws Exception {
+		    if (addr != null) {
+			    tests = new HoseTests(addr);
+		    } else {
+			    logPoolServerAddressError("HoseTests.initTests");
+		    }
+	    }
     }
 
-    public HoseTests() {
+	public static void logPoolServerAddressError(String classAndMethod) {
+		System.err.println("Nothing tested ... pool server addr is null / not provided");
+	}
+
+	public HoseTests() {
         address = null;
         defHose = null;
         depProteins = null;
+		this.maxNumberOfProteins = DEFAULT_NUMBER_OF_PROTEINS;
     }
 
     public HoseTests(PoolServerAddress addr) throws PoolException {
-        address = addr;
-        final PoolAddress pa = new PoolAddress(address, "default-pool");
-        try { Pool.dispose(pa); } catch (NoSuchPoolException e) {
-	        ExceptionHandler.handleException(e);
-        }
-        defHose = Pool.participate(pa, null);
-        depProteins = deposit(defHose, -1);
+        this.address = addr;
+	    this.defHose = getHoseFromAddress();
+//	    System.out.println("Pool size "defHose.);
+	    this.maxNumberOfProteins = DEFAULT_NUMBER_OF_PROTEINS;
+        this.depProteins = deposit(defHose, -1);
     }
+
+	private Hose getHoseFromAddress() throws PoolException {
+		final PoolAddress pa = getPoolAddress();
+		PoolOptions opts = PoolOptions.MEDIUM;
+		System.out.println("Created pool with capacity "+opts.poolSize());
+		return Pool.participate(pa, opts);
+	}
+
+	private PoolAddress getPoolAddress() throws PoolException {
+		final PoolAddress pa = new PoolAddress(address, "default-pool");
+		try {
+			Pool.dispose(pa);
+		} catch (NoSuchPoolException e) {
+			ExceptionHandler.handleException(e, "HoseTests");
+		}
+		return pa;
+	}
+
+	public HoseTests(PoolServerAddress poolServerAddress, int numberOfDepositedProteins) throws PoolException {
+		this.address = poolServerAddress;
+		this.defHose = getHoseFromAddress();
+
+		this.maxNumberOfProteins = numberOfDepositedProteins;
+		this.depProteins = deposit(defHose, -1);
+	}
 
     public void cleanUp() {
         try { defHose.withdraw(); } catch (Exception e) {
@@ -126,11 +169,11 @@ public class HoseTests {
 
     public void deposit() throws PoolException {
         assertEquals(depProteins[0].index(), defHose.oldestIndex());
-        assertEquals(depProteins[TLEN - 1].index(), defHose.newestIndex());
+        assertEquals(depProteins[maxNumberOfProteins - 1].index(), defHose.newestIndex());
     }
 
     public void nth() throws PoolException {
-        for (int i = 0; i < TLEN; ++i) {
+        for (int i = 0; i < maxNumberOfProteins; ++i) {
             checkProtein(defHose.nth(i), i);
         }
     }
@@ -184,11 +227,11 @@ public class HoseTests {
         assertEquals(depProteins[1].timestamp(), p.timestamp(), 0.0);
         assertEquals(defHose.name(), p.source());
 
-        checkProtein(defHose.nth(TLEN - 1, true, true, true), TLEN - 1);
+        checkProtein(defHose.nth(maxNumberOfProteins - 1, true, true, true), maxNumberOfProteins - 1);
     }
 
     public void simpleMeta() throws PoolException {
-        for (int i = 0; i < TLEN; ++i) {
+        for (int i = 0; i < maxNumberOfProteins; ++i) {
             final ProteinMetadata md =
                 defHose.metadata(new MetadataRequest(i));
             checkMeta(md, i);
@@ -230,7 +273,7 @@ public class HoseTests {
 
     public void next() throws PoolException {
         defHose.rewind();
-        for (int i = 0; i < TLEN; ++i) {
+        for (int i = 0; i < maxNumberOfProteins; ++i) {
             checkProtein(defHose.next(), i);
             assertTrue(i + "th", depProteins[i].index() < defHose.index());
         }
@@ -239,7 +282,7 @@ public class HoseTests {
 
     public void range() throws PoolException {
         defHose.runOut();
-        for (int i = 1; i <= TLEN; ++i) {
+        for (int i = 1; i <= maxNumberOfProteins; ++i) {
             final List<Protein> ps = defHose.range(0, i);
             assertEquals(i, ps.size());
             for (int k = 0; k < i; ++k) checkProtein(ps.get(k), k);
@@ -248,7 +291,7 @@ public class HoseTests {
 
     public void await() throws PoolException, TimeoutException {
         defHose.seekTo(defHose.oldestIndex());
-        for (int i = 0; i < TLEN; ++i) {
+        for (int i = 0; i < maxNumberOfProteins; ++i) {
             checkProtein(defHose.awaitNext(1, TimeUnit.SECONDS), i);
             assertTrue(i + "th", depProteins[i].index() < defHose.index());
         }
@@ -275,7 +318,8 @@ public class HoseTests {
 
     public void awaitNext() throws PoolException {
         defHose.seekTo(defHose.oldestIndex());
-        for (int i = 0; i < TLEN; ++i) {
+        for (int i = 0; i < maxNumberOfProteins; ++i) {
+	        currentRound = i;
             checkProtein(defHose.awaitNext(), i);
             assertTrue(i + "th", depProteins[i].index() < defHose.index());
         }
@@ -285,14 +329,14 @@ public class HoseTests {
     public void previous() throws PoolException {
         defHose.runOut();
         assertEquals(defHose.newestIndex() + 1, defHose.index());
-        for (int i = TLEN - 1; i > 0; --i) {
+        for (int i = maxNumberOfProteins - 1; i > 0; --i) {
             checkProtein(defHose.previous(), i);
             assertEquals(i + "th", depProteins[i].index(), defHose.index());
         }
     }
 
     public void current() throws PoolException {
-        for (int i = 0; i < TLEN; i++) {
+        for (int i = 0; i < maxNumberOfProteins; i++) {
             defHose.seekTo(depProteins[i].index());
             checkProtein(defHose.current(), i);
         }
@@ -331,7 +375,7 @@ public class HoseTests {
 
     private void testMatching(Matcher matcher) throws PoolException {
         defHose.rewind();
-        for (int i = 0; i < TLEN; ++i) {
+        for (int i = 0; i < maxNumberOfProteins; ++i) {
             final Slaw[] m = matcher.get(depProteins[i].descrips());
             assertEquals(i + "th", depProteins[i], defHose.next(m));
             assertTrue(i + "th", depProteins[i].index() < defHose.index());
@@ -361,7 +405,7 @@ public class HoseTests {
 
     public void poll() throws PoolException {
         defHose.rewind();
-        for (int i = 0; i < TLEN; ++i) {
+        for (int i = 0; i < maxNumberOfProteins; ++i) {
             assertTrue(defHose.poll());
             assertTrue(defHose.poll());
             assertEquals(depProteins[i], defHose.peek());
@@ -374,7 +418,7 @@ public class HoseTests {
 
     public void cancelledPoll() throws PoolException {
         defHose.rewind();
-        for (int i = 0; i < TLEN; ++i) {
+        for (int i = 0; i < maxNumberOfProteins; ++i) {
             assertTrue(defHose.poll());
             /* Documentation for Hose.peek says:
              * "If you call peek immediately after poll,
@@ -436,7 +480,7 @@ public class HoseTests {
     }
 
     static Protein[] deposit(Hose h, int no) throws PoolException {
-        if (no <= 0) no = TLEN;
+        if (no <= 0) no = maxNumberOfProteins;
         final Protein[] result = new Protein[no];
         for (int i = 0; i < no; ++i)
             try {
@@ -463,6 +507,7 @@ public class HoseTests {
     private final Hose defHose;
     private final Protein[] depProteins;
     private final PoolServerAddress address;
-    private static final int TLEN = 5;
+	public static final int DEFAULT_NUMBER_OF_PROTEINS = 5;
+    public static int maxNumberOfProteins;
 
 }

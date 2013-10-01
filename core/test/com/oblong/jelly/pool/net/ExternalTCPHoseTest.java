@@ -19,6 +19,10 @@ public class ExternalTCPHoseTest extends HoseTests.Tests<TCPConnection> {
 
     @BeforeClass public static void setUp() throws Exception {
         final PoolServer s = PoolServerTestBase.externalServer();
-        if (s != null) initTests(s.address());
+        if (s != null) {
+	        initTests(s.address());
+        } else {
+	        HoseTests.logPoolServerAddressError("ExternalTCPHoseTest.setUp");
+        }
     }
 }

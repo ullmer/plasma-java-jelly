@@ -1,0 +1,7 @@
+ant -Dtestcase=com.oblong.jelly.pool.net.ExternalTCPHoseTest test
+ant -Dtestcase=com.oblong.jelly.pool.mem.MemHoseTest test
+ant -Dtestcase=com.oblong.jelly.AsyncHoseTestBase test
+
+
+ant -Dtestcase=com.oblong.jelly.pool.net.TCPHoseTest test
+ant -Dtestcase=com.oblong.jelly.pool.net.ZTCPHoseTestMultipleProteins -Dtest.server=tcp://localhost:65456 external-test

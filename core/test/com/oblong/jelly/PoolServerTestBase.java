@@ -41,15 +41,21 @@ public class PoolServerTestBase {
     }
 
     public static PoolServer externalServer() {
+
+	    //TODO: what is this supposed to return? on my pc it always returns null
         String uri = System.getProperty("com.oblong.jelly.externalServer");
+
         PoolServer s = null;
         if (uri != null && !uri.isEmpty()) {
+	        System.out.println("uri is "+uri);
             try {
                 s = PoolServers.get(PoolServerAddress.fromURI(uri));
             } catch (PoolException e) {
                 fail(e.getMessage());
             }
             assertNotNull("URI: " + uri, s);
+        } else {
+	        System.err.println("uri is null or empty: unable to get property com.oblong.jelly.externalServer");
         }
         return s;
     }
