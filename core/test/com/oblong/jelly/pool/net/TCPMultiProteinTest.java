@@ -17,6 +17,7 @@ import java.util.Random;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * Created with IntelliJ IDEA.
@@ -58,8 +59,14 @@ public class TCPMultiProteinTest {
 
 		//create pool otherwise test will fail
 		final PoolAddress poolAddress = new PoolAddress(poolServerAddress, POOL_NAME);
-		if(!Pool.exists(poolAddress)){
-			Pool.create(poolAddress, ObPoolConnector.DEFAULT_POOL_OPTIONS);
+
+		try{
+			if(!Pool.exists(poolAddress)){
+				Pool.create(poolAddress, ObPoolConnector.DEFAULT_POOL_OPTIONS);
+			}
+		} catch (Exception e){
+			//something wrong with server
+			fail(e.getMessage());
 		}
 
 		connector = new JellyTestPoolConnector(poolServerAddress,
