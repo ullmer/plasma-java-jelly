@@ -2,6 +2,8 @@
 
 package com.oblong.jelly.slaw;
 
+import com.oblong.jelly.Slaw;
+
 import java.nio.ByteBuffer;
 
 /**
@@ -31,4 +33,6 @@ public final class SlawParseError extends Exception {
 
     private final int position;
     private static final long serialVersionUID = 5363556892136529454L;
+
+
 }

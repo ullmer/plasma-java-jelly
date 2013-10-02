@@ -4,4 +4,6 @@ ant -Dtestcase=com.oblong.jelly.AsyncHoseTestBase test
 
 
 ant -Dtestcase=com.oblong.jelly.pool.net.TCPHoseTest test
-ant -Dtestcase=com.oblong.jelly.pool.net.ZTCPHoseTestMultipleProteins -Dtest.server=tcp://localhost:65456 external-test
+ant -Dtestcase=com.oblong.jelly.pool.net.TCPMultiProteinTest -Dtest.server=tcp://localhost:65456 external-test
+
+ant -Dtestcase=com.oblong.jelly.pool.net.TCPMultiProteinTest external-test

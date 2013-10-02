@@ -9,6 +9,11 @@ public abstract class ObPoolConnector extends Thread {
 	private static final String TAG = "ObPoolConnector";
 	private static final boolean  D = true;
 
+	/***
+	 * According to javadoc this field should be ignored if the pool already exists
+	 */
+	public static final PoolOptions DEFAULT_POOL_OPTIONS = PoolOptions.MEDIUM;
+
 	// These must be accessible in subclasses.
 	protected volatile boolean stopMe = false;
 	protected Hose hose;
@@ -55,8 +60,7 @@ public abstract class ObPoolConnector extends Thread {
 			
 			if (address != null) {
 				if(D) System.out.println(TAG + ": will try to reconnect to " + address.toString());
-				PoolOptions opts = PoolOptions.MEDIUM;
-				hose = Pool.participate(address, opts);
+				hose = Pool.participate(address, DEFAULT_POOL_OPTIONS);
 				if(D) System.out.println(TAG + ": Reconnected OK");
 			} else {
 				if(D) System.out.println(TAG + "Address is null or hose is null");
@@ -136,10 +140,7 @@ public abstract class ObPoolConnector extends Thread {
 	}
 	
 	protected void connect() {
-		PoolAddress address;
-
 		if(D)System.out.println(TAG + ": Connecting to pool " + "/" + obPool);
-		
 		try {
 			initHose();
 		} catch (BadAddressException e) {
@@ -164,7 +165,7 @@ public abstract class ObPoolConnector extends Thread {
 			hose = hoseFactory.createHose(this, obPoolsAddr, obPool);
 		} else {
 			PoolAddress address = new PoolAddress(obPoolsAddr, obPool);
-			hose = Pool.participate(address);
+			hose = Pool.participate(address, DEFAULT_POOL_OPTIONS);
 		}
 	}
 

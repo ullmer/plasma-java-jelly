@@ -30,7 +30,7 @@ public class ObPoolSender extends ObPoolConnector {
 	}
 
 	protected void sendProtein(Protein protein) {
-		if(protein !=null){
+		if(protein != null){
 			try {
 				hose.deposit(protein);
 			} catch (PoolException e) {
@@ -59,17 +59,10 @@ public class ObPoolSender extends ObPoolConnector {
 		if (hose != null)
 		{
 			System.out.println(TAG + " : Connection successful! to " + obPool + " id=" + getId());
-//			if(MZCommunicator.SEN_POOL.equals(obPool))     {
-//				listener.onConnected();
-//				this.pushbackSender = new MzPushbackSender(hose, proteinQueue);
-//			}
-		}
+ 		}
 		else
 		{
 			System.err.println(TAG + " : Unable to connect to pool!");
-			///!has to be called only once
-//			if(MZCommunicator.SEN_POOL.equals(obPool))
-//			    listener.onErrorConnecting();
 		}
 	}
 

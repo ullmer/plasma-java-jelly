@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import com.oblong.jelly.pool.net.TCPMultiProteinTestConfig;
 import com.oblong.jelly.util.ExceptionHandler;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -24,11 +25,8 @@ import static com.oblong.jelly.Slaw.*;
 public class HoseTests {
 
 
-	private static int currentRound = 0;
-
-	public static int getLastExecutedRound() {
-		return currentRound;
-	}
+	public static final String TAG = "HoseTests";
+	public static final PoolOptions POOL_OPTIONS = PoolOptions.MEDIUM;
 
 
 	public static class Tests<Dummy> {
@@ -95,13 +93,15 @@ public class HoseTests {
 		    if (addr != null) {
 			    tests = new HoseTests(addr);
 		    } else {
-			    logPoolServerAddressError("HoseTests.initTests");
+			    logPoolServerAddressError("HoseTests.initTests : Nothing tested ... pool server addr is null / not provided");
 		    }
 	    }
     }
 
 	public static void logPoolServerAddressError(String classAndMethod) {
-		System.err.println("Nothing tested ... pool server addr is null / not provided");
+		if(TCPMultiProteinTestConfig.SHOW_LOGS){
+			System.err.println(classAndMethod);
+		}
 	}
 
 	public HoseTests() {
@@ -114,24 +114,41 @@ public class HoseTests {
     public HoseTests(PoolServerAddress addr) throws PoolException {
         this.address = addr;
 	    this.defHose = getHoseFromAddress();
-//	    System.out.println("Pool size "defHose.);
 	    this.maxNumberOfProteins = DEFAULT_NUMBER_OF_PROTEINS;
         this.depProteins = deposit(defHose, -1);
     }
 
+	public HoseTests(PoolServerAddress addr, Protein[] proteins, int maxNumOfProteins, String poolName, PoolOptions opts) throws PoolException {
+		this.address = addr;
+		this.depProteins = proteins;
+		this.maxNumberOfProteins = maxNumOfProteins;
+		this.defHose = getHoseFromAddress(poolName, opts);
+	}
+
 	private Hose getHoseFromAddress() throws PoolException {
-		final PoolAddress pa = getPoolAddress();
-		PoolOptions opts = PoolOptions.MEDIUM;
-		System.out.println("Created pool with capacity "+opts.poolSize());
+		final PoolAddress pa = getPoolAddress("default-pool");
+		logPoolInfo(POOL_OPTIONS);
+		return Pool.participate(pa, POOL_OPTIONS);
+	}
+
+	private Hose getHoseFromAddress(String name, PoolOptions opts) throws PoolException {
+		final PoolAddress pa = new PoolAddress(address, name);
+		logPoolInfo(opts);
 		return Pool.participate(pa, opts);
 	}
 
-	private PoolAddress getPoolAddress() throws PoolException {
-		final PoolAddress pa = new PoolAddress(address, "default-pool");
+	private void logPoolInfo(PoolOptions opts) {
+		if(TCPMultiProteinTestConfig.SHOW_LOGS){
+			System.out.println("Created pool with capacity " + opts.poolSize());
+		}
+	}
+
+	private PoolAddress getPoolAddress(String name) throws PoolException {
+		final PoolAddress pa = new PoolAddress(address, name);
 		try {
 			Pool.dispose(pa);
 		} catch (NoSuchPoolException e) {
-			ExceptionHandler.handleException(e, "HoseTests");
+			ExceptionHandler.handleException(e, TAG);
 		}
 		return pa;
 	}
@@ -145,10 +162,11 @@ public class HoseTests {
 	}
 
     public void cleanUp() {
-        try { defHose.withdraw(); } catch (Exception e) {
-	        ExceptionHandler.handleException(e);
-        }
         try {
+	        defHose.withdraw();
+        } catch (Exception e) {
+	        ExceptionHandler.handleException(e);
+        } try {
             Pool.dispose(defHose.poolAddress());
         } catch (PoolException e) {
 	        ExceptionHandler.handleException(e);
@@ -185,7 +203,7 @@ public class HoseTests {
         assertEquals(0, p.dataLength());
         assertEquals(depProteins[0].index(), p.index());
         assertEquals(depProteins[0].timestamp(), p.timestamp(), 0.0);
-        assertEquals(defHose.name(), p.source());
+        assertEquals(getTestHoseName(), p.source());
 
         p = defHose.nth(1, true, false, false);
         assertEquals(depProteins[1].descrips(), p.descrips());
@@ -193,7 +211,7 @@ public class HoseTests {
         assertEquals(0, p.dataLength());
         assertEquals(depProteins[1].index(), p.index());
         assertEquals(depProteins[1].timestamp(), p.timestamp(), 0.0);
-        assertEquals(defHose.name(), p.source());
+        assertEquals(getTestHoseName(), p.source());
 
         p = defHose.nth(2, false, true, false);
         assertNull(p.descrips());
@@ -201,7 +219,7 @@ public class HoseTests {
         assertEquals(0, p.dataLength());
         assertEquals(depProteins[2].index(), p.index());
         assertEquals(depProteins[2].timestamp(), p.timestamp(), 0.0);
-        assertEquals(defHose.name(), p.source());
+        assertEquals(getTestHoseName(), p.source());
 
         p = defHose.nth(2, false, false, true);
         assertNull(p.ingests());
@@ -209,7 +227,7 @@ public class HoseTests {
         assertArrayEquals(depProteins[2].copyData(), p.copyData());
         assertEquals(depProteins[2].index(), p.index());
         assertEquals(depProteins[2].timestamp(), p.timestamp(), 0.0);
-        assertEquals(defHose.name(), p.source());
+        assertEquals(getTestHoseName(), p.source());
 
         p = defHose.nth(3, true, false, true);
         assertEquals(depProteins[3].descrips(), p.descrips());
@@ -217,7 +235,7 @@ public class HoseTests {
         assertArrayEquals(depProteins[3].copyData(), p.copyData());
         assertEquals(depProteins[3].index(), p.index());
         assertEquals(depProteins[3].timestamp(), p.timestamp(), 0.0);
-        assertEquals(defHose.name(), p.source());
+        assertEquals(getTestHoseName(), p.source());
 
         p = defHose.nth(1, false, true, true);
         assertNull(p.descrips());
@@ -225,12 +243,16 @@ public class HoseTests {
         assertArrayEquals(depProteins[1].copyData(), p.copyData());
         assertEquals(depProteins[1].index(), p.index());
         assertEquals(depProteins[1].timestamp(), p.timestamp(), 0.0);
-        assertEquals(defHose.name(), p.source());
+        assertEquals(getTestHoseName(), p.source());
 
         checkProtein(defHose.nth(maxNumberOfProteins - 1, true, true, true), maxNumberOfProteins - 1);
     }
 
-    public void simpleMeta() throws PoolException {
+	String getTestHoseName() {
+		return defHose.name();
+	}
+
+	public void simpleMeta() throws PoolException {
         for (int i = 0; i < maxNumberOfProteins; ++i) {
             final ProteinMetadata md =
                 defHose.metadata(new MetadataRequest(i));
@@ -466,7 +488,7 @@ public class HoseTests {
         testMatchingPoll(someMatcher);
     }
 
-    static Protein makeProtein(int i, String hname) {
+    public static Protein makeProtein(int i, String hname) {
         final Slaw desc = list(int32(i),
                                string("descrips"),
                                map(string("foo"), nil()));
@@ -475,7 +497,9 @@ public class HoseTests {
                               string("int64-key"), int64(i),
                               string("hose"), string(hname));
         final byte[] data = new byte[2 * i];
-        for (int j = 0; j < data.length; ++j) data[j] = (byte)j;
+        for (int j = 0; j < data.length; ++j) {
+	        data[j] = (byte)j;
+        }
         return protein(desc, ings, data);
     }
 
@@ -492,9 +516,10 @@ public class HoseTests {
     }
 
     void checkProtein(Protein p, int i) {
-        assertEquals(defHose.name(), p.source());
+        assertEquals(getTestHoseName(), p.source());
         assertEquals(i + "th", depProteins[i], p);
     }
+
 
     void checkMeta(ProteinMetadata md, int i) {
         assertEquals(depProteins[i].index(), md.index());
@@ -504,10 +529,17 @@ public class HoseTests {
         assertEquals(depProteins[i].dataLength(), md.dataSize());
     }
 
-    private final Hose defHose;
+
+	public static int getLastExecutedRound() {
+		return currentRound;
+	}
+
+    final Hose defHose;
     private final Protein[] depProteins;
     private final PoolServerAddress address;
 	public static final int DEFAULT_NUMBER_OF_PROTEINS = 5;
     public static int maxNumberOfProteins;
+
+	static int currentRound = 0;
 
 }
