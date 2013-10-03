@@ -1,10 +1,8 @@
 package com.oblong.jelly.pool.net;
 
 import com.oblong.jelly.*;
-import com.oblong.jelly.communication.HoseFactory;
 import com.oblong.jelly.communication.ObPoolCommunicationEventHandler;
 import com.oblong.jelly.communication.ObPoolConnector;
-import com.oblong.jelly.communication.ObPoolSender;
 import com.oblong.jelly.util.ExceptionHandler;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -13,7 +11,6 @@ import org.junit.Test;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -38,7 +35,7 @@ import static org.junit.Assert.fail;
 public class TCPMultiProteinTest {
 
 	/***if set to false exceptions/logs will no be logged ***/
-	protected static final List<Protein> toSendProteinQueue = Collections
+	private static final List<Protein> toSendProteinQueue = Collections
 			.synchronizedList(new LinkedList<Protein>());
 
 	private static ExternalHoseTests tests;
@@ -54,7 +51,7 @@ public class TCPMultiProteinTest {
 			ExceptionHandler.setExceptionHandler(new TestExceptionHandler());
 		}
 
-		final PoolServerAddress poolServerAddress = PoolServerAddress.fromURI("tcp://localhost");
+		final PoolServerAddress poolServerAddress = PoolServerAddress.fromURI(TCPMultiProteinTestConfig.URI);
 		logMessage("Will test with pool server address "+poolServerAddress.toString());
 
 		//create pool otherwise test will fail
@@ -68,18 +65,17 @@ public class TCPMultiProteinTest {
 			connector = new JellyTestPoolConnector(poolServerAddress,
 					POOL_NAME,
 					listener,
-					TCPMultiProteinTestConfig.SLEEP_SECS,
+					TCPMultiProteinTestConfig.SLEEP_MILI_SECS,
 					toSendProteinQueue,
-					null);
+					null, true);
 			connector.start();
-
 			tests = new ExternalHoseTests(poolServerAddress, TCPMultiProteinTestConfig.NUMBER_OF_DEPOSITED_PROTEINS, POOL_NAME);
 		} catch (Exception e){
 			//something wrong with server
 			ExceptionHandler.handleException(e);
 			//if uncommented the test fails and builbot gives error!
 			//ToDO: fix this
-//			fail("Unable to connect to pool server, you need a running pool server and g-speak installed");
+			fail("Unable to connect to pool server, you need a running pool server and g-speak installed");
 		}
 	}
 
@@ -92,7 +88,7 @@ public class TCPMultiProteinTest {
 			if(tests!=null){
 				tests.awaitNext();
 			} else {
-				ExceptionHandler.handleException("Tests not intiated");
+				ExceptionHandler.handleException("Tests not initiated");
 			}
 		} catch (PoolException e) {
 			ExceptionHandler.handleException(e, " tests.awaitNext() failed on round +" +tests.getLastExecutedRound());
@@ -105,7 +101,7 @@ public class TCPMultiProteinTest {
 		}
 	}
 
-	private static void logMessage(String message) {
+	static void logMessage(String message) {
 		if(TCPMultiProteinTestConfig.SHOW_LOGS){
 			System.out.println(message);
 		}
@@ -115,7 +111,7 @@ public class TCPMultiProteinTest {
 	public static void afterTesting(){
 		try {
 			System.out.println(" tests.awaitNext() finished on round " + tests.getLastExecutedRound());
-			System.out.println(" last received protein "+tests.getLastObtained());
+			System.out.println(" last received protein " + tests.getLastObtained());
 			connector.halt();
 			tests.cleanUp();
 		} catch (Exception e){
@@ -153,65 +149,11 @@ public class TCPMultiProteinTest {
 		public TestExceptionHandler() {	}
 
 		@Override
-		public void handleExceptionImpl(Throwable e, String syntheticMsg) {
+		public void handleExceptionImpl(Throwable e, String syntheticMsg)  {
 			System.err.println("====== " + syntheticMsg);
 			e.printStackTrace();
 		}
-	}
-
-	public static class JellyTestPoolConnector extends ObPoolSender {
-		private Random r = new Random();
-
-		public JellyTestPoolConnector(PoolServerAddress pools,
-		                              String pool,
-		                              ObPoolCommunicationEventHandler lis,
-		                              int sleepSecs,
-		                              List<Protein> proteinQueue,
-		                              HoseFactory hoseFactory) {
-			super(pools, pool, lis, sleepSecs, proteinQueue, hoseFactory);
-		}
-
-		@Override
-		public void connect() {
-			super.connect();
-			createAndSendProteins();
-		}
-
-		private static void createAndSendProteins() {
-			for(int i=0; i < TCPMultiProteinTestConfig.NUMBER_OF_DEPOSITED_PROTEINS; i++){
-				Protein protein = ExternalHoseTests.makeProtein(i, POOL_NAME);
-				toSendProteinQueue.add(protein);
-			}
-
-			logMessage("All Proteins have been sent");
-		}
-
-		protected void sendProtein(Protein protein) {
-			logMessage("Sending protein "+protein);
-			try {
-				super.sendProtein(protein);
-			} catch (Exception e) {
-				ExceptionHandler.handleException(e, "Pool exception");
-			}
-		}
-
-		protected void maybeSleep() {
-			if (sleepSecs > 0) {
-				try {
-					randomSleep();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-					Thread.currentThread().interrupt();
-				}
-			}
-		}
-
-		private void randomSleep() throws InterruptedException {
-			Thread.sleep(r.nextInt(sleepSecs));
-		}
 
 	}
-
-
 
 }

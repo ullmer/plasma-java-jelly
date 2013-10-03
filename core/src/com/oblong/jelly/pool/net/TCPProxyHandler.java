@@ -8,10 +8,7 @@ import java.net.Socket;
 import java.util.Arrays;
 import java.util.logging.Logger;
 
-import com.oblong.jelly.NumericIlk;
-import com.oblong.jelly.PoolException;
-import com.oblong.jelly.Protein;
-import com.oblong.jelly.Slaw;
+import com.oblong.jelly.*;
 import com.oblong.jelly.pool.PoolProtein;
 import com.oblong.jelly.pool.ServerErrorCode;
 import com.oblong.jelly.slaw.SlawExternalizer;
@@ -49,6 +46,12 @@ final class TCPProxyHandler implements Runnable {
         while (connection.isOpen()) {
             try {
                 reply(forward(next()));
+            } catch (ProteinEatingException e) {
+	            ExceptionHandler.handleException(e);
+	            if (connection.isOpen()) {
+		            log.warning("Connection error (closing handler): " + e);
+		            connection.close();
+	            }
             } catch (Exception e) {
 	            ExceptionHandler.handleException(e);
                 if (connection.isOpen()) {
@@ -103,7 +106,7 @@ final class TCPProxyHandler implements Runnable {
         }
     }
 
-    private Pair<Request, Slaw> forward(Protein p) {
+    private Pair<Request, Slaw> forward(Protein p) throws ProteinEatingException {
         final Request req = getRequest(p);
         if (req == null) return Pair.create((Request)null, NO_OP);
         final Slaw[] args = getArgs(p);
@@ -131,7 +134,7 @@ final class TCPProxyHandler implements Runnable {
         return args;
     }
 
-    private void reply(Pair<Request, Slaw> ra) throws IOException {
+    private void reply(Pair<Request, Slaw> ra) throws IOException, ProteinEatingException {
         final boolean isFancy = ra.first() == Request.FANCY_ADD_AWAITER;
         final Slaw op = isFancy
             ? TCPConnection.FANCY_CMD_R1 : TCPConnection.CMD_RESULT;

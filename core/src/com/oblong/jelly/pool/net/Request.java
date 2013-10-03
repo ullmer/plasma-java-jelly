@@ -5,12 +5,7 @@ package com.oblong.jelly.pool.net;
 
 import java.util.HashMap;
 
-import com.oblong.jelly.InOutException;
-import com.oblong.jelly.InvalidOperationException;
-import com.oblong.jelly.NumericIlk;
-import com.oblong.jelly.PoolException;
-import com.oblong.jelly.ProtocolException;
-import com.oblong.jelly.Slaw;
+import com.oblong.jelly.*;
 import com.oblong.jelly.pool.ServerErrorCode;
 
 
@@ -145,13 +140,13 @@ public enum Request {
     public boolean timeouts() { return timeouts; }
 
     public Slaw send(NetConnection conn, Slaw... args)
-        throws PoolException {
+		    throws PoolException {
         checkRequest(conn, args);
         return checkResponse(conn.send(this, args), conn.version());
     }
 
     public Slaw sendAndClose(NetConnection conn, Slaw... args)
-        throws PoolException {
+		    throws PoolException {
         try {
             return send(conn, args);
         } finally {

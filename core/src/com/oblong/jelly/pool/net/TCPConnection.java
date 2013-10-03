@@ -15,15 +15,7 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
-import com.oblong.jelly.Hose;
-import com.oblong.jelly.InOutException;
-import com.oblong.jelly.InvalidOperationException;
-import com.oblong.jelly.NumericIlk;
-import com.oblong.jelly.PoolServer;
-import com.oblong.jelly.PoolServerAddress;
-import com.oblong.jelly.PoolException;
-import com.oblong.jelly.Protein;
-import com.oblong.jelly.Slaw;
+import com.oblong.jelly.*;
 import com.oblong.jelly.slaw.SlawExternalizer;
 import com.oblong.jelly.slaw.SlawFactory;
 import com.oblong.jelly.slaw.SlawInternalizer;
@@ -52,7 +44,7 @@ final class TCPConnection implements NetConnection {
     }
 
     @Override public Slaw send(Request r, Slaw... args)
-        throws PoolException {
+		    throws PoolException {
         final Slaw code = factory.number(NumericIlk.INT32, r.code());
         final Slaw ings = factory.map(OP_KEY, code,
                                       ARGS_KEY, factory.list(args));
@@ -94,11 +86,12 @@ final class TCPConnection implements NetConnection {
                     numBytesEaten ++;
                     input.read();
                 }
-                if ( numBytesEaten > 0 ) {
-                    ExceptionHandler.handleException(
-                             "" + numBytesEaten + " bytes were eaten by polled()");
+	            if ( numBytesEaten > 0 ) {
+		            String msg = "" + numBytesEaten + " bytes were eaten by polled()";
+		            System.out.println(msg);
+		            throw new ProteinEatingException(msg);
 
-                }
+	            }
             }
         } catch (Exception e) {
             ExceptionHandler.handleException(e, "polled() - e.g. input.read()");

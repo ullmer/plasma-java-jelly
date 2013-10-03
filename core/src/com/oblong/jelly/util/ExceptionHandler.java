@@ -1,5 +1,7 @@
 package com.oblong.jelly.util;
 
+import com.oblong.jelly.ProteinEatingException;
+
 /**
  * Created with IntelliJ IDEA.
  * User: valeria
@@ -14,11 +16,11 @@ public abstract class ExceptionHandler {
 	private static boolean DEFAULT_HANDLER_PRINTS = false;
 	private static boolean DEFAULT_HANDLER_RETHROWS = false;
 
-	public static void handleException(Throwable e){
+	public static void handleException(Throwable e)  {
 		handleException(e, " Unspecified ");
 	}
 
-	public static void handleException(Throwable e, String duringMsg) {
+	public static void handleException(Throwable e, String duringMsg)  {
 		if (exceptionHandler != null) {
 			String msg = createMessage(duringMsg);
 			exceptionHandler.handleExceptionImpl(e, msg);
@@ -44,19 +46,19 @@ public abstract class ExceptionHandler {
 		}
 	}
 
-	public abstract void handleExceptionImpl(Throwable e, String syntheticMsg);
+	public abstract void handleExceptionImpl(Throwable e, String syntheticMsg) ;
 
 	public static void setExceptionHandler(ExceptionHandler exceptionHandlerParam) {
 		exceptionHandler = exceptionHandlerParam;
 	}
 
-	public static <T> void assertEquals(String message, T expected, T actual) {
+	public static <T> void assertEquals(String message, T expected, T actual)  {
 		if ( ! expected.equals(actual) ) { /* TODO: use safeEquals */
 			handleException("assertEquals failed: expected: " + expected + " ; actual: " + actual+" message : "+message);
 		}
 	}
 
-	public static void handleException(String msg) {
+	public static void handleException(String msg)  {
 		handleException(new JustToGetStackTrace(), msg);
 	}
 

@@ -5,10 +5,7 @@ package com.oblong.jelly.pool.net;
 import java.util.concurrent.TimeUnit;
 import java.util.Set;
 
-import com.oblong.jelly.Hose;
-import com.oblong.jelly.PoolServerAddress;
-import com.oblong.jelly.PoolException;
-import com.oblong.jelly.Slaw;
+import com.oblong.jelly.*;
 import com.oblong.jelly.slaw.SlawFactory;
 import com.oblong.jelly.pool.PoolProtein;
 
