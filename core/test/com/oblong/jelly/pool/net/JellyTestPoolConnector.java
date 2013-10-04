@@ -42,13 +42,13 @@ public class JellyTestPoolConnector extends ObPoolSender {
 	private void createAndSendProteins() {
 		for(int i=0; i < TCPMultiProteinTestConfig.NUMBER_OF_DEPOSITED_PROTEINS; i++){
 			Protein protein;
-			protein = ExternalHoseTests.makeProtein(i, TCPMultiProteinTest.POOL_NAME);
+			protein = ExternalHoseTests.makeProtein(i, ExternalTCPMultiProteinTest.POOL_NAME);
 			proteinQueue.add(protein);
 
 			makeFail(i, protein);
 			addNoise(i);
 		}
-		TCPMultiProteinTest.logMessage("All Proteins have been sent");
+		ExternalTCPMultiProteinTest.logMessage("All Proteins have been sent");
 	}
 
 	/***
@@ -58,7 +58,7 @@ public class JellyTestPoolConnector extends ObPoolSender {
 	private void addNoise(int i) {
 		Protein protein;
 		if(i % TCPMultiProteinTestConfig.NOISINESS == 0){
-			protein = ExternalHoseTests.makeFakeProtein(i, TCPMultiProteinTest.POOL_NAME);
+			protein = ExternalHoseTests.makeFakeProtein(i, ExternalTCPMultiProteinTest.POOL_NAME);
 			proteinQueue.add(protein);
 		}
 	}

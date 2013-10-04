@@ -32,7 +32,7 @@ import static org.junit.Assert.fail;
  *
  * set up NUMBER_OF_DEPOSITED_PROTEINS to handle more or less proteins
  */
-public class TCPMultiProteinTest {
+public class ExternalTCPMultiProteinTest {
 
 	/***if set to false exceptions/logs will no be logged ***/
 	private static final List<Protein> toSendProteinQueue = Collections
@@ -41,7 +41,7 @@ public class TCPMultiProteinTest {
 	private static ExternalHoseTests tests;
 	private static JellyTestPoolConnector connector;
 	private static ObHandler listener =  new ObHandler();
-	private static final String TAG = "TCPMultiProteinTest";
+	private static final String TAG = "ExternalTCPMultiProteinTest";
 
 	public static final String POOL_NAME = "external-tests-pool";
 
@@ -51,13 +51,15 @@ public class TCPMultiProteinTest {
 			ExceptionHandler.setExceptionHandler(new TestExceptionHandler());
 		}
 
-		final PoolServerAddress poolServerAddress = PoolServerAddress.fromURI(TCPMultiProteinTestConfig.URI);
+		String uri = System.getProperty("com.oblong.jelly.externalServer");
+		if(uri == null) {
+			uri = TCPMultiProteinTestConfig.URI;
+		}
+		final PoolServerAddress poolServerAddress = PoolServerAddress.fromURI(uri);
 		logMessage("Will test with pool server address "+poolServerAddress.toString());
-
-		//create pool otherwise test will fail
 		final PoolAddress poolAddress = new PoolAddress(poolServerAddress, POOL_NAME);
-
 		try {
+			//create pool otherwise test will fail
 			if(!Pool.exists(poolAddress)){
 				Pool.create(poolAddress, ObPoolConnector.DEFAULT_POOL_OPTIONS);
 			}
@@ -69,12 +71,11 @@ public class TCPMultiProteinTest {
 					toSendProteinQueue,
 					null, true);
 			connector.start();
+
 			tests = new ExternalHoseTests(poolServerAddress, TCPMultiProteinTestConfig.NUMBER_OF_DEPOSITED_PROTEINS, POOL_NAME);
 		} catch (Exception e){
 			//something wrong with server
 			ExceptionHandler.handleException(e);
-			//if uncommented the test fails and builbot gives error!
-			//ToDO: fix this
 			fail("Unable to connect to pool server, you need a running pool server and g-speak installed");
 		}
 	}

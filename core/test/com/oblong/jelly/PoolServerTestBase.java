@@ -41,8 +41,6 @@ public class PoolServerTestBase {
     }
 
     public static PoolServer externalServer() {
-
-	    //TODO: what is this supposed to return? on my pc it always returns null
         String uri = System.getProperty("com.oblong.jelly.externalServer");
 
         PoolServer s = null;
