@@ -96,12 +96,13 @@ public class ExternalHoseTests extends HoseTests {
 		assertTrue(p.matches(getDescripsByIndex(i)));
 	}
 
+	// FIXME: copy-paste with makeFakeProtein??
 	public static Protein makeProtein(int i, String hname) {
 		final Slaw desc = list(int32(i),
 				string("descrips"),
 				getTestProteinDescript(),
 				getDescripsByIndex(i),
-				map(string("foo"), nil()));
+				map(string("foo" /* TODO: should be a method param to avoid copy-pasted method */), nil()));
 		final Slaw ings = map(string("string-key"), string("value"),
 				string("nil-key"), nil(),
 				string("int64-key"), int64(i),
@@ -123,7 +124,7 @@ public class ExternalHoseTests extends HoseTests {
 //		int randomInt = new Random().nextInt(i);
 		final Slaw desc = list(int32(i),
 				string("descrips"),
-				map(string("fake"), nil()));
+				map(string("fake" /* TODO: should be a method param to avoid copy-pasted method */), nil()));
 		final Slaw ings = map(string("string-key"), string("value"),
 				string("nil-key"), nil(),
 				string("int64-key"), int64(i),

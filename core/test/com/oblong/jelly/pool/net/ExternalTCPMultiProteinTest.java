@@ -89,9 +89,11 @@ public class ExternalTCPMultiProteinTest {
 			if(tests!=null){
 				tests.awaitNext();
 			} else {
+				// FIXME shouldn't this be fatal?
 				ExceptionHandler.handleException("Tests not initiated");
 			}
 		} catch (PoolException e) {
+			// FIXME shouldn't this be fatal?
 			ExceptionHandler.handleException(e, " tests.awaitNext() failed on round +" +tests.getLastExecutedRound());
 		}
 	}
