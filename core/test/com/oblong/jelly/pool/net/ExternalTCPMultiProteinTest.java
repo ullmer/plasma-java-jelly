@@ -51,18 +51,12 @@ public class ExternalTCPMultiProteinTest {
 			ExceptionHandler.setExceptionHandler(new TestExceptionHandler());
 		}
 
-		String uri = System.getProperty("com.oblong.jelly.externalServer");
-		if(uri == null) {
-			uri = TCPMultiProteinTestConfig.URI;
-		}
-		final PoolServerAddress poolServerAddress = PoolServerAddress.fromURI(uri);
+		final PoolServerAddress poolServerAddress = getPoolServerAddress();
 		logMessage("Will test with pool server address "+poolServerAddress.toString());
 		final PoolAddress poolAddress = new PoolAddress(poolServerAddress, POOL_NAME);
 		try {
 			//create pool otherwise test will fail
-			if(!Pool.exists(poolAddress)){
-				Pool.create(poolAddress, ObPoolConnector.DEFAULT_POOL_OPTIONS);
-			}
+			createPoolIfNonExisting(poolAddress);
 
 			connector = new JellyTestPoolConnector(poolServerAddress,
 					POOL_NAME,
@@ -78,6 +72,17 @@ public class ExternalTCPMultiProteinTest {
 			ExceptionHandler.handleException(e);
 			fail("Unable to connect to pool server, you need a running pool server and g-speak installed");
 		}
+	}
+
+	static void createPoolIfNonExisting(PoolAddress poolAddress) throws PoolException {
+		if(!Pool.exists(poolAddress)){
+			Pool.create(poolAddress, ObPoolConnector.DEFAULT_POOL_OPTIONS);
+		}
+	}
+
+	static PoolServerAddress getPoolServerAddress() throws BadAddressException {
+		String uri = System.getProperty("com.oblong.jelly.externalServer", TCPMultiProteinTestConfig.URI);
+		return PoolServerAddress.fromURI(uri);
 	}
 
 	/***
