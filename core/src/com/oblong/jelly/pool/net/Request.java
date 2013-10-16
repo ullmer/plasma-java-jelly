@@ -77,11 +77,20 @@ public enum Request {
             return retort(index(res, 0), 1);
         }
     },
+
+	/**
+	 * Corresponds to POOL_CMD_AWAIT_NEXT_SINGLE
+	 * Accoding to pool-tcp-protocol.txt should be considered deprecated
+	 */
     AWAIT_NEXT(11, 1, 4, true) {
         Slaw getRetort(Slaw res, int v) throws ProtocolException {
             return retort(index(stamp(protein(res, 1, 3), 2), 3), 0);
         }
     },
+	/**
+	 * Corresponds to POOL_CMD_MULTI_ADD_AWAITER
+	 * Accoding to pool-tcp-protocol.txt should be considered deprecated
+	 */
     ADD_AWAITER(12, 0, 4) {
         Slaw getRetort(Slaw res, int v) throws ProtocolException {
             return retort(index(stamp(protein(res, 1, 0), 2), 3), 0);
@@ -235,6 +244,13 @@ public enum Request {
         this(c, a, ra, false);
     }
 
+	/***
+	 *
+	 * @param c code
+	 * @param a arity
+	 * @param ra responseArity
+	 * @param tos timeouts
+	 */
     private Request(int c, int a, int ra, boolean tos) {
         code = c;
         arity = a;
