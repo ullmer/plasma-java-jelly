@@ -30,7 +30,7 @@ public abstract class ExceptionHandler {
 	}
 
 	private static String createMessage(String duringMsg) {
-		return "Exception occurred during : " + duringMsg;
+		return "Exception during : " + duringMsg;
 	}
 
 	private static void defaultHandleException(Throwable e, String duringMsg) {
@@ -62,5 +62,5 @@ public abstract class ExceptionHandler {
 		handleException(new JustToGetStackTrace(), msg);
 	}
 
-	private static class JustToGetStackTrace extends Exception { /*nothing*/ }
+	public static class JustToGetStackTrace extends Exception { /*nothing*/ }
 }
