@@ -262,7 +262,7 @@ public class MemHose implements Hose {
 
     private String name;
     private long index;
-    private boolean connected;
+    private volatile boolean connected;
     private PoolAddress address;
 
     public MemPool getPool () {
