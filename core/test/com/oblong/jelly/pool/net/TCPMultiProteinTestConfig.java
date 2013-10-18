@@ -17,7 +17,7 @@ public class TCPMultiProteinTestConfig {
 	public static int NUMBER_OF_DEPOSITED_PROTEINS = 100000;
 			//100000; this usually throws several exceptions if used with another pc wit localhost it doesn't
 	public static final boolean MAKE_FAIL = false;
-	public static final String URI = "tcp://10.3.10.112:65456";
+	public static final String URI = "tcp://localhost";
 
 	/***
 	 * decrease this number and you will get more noisy proteins
