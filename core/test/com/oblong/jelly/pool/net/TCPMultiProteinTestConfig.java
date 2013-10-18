@@ -14,10 +14,10 @@ public class TCPMultiProteinTestConfig {
 	public static final int SLEEP_MILI_SECS = 10;
 	public static final int DEFAULT_AWAIT_TIMEOUT = 100;
 	public static final int MAX_DATA_LENGH = 100; //16384;
-	public static int NUMBER_OF_DEPOSITED_PROTEINS = 10;
+	public static int NUMBER_OF_DEPOSITED_PROTEINS = 100000;
 			//100000; this usually throws several exceptions if used with another pc wit localhost it doesn't
 	public static final boolean MAKE_FAIL = false;
-	public static final String URI = "tcp://localhost";
+	public static final String URI = "tcp://10.3.10.112:65456";
 
 	/***
 	 * decrease this number and you will get more noisy proteins

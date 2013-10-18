@@ -93,13 +93,21 @@ final class TCPConnection implements NetConnection {
 
 	            }
             }
-        } catch (Exception e) {
-            ExceptionHandler.handleException(e, "polled() - e.g. input.read()");
+        } catch (PoolException e) {
+	        throw new RuntimeException(e);
+        } catch (ProteinEatingException e) {
+	        throw new RuntimeException(e);
+        } catch (IOException e) {
+	        throw new RuntimeException(e);
         }
+//        catch (Exception e) {
+//            ExceptionHandler.handleException(e, "polled() - e.g. input.read()");
+//     }
         return asynchronousProtein;
     }
 
-    @Override public PoolProtein resetPolled() {
+
+	@Override public PoolProtein resetPolled() {
         final PoolProtein result = polled();
         asynchronousProtein = null;
         return result;
