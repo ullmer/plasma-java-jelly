@@ -87,7 +87,6 @@ public final class NetHose implements Hose {
     @Override public void seekTo(long idx) {
         index = idx;
         dirtyIndex = true;
-        if (isConnected()) connection.resetPolled();
     }
 
     @Override public void seekBy(long offset) {
@@ -118,8 +117,6 @@ public final class NetHose implements Hose {
     }
 
     @Override public Protein next(Slaw... descrips) throws PoolException {
-        final Protein p = maybePolled(descrips);
-        if (p != null) return p;
         if (descrips.length == 0) return next();
         final Slaw res = Request.PROBE_FWD.send(connection,
                                                 indexSlaw(),
@@ -197,20 +194,11 @@ public final class NetHose implements Hose {
     }
 
     @Override public boolean poll(Slaw... descrips) throws PoolException {
-        if (checkPolled(connection.polled(), descrips)) return true;
-        connection.resetPolled();
-        final Slaw m = descrips.length == 0
-            ? factory.nil() : factory.list(descrips);
-        try {
-            Request.FANCY_ADD_AWAITER.send(connection, indexSlaw(), m);
-        } catch (NoSuchProteinException e) {
-            return false;
-        }
-        return true;
+        throw new PoolException ("turd!");
     }
 
     @Override public Protein peek() {
-        return connection.polled();
+        throw new RuntimeException ("turd!");
     }
 
     @Override public Hose dup() throws PoolException {
@@ -267,8 +255,6 @@ public final class NetHose implements Hose {
     }
 
     private Protein next() throws PoolException {
-        final Protein p = maybePolled();
-        if (p != null) return p;
         final Slaw res = Request.NEXT.send(connection, indexSlaw());
         return new PoolProtein(res.nth(0).toProtein(),
                                cleanIndex(res.nth(2).emitLong() + 1) - 1,
@@ -277,25 +263,14 @@ public final class NetHose implements Hose {
     }
 
     private boolean checkPolled(PoolProtein p, Slaw... descrips) {
-        return !dirtyIndex
-            && p != null
-            && p.index() >= index
-            && p.matches(descrips);
+        throw new RuntimeException ("turd!");
     }
 
     private Protein maybePolled(Slaw... descrips) {
-        if (!isConnected()) return null;
-        final PoolProtein p = connection.resetPolled();
-        if (checkPolled(p)) {
-            return new PoolProtein(p.bareProtein(),
-                                   cleanIndex(p.index() + 1) - 1,
-                                   p.timestamp(), this);
-        }
-        return null;
+        throw new RuntimeException ("turd!");
     }
 
     private Protein previous() throws PoolException {
-        connection.resetPolled();
         final Slaw res = Request.PREV.send(connection, indexSlaw());
         return new PoolProtein(res.nth(0).toProtein(),
                                cleanIndex(res.nth(2).emitLong()),
@@ -309,8 +284,6 @@ public final class NetHose implements Hose {
         if (t > 0) connection.setTimeout(u.toMillis(t) + 100, // wtf: why + 100 ms ?
                                          TimeUnit.MILLISECONDS);
         try {
-            final Protein p = maybePolled();
-            if (p != null) return p;
             final Slaw res =
                 Request.AWAIT_NEXT.send(connection, timeSlaw(t, u));
             if (res == null) throw new TimeoutException();
