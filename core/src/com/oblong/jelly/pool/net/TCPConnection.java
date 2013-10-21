@@ -49,7 +49,6 @@ final class TCPConnection implements NetConnection {
         final Slaw ings = factory.map(OP_KEY, code,
                                       ARGS_KEY, factory.list(args));
         try {
-            polled();
             return send(factory.protein(null, ings , null));
         } catch (InOutException e) {
             close();
@@ -71,46 +70,13 @@ final class TCPConnection implements NetConnection {
     }
 
     @Override public PoolProtein polled() {
-        try {
-            if (input.available() > 0) {
-                read(false);
-                // TODO: posssible solution commented out, since it seems to produce one-time corruption,
-                // which manifested itself e.g. in OutOfMemoryException (huge one-time memory allocation attempt ~700MB)
-                // and missing protein and possibly "not a protein" nibble
-//                if (input.available() > 0) {
-//                    ExceptionHandler.handleException(
-//                        "____disabled_ Seems like eating bytes from InputStream! while (input.available() > 0) input.read()");
-//                }
-                int numBytesEaten = 0;
-                while (input.available() > 0) {
-                    numBytesEaten ++;
-                    input.read();
-                }
-	            if ( numBytesEaten > 0 ) {
-		            String msg = "" + numBytesEaten + " bytes were eaten by polled()";
-		            System.out.println(msg);
-		            throw new ProteinEatingException(msg);
 
-	            }
-            }
-        } catch (PoolException e) {
-	        throw new RuntimeException(e);
-        } catch (ProteinEatingException e) {
-	        throw new RuntimeException(e);
-        } catch (IOException e) {
-	        throw new RuntimeException(e);
-        }
-//        catch (Exception e) {
-//            ExceptionHandler.handleException(e, "polled() - e.g. input.read()");
-//     }
-        return asynchronousProtein;
+        throw new RuntimeException ("turd!");
     }
 
+    @Override public PoolProtein resetPolled() {
+        throw new RuntimeException ("turd!");
 
-	@Override public PoolProtein resetPolled() {
-        final PoolProtein result = polled();
-        asynchronousProtein = null;
-        return result;
     }
 
     @Override public void setHose(Hose h) { hose = h; }
@@ -167,7 +133,6 @@ final class TCPConnection implements NetConnection {
             supported = readSupported(input, version);
             externalizer = defaultExternalizer;
             internalizer = defaultInternalizer;
-            asynchronousProtein = null;
             hose = null;
         } catch (IOException e) {
             throw new InOutException(e);
@@ -203,14 +168,10 @@ final class TCPConnection implements NetConnection {
         final Slaw code = getResultCode(ret);
         final Slaw args = getResultArgs(ret);
         if (CMD_RESULT.equals(code)) return args;
-        if (FANCY_CMD_R1.equals(code)) return args;
-        if (FANCY_CMD_R2.equals(code)) {
-            if (positiveR2(args)) {
-                return read(cont);
-            }
-        }
-        if (FANCY_CMD_R3.equals(code)) {
-            updateAsync(args);
+        if (FANCY_CMD_R1.equals(code)  ||
+            FANCY_CMD_R2.equals(code)  ||
+            FANCY_CMD_R3.equals(code)) {
+            throw new PoolException ("turd!");
         }
         return cont ? read(cont) : null;
     }
@@ -267,17 +228,7 @@ final class TCPConnection implements NetConnection {
     }
 
     private void updateAsync(Slaw args) {
-        if (args.count() == 3
-            && args.nth(0).isNumber(NumericIlk.FLOAT64)
-            && args.nth(1).isNumber(NumericIlk.INT64)
-            && args.nth(2).isProtein()) {
-            asynchronousProtein = new PoolProtein(args.nth(2).toProtein(),
-                                                  r3Index(args.nth(1)),
-                                                  args.nth(0).emitDouble(),
-                                                  hose);
-        } else {
-            ExceptionHandler.handleException("updateAsync: condition not fulfilled (troubleshooting)");
-        }
+        throw new RuntimeException ("turd!");
     }
 
     private static void sendPreamble(OutputStream os) throws IOException {
@@ -313,7 +264,6 @@ final class TCPConnection implements NetConnection {
     private final Set<Request> supported;
     private final SlawExternalizer externalizer;
     private final SlawInternalizer internalizer;
-    private PoolProtein asynchronousProtein;
     private Hose hose;
 
     private static final SlawFactory factory =
