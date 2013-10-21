@@ -1,4 +1,5 @@
-// Copyright (c) 2010 Oblong Industries
+
+/* (c)  oblong industries */
 
 package com.oblong.jelly;
 
@@ -24,14 +25,13 @@ import static com.oblong.jelly.Slaw.*;
  */
 public class HoseTests {
 
+    public static final String TAG = "HoseTests";
+    public static final PoolOptions POOL_OPTIONS = PoolOptions.MEDIUM;
 
-	public static final String TAG = "HoseTests";
-	public static final PoolOptions POOL_OPTIONS = PoolOptions.MEDIUM;
 
+    public static class Tests<Dummy> {
 
-	public static class Tests<Dummy> {
-
-	    private static HoseTests tests;
+        private static HoseTests tests;
 
         @Before public void maybeDisable() {
             assumeTrue(tests != null);
@@ -66,7 +66,7 @@ public class HoseTests {
         }
 
         @Test public void poll() throws Exception {
-	        tests.poll();
+            tests.poll();
         }
         @Test public void cancelPoll() throws Exception {
             tests.cancelledPoll();
@@ -88,88 +88,92 @@ public class HoseTests {
             }
         }
 
-	    protected static void initTests(PoolServerAddress addr)
-			    throws Exception {
-		    if (addr != null) {
-			    tests = new HoseTests(addr);
-		    } else {
-			    logPoolServerAddressError("HoseTests.initTests : Nothing tested ... pool server addr is null / not provided");
-		    }
-	    }
+        protected static void initTests(PoolServerAddress addr)
+                            throws Exception {
+            if (addr != null) {
+                tests = new HoseTests(addr);
+            } else {
+                logPoolServerAddressError("HoseTests.initTests : Nothing tested ... pool server addr is null / not provided");
+            }
+        }
     }
 
-	public static void logPoolServerAddressError(String classAndMethod) {
-		if(TCPMultiProteinTestConfig.SHOW_LOGS){
-			System.err.println(classAndMethod);
-		}
-	}
+    public static void logPoolServerAddressError(String classAndMethod) {
+        if (TCPMultiProteinTestConfig.SHOW_LOGS) {
+            System.err.println(classAndMethod);
+        }
+    }
 
-	public HoseTests() {
+    public HoseTests() {
         address = null;
         defHose = null;
         depProteins = null;
-		this.maxNumberOfProteins = DEFAULT_NUMBER_OF_PROTEINS;
+        this.maxNumberOfProteins = DEFAULT_NUMBER_OF_PROTEINS;
     }
 
     public HoseTests(PoolServerAddress addr) throws PoolException {
         this.address = addr;
-	    this.defHose = getHoseFromAddress();
-	    this.maxNumberOfProteins = DEFAULT_NUMBER_OF_PROTEINS;
+        this.defHose = getHoseFromAddress();
+        this.maxNumberOfProteins = DEFAULT_NUMBER_OF_PROTEINS;
         this.depProteins = deposit(defHose, -1);
     }
 
-	public HoseTests(PoolServerAddress addr, Protein[] proteins, int maxNumOfProteins, String poolName, PoolOptions opts) throws PoolException {
-		this.address = addr;
-		this.depProteins = proteins;
-		this.maxNumberOfProteins = maxNumOfProteins;
-		this.defHose = getHoseFromAddress(poolName, opts);
-	}
+    public HoseTests (PoolServerAddress addr,
+                      Protein[] proteins,
+                      int maxNumOfProteins,
+                      String poolName,
+                      PoolOptions opts) throws PoolException {
+        this.address = addr;
+        this.depProteins = proteins;
+        this.maxNumberOfProteins = maxNumOfProteins;
+        this.defHose = getHoseFromAddress(poolName, opts);
+    }
 
-	private Hose getHoseFromAddress() throws PoolException {
-		final PoolAddress pa = getPoolAddress("default-pool");
-		logPoolInfo(POOL_OPTIONS);
-		return Pool.participate(pa, POOL_OPTIONS);
-	}
+    private Hose getHoseFromAddress() throws PoolException {
+        final PoolAddress pa = getPoolAddress("default-pool");
+        logPoolInfo(POOL_OPTIONS);
+        return Pool.participate(pa, POOL_OPTIONS);
+    }
 
-	private Hose getHoseFromAddress(String name, PoolOptions opts) throws PoolException {
-		final PoolAddress pa = new PoolAddress(address, name);
-		logPoolInfo(opts);
-		return Pool.participate(pa, opts);
-	}
+    private Hose getHoseFromAddress(String name, PoolOptions opts) throws PoolException {
+        final PoolAddress pa = new PoolAddress(address, name);
+        logPoolInfo(opts);
+        return Pool.participate(pa, opts);
+    }
 
-	private void logPoolInfo(PoolOptions opts) {
-		if(TCPMultiProteinTestConfig.SHOW_LOGS){
-			System.out.println("Created pool with capacity " + opts.poolSize());
-		}
-	}
+    private void logPoolInfo(PoolOptions opts) {
+        if (TCPMultiProteinTestConfig.SHOW_LOGS) {
+            System.out.println("Created pool with capacity " + opts.poolSize());
+        }
+    }
 
-	private PoolAddress getPoolAddress(String name) throws PoolException {
-		final PoolAddress pa = new PoolAddress(address, name);
-		try {
-			Pool.dispose(pa);
-		} catch (NoSuchPoolException e) {
-			ExceptionHandler.handleException(e, TAG);
-		}
-		return pa;
-	}
+    private PoolAddress getPoolAddress(String name) throws PoolException {
+        final PoolAddress pa = new PoolAddress(address, name);
+        try {
+            Pool.dispose(pa);
+        } catch (NoSuchPoolException e) {
+            ExceptionHandler.handleException(e, TAG);
+        }
+        return pa;
+    }
 
-	public HoseTests(PoolServerAddress poolServerAddress, int numberOfDepositedProteins) throws PoolException {
-		this.address = poolServerAddress;
-		this.defHose = getHoseFromAddress();
+    public HoseTests(PoolServerAddress poolServerAddress, int numberOfDepositedProteins) throws PoolException {
+        this.address = poolServerAddress;
+        this.defHose = getHoseFromAddress();
 
-		this.maxNumberOfProteins = numberOfDepositedProteins;
-		this.depProteins = deposit(defHose, -1);
-	}
+        this.maxNumberOfProteins = numberOfDepositedProteins;
+        this.depProteins = deposit(defHose, -1);
+    }
 
     public void cleanUp() {
         try {
-	        defHose.withdraw();
+            defHose.withdraw();
         } catch (Exception e) {
-	        ExceptionHandler.handleException(e);
+            ExceptionHandler.handleException(e);
         } try {
             Pool.dispose(defHose.poolAddress());
         } catch (PoolException e) {
-	        ExceptionHandler.handleException(e);
+            ExceptionHandler.handleException(e);
         }
     }
 
@@ -248,11 +252,11 @@ public class HoseTests {
         checkProtein(defHose.nth(maxNumberOfProteins - 1, true, true, true), maxNumberOfProteins - 1);
     }
 
-	String getTestHoseName() {
-		return defHose.name();
-	}
+    String getTestHoseName() {
+        return defHose.name();
+    }
 
-	public void simpleMeta() throws PoolException {
+    public void simpleMeta() throws PoolException {
         for (int i = 0; i < maxNumberOfProteins; ++i) {
             final ProteinMetadata md =
                 defHose.metadata(new MetadataRequest(i));
@@ -341,7 +345,7 @@ public class HoseTests {
     public void awaitNext() throws PoolException {
         defHose.seekTo(defHose.oldestIndex());
         for (int i = 0; i < maxNumberOfProteins; ++i) {
-	        currentRound = i;
+            currentRound = i;
             checkProtein(defHose.awaitNext(), i);
             assertTrue(i + "th", depProteins[i].index() < defHose.index());
         }
@@ -498,7 +502,7 @@ public class HoseTests {
                               string("hose"), string(hname));
         final byte[] data = new byte[2 * i];
         for (int j = 0; j < data.length; ++j) {
-	        data[j] = (byte)j;
+            data[j] = (byte)j;
         }
         return protein(desc, ings, data);
     }
@@ -530,16 +534,15 @@ public class HoseTests {
     }
 
 
-	public static int getLastExecutedRound() {
-		return currentRound;
-	}
+    public static int getLastExecutedRound() {
+        return currentRound;
+    }
 
     final Hose defHose;
     private final Protein[] depProteins;
     private final PoolServerAddress address;
-	public static final int DEFAULT_NUMBER_OF_PROTEINS = 5;
+    public static final int DEFAULT_NUMBER_OF_PROTEINS = 5;
     public static int maxNumberOfProteins;
 
-	static int currentRound = 0;
-
+    static int currentRound = 0;
 }

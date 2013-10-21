@@ -44,7 +44,7 @@ final class TCPConnection implements NetConnection {
     }
 
     @Override public Slaw send(Request r, Slaw... args)
-		    throws PoolException {
+                    throws PoolException {
         final Slaw code = factory.number(NumericIlk.INT32, r.code());
         final Slaw ings = factory.map(OP_KEY, code,
                                       ARGS_KEY, factory.list(args));
@@ -74,7 +74,7 @@ final class TCPConnection implements NetConnection {
     }
 
 
-	@Override public PoolProtein resetPolled() {
+    @Override public PoolProtein resetPolled() {
         throw new RuntimeException ("turd!");
     }
 

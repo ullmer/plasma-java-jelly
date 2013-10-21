@@ -1,4 +1,5 @@
-// Copyright (c) 2010 Oblong Industries
+
+/* (c)  oblong industries */
 
 package com.oblong.jelly.pool.net;
 
@@ -84,7 +85,7 @@ public final class TCPProxy implements Runnable {
     private void waitChildren() {
         for (Thread t : threads) {
             try { t.join(10); } catch (Exception e) {
-	            ExceptionHandler.handleException(e, "t.join");
+                ExceptionHandler.handleException(e, "t.join");
             }
         }
     }

@@ -1,4 +1,5 @@
-// Copyright (c) 2010 Oblong Industries
+
+/* (c)  oblong industries */
 
 package com.oblong.jelly.pool.net;
 
@@ -47,13 +48,13 @@ final class TCPProxyHandler implements Runnable {
             try {
                 reply(forward(next()));
             } catch (ProteinEatingException e) {
-	            ExceptionHandler.handleException(e);
-	            if (connection.isOpen()) {
-		            log.warning("Connection error (closing handler): " + e);
-		            connection.close();
-	            }
+                ExceptionHandler.handleException(e);
+                if (connection.isOpen()) {
+                    log.warning("Connection error (closing handler): " + e);
+                    connection.close();
+                }
             } catch (Exception e) {
-	            ExceptionHandler.handleException(e);
+                ExceptionHandler.handleException(e);
                 if (connection.isOpen()) {
                     log.warning("Connection error (closing handler): " + e);
                     connection.close();
@@ -63,7 +64,7 @@ final class TCPProxyHandler implements Runnable {
         try {
             if (socket.isConnected()) socket.close();
         } catch (Exception e) {
-	        ExceptionHandler.handleException(e);
+            ExceptionHandler.handleException(e);
             log.warning("Exception closing socket (ignored): "
                         + e.getMessage());
         }
