@@ -65,22 +65,6 @@ public class HoseTests {
             tests.matchingSome();
         }
 
-        @Test public void poll() throws Exception {
-            tests.poll();
-        }
-        @Test public void cancelPoll() throws Exception {
-            tests.cancelledPoll();
-        }
-        @Test public void matchPollAll() throws Exception {
-            tests.matchingPollAll();
-        }
-        @Test public void matchPollOne() throws Exception {
-            tests.matchingPollOne();
-        }
-        @Test public void matchPollSome() throws Exception {
-            tests.matchingPollSome();
-        }
-
         @AfterClass public static void cleanUpTests() {
             if (tests != null) {
                 tests.cleanUp();
@@ -427,69 +411,6 @@ public class HoseTests {
 
     public void matchingSome() throws PoolException {
         testMatching(someMatcher);
-    }
-
-    public void poll() throws PoolException {
-        defHose.rewind();
-        for (int i = 0; i < maxNumberOfProteins; ++i) {
-            assertTrue(defHose.poll());
-            assertTrue(defHose.poll());
-            assertEquals(depProteins[i], defHose.peek());
-            assertEquals(depProteins[i], defHose.next());
-            assertNull(defHose.peek());
-        }
-        assertFalse(defHose.poll());
-        assertNull(defHose.peek());
-    }
-
-    public void cancelledPoll() throws PoolException {
-        defHose.rewind();
-        for (int i = 0; i < maxNumberOfProteins; ++i) {
-            assertTrue(defHose.poll());
-            /* Documentation for Hose.peek says:
-             * "If you call peek immediately after poll,
-             * there's a slim chance that the protein is still arriving from
-             * the server, in which case peek will return null even after a
-             * positive poll."
-             * Which means that this test is nondeterministic, and therefore,
-             * in my worldview, no good at all.  But to give it a slightly
-             * greater chance of passing, let's sleep a little first. */
-            try {
-                Thread.sleep (100);
-            } catch (InterruptedException e) {
-                throw new RuntimeException (e);
-            }
-            assertEquals(depProteins[i], defHose.peek());
-            defHose.oldestIndex();
-            assertEquals(depProteins[i], defHose.next());
-            assertNull(defHose.peek());
-            defHose.oldestIndex();
-        }
-        assertFalse(defHose.poll());
-        assertNull(defHose.peek());
-    }
-
-    private void testMatchingPoll(final Matcher matcher)
-        throws PoolException {
-        testMatching(new Matcher() {
-                public Slaw[] get(Slaw d) throws PoolException {
-                    final Slaw[] m = matcher.get(d);
-                    defHose.poll(m);
-                    return m;
-                }
-            });
-    }
-
-    public void matchingPollAll() throws PoolException {
-        testMatchingPoll(allMatcher);
-    }
-
-    public void matchingPollOne() throws PoolException {
-        testMatchingPoll(oneMatcher);
-    }
-
-    public void matchingPollSome() throws PoolException {
-        testMatchingPoll(someMatcher);
     }
 
     public static Protein makeProtein(int i, String hname) {
