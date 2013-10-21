@@ -47,18 +47,15 @@ public class MemHose implements Hose {
 
     @Override public long newestIndex() throws PoolException {
         checkConnected();
-        polled = null;
         return pool.newestIndex();
     }
 
     @Override public long oldestIndex() throws PoolException {
         checkConnected();
-        polled = null;
         return pool.oldestIndex();
     }
 
     @Override public void seekTo(long index) {
-        polled = null;
         this.index = index;
     }
 
@@ -80,7 +77,6 @@ public class MemHose implements Hose {
 
     @Override public Protein deposit(Protein p) throws PoolException {
         final PoolProtein dp = new PoolProtein(pool.deposit(p), this);
-        if (polledIndex == dp.index()) polled = dp;
         return dp;
     }
 
@@ -151,16 +147,6 @@ public class MemHose implements Hose {
         return checkProtein(getPrev(descrips));
     }
 
-    @Override public boolean poll(Slaw... descrips) {
-        if (polled == null || !polled.matches(descrips))
-            polled = pool.find(index, descrips, true);
-        return polled != null;
-    }
-
-    @Override public Protein peek() {
-        return polled;
-    }
-
     @Override public Hose dup() throws PoolException {
         final Hose result = Pool.participate(address);
         result.setName(name);
@@ -177,8 +163,6 @@ public class MemHose implements Hose {
         this.pool = pool;
         index = 0;
         connected = true;
-        polled = null;
-        polledIndex = -1;
         try {
             address = new PoolAddress(addr, pool.name());
             name = address.toString();
@@ -206,18 +190,14 @@ public class MemHose implements Hose {
     }
 
     private PoolProtein getNext(Slaw... desc) {
-        PoolProtein p = maybePolled(desc);
-        if (p == null) {
-            final long idx = Math.max(pool.oldestIndex(), index);
-            p = desc.length == 0 ?
+        final long idx = Math.max(pool.oldestIndex(), index);
+        final PoolProtein p = desc.length == 0 ?
                 pool.next(idx, 0) : pool.find(idx, desc, true);
-        }
         if (p != null) index = p.index() + 1;
         return p;
     }
 
     private PoolProtein getPrev(Slaw... desc) {
-        polled = null;
         final long idx = Math.min(pool.newestIndex(), index - 1);
         final PoolProtein p = desc.length == 0 ?
             pool.nth(idx) : pool.find(idx, desc, false);
@@ -227,16 +207,8 @@ public class MemHose implements Hose {
 
     protected PoolProtein await(double timeout) throws PoolException {
         if (timeout == 0) return getNext();
-        PoolProtein p = maybePolled();
-        if (p == null) p = pool.next(index, timeout);
+        PoolProtein p = pool.next(index, timeout);
         if (p != null) ++index;
-        return p;
-    }
-
-    private PoolProtein maybePolled(Slaw... descrips) {
-        PoolProtein p = null;
-        if (polled != null && polled.matches(descrips)) p = polled;
-        polled = null;
         return p;
     }
 
@@ -270,8 +242,6 @@ public class MemHose implements Hose {
     }
 
     private final MemPool pool;
-    private PoolProtein polled;
-    private long polledIndex;
 
     private static final PoolMetadata nullMetadata =
         new PoolMetadata() {

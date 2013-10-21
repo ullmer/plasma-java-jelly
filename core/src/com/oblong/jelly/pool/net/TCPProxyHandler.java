@@ -145,39 +145,6 @@ final class TCPProxyHandler implements Runnable {
                                       ra.second());
         final Protein reply = factory.protein(null, ings, null);
         externalizer.extern(reply, socket.getOutputStream());
-        final PoolProtein p = connection.resetPolled();
-        if (p != null) {
-            if (!isFancy) sendR2(p);
-            sendR3(p);
-        }
-    }
-
-    private void sendR2(PoolProtein p) throws IOException {
-        final Slaw args = factory.list(factory.number(NumericIlk.INT64, 0),
-                                       factory.number(NumericIlk.FLOAT64,
-                                                      p.timestamp()),
-                                       factory.number(NumericIlk.INT64,
-                                                      p.index()));
-        final Slaw ings = factory.map(TCPConnection.OP_KEY,
-                                      TCPConnection.FANCY_CMD_R2,
-                                      TCPConnection.ARGS_KEY,
-                                      args);
-        final Protein reply = factory.protein(null, ings, null);
-        externalizer.extern(reply, socket.getOutputStream());
-    }
-
-    private void sendR3(PoolProtein p) throws IOException {
-        final Slaw args = factory.list(factory.number(NumericIlk.FLOAT64,
-                                                      p.timestamp()),
-                                       factory.number(NumericIlk.INT64,
-                                                      p.index()),
-                                       p.bareProtein());
-        final Slaw ings = factory.map(TCPConnection.OP_KEY,
-                                      TCPConnection.FANCY_CMD_R3,
-                                      TCPConnection.ARGS_KEY,
-                                      args);
-        final Protein reply = factory.protein(null, ings, null);
-        externalizer.extern(reply, socket.getOutputStream());
     }
 
     private static Slaw makeRet(long code) {

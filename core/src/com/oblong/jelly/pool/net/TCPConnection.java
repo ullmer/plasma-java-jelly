@@ -69,15 +69,6 @@ final class TCPConnection implements NetConnection {
         return socket != null && !socket.isClosed();
     }
 
-    @Override public PoolProtein polled() {
-        throw new RuntimeException ("turd!");
-    }
-
-
-    @Override public PoolProtein resetPolled() {
-        throw new RuntimeException ("turd!");
-    }
-
     @Override public void setHose(Hose h) { hose = h; }
 
     static class Factory implements NetConnectionFactory {
@@ -170,7 +161,7 @@ final class TCPConnection implements NetConnection {
         if (FANCY_CMD_R1.equals(code)  ||
             FANCY_CMD_R2.equals(code)  ||
             FANCY_CMD_R3.equals(code)) {
-            throw new PoolException ("turd!");
+            throw new PoolException ("this should never happen");
         }
         return cont ? read(cont) : null;
     }
@@ -224,10 +215,6 @@ final class TCPConnection implements NetConnection {
         } catch (PoolException e) {
             return 0;
         }
-    }
-
-    private void updateAsync(Slaw args) {
-        throw new RuntimeException ("turd!");
     }
 
     private static void sendPreamble(OutputStream os) throws IOException {

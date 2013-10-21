@@ -53,8 +53,6 @@ final class MemPoolConnection implements NetConnection {
         pool = null;
         index = Protein.NO_INDEX;
         open = true;
-        polled = null;
-        polledIndex = -1;
     }
 
     @Override public void close() {
@@ -81,14 +79,6 @@ final class MemPoolConnection implements NetConnection {
     @Override public int version() { return 3; }
 
     @Override public void setTimeout(long t, TimeUnit u) {}
-
-    @Override public PoolProtein polled() { return polled; }
-
-    @Override public PoolProtein resetPolled() {
-        final PoolProtein p = polled;
-        polled = null;
-        return p;
-    }
 
     @Override public Slaw send(Request request, Slaw... args)
         throws PoolException {
@@ -146,8 +136,6 @@ final class MemPoolConnection implements NetConnection {
             return prev(args[0].emitLong(), args[1]);
         case AWAIT_NEXT:
             return await(args[0].emitDouble());
-        case FANCY_ADD_AWAITER:
-            return pollProtein(args[0].emitLong(), args[1]);
         case SUB_FETCH:
             return subfetch(args[0]);
         case WITHDRAW:
@@ -165,9 +153,6 @@ final class MemPoolConnection implements NetConnection {
 
     private Slaw deposit(Slaw s) {
         final PoolProtein p = pool.deposit(s.toProtein());
-        if (polledIndex > -1 && polledIndex <= p.index()) {
-            polled = p;
-        }
         return makeResponse(makeIndex(p.index()),
                             OK,
                             makeStamp(p.timestamp()));
@@ -189,15 +174,6 @@ final class MemPoolConnection implements NetConnection {
         final PoolProtein p =
             desc == null ? pool.next(idx, 0) : pool.find(idx, m, true);
         return p;
-    }
-
-    private Slaw pollProtein(long idx, Slaw desc) {
-        polled = nextProtein(idx, desc);
-        polledIndex = polled == null ? idx : -1;
-        return polled == null
-            ? makeResponse(NO_SUCH_PROTEIN, makeStamp(0), makeIndex(0))
-            : makeResponse(OK, makeStamp(polled.timestamp()),
-                           makeIndex(polled.index()));
     }
 
     private Slaw next(long idx, Slaw desc) {
@@ -310,8 +286,6 @@ final class MemPoolConnection implements NetConnection {
     private MemPool pool;
     private long index;
     private boolean open;
-    private PoolProtein polled;
-    private long polledIndex;
 
     private static final com.oblong.jelly.slaw.SlawFactory factory =
         new com.oblong.jelly.slaw.java.JavaSlawFactory();
