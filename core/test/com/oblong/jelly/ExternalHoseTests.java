@@ -53,6 +53,9 @@ public class ExternalHoseTests extends HoseTests {
 				lastObtained = defHose.awaitNext(TCPMultiProteinTestConfig.DEFAULT_AWAIT_TIMEOUT, TimeUnit.MILLISECONDS);
 				int frequency = 5000;
 				String textToPrint;
+				int frequency2 = 1000;
+				String textToPrint2 = "We are at protein " + i;
+				printLogIfRequired(i, frequency2, textToPrint2);
 				if(lastObtained.matches(getTestProteinDescript())){
 					checkProtein(lastObtained, i);
 					textToPrint = "Protein " + i + " ok";
@@ -65,7 +68,7 @@ public class ExternalHoseTests extends HoseTests {
 				}
 			} catch (TimeoutException e) {
 				int frequency = 1000;
-				String textToPrint = "Timeout " + i;
+				String textToPrint = "Timeout, we are waiting for protein " + i;
 				printLogIfRequired(i, frequency, textToPrint);
 				//if timeout we skip this round otherwise we lose descripts field
 			} catch (PoolException e){

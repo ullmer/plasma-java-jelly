@@ -73,7 +73,8 @@ final class TCPConnection implements NetConnection {
         throw new RuntimeException ("turd!");
     }
 
-    @Override public PoolProtein resetPolled() {
+
+	@Override public PoolProtein resetPolled() {
         throw new RuntimeException ("turd!");
     }
 
