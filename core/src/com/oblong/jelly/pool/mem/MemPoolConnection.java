@@ -301,7 +301,7 @@ final class MemPoolConnection implements NetConnection {
         EnumSet.of(CREATE, DISPOSE, PARTICIPATE, PARTICIPATE_C, WITHDRAW,
                    OLDEST_INDEX, NEWEST_INDEX, DEPOSIT, NTH_PROTEIN, NEXT,
                    PROBE_FWD, PREV, PROBE_BACK, AWAIT_NEXT, LIST,
-                   FANCY_ADD_AWAITER, SUB_FETCH);
+                   SUB_FETCH);
     static final Set<Request> POOL_OPS =
         EnumSet.of(CREATE, DISPOSE, PARTICIPATE, PARTICIPATE_C);
 }

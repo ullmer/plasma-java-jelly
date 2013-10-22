@@ -94,11 +94,6 @@ public enum Request {
             return retort(index(stamp(protein(res, 1, 0), 2), 3), 0);
         }
     },
-    FANCY_ADD_AWAITER(20, 2, 3) {
-        Slaw getRetort(Slaw res, int v) throws ProtocolException {
-            return retort(stamp(index(res, 2), 1), 0);
-        }
-    },
     INFO(15, 1, 2) {
         Slaw getRetort(Slaw res, int v) throws ProtocolException {
             return retort(protein(res, 1, 0), 0);

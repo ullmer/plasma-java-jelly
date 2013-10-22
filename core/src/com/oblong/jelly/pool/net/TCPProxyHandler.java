@@ -136,9 +136,7 @@ final class TCPProxyHandler implements Runnable {
     }
 
     private void reply(Pair<Request, Slaw> ra) throws IOException, ProteinEatingException {
-        final boolean isFancy = ra.first() == Request.FANCY_ADD_AWAITER;
-        final Slaw op = isFancy
-            ? TCPConnection.FANCY_CMD_R1 : TCPConnection.CMD_RESULT;
+        final Slaw op = TCPConnection.CMD_RESULT;
         final Slaw ings = factory.map(TCPConnection.OP_KEY,
                                       op,
                                       TCPConnection.ARGS_KEY,
