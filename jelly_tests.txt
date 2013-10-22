@@ -4,7 +4,7 @@ ant -Dtestcase=com.oblong.jelly.AsyncHoseTestBase test
 
 
 ant -Dtestcase=com.oblong.jelly.pool.net.TCPHoseTest test
-ant -Dtestcase=com.oblong.jelly.pool.net.ExternalTCPMultiProteinTest -Dtest.server=tcp://10.3.10.112:65456 external-test
+ant -Dtestcase=com.oblong.jelly.pool.net.ExternalTCPMultiProteinTest -Dtest.server=tcp://10.3.10.111:65456 external-test
 
 ant -Dtestcase=com.oblong.jelly.pool.net.ExternalTCPMultiProteinTest external-test
 while true ; do ant -Dtestcase=com.oblong.jelly.pool.net.ExternalTCPMultiProteinTest -Dtest.server=tcp://10.3.10.112:65456 external-test | tee -a Logs/logs.txt; done

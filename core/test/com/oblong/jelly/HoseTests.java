@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import com.oblong.jelly.pool.net.TCPMultiProteinTestConfig;
+import com.oblong.jelly.pool.net.ExternalTCPMultiProteinTestConfig;
 import com.oblong.jelly.util.ExceptionHandler;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -99,7 +99,7 @@ public class HoseTests {
     }
 
 	public static void logPoolServerAddressError(String classAndMethod) {
-		if(TCPMultiProteinTestConfig.SHOW_LOGS){
+		if(ExternalTCPMultiProteinTestConfig.SHOW_LOGS){
 			System.err.println(classAndMethod);
 		}
 	}
@@ -138,7 +138,7 @@ public class HoseTests {
 	}
 
 	private void logPoolInfo(PoolOptions opts) {
-		if(TCPMultiProteinTestConfig.SHOW_LOGS){
+		if(ExternalTCPMultiProteinTestConfig.SHOW_LOGS){
 			System.out.println("Created pool with capacity " + opts.poolSize());
 		}
 	}
@@ -162,18 +162,27 @@ public class HoseTests {
 	}
 
     public void cleanUp() {
-        try {
-	        defHose.withdraw();
-        } catch (Exception e) {
-	        ExceptionHandler.handleException(e);
-        } try {
-            Pool.dispose(defHose.poolAddress());
-        } catch (PoolException e) {
-	        ExceptionHandler.handleException(e);
-        }
+	    withdrawFromHose();
+	    removePool();
     }
 
-    public void hoseName() throws PoolException {
+	private void removePool() {
+		try {
+	        Pool.dispose(defHose.poolAddress());
+	    } catch (PoolException e) {
+		    ExceptionHandler.handleException(e);
+	    }
+	}
+
+	public void withdrawFromHose() {
+		try {
+			defHose.withdraw();
+		} catch (Exception e) {
+			ExceptionHandler.handleException(e);
+		}
+	}
+
+	public void hoseName() throws PoolException {
         final PoolAddress a = new PoolAddress(address, "eipool");
         final Hose h = Pool.participate(a, PoolOptions.SMALL);
         assertEquals(a, h.poolAddress());

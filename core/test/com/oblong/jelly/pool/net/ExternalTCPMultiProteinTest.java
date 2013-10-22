@@ -30,7 +30,7 @@ import static org.junit.Assert.fail;
  *
  * Exceptions are logged and printed or not (setup the flag)
  *
- * set up NUMBER_OF_DEPOSITED_PROTEINS to handle more or less proteins
+ * set up NUMBER_OF_DEPOSITED_PROTEINS_IN_BATCH to handle more or less proteins
  */
 public class ExternalTCPMultiProteinTest {
 
@@ -41,37 +41,47 @@ public class ExternalTCPMultiProteinTest {
 	private static ExternalHoseTests tests;
 	private static JellyTestPoolConnector connector;
 	private static ObHandler listener =  new ObHandler();
+	private static ProteinGenerator generator;
 	private static final String TAG = "ExternalTCPMultiProteinTest";
 
 	public static final String POOL_NAME = "external-tests-pool";
 
 	@BeforeClass
-	public static void setUp() throws Exception {
-		if (TCPMultiProteinTestConfig.SHOW_LOGS) {
+	public static void setUp()  {
+		if (ExternalTCPMultiProteinTestConfig.SHOW_LOGS) {
 			ExceptionHandler.setExceptionHandler(new TestExceptionHandler());
 		}
 
-		final PoolServerAddress poolServerAddress = getPoolServerAddress();
-		logMessage("Will test with pool server address "+poolServerAddress.toString());
-		final PoolAddress poolAddress = new PoolAddress(poolServerAddress, POOL_NAME);
 		try {
+			final PoolServerAddress poolServerAddress = getPoolServerAddress();
+			logMessage("Will test with pool server address "+poolServerAddress.toString());
+			final PoolAddress poolAddress = new PoolAddress(poolServerAddress, POOL_NAME);
 			//create pool otherwise test will fail
 			createPoolIfNonExisting(poolAddress);
 
 			connector = new JellyTestPoolConnector(poolServerAddress,
 					POOL_NAME,
 					listener,
-					TCPMultiProteinTestConfig.SLEEP_MILI_SECS,
+					ExternalTCPMultiProteinTestConfig.SLEEP_MILI_SECS,
 					toSendProteinQueue,
 					null, true);
 			connector.start();
+			generator = new ProteinGenerator(connector);
+			generator.start();
 
-			tests = new ExternalHoseTests(poolServerAddress, TCPMultiProteinTestConfig.NUMBER_OF_DEPOSITED_PROTEINS, POOL_NAME);
-		} catch (Exception e){
-			//something wrong with server
-			ExceptionHandler.handleException(e);
-			fail("Unable to connect to pool server, you need a running pool server and g-speak installed");
+			tests = new ExternalHoseTests(poolServerAddress, ExternalTCPMultiProteinTestConfig.NUMBER_OF_DEPOSITED_PROTEINS_IN_BATCH, POOL_NAME);
+		} catch (BadAddressException e){
+			//something wrong with server?
+			handleAndFail(e);
+		} catch (PoolException e){
+			//something wrong with server?
+			handleAndFail(e);
 		}
+	}
+
+	private static void handleAndFail(Exception e) {
+		ExceptionHandler.handleException(e);
+		fail("Unable to connect to pool server, you need a running pool server and g-speak installed");
 	}
 
 	static void createPoolIfNonExisting(PoolAddress poolAddress) throws PoolException {
@@ -81,7 +91,7 @@ public class ExternalTCPMultiProteinTest {
 	}
 
 	static PoolServerAddress getPoolServerAddress() throws BadAddressException {
-		String uri = System.getProperty("com.oblong.jelly.externalServer", TCPMultiProteinTestConfig.URI);
+		String uri = System.getProperty("com.oblong.jelly.externalServer", ExternalTCPMultiProteinTestConfig.URI);
 		return PoolServerAddress.fromURI(uri);
 	}
 
@@ -104,13 +114,13 @@ public class ExternalTCPMultiProteinTest {
 	}
 
 	private static void logErrorMessage(String errorMessage) {
-		if(TCPMultiProteinTestConfig.SHOW_LOGS){
+		if(ExternalTCPMultiProteinTestConfig.SHOW_LOGS){
 			System.err.println(errorMessage);
 		}
 	}
 
 	static void logMessage(String message) {
-		if(TCPMultiProteinTestConfig.SHOW_LOGS){
+		if(ExternalTCPMultiProteinTestConfig.SHOW_LOGS){
 			System.out.println(message);
 		}
 	}
@@ -118,10 +128,11 @@ public class ExternalTCPMultiProteinTest {
 	@AfterClass
 	public static void afterTesting(){
 		try {
-			System.out.println(" tests.awaitNext() finished on round " + tests.getLastExecutedRound());
-			System.out.println(" last received protein " + tests.getLastObtained());
+			logMessage(" tests.awaitNext() finished on round " + tests.getLastExecutedRound());
+			logMessage(" last received protein " + tests.getLastObtained());
+			generator.stopSelf();
 			connector.halt();
-			tests.cleanUp();
+			tests.withdrawFromHose();
 		} catch (Exception e){
 			ExceptionHandler.handleException(e);
 		}

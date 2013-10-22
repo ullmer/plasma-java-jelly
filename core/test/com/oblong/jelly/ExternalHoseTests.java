@@ -1,7 +1,7 @@
 package com.oblong.jelly;
 
 import com.oblong.jelly.communication.ObPoolConnector;
-import com.oblong.jelly.pool.net.TCPMultiProteinTestConfig;
+import com.oblong.jelly.pool.net.ExternalTCPMultiProteinTestConfig;
 import com.oblong.jelly.slaw.java.SlawString;
 import com.oblong.jelly.util.ExceptionHandler;
 
@@ -46,30 +46,31 @@ public class ExternalHoseTests extends HoseTests {
 
 	@Override
 	public void awaitNext() throws PoolException {
-		int i=0;
-		while (i < maxNumberOfProteins) {
-			currentRound = i;
+		int proteinCounter = 0;
+		while (proteinCounter < maxNumberOfProteins) {
+			currentRound = proteinCounter;
 			try {
-				lastObtained = defHose.awaitNext(TCPMultiProteinTestConfig.DEFAULT_AWAIT_TIMEOUT, TimeUnit.MILLISECONDS);
-				int frequency = 5000;
+				lastObtained = defHose.awaitNext(ExternalTCPMultiProteinTestConfig.DEFAULT_AWAIT_TIMEOUT, TimeUnit.MILLISECONDS);
+				int frequency = 1;
 				String textToPrint;
-				int frequency2 = 1000;
-				String textToPrint2 = "We are at protein " + i;
-				printLogIfRequired(i, frequency2, textToPrint2);
+				int frequency2 = 1;
+				String textToPrint2 = "We are at protein " + proteinCounter;
+				printLogIfRequired(proteinCounter, frequency2, textToPrint2);
+
 				if(lastObtained.matches(getTestProteinDescript())){
-					checkProtein(lastObtained, i);
-					textToPrint = "Protein " + i + " ok";
-					i++;
+					checkProtein(lastObtained, proteinCounter);
+					textToPrint = "Protein " + proteinCounter + " ok";
+					proteinCounter++;
 				} else {
 					textToPrint = "Protein doesn't match target descripts";
 				}
-				if(TCPMultiProteinTestConfig.SHOW_LOGS){
-					printLogIfRequired(i, frequency, textToPrint);
+				if(ExternalTCPMultiProteinTestConfig.SHOW_LOGS){
+					printLogIfRequired(proteinCounter, frequency, textToPrint);
 				}
 			} catch (TimeoutException e) {
 				int frequency = 1000;
-				String textToPrint = "Timeout, we are waiting for protein " + i;
-				printLogIfRequired(i, frequency, textToPrint);
+				String textToPrint = "Timeout, we are waiting for protein " + proteinCounter;
+				printLogIfRequired(proteinCounter, frequency, textToPrint);
 				//if timeout we skip this round otherwise we lose descripts field
 			} catch (PoolException e){
 				printAndThrow(e, e.kind());
@@ -93,30 +94,30 @@ public class ExternalHoseTests extends HoseTests {
 
 	@Override
 	public void checkProtein(Protein p, int i) {
+		printLogIfRequired(i, 1, " i : "+i+" protein : "+p);
 		//checking if the proteins have the same hose name
 		//TODO: maybe useless here
 		assertEquals(getTestHoseName(), p.source());
 		assertTrue(p.matches(getDescripsByIndex(i)));
 	}
 
-	// FIXME: copy-paste with makeFakeProtein??
-	public static Protein makeProtein(int i, String hname) {
+	public static Protein makeProtein(int i, String hname, String argumentForProteinMap) {
 		final Slaw desc = list(int32(i),
 				string("descrips"),
 				getTestProteinDescript(),
 				getDescripsByIndex(i),
-				map(string("foo" /* TODO: should be a method param to avoid copy-pasted method */), nil()));
-		final Slaw ings = map(string("string-key"), string("value"),
+				map(string(argumentForProteinMap), nil()));
+		final Slaw ingests = map(string("string-key"), string("value"),
 				string("nil-key"), nil(),
 				string("int64-key"), int64(i),
 				string("hose"), string(hname));
 		//arbitrary for now
 		//how much is enough?
-		final byte[] data = new byte[TCPMultiProteinTestConfig.MAX_DATA_LENGH];
-		for (int j = 0; j < TCPMultiProteinTestConfig.MAX_DATA_LENGH; ++j) {
+		final byte[] data = new byte[ExternalTCPMultiProteinTestConfig.MAX_DATA_LENGH];
+		for (int j = 0; j < ExternalTCPMultiProteinTestConfig.MAX_DATA_LENGH; ++j) {
 			data[j] = (byte)j;
 		}
-		return protein(desc, ings, data);
+		return protein(desc, ingests, data);
 	}
 
 	private static SlawString getTestProteinDescript() {
@@ -124,21 +125,22 @@ public class ExternalHoseTests extends HoseTests {
 	}
 
 	public static Protein makeFakeProtein(int i, String hname) {
-//		int randomInt = new Random().nextInt(i);
-		final Slaw desc = list(int32(i),
-				string("descrips"),
-				map(string("fake" /* TODO: should be a method param to avoid copy-pasted method */), nil()));
-		final Slaw ings = map(string("string-key"), string("value"),
-				string("nil-key"), nil(),
-				string("int64-key"), int64(i),
-				string("hose"), string(hname));
-		//arbitrary for now
-		//how much is enough?
-		final byte[] data = new byte[TCPMultiProteinTestConfig.MAX_DATA_LENGH];
-		for (int j = 0; j < TCPMultiProteinTestConfig.MAX_DATA_LENGH; ++j) {
-			data[j] = (byte)j;
-		}
-		return protein(desc, ings, data);
+//		final Slaw desc = list(int32(i),
+//				string("descrips"),
+//				map(string("fake"), nil()));
+//		final Slaw ings = map(string("string-key"), string("value"),
+//				string("nil-key"), nil(),
+//				string("int64-key"), int64(i),
+//				string("hose"), string(hname));
+//		//arbitrary for now
+//		//how much is enough?
+//		final byte[] data = new byte[ExternalTCPMultiProteinTestConfig.MAX_DATA_LENGH];
+//		for (int j = 0; j < ExternalTCPMultiProteinTestConfig.MAX_DATA_LENGH; ++j) {
+//			data[j] = (byte)j;
+//		}
+//		return protein(desc, ings, data);
+		String argumentForFakeProtein = "fake";
+		return makeProtein(i, hname, argumentForFakeProtein);
 	}
 
 	private static Slaw getDescripsByIndex(int i) {

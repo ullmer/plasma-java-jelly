@@ -81,6 +81,7 @@ public abstract class ObPoolConnector extends Thread {
 			withdrawHose();
 			System.out.println("Halted " + getThreadNameID())  ;
 		} catch(NoClassDefFoundError ex){
+			//TODO: maybe remove this catch clause
 			ExceptionHandler.handleException(ex);
 		} catch(Exception e){
 			ExceptionHandler.handleException(e);

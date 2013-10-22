@@ -1,5 +1,7 @@
 package com.oblong.util;
 
+import java.util.Random;
+
 /**
  * User: karol
  * Date: 10/22/13
@@ -24,6 +26,10 @@ public class Util {
 		} catch (InterruptedException e) {
 			throw Util.rethrow(e);
 		}
+	}
+
+	public static void randomSleep(Random r, int sleepMs) throws InterruptedException {
+		Thread.sleep(r.nextInt(sleepMs));
 	}
 
 }

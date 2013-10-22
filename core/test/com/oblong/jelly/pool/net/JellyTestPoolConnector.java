@@ -1,15 +1,18 @@
 package com.oblong.jelly.pool.net;
 
-import com.oblong.jelly.ExternalHoseTests;
+import com.oblong.jelly.PoolException;
 import com.oblong.jelly.PoolServerAddress;
 import com.oblong.jelly.Protein;
 import com.oblong.jelly.communication.HoseFactory;
 import com.oblong.jelly.communication.ObPoolCommunicationEventHandler;
 import com.oblong.jelly.communication.ObPoolSender;
-import com.oblong.jelly.util.ExceptionHandler;
+import com.oblong.util.Util;
+import net.jcip.annotations.ThreadSafe;
 
 import java.util.List;
 import java.util.Random;
+
+import static junit.framework.Assert.fail;
 
 /**
 * Created with IntelliJ IDEA.
@@ -19,9 +22,9 @@ import java.util.Random;
 */
 public class JellyTestPoolConnector extends ObPoolSender {
 
+	private static final String TAG = "JellyTestPoolConnector";
 	private Random r = new Random();
 	private static boolean realProteins;
-
 
 	public JellyTestPoolConnector(PoolServerAddress pools,
 	                              String pool,
@@ -31,69 +34,37 @@ public class JellyTestPoolConnector extends ObPoolSender {
 	                              HoseFactory hoseFactory, boolean realProteins) {
 		super(pools, pool, lis, sleepSecs, proteinQueue, hoseFactory);
 		this.realProteins = realProteins;
+
 	}
 
-	@Override
-	public void connect() {
-		super.connect();
-		createAndSendProteins();
-	}
 
-	private void createAndSendProteins() {
-		for(int i=0; i < TCPMultiProteinTestConfig.NUMBER_OF_DEPOSITED_PROTEINS; i++){
-			Protein protein;
-			protein = ExternalHoseTests.makeProtein(i, ExternalTCPMultiProteinTest.POOL_NAME);
-			proteinQueue.add(protein);
-
-			makeFail(i, protein);
-			addNoise(i);
+	protected void addProtein(Protein p){
+		synchronized (proteinQueue){
+			proteinQueue.add(p);
 		}
-		ExternalTCPMultiProteinTest.logMessage("All Proteins have been sent");
-	}
-
-	/***
-	 * add some extra proteins in the middle
-	 * @param i
-	 */
-	private void addNoise(int i) {
-		Protein protein;
-		if(i % TCPMultiProteinTestConfig.NOISINESS == 0){
-			protein = ExternalHoseTests.makeFakeProtein(i, ExternalTCPMultiProteinTest.POOL_NAME);
-			proteinQueue.add(protein);
-		}
-	}
-
-	private void makeFail(int i, Protein protein) {
-
-		//add protein 2 times : ensure test will fail
-		if(i==100 && TCPMultiProteinTestConfig.MAKE_FAIL ){
-			proteinQueue.add(protein);
-		}
-
 	}
 
 	protected void sendProtein(Protein protein) {
-//			logMessage("Sending protein "+protein);
 		try {
 			super.sendProtein(protein);
+//			ExternalTCPMultiProteinTest.logMessage("Protein sent");
 		} catch (Exception e) {
-			ExceptionHandler.handleException(e, "Pool exception");
+			fail("Unable to send protein "+protein);
+//			ExceptionHandler.handleException(e, "Pool exception");
 		}
 	}
 
 	protected void maybeSleep() {
 		if (sleepSecs > 0) {
 			try {
-				randomSleep();
+				//TODO: use Karols classes
+				Util.randomSleep(r, sleepSecs);
 			} catch (InterruptedException e) {
-				e.printStackTrace();
+				ExternalTCPMultiProteinTest.logMessage("Sleep interrupted in "+TAG);
 				Thread.currentThread().interrupt();
 			}
 		}
 	}
 
-	private void randomSleep() throws InterruptedException {
-		Thread.sleep(r.nextInt(sleepSecs));
-	}
 
 }
