@@ -1,7 +1,5 @@
 package com.oblong.jelly.util;
 
-import com.oblong.jelly.ProteinEatingException;
-
 /**
  * Created with IntelliJ IDEA.
  * User: valeria
@@ -60,6 +58,10 @@ public abstract class ExceptionHandler {
 
 	public static void handleException(String msg)  {
 		handleException(new JustToGetStackTrace(), msg);
+	}
+
+	public static void handleError(String message, Object details) {
+		handleException(message + "; details: " + details);
 	}
 
 	public static class JustToGetStackTrace extends Exception { /*nothing*/ }
