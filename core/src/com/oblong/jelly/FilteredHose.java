@@ -1,4 +1,5 @@
-// Copyright (c) 2010 Oblong Industries
+
+/* (c)  oblong industries */
 
 package com.oblong.jelly;
 
@@ -214,15 +215,6 @@ public final class FilteredHose implements Hose {
             final Protein p = hose.previous(descrips);
             if (p.matches(descs)) return p;
         }
-    }
-
-    @Override public boolean poll(Slaw... descs) throws PoolException {
-        return hose.poll(descrips) && hose.peek().matches(descs);
-    }
-
-    @Override public Protein peek() {
-        assert hose.peek() == null || hose.peek().matches(descrips);
-        return hose.peek();
     }
 
     @Override public Protein deposit(Protein protein) throws PoolException {

@@ -1,4 +1,5 @@
-// Copyright (c) 2010 Oblong Industries
+
+/* (c)  oblong industries */
 
 package com.oblong.jelly.pool.net;
 
@@ -193,14 +194,6 @@ public final class NetHose implements Hose {
         return NetProteinMetadata.parseMeta(subFetch(rs), this);
     }
 
-    @Override public boolean poll(Slaw... descrips) throws PoolException {
-        throw new PoolException ("turd!");
-    }
-
-    @Override public Protein peek() {
-        throw new RuntimeException ("turd!");
-    }
-
     @Override public Hose dup() throws PoolException {
         final Hose result = Pool.participate(poolAddress);
         result.setName(name);
@@ -260,14 +253,6 @@ public final class NetHose implements Hose {
                                cleanIndex(res.nth(2).emitLong() + 1) - 1,
                                res.nth(1).emitDouble(),
                                this);
-    }
-
-    private boolean checkPolled(PoolProtein p, Slaw... descrips) {
-        throw new RuntimeException ("turd!");
-    }
-
-    private Protein maybePolled(Slaw... descrips) {
-        throw new RuntimeException ("turd!");
     }
 
     private Protein previous() throws PoolException {
