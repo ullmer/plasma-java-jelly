@@ -39,9 +39,8 @@ public class ExternalTCPMultiProteinTest {
 			.synchronizedList(new LinkedList<Protein>());
 
 	private static ExternalHoseTests tests;
-	private static JellyTestPoolConnector connector;
+	private static JellyTestPoolSender connector;
 	private static ObHandler listener =  new ObHandler();
-	private static ProteinGenerator generator;
 	private static final String TAG = "ExternalTCPMultiProteinTest";
 
 	public static final String POOL_NAME = "external-tests-pool";
@@ -59,17 +58,14 @@ public class ExternalTCPMultiProteinTest {
 			//create pool otherwise test will fail
 			createPoolIfNonExisting(poolAddress);
 
-			connector = new JellyTestPoolConnector(poolServerAddress,
+			connector = new JellyTestPoolSender(poolServerAddress,
 					POOL_NAME,
 					listener,
-					ExternalTCPMultiProteinTestConfig.SLEEP_MILI_SECS,
+					ExternalTCPMultiProteinTestConfig.DEFAULT_SLEEP_MS,
 					toSendProteinQueue,
-					null, true);
+					null);
 			connector.start();
-			generator = new ProteinGenerator(connector);
-			generator.start();
-
-			tests = new ExternalHoseTests(poolServerAddress, ExternalTCPMultiProteinTestConfig.NUMBER_OF_DEPOSITED_PROTEINS_IN_BATCH, POOL_NAME);
+			tests = new ExternalHoseTests(poolServerAddress, ExternalTCPMultiProteinTestConfig.getTotalNumberOfProteins(), POOL_NAME);
 		} catch (BadAddressException e){
 			//something wrong with server?
 			handleAndFail(e);
@@ -113,7 +109,7 @@ public class ExternalTCPMultiProteinTest {
 		}
 	}
 
-	private static void logErrorMessage(String errorMessage) {
+	static void logErrorMessage(String errorMessage) {
 		if(ExternalTCPMultiProteinTestConfig.SHOW_LOGS){
 			System.err.println(errorMessage);
 		}
@@ -130,9 +126,8 @@ public class ExternalTCPMultiProteinTest {
 		try {
 			logMessage(" tests.awaitNext() finished on round " + tests.getLastExecutedRound());
 			logMessage(" last received protein " + tests.getLastObtained());
-			generator.stopSelf();
 			connector.halt();
-			tests.withdrawFromHose();
+			tests.cleanUp();
 		} catch (Exception e){
 			ExceptionHandler.handleException(e);
 		}

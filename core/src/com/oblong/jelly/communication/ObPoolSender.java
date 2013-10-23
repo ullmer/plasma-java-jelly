@@ -35,7 +35,7 @@ public class ObPoolSender extends ObPoolConnector {
 				hose.deposit(protein);
 			} catch (PoolException e) {
 				ExceptionHandler.handleException(e);
-				throw new RuntimeException(e);
+//				throw new RuntimeException(e);
 			}
 		}
 	}
