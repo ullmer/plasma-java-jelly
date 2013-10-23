@@ -6,7 +6,7 @@
 
   <property name="jelly.basename" value="jelly"/>
   <property name="jelly.version.major" value="0"/>
-  <property name="jelly.version.minor" value="2"/>
+  <property name="jelly.version.minor" value="3"/>
   <property name="jelly.version"
             value="${jelly.version.major}.${jelly.version.minor}"/>
   <property name="jelly.title" value="${jelly.basename} ${jelly.version}"/>
