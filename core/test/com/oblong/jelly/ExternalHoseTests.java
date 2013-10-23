@@ -47,7 +47,7 @@ public class ExternalHoseTests extends HoseTests {
 	@Override
 	public void awaitNext() throws PoolException {
 		currentRound = 0;
-		printLogIfRequired(currentRound+1, 1, "Number of expected proteins "+maxNumberOfProteins);
+		printLogIfRequired(currentRound+1, 1, "Number of expected proteins "+ getNumberOfExpectedProteins());
 		while (ExternalTCPMultiProteinTestConfig.shouldTestContinue(currentRound, maxNumberOfProteins)) {
 			try {
 				Protein tempProtein = defHose.awaitNext(ExternalTCPMultiProteinTestConfig.getRandomAwaitTimeout(), TimeUnit.MILLISECONDS);
@@ -82,6 +82,10 @@ public class ExternalHoseTests extends HoseTests {
 				printAndThrow(e, PoolException.Kind.UNCLASSIFIED);
 			}
 		}
+	}
+
+	private int getNumberOfExpectedProteins() {
+		return maxNumberOfProteins;
 	}
 
 	private void printNoProteinReceivedYet(String timeout) {

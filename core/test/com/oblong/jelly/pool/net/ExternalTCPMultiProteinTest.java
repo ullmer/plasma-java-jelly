@@ -47,6 +47,10 @@ public class ExternalTCPMultiProteinTest {
 
 	@BeforeClass
 	public static void setUp()  {
+		setUpBeforeTest();
+	}
+
+	private static void setUpBeforeTest() {
 		if (ExternalTCPMultiProteinTestConfig.SHOW_LOGS) {
 			ExceptionHandler.setExceptionHandler(new TestExceptionHandler());
 		}
@@ -61,11 +65,12 @@ public class ExternalTCPMultiProteinTest {
 			connector = new JellyTestPoolSender(poolServerAddress,
 					POOL_NAME,
 					listener,
-					ExternalTCPMultiProteinTestConfig.DEFAULT_SLEEP_MS,
+					ExternalTCPMultiProteinTestConfig.getRandomSleepingTime(),
 					toSendProteinQueue,
 					null);
 			connector.start();
-			tests = new ExternalHoseTests(poolServerAddress, ExternalTCPMultiProteinTestConfig.getTotalNumberOfProteins(), POOL_NAME);
+			tests = new ExternalHoseTests(poolServerAddress,
+					ExternalTCPMultiProteinTestConfig.getTotalNumberOfProteins(), POOL_NAME);
 		} catch (BadAddressException e){
 			//something wrong with server?
 			handleAndFail(e);
@@ -74,6 +79,7 @@ public class ExternalTCPMultiProteinTest {
 			handleAndFail(e);
 		}
 	}
+
 
 	private static void handleAndFail(Exception e) {
 		ExceptionHandler.handleException(e);
@@ -87,7 +93,7 @@ public class ExternalTCPMultiProteinTest {
 	}
 
 	static PoolServerAddress getPoolServerAddress() throws BadAddressException {
-		String uri = System.getProperty("com.oblong.jelly.externalServer", ExternalTCPMultiProteinTestConfig.URI);
+		String uri = System.getProperty("com.oblong.jelly.externalServer", ExternalTCPMultiProteinTestConfig.getDefaultUri());
 		return PoolServerAddress.fromURI(uri);
 	}
 
@@ -96,6 +102,10 @@ public class ExternalTCPMultiProteinTest {
 	 */
 	@Test
 	public void awaitNext()  {
+		testAwaitNext();
+	}
+
+	private static void testAwaitNext() {
 		try {
 			if(tests!=null){
 				tests.awaitNext();
@@ -123,6 +133,10 @@ public class ExternalTCPMultiProteinTest {
 
 	@AfterClass
 	public static void afterTesting(){
+		cleanUpAfterTest();
+	}
+
+	private static void cleanUpAfterTest() {
 		try {
 			logMessage(" tests.awaitNext() finished on round " + tests.getLastExecutedRound());
 			logMessage(" last received protein " + tests.getLastObtained());
@@ -169,5 +183,16 @@ public class ExternalTCPMultiProteinTest {
 		}
 
 	}
+
+	/****Main Method to run class outside Junit framework***/
+	public static void main(String[] args) {
+		logMessage("starting test via main class");
+		ExternalTCPMultiProteinTestConfig.setDefaultTestSettingsForEndlessTest();
+		setUpBeforeTest();
+		testAwaitNext();
+		cleanUpAfterTest();
+	}
+
+
 
 }

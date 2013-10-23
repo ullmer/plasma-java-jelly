@@ -51,7 +51,7 @@ public class PoolServerTestBase {
             } catch (PoolException e) {
                 fail(e.getMessage());
             }
-            assertNotNull("URI: " + uri, s);
+            assertNotNull("DEFAULT_URI: " + uri, s);
         } else {
 	        System.err.println("uri is null or empty: unable to get property com.oblong.jelly.externalServer");
         }

@@ -29,7 +29,7 @@
 //	public ProteinGenerator(JellyTestPoolSender connector) {
 //		this.connector = connector;
 //
-//		this.sleepMs = ExternalTCPMultiProteinTestConfig.DEFAULT_SLEEP_MS;
+//		this.sleepMs = ExternalTCPMultiProteinTestConfig.SLEEP_MS_SMALL;
 //		ExternalTCPMultiProteinTest.logMessage("created generator");
 //	}
 //

@@ -40,7 +40,7 @@ public class JellyTestPoolSender extends ObPoolSender {
 		super(pools, pool, lis, sleepSecs, proteinQueue, hoseFactory);
 		this.maxProteinNumber =
 				ExternalTCPMultiProteinTestConfig.getTotalNumberOfProteins();
-		this.maxProteinBatchSize = ExternalTCPMultiProteinTestConfig.NUMBER_OF_DEPOSITED_PROTEINS_IN_BATCH;
+		this.maxProteinBatchSize = ExternalTCPMultiProteinTestConfig.getBatchSize();
 	}
 
 
