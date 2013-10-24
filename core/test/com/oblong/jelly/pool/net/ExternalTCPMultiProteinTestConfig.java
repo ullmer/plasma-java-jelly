@@ -30,31 +30,31 @@ public class ExternalTCPMultiProteinTestConfig {
 
 	private static SettingsForMultiProteinTest settingsForMultiProteinTest;
 
-	public static final String URI_FOR_TEST = "tcp://10.3.10.111";
+	public static final String URI_FOR_TEST = null;
 
 	public static final int SLEEP_MS_SMALL = 20;
 
 	public static final int SMALL_AWAIT_TIMEOUT = 50;
 
-	public static final int SMALL_RUDE_DATA = 100;
+	public static final int SMALL_RUDE_DATA = 156;
 
 	public static final int SMALL_BATCH_SIZE = 10;
 
 	public static final int SMALL_NUMBER_OF_RUNS = 10;
 
-	public static final double CHANCE_FIFT_FIFTY = 0.5;
+	public static final double CHANCE_FIFTY_FIFTY = 0.5;
 
 	private static final SettingsForMultiProteinTest SETTINGS_FOR_QUICK_TEST =
 			new SettingsForMultiProteinTest(URI_FOR_TEST, SLEEP_MS_SMALL, SMALL_AWAIT_TIMEOUT,
-					SMALL_RUDE_DATA, SMALL_BATCH_SIZE, SMALL_NUMBER_OF_RUNS, CHANCE_FIFT_FIFTY);
+					SMALL_RUDE_DATA, SMALL_BATCH_SIZE, SMALL_NUMBER_OF_RUNS, CHANCE_FIFTY_FIFTY);
 
 	private static final SettingsForMultiProteinTest SETTINGS_FOR_ENDLESS_QUICK_TEST =
 			new SettingsForMultiProteinTest(URI_FOR_TEST,
 			SLEEP_MS_SMALL, SMALL_AWAIT_TIMEOUT, SMALL_RUDE_DATA, SMALL_BATCH_SIZE,
-					NO_LIMIT_PROTEIN_NUMBER, CHANCE_FIFT_FIFTY);
+					NO_LIMIT_PROTEIN_NUMBER, CHANCE_FIFTY_FIFTY);
 
 	static {
-		settingsForMultiProteinTest = SETTINGS_FOR_ENDLESS_QUICK_TEST;
+		settingsForMultiProteinTest = SETTINGS_FOR_QUICK_TEST;
 	}
 
 	private static SkewedIntDistribution connectorSleepDistribution =
@@ -68,32 +68,30 @@ public class ExternalTCPMultiProteinTestConfig {
 
 	private static SkewedIntDistribution batchSizeDistribution =
 			new SkewedIntDistribution(settingsForMultiProteinTest.chanceOfPickingFromDistribution,
-					new IntRange(0, settingsForMultiProteinTest.batchSize));
+					new IntRange(1, settingsForMultiProteinTest.batchSize));
 
 	public static void setDefaultTestSettingsForEndlessTest(){
 		settingsForMultiProteinTest = new SettingsForMultiProteinTest(URI_FOR_TEST,
 				SLEEP_MS_SMALL, SMALL_AWAIT_TIMEOUT, SMALL_RUDE_DATA, SMALL_BATCH_SIZE, SMALL_NUMBER_OF_RUNS,
-				CHANCE_FIFT_FIFTY);
+				CHANCE_FIFTY_FIFTY);
 		INFINITE_TEST = true;
 	}
 
 	public static int getTotalNumberOfProteins() {
-		return settingsForMultiProteinTest.numberOfRuns == NO_LIMIT_PROTEIN_NUMBER ? NO_LIMIT_PROTEIN_NUMBER : settingsForMultiProteinTest.numberOfRuns *
+		return settingsForMultiProteinTest.numberOfRuns == NO_LIMIT_PROTEIN_NUMBER ?
+				NO_LIMIT_PROTEIN_NUMBER : settingsForMultiProteinTest.numberOfRuns *
 				settingsForMultiProteinTest.batchSize;
 	}
 
 	public static int getRandomAwaitTimeout() {
-		//return defaultAwaitTimeout;
 		return awaitNextDistribution.random(random);
 	}
 
 	static int getRandomSleepingTime() {
-		//return defaultSleepMs;
 		return connectorSleepDistribution.random(random);
 	}
 
 	public static int getRandomDataLength() {
-//		return maxRudeData;
 		return dataLengthDistribution.random(random);
 	}
 
@@ -102,21 +100,9 @@ public class ExternalTCPMultiProteinTestConfig {
 	}
 
 	static String getDefaultUri() {
-		try {
-			if(isBuildbot()){
-				return DEFAULT_URI;
-			} else {
-				return settingsForMultiProteinTest.uriForTest;
-			}
-		} catch (UnknownHostException e) {
-			return DEFAULT_URI;
-		}
-
+		return settingsForMultiProteinTest.uriForTest!=null ? settingsForMultiProteinTest.uriForTest: DEFAULT_URI;
 	}
 
-	private static boolean isBuildbot() throws UnknownHostException {
-		return InetAddress.getLocalHost().getHostName().contains("buildbot");
-	}
 
 	static int getBatchSize() {
 		return INFINITE_TEST ? getRandomBatchSize() : settingsForMultiProteinTest.batchSize;
@@ -133,27 +119,27 @@ public class ExternalTCPMultiProteinTestConfig {
 		/***
 		 * setting for uri to be used
 		 */
-		private String uriForTest = "tcp://10.3.10.111";
+		private String uriForTest;
 
 		/**
 		 * sleep time used b sending thread
 		 */
-		private int defaultSleepMs = 20;
+		private int defaultSleepMs;
 
 		/***
 		 * sleep time to use with AwaitNext
 		 */
-		private int defaultAwaitTimeout = 50;
+		private int defaultAwaitTimeout;
 
 		/**
 		 * setting for protein rude data array
 		 */
-		private int maxRudeData = 100; //16384;
+		private int maxRudeData; //16384;
 
 		/***
 		 * number of proteins sent in batch (without sleeping in between
 		 */
-		private int batchSize = 10;
+		private int batchSize;
 
 		/***
 		 * For stress tests maybe Integer.MAX_VALUE;
@@ -161,9 +147,9 @@ public class ExternalTCPMultiProteinTestConfig {
 		 * too high value may hang the test for a long time
 		 * use NO_LIMIT_PROTEIN_NUMBER to run test undefinitely
 		 */
-		public int numberOfRuns = 10;
+		public int numberOfRuns;
 
-		private double chanceOfPickingFromDistribution = 0.5;
+		private double chanceOfPickingFromDistribution;
 
 		public SettingsForMultiProteinTest(String uriForTest,
 		                                   int defaultSleepMs,
