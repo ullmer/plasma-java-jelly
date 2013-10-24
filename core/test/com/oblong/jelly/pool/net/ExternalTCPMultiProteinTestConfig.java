@@ -31,7 +31,7 @@ public class ExternalTCPMultiProteinTestConfig {
     public static final int NOISINESS = 500;
     private static Random random = new Random();
 
-    private static SettingsForMultiProteinTest settingsForMultiProteinTest;
+    private static SettingsForMultiProteinTezt settingsForMultiProteinTest;
 
     public static final String URI_FOR_TEST = "tcp://10.3.10.111";
 
@@ -47,13 +47,13 @@ public class ExternalTCPMultiProteinTestConfig {
 
     public static final double CHANCE_FIFT_FIFTY = 0.5;
 
-    private static final SettingsForMultiProteinTest SETTINGS_FOR_QUICK_TEST =
-        new SettingsForMultiProteinTest (URI_FOR_TEST, SLEEP_MS_SMALL, SMALL_AWAIT_TIMEOUT,
+    private static final SettingsForMultiProteinTezt SETTINGS_FOR_QUICK_TEST =
+        new SettingsForMultiProteinTezt (URI_FOR_TEST, SLEEP_MS_SMALL, SMALL_AWAIT_TIMEOUT,
                                          SMALL_RUDE_DATA, SMALL_BATCH_SIZE,
                                          SMALL_NUMBER_OF_RUNS, CHANCE_FIFT_FIFTY);
 
-    private static final SettingsForMultiProteinTest SETTINGS_FOR_ENDLESS_QUICK_TEST =
-        new SettingsForMultiProteinTest (URI_FOR_TEST, SLEEP_MS_SMALL, SMALL_AWAIT_TIMEOUT,
+    private static final SettingsForMultiProteinTezt SETTINGS_FOR_ENDLESS_QUICK_TEST =
+        new SettingsForMultiProteinTezt (URI_FOR_TEST, SLEEP_MS_SMALL, SMALL_AWAIT_TIMEOUT,
                                          SMALL_RUDE_DATA, SMALL_BATCH_SIZE,
                                          NO_LIMIT_PROTEIN_NUMBER, CHANCE_FIFT_FIFTY);
 
@@ -76,7 +76,7 @@ public class ExternalTCPMultiProteinTestConfig {
 
     public static void setDefaultTestSettingsForEndlessTest () {
         settingsForMultiProteinTest =
-            new SettingsForMultiProteinTest (URI_FOR_TEST, SLEEP_MS_SMALL, SMALL_AWAIT_TIMEOUT,
+            new SettingsForMultiProteinTezt (URI_FOR_TEST, SLEEP_MS_SMALL, SMALL_AWAIT_TIMEOUT,
                                              SMALL_RUDE_DATA, SMALL_BATCH_SIZE,
                                              SMALL_NUMBER_OF_RUNS, CHANCE_FIFT_FIFTY);
         INFINITE_TEST = true;
@@ -135,7 +135,7 @@ public class ExternalTCPMultiProteinTestConfig {
     /***
      * all these values can be modified
      */
-    public static class SettingsForMultiProteinTest {
+    public static class SettingsForMultiProteinTezt {
         /***
          * setting for uri to be used
          */
@@ -171,7 +171,7 @@ public class ExternalTCPMultiProteinTestConfig {
 
         private double chanceOfPickingFromDistribution = 0.5;
 
-        public SettingsForMultiProteinTest(String uriForTest,
+        public SettingsForMultiProteinTezt(String uriForTest,
                                            int defaultSleepMs,
                                            int defaultAwaitTimeout,
                                            int maxRudeData,
