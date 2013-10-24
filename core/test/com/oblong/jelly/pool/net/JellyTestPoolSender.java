@@ -30,6 +30,7 @@ public class JellyTestPoolSender extends ObPoolSender {
 	private final int maxProteinNumber;
 	private final int maxProteinBatchSize;
 	public static final String ARGUMENT_FOR_PROTEIN_MAP = "foo";
+	public static final boolean D = false;
 
 	public JellyTestPoolSender(PoolServerAddress pools,
 	                           String pool,
@@ -58,14 +59,16 @@ public class JellyTestPoolSender extends ObPoolSender {
 	@Override
 	public void halt() {
 		super.halt();
-		ExternalTCPMultiProteinTest.logMessage("Sender Thread stopped at protein "+proteinCounter);
+		ExternalTCPMultiProteinTest.logMessage("Sender Thread stopped at protein " + proteinCounter);
 	}
 
 	@Override
 	protected void sendProtein(Protein protein) {
 		try {
 			super.sendProtein(protein);
-			ExternalTCPMultiProteinTest.logMessage("Protein sent ");
+			if(D) {
+				ExternalTCPMultiProteinTest.logMessage("Protein sent ");
+			}
 		} catch (Exception e) {
 //			fail("Unable to send protein "+protein);
 			ExceptionHandler.handleException(e, "Pool exception : protein not sent "+protein.ingests());
@@ -74,14 +77,14 @@ public class JellyTestPoolSender extends ObPoolSender {
 
 	protected void maybeSleep() {
 		sleepSecs = ExternalTCPMultiProteinTestConfig.getRandomSleepingTime();
-		ExternalTCPMultiProteinTest.logMessage("sleep time "+sleepSecs);
+		ExternalTCPMultiProteinTest.logMessage("sleep time " + sleepSecs);
 		if (sleepSecs > 0) {
 			try {
 				//TODO: use Karols classes
 				Util.randomSleep(r, sleepSecs);
 			} catch (InterruptedException e) {
 				stopMe = true;
-				ExternalTCPMultiProteinTest.logErrorMessage("Sleep interrupted in "+TAG);
+				ExternalTCPMultiProteinTest.logErrorMessage("Sleep interrupted in " + TAG);
 				Thread.currentThread().interrupt();
 			}
 		}
@@ -115,11 +118,11 @@ public class JellyTestPoolSender extends ObPoolSender {
 			}
 			proteinCounter++;
 		}
-		ExternalTCPMultiProteinTest.logMessage("Sent batch of "+batchSize+" proteins");
+		ExternalTCPMultiProteinTest.logMessage("Sent batch of " + batchSize + " proteins");
 	}
 
 	private int getBatchSize() {
-		return maxProteinBatchSize;
+		return ExternalTCPMultiProteinTestConfig.getBatchSize();
 	}
 
 

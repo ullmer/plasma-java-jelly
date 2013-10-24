@@ -6,8 +6,6 @@ package com.oblong.jelly.pool.net;
 import com.oblong.util.probability.IntRange;
 import com.oblong.util.probability.SkewedIntDistribution;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.Random;
 
 /**
@@ -31,7 +29,7 @@ public class ExternalTCPMultiProteinTestConfig {
 	public static final int NOISINESS = 500;
 	private static Random random = new Random();
 
-	private static SettingsForMultiProteinTest settingsForMultiProteinTest;
+	private static SettingsForMultiProtein settingsForMultiProteinTest;
 
 	public static final String URI_FOR_TEST = null;
 
@@ -47,13 +45,13 @@ public class ExternalTCPMultiProteinTestConfig {
 
 	public static final double CHANCE_FIFTY_FIFTY = 0.5;
 
-	private static final SettingsForMultiProteinTest SETTINGS_FOR_QUICK_TEST =
-			new SettingsForMultiProteinTest(URI_FOR_TEST, SLEEP_MS_SMALL, SMALL_AWAIT_TIMEOUT,
+	private static final SettingsForMultiProtein SETTINGS_FOR_QUICK_TEST =
+			SettingsForMultiProtein.createSettingsForMultiProteinTest(URI_FOR_TEST, SLEEP_MS_SMALL, SMALL_AWAIT_TIMEOUT,
 					SMALL_RUDE_DATA, SMALL_BATCH_SIZE, SMALL_NUMBER_OF_RUNS, CHANCE_FIFTY_FIFTY);
 
-	private static final SettingsForMultiProteinTest SETTINGS_FOR_ENDLESS_QUICK_TEST =
-			new SettingsForMultiProteinTest(URI_FOR_TEST,
-			SLEEP_MS_SMALL, SMALL_AWAIT_TIMEOUT, SMALL_RUDE_DATA, SMALL_BATCH_SIZE,
+	private static final SettingsForMultiProtein SETTINGS_FOR_ENDLESS_QUICK_TEST =
+			SettingsForMultiProtein.createSettingsForMultiProteinTest(URI_FOR_TEST,
+					SLEEP_MS_SMALL, SMALL_AWAIT_TIMEOUT, SMALL_RUDE_DATA, SMALL_BATCH_SIZE,
 					NO_LIMIT_PROTEIN_NUMBER, CHANCE_FIFTY_FIFTY);
 
 	static {
@@ -61,29 +59,29 @@ public class ExternalTCPMultiProteinTestConfig {
 	}
 
 	private static SkewedIntDistribution connectorSleepDistribution =
-			new SkewedIntDistribution(0.5, new IntRange(0, settingsForMultiProteinTest.defaultSleepMs));
+			new SkewedIntDistribution(0.5, new IntRange(0, settingsForMultiProteinTest.getDefaultSleepMs()));
 	private static SkewedIntDistribution awaitNextDistribution =
-			new SkewedIntDistribution(0.5, new IntRange(0, settingsForMultiProteinTest.defaultAwaitTimeout));
+			new SkewedIntDistribution(0.5, new IntRange(0, settingsForMultiProteinTest.getDefaultAwaitTimeout()));
 
 	private static SkewedIntDistribution dataLengthDistribution =
-			new SkewedIntDistribution(settingsForMultiProteinTest.chanceOfPickingFromDistribution,
-					new IntRange(0, settingsForMultiProteinTest.maxRudeData));
+			new SkewedIntDistribution(settingsForMultiProteinTest.getChanceOfPickingFromDistribution(),
+					new IntRange(0, settingsForMultiProteinTest.getMaxRudeData()));
 
 	private static SkewedIntDistribution batchSizeDistribution =
-			new SkewedIntDistribution(settingsForMultiProteinTest.chanceOfPickingFromDistribution,
-					new IntRange(1, settingsForMultiProteinTest.batchSize));
+			new SkewedIntDistribution(settingsForMultiProteinTest.getChanceOfPickingFromDistribution(),
+					new IntRange(1, settingsForMultiProteinTest.getBatchSize()));
 
 	public static void setDefaultTestSettingsForEndlessTest(){
-		settingsForMultiProteinTest = new SettingsForMultiProteinTest(URI_FOR_TEST,
+		settingsForMultiProteinTest = SettingsForMultiProtein.createSettingsForMultiProteinTest(URI_FOR_TEST,
 				SLEEP_MS_SMALL, SMALL_AWAIT_TIMEOUT, SMALL_RUDE_DATA, SMALL_BATCH_SIZE, SMALL_NUMBER_OF_RUNS,
 				CHANCE_FIFTY_FIFTY);
 		INFINITE_TEST = true;
 	}
 
 	public static int getTotalNumberOfProteins() {
-		return settingsForMultiProteinTest.numberOfRuns == NO_LIMIT_PROTEIN_NUMBER ?
-				NO_LIMIT_PROTEIN_NUMBER : settingsForMultiProteinTest.numberOfRuns *
-				settingsForMultiProteinTest.batchSize;
+		return settingsForMultiProteinTest.getNumberOfRuns() == NO_LIMIT_PROTEIN_NUMBER ?
+				NO_LIMIT_PROTEIN_NUMBER : settingsForMultiProteinTest.getNumberOfRuns() *
+				settingsForMultiProteinTest.getBatchSize();
 	}
 
 	public static int getRandomAwaitTimeout() {
@@ -103,71 +101,16 @@ public class ExternalTCPMultiProteinTestConfig {
 	}
 
 	static String getDefaultUri() {
-		return settingsForMultiProteinTest.uriForTest!=null ? settingsForMultiProteinTest.uriForTest: DEFAULT_URI;
+		return settingsForMultiProteinTest.getUriForTest() !=null ? settingsForMultiProteinTest.getUriForTest() : DEFAULT_URI;
 	}
 
 
 	static int getBatchSize() {
-		return INFINITE_TEST ? getRandomBatchSize() : settingsForMultiProteinTest.batchSize;
+		return INFINITE_TEST ? getRandomBatchSize() : settingsForMultiProteinTest.getBatchSize();
 	}
 
 	private static int getRandomBatchSize() {
 		return batchSizeDistribution.random(random);
 	}
 
-	/***
-	 * all these values can be modified
-	 */
-	public static class SettingsForMultiProteinTest {
-		/***
-		 * setting for uri to be used
-		 */
-		private String uriForTest;
-
-		/**
-		 * sleep time used b sending thread
-		 */
-		private int defaultSleepMs;
-
-		/***
-		 * sleep time to use with AwaitNext
-		 */
-		private int defaultAwaitTimeout;
-
-		/**
-		 * setting for protein rude data array
-		 */
-		private int maxRudeData; //16384;
-
-		/***
-		 * number of proteins sent in batch (without sleeping in between
-		 */
-		private int batchSize;
-
-		/***
-		 * For stress tests maybe Integer.MAX_VALUE;
-		 * use 100000; this usually throws several exceptions if used with another pc with localhost it doesn't
-		 * too high value may hang the test for a long time
-		 * use NO_LIMIT_PROTEIN_NUMBER to run test undefinitely
-		 */
-		public int numberOfRuns;
-
-		private double chanceOfPickingFromDistribution;
-
-		public SettingsForMultiProteinTest(String uriForTest,
-		                                   int defaultSleepMs,
-		                                   int defaultAwaitTimeout,
-		                                   int maxRudeData,
-		                                   int batchSize,
-		                                   int numberOfRuns,
-		                                   double chanceOfPickingFromDistribution) {
-			this.uriForTest = uriForTest;
-			this.defaultSleepMs = defaultSleepMs;
-			this.defaultAwaitTimeout = defaultAwaitTimeout;
-			this.maxRudeData = maxRudeData;
-			this.batchSize = batchSize;
-			this.numberOfRuns = numberOfRuns;
-			this.chanceOfPickingFromDistribution = chanceOfPickingFromDistribution;
-		}
-	}
 }
