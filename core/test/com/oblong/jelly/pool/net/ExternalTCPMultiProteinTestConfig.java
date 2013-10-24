@@ -67,8 +67,9 @@ public class ExternalTCPMultiProteinTestConfig {
 			new SkewedIntDistribution(settingsForMultiProteinTest.getChanceOfPickingFromDistribution(),
 					new IntRange(0, settingsForMultiProteinTest.getMaxRudeData()));
 
+	public static final double NEVER_ZERO = 1.0;
 	private static SkewedIntDistribution batchSizeDistribution =
-			new SkewedIntDistribution(settingsForMultiProteinTest.getChanceOfPickingFromDistribution(),
+			new SkewedIntDistribution(NEVER_ZERO,
 					new IntRange(1, settingsForMultiProteinTest.getBatchSize()));
 
 	public static void setDefaultTestSettingsForEndlessTest(){
