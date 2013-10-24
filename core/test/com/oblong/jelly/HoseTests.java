@@ -83,7 +83,7 @@ public class HoseTests {
     }
 
     public static void logPoolServerAddressError(String classAndMethod) {
-		if(ExternalTCPMultiProteinTestConfig.SHOW_LOGS){
+        if (ExternalTCPMultiProteinTestConfig.SHOW_LOGS) {
             System.err.println(classAndMethod);
         }
     }
@@ -126,7 +126,7 @@ public class HoseTests {
     }
 
     private void logPoolInfo(PoolOptions opts) {
-		if(ExternalTCPMultiProteinTestConfig.SHOW_LOGS){
+        if (ExternalTCPMultiProteinTestConfig.SHOW_LOGS) {
             System.out.println("Created pool with capacity " + opts.poolSize());
         }
     }
@@ -150,27 +150,27 @@ public class HoseTests {
     }
 
     public void cleanUp() {
-	    withdrawFromHose();
-	    removePool();
+        withdrawFromHose ();
+        removePool ();
     }
 
-	private void removePool() {
-		try {
-	        Pool.dispose(defHose.poolAddress());
-	    } catch (PoolException e) {
+    private void removePool () {
+        try {
+            Pool.dispose (defHose.poolAddress ());
+        } catch (PoolException e) {
             ExceptionHandler.handleException(e);
-	    }
-	}
+        }
+    }
 
-	public void withdrawFromHose() {
-		try {
-			defHose.withdraw();
-		} catch (Exception e) {
-			ExceptionHandler.handleException(e);
-		}
-	}
+    public void withdrawFromHose () {
+        try {
+            defHose.withdraw ();
+        } catch (Exception e) {
+            ExceptionHandler.handleException (e);
+        }
+    }
 
-	public void hoseName() throws PoolException {
+    public void hoseName () throws PoolException {
         final PoolAddress a = new PoolAddress(address, "eipool");
         final Hose h = Pool.participate(a, PoolOptions.SMALL);
         assertEquals(a, h.poolAddress());
