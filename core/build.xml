@@ -6,12 +6,12 @@
 
   <property name="jelly.basename" value="jelly"/>
   <property name="jelly.version.major" value="0"/>
-  <property name="jelly.version.minor" value="1"/>
+  <property name="jelly.version.minor" value="3"/>
   <property name="jelly.version"
             value="${jelly.version.major}.${jelly.version.minor}"/>
   <property name="jelly.title" value="${jelly.basename} ${jelly.version}"/>
   <property name="jelly.blurb"
-            value="${jelly.title} - Copyright 2010 Oblong Industries"/>
+            value="${jelly.title} - Copyright 2013 Oblong Industries"/>
 
   <property name="src.dir" location="src"/>
   <property name="lib.dir" location="../lib"/>
@@ -270,4 +270,3 @@
   </target>
 
 </project>
-

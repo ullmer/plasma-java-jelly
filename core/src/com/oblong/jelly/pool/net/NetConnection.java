@@ -1,4 +1,5 @@
-// Copyright (c) 2010 Oblong Industries
+
+/* (c)  oblong industries */
 
 package com.oblong.jelly.pool.net;
 
@@ -23,9 +24,6 @@ public interface NetConnection {
     boolean isOpen();
 
     Set<Request> supportedRequests();
-
-    PoolProtein polled();
-    PoolProtein resetPolled();
 
     void setHose(Hose hose);
 }

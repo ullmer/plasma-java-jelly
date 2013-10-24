@@ -1,3 +1,6 @@
+
+/* (c)  oblong industries */
+
 package com.oblong.jelly.pool.net;
 
 import com.oblong.util.probability.IntRange;

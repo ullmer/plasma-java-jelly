@@ -417,44 +417,6 @@ public interface Hose {
     Protein previous(Slaw... descrips) throws PoolException;
 
     /**
-     * Asks the underlying pool for the existence of a Protein
-     * matching the given descrips and initiate a pre-fetch.
-     *
-     * <p>If the protein is available, it returns <code>true</code>;
-     * otherwise, the method initiates a delayed retrieval of the next
-     * matching protein returning <code>false</code> to the coder. If
-     * you call {@link #next} or {@link #awaitNext()} afterwards,
-     * without any intervening modification of the Hose index, the
-     * possibly pre-fetched Protein will be used, and the index
-     * adjusted accordingly. That way, you can spend the network
-     * transmission time (for servers that use the network, that is)
-     * doing other stuff.
-     *
-     * <p>When called without arguments, no test on the next protein's
-     * descrips is performed.
-     *
-     * @see #peek
-     */
-    boolean poll(Slaw... descrips) throws PoolException;
-
-    /**
-     * Retrieves polled protein, if available, without modifying the
-     * local index. This protein will almost always be available if a
-     * previous call to {@link #poll} returned true (see note below).
-     * It may also happen that it the intervening time the requested
-     * protein has arrived.
-     *
-     * <p>When no polled protein is available, this method returns
-     * <code>null</code>.
-     *
-     * <p><b>Note:</b> If you call peek immediately after poll,
-     * there's a slim chance that the protein is still arriving from
-     * the server, in which case peek will return null even after a
-     * positive poll.
-     */
-    Protein peek();
-
-    /**
      * Creates a new connection to the same pool, and sets the new
      * hose's index to this instance's value. The returned value also
      * inherits this hose's name and is always connected.

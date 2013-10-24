@@ -1,4 +1,5 @@
-// Copyright (c) 2010 Oblong Industries
+
+/* (c)  oblong industries */
 
 package com.oblong.jelly.pool.net;
 
@@ -47,13 +48,13 @@ final class TCPProxyHandler implements Runnable {
             try {
                 reply(forward(next()));
             } catch (ProteinEatingException e) {
-	            ExceptionHandler.handleException(e);
-	            if (connection.isOpen()) {
-		            log.warning("Connection error (closing handler): " + e);
-		            connection.close();
-	            }
+                ExceptionHandler.handleException(e);
+                if (connection.isOpen()) {
+                    log.warning("Connection error (closing handler): " + e);
+                    connection.close();
+                }
             } catch (Exception e) {
-	            ExceptionHandler.handleException(e);
+                ExceptionHandler.handleException(e);
                 if (connection.isOpen()) {
                     log.warning("Connection error (closing handler): " + e);
                     connection.close();
@@ -63,7 +64,7 @@ final class TCPProxyHandler implements Runnable {
         try {
             if (socket.isConnected()) socket.close();
         } catch (Exception e) {
-	        ExceptionHandler.handleException(e);
+            ExceptionHandler.handleException(e);
             log.warning("Exception closing socket (ignored): "
                         + e.getMessage());
         }
@@ -135,46 +136,11 @@ final class TCPProxyHandler implements Runnable {
     }
 
     private void reply(Pair<Request, Slaw> ra) throws IOException, ProteinEatingException {
-        final boolean isFancy = ra.first() == Request.FANCY_ADD_AWAITER;
-        final Slaw op = isFancy
-            ? TCPConnection.FANCY_CMD_R1 : TCPConnection.CMD_RESULT;
+        final Slaw op = TCPConnection.CMD_RESULT;
         final Slaw ings = factory.map(TCPConnection.OP_KEY,
                                       op,
                                       TCPConnection.ARGS_KEY,
                                       ra.second());
-        final Protein reply = factory.protein(null, ings, null);
-        externalizer.extern(reply, socket.getOutputStream());
-        final PoolProtein p = connection.resetPolled();
-        if (p != null) {
-            if (!isFancy) sendR2(p);
-            sendR3(p);
-        }
-    }
-
-    private void sendR2(PoolProtein p) throws IOException {
-        final Slaw args = factory.list(factory.number(NumericIlk.INT64, 0),
-                                       factory.number(NumericIlk.FLOAT64,
-                                                      p.timestamp()),
-                                       factory.number(NumericIlk.INT64,
-                                                      p.index()));
-        final Slaw ings = factory.map(TCPConnection.OP_KEY,
-                                      TCPConnection.FANCY_CMD_R2,
-                                      TCPConnection.ARGS_KEY,
-                                      args);
-        final Protein reply = factory.protein(null, ings, null);
-        externalizer.extern(reply, socket.getOutputStream());
-    }
-
-    private void sendR3(PoolProtein p) throws IOException {
-        final Slaw args = factory.list(factory.number(NumericIlk.FLOAT64,
-                                                      p.timestamp()),
-                                       factory.number(NumericIlk.INT64,
-                                                      p.index()),
-                                       p.bareProtein());
-        final Slaw ings = factory.map(TCPConnection.OP_KEY,
-                                      TCPConnection.FANCY_CMD_R3,
-                                      TCPConnection.ARGS_KEY,
-                                      args);
         final Protein reply = factory.protein(null, ings, null);
         externalizer.extern(reply, socket.getOutputStream());
     }

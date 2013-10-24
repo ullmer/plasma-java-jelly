@@ -44,7 +44,7 @@ final class TCPConnection implements NetConnection {
     }
 
     @Override public Slaw send(Request r, Slaw... args)
-		    throws PoolException {
+                    throws PoolException {
         final Slaw code = factory.number(NumericIlk.INT32, r.code());
         final Slaw ings = factory.map(OP_KEY, code,
                                       ARGS_KEY, factory.list(args));
@@ -67,16 +67,6 @@ final class TCPConnection implements NetConnection {
 
     @Override public boolean isOpen() {
         return socket != null && !socket.isClosed();
-    }
-
-    @Override public PoolProtein polled() {
-
-        throw new RuntimeException ("turd!");
-    }
-
-    @Override public PoolProtein resetPolled() {
-        throw new RuntimeException ("turd!");
-
     }
 
     @Override public void setHose(Hose h) { hose = h; }
@@ -168,11 +158,6 @@ final class TCPConnection implements NetConnection {
         final Slaw code = getResultCode(ret);
         final Slaw args = getResultArgs(ret);
         if (CMD_RESULT.equals(code)) return args;
-        if (FANCY_CMD_R1.equals(code)  ||
-            FANCY_CMD_R2.equals(code)  ||
-            FANCY_CMD_R3.equals(code)) {
-            throw new PoolException ("turd!");
-        }
         return cont ? read(cont) : null;
     }
 
@@ -225,10 +210,6 @@ final class TCPConnection implements NetConnection {
         } catch (PoolException e) {
             return 0;
         }
-    }
-
-    private void updateAsync(Slaw args) {
-        throw new RuntimeException ("turd!");
     }
 
     private static void sendPreamble(OutputStream os) throws IOException {
@@ -288,13 +269,7 @@ final class TCPConnection implements NetConnection {
     static final Slaw ARGS_KEY = factory.string("args");
 
     static final Slaw CMD_RESULT = factory.number(NumericIlk.INT32, 14);
-    static final Slaw FANCY_CMD_R1 = factory.number(NumericIlk.INT32, 64);
-    static final Slaw FANCY_CMD_R2 = factory.number(NumericIlk.INT32, 65);
-    static final Slaw FANCY_CMD_R3 = factory.number(NumericIlk.INT32, 66);
-    static final Slaw VALID_RESULTS = factory.list(CMD_RESULT,
-                                                   FANCY_CMD_R1,
-                                                   FANCY_CMD_R2,
-                                                   FANCY_CMD_R3);
+    static final Slaw VALID_RESULTS = factory.list(CMD_RESULT);
 
     static final byte[] PREAMBLE = {
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x50,
