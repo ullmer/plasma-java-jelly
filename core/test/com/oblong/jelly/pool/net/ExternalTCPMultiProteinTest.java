@@ -65,7 +65,6 @@ public class ExternalTCPMultiProteinTest {
 			connector = new JellyTestPoolSender(poolServerAddress,
 					POOL_NAME,
 					listener,
-					ExternalTCPMultiProteinTestConfig.getRandomSleepingTime(),
 					toSendProteinQueue,
 					null);
 			connector.start();

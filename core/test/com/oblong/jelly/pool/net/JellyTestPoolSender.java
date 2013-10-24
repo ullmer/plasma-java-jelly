@@ -23,6 +23,7 @@ import static junit.framework.Assert.fail;
 public class JellyTestPoolSender extends ObPoolSender {
 
 	private static final String TAG = "JellyTestPoolSender";
+	private static final int IGNORED_VALUE = -1;
 	private Random r = new Random();
 
 	//counts the number of "correct" proteins
@@ -35,10 +36,9 @@ public class JellyTestPoolSender extends ObPoolSender {
 	public JellyTestPoolSender(PoolServerAddress pools,
 	                           String pool,
 	                           ObPoolCommunicationEventHandler lis,
-	                           int sleepSecs,
 	                           List<Protein> proteinQueue,
 	                           HoseFactory hoseFactory) {
-		super(pools, pool, lis, sleepSecs, proteinQueue, hoseFactory);
+		super(pools, pool, lis, IGNORED_VALUE, proteinQueue, hoseFactory);
 		this.maxProteinNumber =
 				ExternalTCPMultiProteinTestConfig.getTotalNumberOfProteins();
 		this.maxProteinBatchSize = ExternalTCPMultiProteinTestConfig.getBatchSize();
@@ -76,12 +76,12 @@ public class JellyTestPoolSender extends ObPoolSender {
 	}
 
 	protected void maybeSleep() {
-		sleepSecs = ExternalTCPMultiProteinTestConfig.getRandomSleepingTime();
-		ExternalTCPMultiProteinTest.logMessage("sleep time " + sleepSecs);
-		if (sleepSecs > 0) {
+		sleepMs = ExternalTCPMultiProteinTestConfig.getRandomSleepingTime();
+		ExternalTCPMultiProteinTest.logMessage("sleep time " + sleepMs);
+		if (sleepMs > 0) {
 			try {
 				//TODO: use Karols classes
-				Util.randomSleep(r, sleepSecs);
+				Util.randomSleep(r, sleepMs);
 			} catch (InterruptedException e) {
 				stopMe = true;
 				ExternalTCPMultiProteinTest.logErrorMessage("Sleep interrupted in " + TAG);

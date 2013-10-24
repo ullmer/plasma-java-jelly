@@ -18,7 +18,7 @@ public abstract class ObPoolConnector extends Thread {
 	protected volatile boolean stopMe = false;
 	protected Hose hose;
 
-	protected int sleepSecs = 5;
+	protected int sleepMs = 5;
 	
 	protected String obPool;
 	private PoolServerAddress obPoolsAddr;
@@ -114,9 +114,9 @@ public abstract class ObPoolConnector extends Thread {
 	}
 
 	protected void maybeSleep() {
-		if (sleepSecs > 0) {
+		if (sleepMs > 0) {
 			try {
-				Thread.sleep(sleepSecs);
+				Thread.sleep(sleepMs);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 				Thread.currentThread().interrupt();

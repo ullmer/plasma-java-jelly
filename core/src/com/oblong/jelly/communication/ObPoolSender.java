@@ -16,7 +16,7 @@ public class ObPoolSender extends ObPoolConnector {
 	public ObPoolSender(PoolServerAddress pools,String pool,ObPoolCommunicationEventHandler lis,int sleepSecs,
 			List<Protein> proteinQueue, HoseFactory hoseFactory) {
 		super(pools, pool, lis, hoseFactory);
-		this.sleepSecs = sleepSecs;
+		this.sleepMs = sleepSecs;
 		this.proteinQueue = proteinQueue;
 
 	}
