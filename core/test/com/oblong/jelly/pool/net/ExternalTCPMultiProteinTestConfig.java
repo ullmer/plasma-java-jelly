@@ -29,53 +29,50 @@ public class ExternalTCPMultiProteinTestConfig {
 	public static final int NOISINESS = 500;
 	private static Random random = new Random();
 
-	private static SettingsForMultiProtein settingsForMultiProteinTest;
-
-	public static final String URI_FOR_TEST = null;
-
-	public static final int SLEEP_MS_SMALL = 20;
-
-	public static final int SMALL_AWAIT_TIMEOUT = 50;
-
-	public static final int SMALL_RUDE_DATA = 156;
-
-	public static final int SMALL_BATCH_SIZE = 10;
-
-	public static final int SMALL_NUMBER_OF_RUNS = 10;
-
-	public static final double CHANCE_FIFTY_FIFTY = 0.5;
+	protected static SettingsForMultiProtein settingsForMultiProteinTest;
+	public static final double NEVER_ZERO = 1.0;
 
 	private static final SettingsForMultiProtein SETTINGS_FOR_QUICK_TEST =
-			SettingsForMultiProtein.createSettingsForMultiProteinTest(URI_FOR_TEST, SLEEP_MS_SMALL, SMALL_AWAIT_TIMEOUT,
-					SMALL_RUDE_DATA, SMALL_BATCH_SIZE, SMALL_NUMBER_OF_RUNS, CHANCE_FIFTY_FIFTY);
+			SettingsForMultiProtein.createSettingsForMultiProteinTest(null, 20, 50,
+					156, 10, 10, 0.5);
 
-	private static final SettingsForMultiProtein SETTINGS_FOR_ENDLESS_QUICK_TEST =
-			SettingsForMultiProtein.createSettingsForMultiProteinTest(URI_FOR_TEST,
-					SLEEP_MS_SMALL, SMALL_AWAIT_TIMEOUT, SMALL_RUDE_DATA, SMALL_BATCH_SIZE,
-					NO_LIMIT_PROTEIN_NUMBER, CHANCE_FIFTY_FIFTY);
+	private static final SettingsForMultiProtein SETTINGS_FOR_ENDLESS_TEST =
+			SettingsForMultiProtein.createSettingsForMultiProteinTest(
+					null, //custom url (if null use local host)
+					20, //default or max sleep ms (for sending thread)
+					50, //default or max await next timeout
+					156, //default or max byte array size for protein raw data
+					10, //default or max batch size
+					NO_LIMIT_PROTEIN_NUMBER, //max number fo proteins to send
+					0.5);//chance of picking from distribution: 0 means only 0 will be picked 1 means never 0
 
 	static {
+		//default settings for quick test for buildbot
 		settingsForMultiProteinTest = SETTINGS_FOR_QUICK_TEST;
 	}
 
-	private static SkewedIntDistribution connectorSleepDistribution =
-			new SkewedIntDistribution(0.5, new IntRange(0, settingsForMultiProteinTest.getDefaultSleepMs()));
+	private static SkewedIntDistribution senderSleepDistribution =
+			new SkewedIntDistribution(settingsForMultiProteinTest.getChanceOfPickingFromDistribution(),
+					new IntRange(1, settingsForMultiProteinTest.getDefaultSleepMs()));
+
 	private static SkewedIntDistribution awaitNextDistribution =
-			new SkewedIntDistribution(0.5, new IntRange(0, settingsForMultiProteinTest.getDefaultAwaitTimeout()));
+			new SkewedIntDistribution(settingsForMultiProteinTest.getChanceOfPickingFromDistribution(),
+					new IntRange(1, settingsForMultiProteinTest.getDefaultAwaitTimeout()));
 
 	private static SkewedIntDistribution dataLengthDistribution =
-			new SkewedIntDistribution(settingsForMultiProteinTest.getChanceOfPickingFromDistribution(),
-					new IntRange(0, settingsForMultiProteinTest.getMaxRudeData()));
+			new SkewedIntDistribution(
+					settingsForMultiProteinTest.getChanceOfPickingFromDistribution(),
+					new IntRange(1, settingsForMultiProteinTest.getMaxRudeData()));
 
-	public static final double NEVER_ZERO = 1.0;
+	/***
+	 * batch size should never be 0
+	 */
 	private static SkewedIntDistribution batchSizeDistribution =
 			new SkewedIntDistribution(NEVER_ZERO,
 					new IntRange(1, settingsForMultiProteinTest.getBatchSize()));
 
 	public static void setDefaultTestSettingsForEndlessTest(){
-		settingsForMultiProteinTest = SettingsForMultiProtein.createSettingsForMultiProteinTest(URI_FOR_TEST,
-				SLEEP_MS_SMALL, SMALL_AWAIT_TIMEOUT, SMALL_RUDE_DATA, SMALL_BATCH_SIZE, SMALL_NUMBER_OF_RUNS,
-				CHANCE_FIFTY_FIFTY);
+		settingsForMultiProteinTest = SETTINGS_FOR_ENDLESS_TEST;
 		INFINITE_TEST = true;
 	}
 
@@ -90,7 +87,7 @@ public class ExternalTCPMultiProteinTestConfig {
 	}
 
 	static int getRandomSleepingTime() {
-		return connectorSleepDistribution.random(random);
+		return senderSleepDistribution.random(random);
 	}
 
 	public static int getRandomDataLength() {
@@ -102,7 +99,7 @@ public class ExternalTCPMultiProteinTestConfig {
 	}
 
 	static String getDefaultUri() {
-		return settingsForMultiProteinTest.getUriForTest() !=null ? settingsForMultiProteinTest.getUriForTest() : DEFAULT_URI;
+		return settingsForMultiProteinTest.getUriForTest() != null ? settingsForMultiProteinTest.getUriForTest() : DEFAULT_URI;
 	}
 
 

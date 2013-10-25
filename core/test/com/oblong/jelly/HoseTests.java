@@ -338,7 +338,7 @@ public class HoseTests {
     public void awaitNext() throws PoolException {
         defHose.seekTo(defHose.oldestIndex());
         for (int i = 0; i < maxNumberOfProteins; ++i) {
-            currentRound = i;
+//            currentRound = i;
             checkProtein(defHose.awaitNext(), i);
             assertTrue(i + "th", depProteins[i].index() < defHose.index());
         }
@@ -464,9 +464,6 @@ public class HoseTests {
     }
 
 
-    public static int getLastExecutedRound() {
-        return currentRound;
-    }
 
     final Hose defHose;
     private final Protein[] depProteins;
@@ -474,5 +471,5 @@ public class HoseTests {
     public static final int DEFAULT_NUMBER_OF_PROTEINS = 5;
     public static int maxNumberOfProteins;
 
-    static int currentRound = 0;
+
 }

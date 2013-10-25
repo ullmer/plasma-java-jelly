@@ -24,11 +24,8 @@ public class ExternalHoseTests extends HoseTests {
 
 	public static final String DEFAULT_DESCRIPTS = "protein_number";
 
-	public Protein getLastObtained() {
-		return lastObtained;
-	}
 
-	private Protein lastObtained;
+
 
 	/***
 	 * create HoseTest
@@ -43,60 +40,91 @@ public class ExternalHoseTests extends HoseTests {
 		super(addr, null, maxNbOfProteins, poolName, ObPoolConnector.DEFAULT_POOL_OPTIONS);
 	}
 
+	public class lastProteinData {
+		int last;
+		Protein p;
+
+	}
+
+	public int getLastExecutedRound() {
+		return currentRound;
+	}
+
+	volatile int currentRound = 0;
+
+	private Thread awaitNextThread = new Thread() {
+
+		private volatile boolean stopThread = false;
+
+
+
+		public void run() {
+			Protein lastSuccessfullyObtainedProtein;
+			currentRound = 0;
+			printLogIfRequired(currentRound+1, 1, "Number of expected proteins "+ getNumberOfExpectedProteins());
+			while (ExternalTCPMultiProteinTestConfig.shouldTestContinue(currentRound, maxNumberOfProteins) && !stopThread) {
+				try {
+					Protein tempProtein = defHose.awaitNext(ExternalTCPMultiProteinTestConfig.getRandomAwaitTimeout(), TimeUnit.MILLISECONDS);
+					if (tempProtein!=null) {
+						int frequency = 500;
+						String textToPrint;
+						int frequency2 = 500;
+						String textToPrint2 = "We are at protein " + currentRound;
+						printLogIfRequired(currentRound, frequency2, textToPrint2);
+
+						if(tempProtein.matches(getTestProteinDescript())){
+							checkProtein(tempProtein, currentRound);
+							textToPrint = "Protein " + currentRound + " ok";
+							currentRound++;
+							lastSuccessfullyObtainedProtein = tempProtein;
+						} else {
+							textToPrint = "Protein doesn't match target descripts";
+						}
+						if(ExternalTCPMultiProteinTestConfig.SHOW_LOGS){
+							printLogIfRequired(currentRound, frequency, textToPrint);
+						}
+					}
+				} catch (TimeoutException e) {
+					printNoProteinReceivedYet("Timeout ", currentRound);
+					//if timeout we skip this round otherwise we lose descripts field
+				} catch (NoSuchProteinException e){
+					//No protein found
+					printNoProteinReceivedYet("NoSuchProtein ", currentRound);
+				} catch (PoolException e){
+					stopAndThrow(e, e.kind());
+				} catch (Exception e){
+					stopAndThrow(e, PoolException.Kind.UNCLASSIFIED);
+				}
+			}
+			//stopped
+		}
+		private boolean stopAndThrow(Exception e, PoolException.Kind kind) {
+			stopThread = true;
+			printAndThrow(e, kind);
+			return stopThread;
+		}
+	};
+
+
 
 	@Override
 	public void awaitNext() throws PoolException {
-		currentRound = 0;
-		printLogIfRequired(currentRound+1, 1, "Number of expected proteins "+ getNumberOfExpectedProteins());
-		while (ExternalTCPMultiProteinTestConfig.shouldTestContinue(currentRound, maxNumberOfProteins)) {
-			try {
-				Protein tempProtein = defHose.awaitNext(ExternalTCPMultiProteinTestConfig.getRandomAwaitTimeout(), TimeUnit.MILLISECONDS);
-				if (tempProtein!=null) {
-					int frequency = 500;
-					String textToPrint;
-					int frequency2 = 500;
-					String textToPrint2 = "We are at protein " + currentRound;
-					printLogIfRequired(currentRound, frequency2, textToPrint2);
-
-					if(tempProtein.matches(getTestProteinDescript())){
-						checkProtein(tempProtein, currentRound);
-						textToPrint = "Protein " + currentRound + " ok";
-						currentRound++;
-						lastObtained = tempProtein;
-					} else {
-						textToPrint = "Protein doesn't match target descripts";
-					}
-					if(ExternalTCPMultiProteinTestConfig.SHOW_LOGS){
-						printLogIfRequired(currentRound, frequency, textToPrint);
-					}
-				}
-			} catch (TimeoutException e) {
-				printNoProteinReceivedYet("Timeout");
-				//if timeout we skip this round otherwise we lose descripts field
-			} catch (NoSuchProteinException e){
-				//No protein found
-				printNoProteinReceivedYet("NoSuchProtein");
-			} catch (PoolException e){
-				printAndThrow(e, e.kind());
-			} catch (Exception e){
-				printAndThrow(e, PoolException.Kind.UNCLASSIFIED);
-			}
-		}
+		awaitNextThread.start();
 	}
 
 	private int getNumberOfExpectedProteins() {
 		return maxNumberOfProteins;
 	}
 
-	private void printNoProteinReceivedYet(String timeout) {
+	private void printNoProteinReceivedYet(String timeout, int currentRound) {
 		int frequency = 1;
 		String textToPrint = timeout +", we are waiting for protein " + currentRound;
 		printLogIfRequired(currentRound, frequency, textToPrint);
 	}
 
-	private void printAndThrow(Exception e, PoolException.Kind kind) throws PoolException {
-		ExceptionHandler.handleException(e, "ExternalHose.awaitNext");
-		throw new PoolException(kind, e);
+	private void printAndThrow(Exception e, PoolException.Kind kind) {
+		ExceptionHandler.handleException(e, "ExternalHose.awaitNext "+kind);
+		throw new RuntimeException(e);
 	}
 
 	private void printLogIfRequired(int i, int frequency, String textToPrint) {
@@ -112,7 +140,7 @@ public class ExternalHoseTests extends HoseTests {
 		//checking if the proteins have the same hose name
 		//TODO: maybe useless here
 		assertEquals(getTestHoseName(), p.source());
-		assertTrue(p.matches(getDescripsByIndex(i)));
+		assertTrue("i is: "+i+" "+p.toString(), p.matches(getDescripsByIndex(i)));
 	}
 
 	public static Protein makeProtein(int i, String hname, String argumentForProteinMap, SlawString testProteinDescript) {
@@ -170,4 +198,7 @@ public class ExternalHoseTests extends HoseTests {
 	private static Slaw getDescripsByIndex(int i) {
 		return Slaw.string(DEFAULT_DESCRIPTS+i);
 	}
+
+
+
 }

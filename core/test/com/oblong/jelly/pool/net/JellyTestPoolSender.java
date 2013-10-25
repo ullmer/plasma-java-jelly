@@ -80,8 +80,7 @@ public class JellyTestPoolSender extends ObPoolSender {
 		ExternalTCPMultiProteinTest.logMessage("sleep time " + sleepMs);
 		if (sleepMs > 0) {
 			try {
-				//TODO: use Karols classes
-				Util.randomSleep(r, sleepMs);
+				Thread.sleep(sleepMs);
 			} catch (InterruptedException e) {
 				stopMe = true;
 				ExternalTCPMultiProteinTest.logErrorMessage("Sleep interrupted in " + TAG);
@@ -101,6 +100,11 @@ public class JellyTestPoolSender extends ObPoolSender {
 	private void handleOneOrMultipleProteins() {
 		//no more adding if should stop or max number of proteins required has already been sent
 		if(stopMe || !ExternalTCPMultiProteinTestConfig.shouldTestContinue(proteinCounter, maxProteinNumber)){
+			if(stopMe){
+				ExternalTCPMultiProteinTest.logMessage("Thread should be stopped");
+			} else {
+				ExternalTCPMultiProteinTest.logMessage("No more proteins to send in this round");
+			}
 			return;
 		}
 		int batchSize = getBatchSize();
@@ -118,7 +122,8 @@ public class JellyTestPoolSender extends ObPoolSender {
 			}
 			proteinCounter++;
 		}
-		ExternalTCPMultiProteinTest.logMessage("Sent batch of " + batchSize + " proteins");
+		ExternalTCPMultiProteinTest.logMessage("Sent batch of " + batchSize
+				+ " proteins / "+proteinCounter +" total sent protein");
 	}
 
 	private int getBatchSize() {

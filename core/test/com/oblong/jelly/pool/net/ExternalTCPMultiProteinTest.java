@@ -39,11 +39,16 @@ public class ExternalTCPMultiProteinTest {
 			.synchronizedList(new LinkedList<Protein>());
 
 	private static ExternalHoseTests tests;
-	private static JellyTestPoolSender connector;
+	private static JellyTestPoolSender senderThread;
 	private static ObHandler listener =  new ObHandler();
 	private static final String TAG = "ExternalTCPMultiProteinTest";
 
 	public static final String POOL_NAME = "external-tests-pool";
+
+	/***
+	 * used for the endless test
+	 */
+	private static boolean stopTest = false;
 
 	@BeforeClass
 	public static void setUp()  {
@@ -62,12 +67,12 @@ public class ExternalTCPMultiProteinTest {
 			//create pool otherwise test will fail
 			createPoolIfNonExisting(poolAddress);
 
-			connector = new JellyTestPoolSender(poolServerAddress,
+			senderThread = new JellyTestPoolSender(poolServerAddress,
 					POOL_NAME,
 					listener,
 					toSendProteinQueue,
 					null);
-			connector.start();
+
 			tests = new ExternalHoseTests(poolServerAddress,
 					ExternalTCPMultiProteinTestConfig.getTotalNumberOfProteins(), POOL_NAME);
 		} catch (BadAddressException e){
@@ -107,7 +112,7 @@ public class ExternalTCPMultiProteinTest {
 	private static void testAwaitNext() {
 		try {
 			if(tests!=null){
-				tests.awaitNext();
+				startAwaitNextThenSender();
 			} else {
 				// FIXME shouldn't this be fatal?
 				ExceptionHandler.handleException("Tests not initiated");
@@ -116,6 +121,11 @@ public class ExternalTCPMultiProteinTest {
 			// FIXME shouldn't this be fatal?
 			ExceptionHandler.handleException(e, " tests.awaitNext() failed on round +" +tests.getLastExecutedRound());
 		}
+	}
+
+	private static void startAwaitNextThenSender() throws PoolException {
+		tests.awaitNext();
+		senderThread.start();
 	}
 
 	static void logErrorMessage(String errorMessage) {
@@ -137,9 +147,10 @@ public class ExternalTCPMultiProteinTest {
 
 	private static void cleanUpAfterTest() {
 		try {
+
 			logMessage(" tests.awaitNext() finished on round " + tests.getLastExecutedRound());
-			logMessage(" last received protein " + tests.getLastObtained());
-			connector.halt();
+//			logMessage(" last received protein " + tests.getLastObtainedProtein());
+			senderThread.halt();
 			tests.cleanUp();
 		} catch (Exception e){
 			ExceptionHandler.handleException(e);
@@ -186,12 +197,45 @@ public class ExternalTCPMultiProteinTest {
 	/****Main Method to run class outside Junit framework***/
 	public static void main(String[] args) {
 		logMessage("starting test via main class");
+		//runs only one test no disconnect/reconnect
+		//runOneEndlessTest();
+
+		//with connect/disconnect
+		stopTest = false;
+		runConnectDisconnectEndlessTest();
+	}
+
+	private static void runConnectDisconnectEndlessTest() {
+		try {
+			ExternalTCPMultiProteinTestConfig.settingsForMultiProteinTest.setUriForTest("tcp://10.3.10.111");
+			ExternalTCPMultiProteinTestConfig.INFINITE_TEST = false;
+			while(!stopTest){
+				setUpBeforeTest();
+				startAwaitNextThenSender();
+				cleanUpAfterTest();
+				try {
+					Thread.sleep(100);
+				} catch (InterruptedException e) {
+					logMessage("Interrupted");
+					stopTest = true;
+					//ExceptionHandler.handleException(e);
+				}
+			}
+			cleanUpAfterTest();
+			logMessage("Test finished");
+		} catch (Throwable e) {
+			logMessage("Exception");
+			stopTest = true;
+			cleanUpAfterTest();
+			throw new RuntimeException(e);
+		}
+	}
+
+	private static void runOneEndlessTest() {
 		ExternalTCPMultiProteinTestConfig.setDefaultTestSettingsForEndlessTest();
 		setUpBeforeTest();
 		testAwaitNext();
 		cleanUpAfterTest();
 	}
-
-
 
 }
