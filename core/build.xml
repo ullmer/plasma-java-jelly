@@ -102,6 +102,7 @@
            optimize="${compile.optimize}"
            source="${compile.source}"
            target="${compile.target}"
+           encoding="UTF-8"
            includeAntRuntime="false">
       <compilerarg value="-Xlint:unchecked"/>
     </javac>
@@ -171,6 +172,7 @@
            optimize="${compile.optimize}"
            source="${compile.source}"
            target="${compile.target}"
+           encoding="UTF-8"
            includeAntRuntime="false">
       <compilerarg value="-Xlint:unchecked"/>
     </javac>
