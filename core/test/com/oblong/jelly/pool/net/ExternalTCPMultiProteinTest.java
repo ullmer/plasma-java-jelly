@@ -38,7 +38,12 @@ public class ExternalTCPMultiProteinTest {
 	private static final List<Protein> toSendProteinQueue = Collections
 			.synchronizedList(new LinkedList<Protein>());
 
+	/**
+	 * Property "test.server" for compatibility with what is already in Ant/JUnit
+	 * To set it: e.g. -Dtest.server=tcp://10.3.10.111
+	 */
 	public static final String TEST_SERVER_PROPERTY = "test.server";
+
 
 	private static ExternalHoseTests tests;
 	private static JellyTestPoolSender senderThread;
@@ -200,11 +205,9 @@ public class ExternalTCPMultiProteinTest {
 	public static void main(String[] args) {
 		logMessage("starting test via main() method");
 
-		String testServer = System.getProperty(TEST_SERVER_PROPERTY);
-		logMessage("Property test.server: " + testServer); // Property "test.server" for compatibility with what is already in Ant/JUnit
+		String testServer = getProperty(TEST_SERVER_PROPERTY);
 
 		ExternalTCPMultiProteinTestConfig.settingsForMultiProteinTest.setUriForTest(testServer);
-		// e.g. "tcp://10.3.10.111"
 
 		//runs only one test no disconnect/reconnect
 		//runOneEndlessTest();
@@ -212,6 +215,12 @@ public class ExternalTCPMultiProteinTest {
 		//with connect/disconnect
 		stopTest = false;
 		runConnectDisconnectEndlessTest();
+	}
+
+	private static String getProperty(String propertyName) {
+		String propertyValue = System.getProperty(propertyName);
+		logMessage("System property " + propertyName + ": " + propertyValue);
+		return propertyValue;
 	}
 
 	private static void runConnectDisconnectEndlessTest() {
