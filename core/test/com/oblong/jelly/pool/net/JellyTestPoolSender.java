@@ -8,6 +8,7 @@ import com.oblong.jelly.communication.ObPoolCommunicationEventHandler;
 import com.oblong.jelly.communication.ObPoolSender;
 import com.oblong.jelly.util.ExceptionHandler;
 import com.oblong.util.Util;
+import org.apache.log4j.Logger;
 
 import java.util.List;
 import java.util.Random;
@@ -21,6 +22,9 @@ import static junit.framework.Assert.fail;
 * Time: 5:54 PM
 */
 public class JellyTestPoolSender extends ObPoolSender {
+
+	private static final Logger logger = Logger.getLogger(JellyTestPoolSender.class);
+
 
 	private static final String TAG = "JellyTestPoolSender";
 	private static final int IGNORED_VALUE = -1;
@@ -59,15 +63,15 @@ public class JellyTestPoolSender extends ObPoolSender {
 	@Override
 	public void halt() {
 		super.halt();
-		ExternalTCPMultiProteinTest.logMessage("Sender Thread stopped at protein " + proteinCounter);
+		logger.warn("Sender Thread stopped at protein " + proteinCounter);
 	}
 
 	@Override
 	protected void sendProtein(Protein protein) {
 		try {
 			super.sendProtein(protein);
-			if(D) {
-				ExternalTCPMultiProteinTest.logMessage("Protein sent ");
+			if ( logger.isDebugEnabled() ) {
+				logger.debug("Protein sent. proteinCounter: " + proteinCounter);
 			}
 		} catch (Exception e) {
 //			fail("Unable to send protein "+protein);
@@ -77,13 +81,13 @@ public class JellyTestPoolSender extends ObPoolSender {
 
 	protected void maybeSleep() {
 		sleepMs = ExternalTCPMultiProteinTestConfig.getRandomSleepingTime();
-		ExternalTCPMultiProteinTest.logMessage("sleep time " + sleepMs);
+		if ( logger.isDebugEnabled() ) logger.debug("sleep time " + sleepMs);
 		if (sleepMs > 0) {
 			try {
 				Thread.sleep(sleepMs);
 			} catch (InterruptedException e) {
 				stopMe = true;
-				ExternalTCPMultiProteinTest.logErrorMessage("Sleep interrupted in " + TAG);
+				logger.error("Sleep interrupted in " + TAG);
 				Thread.currentThread().interrupt();
 			}
 		}
@@ -101,9 +105,9 @@ public class JellyTestPoolSender extends ObPoolSender {
 		//no more adding if should stop or max number of proteins required has already been sent
 		if(stopMe || !ExternalTCPMultiProteinTestConfig.shouldTestContinue(proteinCounter, maxProteinNumber)){
 			if(stopMe){
-				ExternalTCPMultiProteinTest.logMessage("Thread should be stopped");
+				logger.info("Thread should be stopped");
 			} else {
-				ExternalTCPMultiProteinTest.logMessage("No more proteins to send in this round");
+				logger.info("No more proteins to send in this round");
 			}
 			return;
 		}
@@ -122,7 +126,7 @@ public class JellyTestPoolSender extends ObPoolSender {
 			}
 			proteinCounter++;
 		}
-		ExternalTCPMultiProteinTest.logMessage("Sent batch of " + batchSize
+		logger.info("Sent batch of " + batchSize
 				+ " proteins / "+proteinCounter +" total sent protein");
 	}
 

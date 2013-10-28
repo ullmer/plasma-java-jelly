@@ -4,6 +4,8 @@ import com.oblong.jelly.*;
 import com.oblong.jelly.communication.ObPoolCommunicationEventHandler;
 import com.oblong.jelly.communication.ObPoolConnector;
 import com.oblong.jelly.util.ExceptionHandler;
+import org.apache.log4j.Logger;
+import org.apache.log4j.xml.DOMConfigurator;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -33,6 +35,8 @@ import static org.junit.Assert.fail;
  * set up NUMBER_OF_DEPOSITED_PROTEINS_IN_BATCH to handle more or less proteins
  */
 public class ExternalTCPMultiProteinTest {
+
+	private static final Logger logger = Logger.getLogger(ExternalTCPMultiProteinTest.class);
 
 	/***if set to false exceptions/logs will no be logged ***/
 	private static final List<Protein> toSendProteinQueue = Collections
@@ -69,7 +73,7 @@ public class ExternalTCPMultiProteinTest {
 
 		try {
 			final PoolServerAddress poolServerAddress = getPoolServerAddress();
-			logMessage("Will test with pool server address "+poolServerAddress.toString());
+			logger.info("Will test with pool server address "+poolServerAddress.toString());
 			final PoolAddress poolAddress = new PoolAddress(poolServerAddress, POOL_NAME);
 			//create pool otherwise test will fail
 			createPoolIfNonExisting(poolAddress);
@@ -135,17 +139,17 @@ public class ExternalTCPMultiProteinTest {
 		senderThread.start();
 	}
 
-	static void logErrorMessage(String errorMessage) {
-		if(ExternalTCPMultiProteinTestConfig.SHOW_LOGS){
-			System.err.println(errorMessage);
-		}
-	}
+//	static void logErrorMessage(String errorMessage) {
+//		if(ExternalTCPMultiProteinTestConfig.SHOW_LOGS){
+//			System.err.println(errorMessage);
+//		}
+//	}
 
-	static void logMessage(String message) {
-		if(ExternalTCPMultiProteinTestConfig.SHOW_LOGS){
-			System.out.println(message);
-		}
-	}
+//	static void logMessage(String message) {
+//		if(ExternalTCPMultiProteinTestConfig.SHOW_LOGS){
+//			System.out.println(message);
+//		}
+//	}
 
 	@AfterClass
 	public static void afterTesting(){
@@ -155,7 +159,7 @@ public class ExternalTCPMultiProteinTest {
 	private static void cleanUpAfterTest() {
 		try {
 
-			logMessage(" tests.awaitNext() finished on round " + tests.getLastExecutedRound());
+			logger.info(" tests.awaitNext() finished on round " + tests.getLastExecutedRound());
 //			logMessage(" last received protein " + tests.getLastObtainedProtein());
 			senderThread.halt();
 			tests.cleanUp();
@@ -173,18 +177,18 @@ public class ExternalTCPMultiProteinTest {
 
 		@Override
 		public void onConnected() {
-			logMessage(TAG + " Hose connected correctly");
+			logger.info(TAG + " Hose connected correctly");
 
 		}
 
 		@Override
 		public void onErrorConnecting() {
-			logErrorMessage(TAG + " Error connecting sending hose ");
+			logger.error(TAG + " Error connecting sending hose ");
 		}
 
 		@Override
 		public void onConnectionLost(String reason) {
-			logErrorMessage(TAG + " Connection lost to sending hose ");
+			logger.warn(TAG + " Connection lost to sending hose ");
 		}
 
 	}
@@ -203,7 +207,9 @@ public class ExternalTCPMultiProteinTest {
 
 	/****Main Method to run class outside Junit framework***/
 	public static void main(String[] args) {
-		logMessage("starting test via main() method");
+		DOMConfigurator.configure("tests_log4j_conf.xml");
+
+		logger.info("Starting test via main() method");
 
 		String testServer = getProperty(TEST_SERVER_PROPERTY);
 
@@ -219,7 +225,7 @@ public class ExternalTCPMultiProteinTest {
 
 	private static String getProperty(String propertyName) {
 		String propertyValue = System.getProperty(propertyName);
-		logMessage("System property " + propertyName + ": " + propertyValue);
+		logger.info("System property " + propertyName + ": " + propertyValue);
 		return propertyValue;
 	}
 
@@ -234,15 +240,15 @@ public class ExternalTCPMultiProteinTest {
 				try {
 					Thread.sleep(100);
 				} catch (InterruptedException e) {
-					logMessage("Interrupted");
+					logger.error("Thread.sleep Interrupted", e);
 					stopTest = true;
 					//ExceptionHandler.handleException(e);
 				}
 			}
 			cleanUpAfterTest();
-			logMessage("Test finished");
+			logger.info("Test finished");
 		} catch (Throwable e) {
-			logMessage("Exception");
+			logger.error("Exception", e);
 			stopTest = true;
 			cleanUpAfterTest();
 			throw new RuntimeException(e);

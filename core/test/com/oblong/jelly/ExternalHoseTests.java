@@ -5,6 +5,7 @@ import com.oblong.jelly.pool.net.ExternalTCPMultiProteinTestConfig;
 import com.oblong.jelly.slaw.java.SlawString;
 import com.oblong.jelly.util.ExceptionHandler;
 
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -24,7 +25,7 @@ public class ExternalHoseTests extends HoseTests {
 
 	public static final String DEFAULT_DESCRIPTS = "protein_number";
 
-
+	static final Random random = new Random();
 
 
 	/***
@@ -158,9 +159,10 @@ public class ExternalHoseTests extends HoseTests {
 		int randomDataLength = ExternalTCPMultiProteinTestConfig.getRandomDataLength();
 		if (randomDataLength > 0) {
 			final byte[] data = new byte[randomDataLength];
-			for (int j = 0; j < randomDataLength; ++j) {
-				data[j] = (byte)j;
-			}
+			random.nextBytes(data);
+//			for (int j = 0; j < randomDataLength; ++j) {
+//              data[j] =
+//			}
 			return protein(desc, ingests, data);
 		} else {
 			return protein(desc, ingests);
