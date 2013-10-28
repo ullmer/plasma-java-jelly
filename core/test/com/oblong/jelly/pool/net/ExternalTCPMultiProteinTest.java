@@ -38,6 +38,8 @@ public class ExternalTCPMultiProteinTest {
 	private static final List<Protein> toSendProteinQueue = Collections
 			.synchronizedList(new LinkedList<Protein>());
 
+	public static final String TEST_SERVER_PROPERTY = "test.server";
+
 	private static ExternalHoseTests tests;
 	private static JellyTestPoolSender senderThread;
 	private static ObHandler listener =  new ObHandler();
@@ -196,7 +198,14 @@ public class ExternalTCPMultiProteinTest {
 
 	/****Main Method to run class outside Junit framework***/
 	public static void main(String[] args) {
-		logMessage("starting test via main class");
+		logMessage("starting test via main() method");
+
+		String testServer = System.getProperty(TEST_SERVER_PROPERTY);
+		logMessage("Property test.server: " + testServer); // Property "test.server" for compatibility with what is already in Ant/JUnit
+
+		ExternalTCPMultiProteinTestConfig.settingsForMultiProteinTest.setUriForTest(testServer);
+		// e.g. "tcp://10.3.10.111"
+
 		//runs only one test no disconnect/reconnect
 		//runOneEndlessTest();
 
@@ -207,7 +216,7 @@ public class ExternalTCPMultiProteinTest {
 
 	private static void runConnectDisconnectEndlessTest() {
 		try {
-			ExternalTCPMultiProteinTestConfig.settingsForMultiProteinTest.setUriForTest("tcp://10.3.10.111");
+//			ExternalTCPMultiProteinTestConfig.settingsForMultiProteinTest.setUriForTest("tcp://10.3.10.111");
 			ExternalTCPMultiProteinTestConfig.INFINITE_TEST = false;
 			while(!stopTest){
 				setUpBeforeTest();
@@ -233,6 +242,7 @@ public class ExternalTCPMultiProteinTest {
 
 	private static void runOneEndlessTest() {
 		ExternalTCPMultiProteinTestConfig.setDefaultTestSettingsForEndlessTest();
+
 		setUpBeforeTest();
 		testAwaitNext();
 		cleanUpAfterTest();
