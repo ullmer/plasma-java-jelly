@@ -1,4 +1,4 @@
-package com.oblong.jelly.pool.net;
+package com.oblong.jelly.pool.net.stress;
 
 /***
  * all these values can be modified

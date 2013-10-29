@@ -4,6 +4,7 @@ package com.oblong.jelly;
 
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.junit.Before;
 
 import static org.junit.Assume.*;

@@ -27,6 +27,7 @@ public abstract class ObPoolConnector extends Thread {
 	private final HoseFactory hoseFactory;
 
 	protected ObPoolConnector(PoolServerAddress addr, String pool, ObPoolCommunicationEventHandler lis, HoseFactory hoseFactory) {
+		super(TAG);
 		this.obPool = pool;
 		this.obPoolsAddr = addr;
 		this.hoseFactory = hoseFactory;

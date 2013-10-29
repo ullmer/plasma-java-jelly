@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import com.oblong.jelly.pool.net.ExternalTCPMultiProteinTestConfig;
 import com.oblong.jelly.util.ExceptionHandler;
+import org.apache.log4j.Logger;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,6 +27,7 @@ public class HoseTests {
 
     public static final String TAG = "HoseTests";
     public static final PoolOptions POOL_OPTIONS = PoolOptions.MEDIUM;
+	private static final Logger logger = Logger.getLogger(HoseTests.class);
 
 
     public static class Tests<Dummy> {
@@ -82,11 +83,9 @@ public class HoseTests {
         }
     }
 
-    public static void logPoolServerAddressError(String classAndMethod) {
-        if (ExternalTCPMultiProteinTestConfig.SHOW_LOGS) {
-            System.err.println(classAndMethod);
-        }
-    }
+	public static void logPoolServerAddressError(String classAndMethod) {
+		logger.warn(classAndMethod);
+	}
 
     public HoseTests() {
         address = null;
@@ -125,11 +124,9 @@ public class HoseTests {
         return Pool.participate(pa, opts);
     }
 
-    private void logPoolInfo(PoolOptions opts) {
-        if (ExternalTCPMultiProteinTestConfig.SHOW_LOGS) {
-            System.out.println("Created pool with capacity " + opts.poolSize());
-        }
-    }
+	private void logPoolInfo(PoolOptions opts) {
+		logger.info("Created pool with capacity " + opts.poolSize());
+	}
 
     private PoolAddress getPoolAddress(String name) throws PoolException {
         final PoolAddress pa = new PoolAddress(address, name);
@@ -245,7 +242,7 @@ public class HoseTests {
         checkProtein(defHose.nth(maxNumberOfProteins - 1, true, true, true), maxNumberOfProteins - 1);
     }
 
-    String getTestHoseName() {
+    protected String getTestHoseName() {
         return defHose.name();
     }
 
@@ -449,7 +446,7 @@ public class HoseTests {
         return result;
     }
 
-    void checkProtein(Protein p, int i) {
+    protected void checkProtein(Protein p, int i) {
         assertEquals(getTestHoseName(), p.source());
         assertEquals(i + "th", depProteins[i], p);
     }
@@ -465,7 +462,7 @@ public class HoseTests {
 
 
 
-    final Hose defHose;
+    protected final Hose defHose;
     private final Protein[] depProteins;
     private final PoolServerAddress address;
     public static final int DEFAULT_NUMBER_OF_PROTEINS = 5;

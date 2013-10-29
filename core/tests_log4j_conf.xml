@@ -34,7 +34,7 @@
 
 
     <!-- APPENDERS LIST -->
-    <appender name="JelyConsoleAppender" class="org.apache.log4j.ConsoleAppender">
+    <appender name="JellyConsoleAppender" class="org.apache.log4j.ConsoleAppender">
         <param name="Threshold" value="INFO"/>
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="%d{ABSOLUTE} %5p [%t] - %m%n"/>
@@ -112,7 +112,7 @@
     <root>
         <priority value="trace"></priority>
 
-        <appender-ref ref="JelyConsoleAppender"/>
+        <appender-ref ref="JellyConsoleAppender"/>
         <appender-ref ref="JellyErrorWarnFile"/>
         <appender-ref ref="JellyTrace"/>
 

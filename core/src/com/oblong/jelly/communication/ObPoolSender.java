@@ -13,7 +13,7 @@ public class ObPoolSender extends ObPoolConnector {
 	protected final List<Protein> proteinQueue;
 
 
-	public ObPoolSender(PoolServerAddress pools,String pool,ObPoolCommunicationEventHandler lis,int sleepSecs,
+	public ObPoolSender(PoolServerAddress pools,String pool,ObPoolCommunicationEventHandler lis, int sleepSecs,
 			List<Protein> proteinQueue, HoseFactory hoseFactory) {
 		super(pools, pool, lis, hoseFactory);
 		this.sleepMs = sleepSecs;

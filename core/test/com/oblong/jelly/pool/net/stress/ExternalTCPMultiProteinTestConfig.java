@@ -1,7 +1,7 @@
 
 /* (c)  oblong industries */
 
-package com.oblong.jelly.pool.net;
+package com.oblong.jelly.pool.net.stress;
 
 import com.oblong.util.probability.IntRange;
 import com.oblong.util.probability.SkewedIntDistribution;
@@ -18,7 +18,7 @@ import java.util.Random;
  */
 public class ExternalTCPMultiProteinTestConfig {
 
-	public static final boolean SHOW_LOGS = true;
+//	public static final boolean SHOW_LOGS = true;
 	public static final int NO_LIMIT_PROTEIN_NUMBER = -1;
 	public static boolean INFINITE_TEST = false;
 	public static final boolean MAKE_FAIL = false;
@@ -80,6 +80,11 @@ public class ExternalTCPMultiProteinTestConfig {
 		return settingsForMultiProteinTest.getNumberOfRuns() == NO_LIMIT_PROTEIN_NUMBER ?
 				NO_LIMIT_PROTEIN_NUMBER : settingsForMultiProteinTest.getNumberOfRuns() *
 				settingsForMultiProteinTest.getBatchSize();
+	}
+
+	//TODO: add random here
+	public static int getRandomNumberOfRuns(){
+		return settingsForMultiProteinTest.getNumberOfRuns();
 	}
 
 	public static int getRandomAwaitTimeout() {

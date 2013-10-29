@@ -1,6 +1,6 @@
 //package com.oblong.jelly.pool.net;
 //
-//import com.oblong.jelly.ExternalHoseTests;
+//import com.oblong.jelly.pool.net.stress.Receiver;
 //import com.oblong.jelly.Protein;
 //import com.oblong.jelly.util.ExceptionHandler;
 //import com.oblong.util.Util;
@@ -22,11 +22,11 @@
 //	private final int sleepMs;
 //
 //
-//	private final JellyTestPoolSender connector;
+//	private final TestPoolSender connector;
 //	private volatile boolean stopMe = false;
 //
 //
-//	public ProteinGenerator(JellyTestPoolSender connector) {
+//	public ProteinGenerator(TestPoolSender connector) {
 //		this.connector = connector;
 //
 //		this.sleepMs = ExternalTCPMultiProteinTestConfig.SLEEP_MS_SMALL;
