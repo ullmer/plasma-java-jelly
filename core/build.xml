@@ -133,6 +133,9 @@
     <unjar src="${lib.dir}/jcip-annotations.jar"
            dest="${build.3rdparty.dir}"
            overwrite="true" />
+      <unjar src="${lib.dir}/log4j-1.2.17.jar"
+             dest="${build.3rdparty.dir}"
+             overwrite="true" />
   </target>
 
   <target name="standalone-jar" depends="compile,-manifest,-extract-3rdparty"
