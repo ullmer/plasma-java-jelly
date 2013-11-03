@@ -1,70 +1,141 @@
-//package com.oblong.jelly.pool.net;
-//
-//import com.oblong.jelly.pool.net.stress.Receiver;
-//import com.oblong.jelly.Protein;
-//import com.oblong.jelly.util.ExceptionHandler;
-//import com.oblong.util.Util;
-//
-//import java.util.Random;
-//
-//import static junit.framework.Assert.fail;
-//
-///**
-// * Created with IntelliJ IDEA.
-// * User: valeria
-// * Date: 10/22/13
-// * Time: 2:31 PM
-// */
-//public class ProteinGenerator extends Thread {
-//
-//
-//	private final Random r =  new Random();
-//	private final int sleepMs;
-//
-//
-//	private final TestPoolSender connector;
-//	private volatile boolean stopMe = false;
-//
-//
-//	public ProteinGenerator(TestPoolSender connector) {
-//		this.connector = connector;
-//
-//		this.sleepMs = ExternalTCPMultiProteinTestConfig.SLEEP_MS_SMALL;
-//		ExternalTCPMultiProteinTest.logMessage("created generator");
-//	}
-//
-//	@Override
-//	public void run(){
-//		ExternalTCPMultiProteinTest.logMessage("will start adding proteins");
-//		while(!stopThread()){
-//			createAndAddBatch();
-//			try {
-//				Util.randomSleep(r, sleepMs);
-//			} catch (InterruptedException e) {
-//				stopSelf();
-//				ExternalTCPMultiProteinTest.logMessage("Thread interrupted");
-//				Thread.currentThread().interrupt();
-////				ExceptionHandler.handleException(e);
-//				//fail("Error creating new protein(s)");
-//			}
-//		}
-//	}
-//
-//
-//	public void stopSelf(){
-//		stopMe = true;
-//		ExternalTCPMultiProteinTest.logMessage("Thread will be stopped, sent "+proteinCounter+" proteins");
-//	}
-//
-//	private boolean stopThread() {
-//		return (maxProteinNumber == ExternalTCPMultiProteinTestConfig.NO_LIMIT_PROTEIN_NUMBER) ?
-//				stopMe :
-//				(proteinCounter >= maxProteinNumber) && stopMe;
-//	}
-//
-//
-//
-//
-//
-//
-//}
+package com.oblong.jelly.pool.net.stress;
+
+import com.oblong.jelly.Hose;
+import com.oblong.jelly.Protein;
+import com.oblong.jelly.Slaw;
+import com.oblong.jelly.slaw.java.SlawString;
+import org.apache.log4j.Logger;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+
+import static com.oblong.jelly.Slaw.*;
+import static com.oblong.jelly.Slaw.protein;
+import static com.oblong.jelly.Slaw.string;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+/**
+ * Generates proteins to be used for test.
+ * Also responsible for verifying incoming proteins, whether they match the generated ones for the same given index.
+ *
+ * User: karol
+ * Date: 10/31/13
+ * Time: 8:16 PM
+ */
+public class ProteinGenerator {
+
+	private static Logger logger = Logger.getLogger(ProteinGenerator.class);
+
+	public static final String DEFAULT_DESCRIPTS = "protein_number";
+	public static final String ARGUMENT_FOR_PROTEIN_MAP = "foo";
+
+	public static final SlawString LAST_PROTEIN_IN_CONNECTION_SESSION = string("last-protein-in-connection-session");
+	public static final SlawString CONNECTION_SESSION_CYCLE_ID = string("connection-session-cycle-id");
+
+	final ConnectionSession connectionSession;
+	final ExternalStressTest test;
+	final Random random;
+
+	public ProteinGenerator(ConnectionSession connectionSession) {
+		this.connectionSession = connectionSession;
+		this.test = connectionSession.parentTest;
+		this.random = test.random;
+	}
+
+	public Protein makeProtein(long proteinIndex, String poolName, SlawString descrip,
+			boolean lastProteinInConnectionSession) {
+		final Slaw desc = Slaw.list(int64(proteinIndex),
+				descrip,
+				string("descrips"),
+				string(DEFAULT_DESCRIPTS),
+				getDescripsByIndex(proteinIndex),
+				map(string(ARGUMENT_FOR_PROTEIN_MAP), nil()));
+		final Slaw ingests = map(string("string-key"), string("value"),
+				string("nil-key"), nil(),
+				string("int64-key"), int64(proteinIndex),
+				string("pool-name"), string(poolName),
+				LAST_PROTEIN_IN_CONNECTION_SESSION, bool(lastProteinInConnectionSession),
+				CONNECTION_SESSION_CYCLE_ID, int64(connectionSession.getCycleId()));
+
+		//how much is enough?
+		int randomDataLength = connectionSession.testConfig.qtyRudeDataBytes.random(random);
+		if (randomDataLength > 0) {
+			final byte[] data = new byte[randomDataLength];
+			random.nextBytes(data);
+
+			return protein(desc, ingests, data);
+		} else {
+			return protein(desc, ingests);
+		}
+
+	}
+
+	/** @return is interesting protein (should increment counter) */
+	public boolean checkProtein(Protein p, int proteinIndex, Hose hose) {
+//		printLogIfRequired(i, 1, " i : "+i+" protein : "+p);
+		Map<Slaw, Slaw> ingestsMap = p.ingests().emitMap();
+		boolean isProteinFromThisConnectionSession = isProteinFromThisConnSession(ingestsMap);
+		long connCycleIdOfReceivedProtein = ingestsMap.get(CONNECTION_SESSION_CYCLE_ID).emitLong();
+		if ( !isProteinFromThisConnectionSession ) {
+			logger.warn("Got protein from wrong connection session cycleId " +
+					connCycleIdOfReceivedProtein + " vs current: " + connectionSession.getCycleId() +
+					"; cycleId diff: " + (connectionSession.getCycleId() -
+					ingestsMap.get(CONNECTION_SESSION_CYCLE_ID).emitLong()));
+			return false;
+		}
+		String errorMessage = "Protein does not match expected descrips." +
+				" hose: " + hose +  " proteinIndex: " + proteinIndex + " protein: " + p.toString() +
+				"; connection cycleId= "+connectionSession.getCycleId();
+
+		assertTrue(errorMessage,
+				p.matches(getDescripsByIndex(proteinIndex)));
+
+		assertTrue(errorMessage,
+				checkDescripsContainIndex(p.descrips(), proteinIndex));
+
+		return true;
+	}
+
+	private boolean isProteinFromThisConnSession(Map<Slaw, Slaw> ingestsMap) {
+		long connSessionIdOfReceivedProtein = ingestsMap.get(CONNECTION_SESSION_CYCLE_ID).emitLong();
+		return connSessionIdOfReceivedProtein == connectionSession.getCycleId();
+	}
+
+	/** Cannot use JUnit's assertTrue, because it does not throw exception on failure :( */
+	public static void assertTrue(String msg, boolean v) {
+		if ( !v ) {
+			throw new RuntimeException("Assertion failed. Msg: " + msg);
+		}
+	}
+
+	private boolean checkDescripsContainIndex(Slaw descrips, int i) {
+		List<Slaw> list = descrips.emitList();
+		for(Slaw s : list){
+			if(s.equals(getDescripsByIndex(i)))
+				return true;
+		}
+		return false;
+	}
+
+
+	public SlawString getTestProteinDescrip() {
+		return string("test-protein");
+	}
+
+	public Slaw getDescripsByIndex(long proteinIndex) {
+		return Slaw.string(DEFAULT_DESCRIPTS+proteinIndex);
+	}
+
+	public boolean isLastProteinInConnectionSession(Protein protein) {
+		Map<Slaw, Slaw> ingestsMap = protein.ingests().emitMap();
+		boolean isLast = ingestsMap.get(LAST_PROTEIN_IN_CONNECTION_SESSION).emitBoolean();
+		if (! isProteinFromThisConnSession(ingestsMap)  ) {
+			logger.debug("Got " + LAST_PROTEIN_IN_CONNECTION_SESSION + " but for wrong connection session; ignoring");
+			return false;
+		}
+		return isLast;
+	}
+
+}

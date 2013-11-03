@@ -1,0 +1,146 @@
+	private static boolean zzzStopTest = false;
+
+
+
+	private static void runOneEndlessTest() {
+		ExternalTCPMultiProteinTestConfig.setDefaultTestSettingsForEndlessTest();
+		runOneCycle();
+	}
+
+	private static void runOneCycle() {
+		setUpBeforeTest();
+		startAwaitNextThenSender();
+	}
+
+
+
+
+		private static final int IGNORED_VALUE = -1;
+
+
+
+
+
+	private static void startAwaitNextThenSender()  {
+		try {
+			receiver.awaitNext();
+			sender = new Sender(poolServerAddress, POOL_NAME);
+			sender.startOperations();
+		} catch (PoolException e) {
+			logger.error("Unable to start receiver");
+			ExceptionHandler.handleException(e);
+		}
+	}
+
+
+
+
+
+		private static void runConnectDisconnectEndlessTest() {
+    		try {
+    			ExternalTCPMultiProteinTestConfig.INFINITE_TEST = false;
+    			while(!stopTest){
+    				runOneCycle();
+    				try {
+    					Thread.sleep(100);
+    				} catch (InterruptedException e) {
+    					logger.error("Thread.sleep Interrupted", e);
+    					stopTest = true;
+    					//ExceptionHandler.handleException(e);
+    				}
+    			}
+    //			cleanUpAfterTest();
+    			logger.info("Test finished");
+    		} catch (Throwable e) {
+    			logger.error("Exception", e);
+    			stopTest = true;
+    //			cleanUpAfterTest();
+    //			throw new RuntimeException(e);
+    		}
+    	}
+
+
+
+
+
+	@BeforeClass
+	public static void setUp()  {
+		setUpBeforeTest();
+	}
+
+
+
+
+    		@AfterClass <--------------------------------------<<<<<
+        	public static void afterTesting(){
+        		cleanUpAfterTest();
+        	}
+
+        	private void cleanUpAfterTest() {
+        		try {
+
+        			logger.info("cleanUpAfterTest: receiver finished on round " + receiver.getLastExecutedRound());
+        //			logMessage(" last received protein " + receiver.getLastObtainedProtein());
+        			sender.withdrawHose();
+        			receiver.withdrawFromHose();
+        		} catch (Exception e){
+        			ExceptionHandler.handleException(e);
+        		}
+        	}
+
+
+
+	private static void setUpBeforeTest() {
+	}
+
+
+
+		/// ------ OLD STUFF:
+
+		stopTest = false; TODO();
+		//runConnectDisconnectEndlessTest();
+		runOneEndlessTest();
+
+
+
+
+
+		ExternalTCPMultiProteinTestConfig.settingsForMultiProteinTest.setUriForTest(testServer);
+
+
+
+	public static class TestExceptionHandler extends ExceptionHandler {
+
+		@Override
+		public void handleExceptionImpl(Throwable e, String syntheticMsg)  {
+			logger.error("====== E R R O R  " + syntheticMsg, e);
+		}
+
+	}
+
+
+		protected void maybeSleep() {
+    		sleepMs = ExternalTCPMultiProteinTestConfig.getRandomSleepingTime();
+    		if ( logger.isDebugEnabled() ) logger.debug("sleep time " + sleepMs);
+    		if (sleepMs > 0) {
+    			try {
+    				Thread.sleep(sleepMs);
+    			} catch (InterruptedException e) {
+    				logger.error("Sleep interrupted");
+    				Thread.currentThread().interrupt();
+    			}
+    		}
+    	}
+
+
+
+    		//counts the number of "correct" proteins
+        	private volatile int numberOfProteinsSent = 0;
+
+
+
+
+		if(!ExternalTCPMultiProteinTestConfig.shouldTestContinue(proteinCounter, maxProteinNumber)){
+			logger.info("No more proteins to send in this round");
+			return;
+		}

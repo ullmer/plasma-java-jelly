@@ -8,14 +8,14 @@ import net.jcip.annotations.Immutable;
  * Time: 2:16 PM
  */
 @Immutable
-public abstract class SkewedDistribution<T extends Number> extends ValueDistribution<T> {
+public abstract class SkewedDistribution<T extends Number> extends Distribution<T> {
 
 	public static final Chance SURE_CHANCE = Chance.get(1.0);
 
 	public final Chance chanceOfPickingFromDistribution;
-	public final ValueDistribution<T> distribution;
+	public final Distribution<T> distribution;
 
-	public SkewedDistribution(Chance chanceOfPickingFromDistribution, ValueDistribution<T> range)  {
+	public SkewedDistribution(Chance chanceOfPickingFromDistribution, Distribution<T> range)  {
 		this.chanceOfPickingFromDistribution = chanceOfPickingFromDistribution;
 		this.distribution = range;
 	}
@@ -36,7 +36,7 @@ public abstract class SkewedDistribution<T extends Number> extends ValueDistribu
 	}
 
 	public abstract SkewedDistribution<T> newInstance(Chance chanceOfPickingFromDistribution,
-		ValueDistribution<T> distribution);
+		Distribution<T> distribution);
 
 	@Override
 	public SkewedDistribution<T> multiplyMaxInclusive(double multiplier) {

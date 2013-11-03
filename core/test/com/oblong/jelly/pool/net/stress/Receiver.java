@@ -1,18 +1,16 @@
 package com.oblong.jelly.pool.net.stress;
 
 import com.oblong.jelly.*;
-import com.oblong.jelly.slaw.java.SlawString;
 import com.oblong.jelly.util.ExceptionHandler;
+import com.oblong.util.Util;
+import net.jcip.annotations.GuardedBy;
 import org.apache.log4j.Logger;
 
-import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import static com.oblong.jelly.Slaw.*;
 import static com.oblong.jelly.Slaw.protein;
-import static com.oblong.jelly.Slaw.string;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -22,125 +20,178 @@ import static org.junit.Assert.assertTrue;
  * Date: 10/2/13
  * Time: 12:58 PM
  */
-public class Receiver {
+public class Receiver extends ConnectionParticipant {
 
-	public static final String DEFAULT_DESCRIPTS = "protein_number";
+	private static final Logger logger = Logger.getLogger(Receiver.class);
 
 	static final Random random = new Random();
-	private static final Logger logger = Logger.getLogger(Receiver.class);
-	private final PoolServerAddress address;
-	private final Hose receivingHose;
 
+	@GuardedBy("this")
+	private boolean finishedReceiving = false;
 
-	/***
-	 * create HoseTest
-	 *
-	 *
-	 *
-	 * @param addr
-	 * @param poolName
-	 * @throws com.oblong.jelly.PoolException
-	 */
-	public Receiver(PoolServerAddress addr,
-	                String poolName) throws PoolException {
-		this.address = addr;
-		this.receivingHose = getHoseFromAddress(poolName);
+	@GuardedBy("this")
+	private boolean readyToReceive = false;
+
+	public Receiver(ConnectionSession connectionSession) {
+		super(connectionSession);
 	}
 
-	private Hose getHoseFromAddress(String name) throws PoolException {
-		final PoolAddress pa = new PoolAddress(address, name);
-		Hose hose = Pool.participate(pa);
-		logger.info("Created hose "+name);
-		return hose;
-	}
+	volatile int qtyProcessedProteins = 0;
+
+	private Thread awaitNextThread = new AwaitNextThread();
 
 
+	private class AwaitNextThread extends Thread {
+		public AwaitNextThread() {
+			super("AwaitNextThread");
+		}
 
-	public int getLastExecutedRound() {
-		return currentRound;
-	}
-
-	volatile int currentRound = 0;
-
-	private Thread awaitNextThread = new Thread("AwaitNextThread") {
-
-		public volatile boolean stopThread = false;
+//		public volatile boolean stopThread = false;
 
 		@Override
 		public synchronized void start() {
-			stopThread = false;
+//			stopThread = false;
 			super.start();
 		}
 
 		public void run() {
-			Protein lastSuccessfullyObtainedProtein;
-			currentRound = 0;
-			int maxNumberOfProteins = ExternalTCPMultiProteinTestConfig.getTotalNumberOfProteins();
-			printLogIfRequired(currentRound+1, 1, "Number of expected proteins "+ maxNumberOfProteins);
-			while (ExternalTCPMultiProteinTestConfig.shouldTestContinue(currentRound, maxNumberOfProteins) && !stopThread) {
-				try {
-					Protein tempProtein = receivingHose.awaitNext(ExternalTCPMultiProteinTestConfig.getRandomAwaitTimeout(), TimeUnit.MILLISECONDS);
-					if(logger.isTraceEnabled()){
-						logger.trace("Protein received : "+tempProtein);
-					}
-					if (tempProtein!=null) {
-						int frequency = 500;
-						String textToPrint;
-						int frequency2 = 500;
-						String textToPrint2 = "We are at protein " + currentRound;
-						printLogIfRequired(currentRound, frequency2, textToPrint2);
 
-						if(tempProtein.matches(getTestProteinDescript())){
-							checkProtein(tempProtein, currentRound);
-							textToPrint = "Protein " + currentRound + " ok";
-							currentRound++;
-							lastSuccessfullyObtainedProtein = tempProtein;
-						} else {
-							textToPrint = "Protein doesn't match target descripts";
+			try {
+				logger.info("Started " + getName() + " thread");
+				Protein lastSuccessfullyObtainedProtein;
+				qtyProcessedProteins = 0;
+//			int maxNumberOfProteins = ExternalTCPMultiProteinTestConfig.getTotalNumberOfProteins();
+//			printLogIfRequired(currentRound+1, 1, "Number of expected proteins "+ maxNumberOfProteins);
+				while (true) {
+					try {
+						logEveryNth(qtyProcessedProteins, 100, "Before awaitNext(). qtyReceivedProteins= " +
+								qtyProcessedProteins);
+						setReadyToReceive();
+						Protein protein = hose.awaitNext(testConfig.awaitNextTimeout.random(random),
+								TimeUnit.MILLISECONDS);
+						logger.debug("Protein received. qtyProcessedProteins: "+qtyProcessedProteins);
+						if(logger.isTraceEnabled()) logger.trace("Protein received (details) : "+protein);
+
+						if (protein!=null) {
+							int frequency = 500;
+							int frequency2 = 500;
+	//						logEveryNth(qtyReceivedProteins, frequency2, textToPrint2);
+							String textToPrint;
+							if(protein.matches(proteinGenerator.getTestProteinDescrip())){
+								boolean incrementCounter = proteinGenerator.checkProtein(protein, qtyProcessedProteins, hose);
+								textToPrint = "Protein no. " + qtyProcessedProteins + " received ok";
+								if ( incrementCounter ) {
+									qtyProcessedProteins++;
+									parentConnectionSession.parentTest.incrementQtyReceivedProteins();
+								}
+								lastSuccessfullyObtainedProtein = protein;
+							} else {
+								textToPrint = "Protein doesn't match target descrips";
+							}
+							logEveryNth(qtyProcessedProteins, frequency, textToPrint);
+
+							if ( proteinGenerator.isLastProteinInConnectionSession(protein) ) {
+								logger.info("Received last protein in connection session. Not awaitNext-ing more.");
+								break;
+							}
 						}
-						printLogIfRequired(currentRound, frequency, textToPrint);
+						testConfig.sleepBetweenAwaitNext.random(random);
+
+					} catch (TimeoutException e) {
+						printNoProteinReceivedYet("Timeout ", qtyProcessedProteins);
+						//if timeout we skip this round otherwise we lose descripts field
+					} catch (NoSuchProteinException e){
+						//No protein found
+						printNoProteinReceivedYet("NoSuchProtein ", qtyProcessedProteins);
+					} catch (PoolException e){
+						throw Util.rethrow(e);
 					}
-				} catch (TimeoutException e) {
-					printNoProteinReceivedYet("Timeout ", currentRound);
-					//if timeout we skip this round otherwise we lose descripts field
-				} catch (NoSuchProteinException e){
-					//No protein found
-					printNoProteinReceivedYet("NoSuchProtein ", currentRound);
-				} catch (PoolException e){
-					stopAndThrow(e, e.kind());
-				} catch (Exception e){
-					stopAndThrow(e, PoolException.Kind.UNCLASSIFIED);
+				}
+				withdrawHose();
+				//stopped
+			} catch (Throwable throwable ) {
+				logger.fatal("Receiver - uncaught throwable; connection cycleId: " +
+						parentConnectionSession.getCycleId(),
+						throwable);
+			} finally {
+				setFinishedReceiving();
+			}
+		}
+
+//		private void stopAndThrow(Exception e, PoolException.Kind kind) {
+////			stopThread = true;
+//			printAndThrow(e, kind);
+////			return stopThread;
+//		}
+	}
+
+	private void setReadyToReceive() {
+		if ( readyToReceive ) {
+			return;
+		}
+		synchronized(Receiver.this) {
+			readyToReceive = true;
+			logger.info("setReadyToReceive - will notify");
+			this.notifyAll();
+		}
+	}
+
+	private void setFinishedReceiving() {
+		logger.debug("Finished receiving");
+		synchronized(Receiver.this) {
+			finishedReceiving = true;
+			this.notifyAll();
+			logger.info("Finished receiving - notified");
+		}
+	}
+
+	public void waitTillFinishedReceiving() {
+		logger.debug("waitTillFinishedReceiving");
+		synchronized ( Receiver.this ) {
+			while ( ! finishedReceiving ) {
+				try {
+					Receiver.this.wait();
+				} catch (InterruptedException e) {
+					throw Util.rethrow(e);
 				}
 			}
-			//stopped
+			logger.info("Finished waitTillFinishedReceiving");
 		}
+	}
 
-		private boolean stopAndThrow(Exception e, PoolException.Kind kind) {
-			stopThread = true;
-			printAndThrow(e, kind);
-			return stopThread;
+	public void waitTillReadyToReceive() {
+		logger.debug("waitTillReadyToReceive");
+		synchronized ( Receiver.this ) {
+			while ( ! readyToReceive ) {
+				try {
+					Receiver.this.wait();
+				} catch (InterruptedException e) {
+					throw Util.rethrow(e);
+				}
+			}
+			logger.info("Finished waitTillReadyToReceive");
 		}
-	};
+	}
 
 
-
-	public void awaitNext() throws PoolException {
+	public void startThreadWithAwaitNext() {
+		initHose();
 		awaitNextThread.start();
 	}
 
 	private void printNoProteinReceivedYet(String timeout, int currentRound) {
 		int frequency = 1;
 		String textToPrint = timeout +", we are waiting for protein " + currentRound;
-		printLogIfRequired(currentRound, frequency, textToPrint);
+		logEveryNth(currentRound, frequency, textToPrint);
 	}
 
-	private void printAndThrow(Exception e, PoolException.Kind kind) {
-		ExceptionHandler.handleException(e, "ExternalHose.awaitNext "+kind);
-		throw new RuntimeException(e);
-	}
+//	private void printAndThrow(Exception e, PoolException.Kind kind) {
+//		ExceptionHandler.handleException(e, "ExternalHose.awaitNext "+kind);
+//		throw new RuntimeException(e);
+//	}
 
-	private void printLogIfRequired(int i, int frequency, String textToPrint) {
-		if((i % frequency) == 0){
+	private void logEveryNth(int i, int frequency, String textToPrint) {
+		if ((i % frequency) == 0) {
 			logger.info(textToPrint);
 		} else {
 			if ( logger.isDebugEnabled() ) {
@@ -149,88 +200,16 @@ public class Receiver {
 		}
 	}
 
-
-	public void checkProtein(Protein p, int i) {
-//		printLogIfRequired(i, 1, " i : "+i+" protein : "+p);
-		//checking if the proteins have the same hose name
-		//TODO: maybe useless here
-		assertEquals(receivingHose.name(), p.source());
-		String errorMessage = "i is: " + i + " " + p.toString();
-		assertTrue(errorMessage, p.matches(getDescripsByIndex(i)));
-		assertTrue(errorMessage, checkDescriptsContainIndex(p.descrips(), i));
-	}
-
-	private boolean checkDescriptsContainIndex(Slaw descrips, int i) {
-		List<Slaw> list = descrips.emitList();
-		for(Slaw s : list){
-			if(s.equals(getDescripsByIndex(i)))
-				return true;
-		}
-		return false;
-	}
-
-	public static Protein makeProtein(int i, String hname, String argumentForProteinMap, SlawString testProteinDescript) {
-		final Slaw desc = list(int32(i),
-				string("descrips"),
-				testProteinDescript,
-				getDescripsByIndex(i),
-				map(string(argumentForProteinMap), nil()));
-		final Slaw ingests = map(string("string-key"), string("value"),
-				string("nil-key"), nil(),
-				string("int64-key"), int64(i),
-				string("hose"), string(hname));
-
-		//how much is enough?
-		int randomDataLength = ExternalTCPMultiProteinTestConfig.getRandomDataLength();
-		if (randomDataLength > 0) {
-			final byte[] data = new byte[randomDataLength];
-			random.nextBytes(data);
-//			for (int j = 0; j < randomDataLength; ++j) {
-//              data[j] =
-//			}
-			return protein(desc, ingests, data);
-		} else {
-			return protein(desc, ingests);
-		}
-
-	}
-
-	public static SlawString getTestProteinDescript() {
-		return string("test-protein");
-	}
-
-	public static SlawString getTestProteinDescriptForFake() {
-		return string("test-protein-fake");
-	}
-
-	public static Protein makeFakeProtein(int i, String hname) {
-		String argumentForFakeProtein = "fake";
-		return makeProtein(i, hname, argumentForFakeProtein, getTestProteinDescriptForFake());
-	}
-
-	private static Slaw getDescripsByIndex(int i) {
-		return Slaw.string(DEFAULT_DESCRIPTS+i);
-	}
-
-
 //	public void cleanUp() {
 //		withdrawFromHose ();
 //		removePool ();
 //	}
 
-	protected void removePool () {
-		try {
-			Pool.dispose(receivingHose.poolAddress());
-		} catch (PoolException e) {
-			ExceptionHandler.handleException(e);
+	public boolean isFinishedReceiving() {
+		synchronized (Receiver.this) {
+			return this.finishedReceiving;
 		}
 	}
 
-	protected void withdrawFromHose () {
-		try {
-			receivingHose.withdraw ();
-		} catch (Exception e) {
-			ExceptionHandler.handleException (e);
-		}
-	}
+
 }

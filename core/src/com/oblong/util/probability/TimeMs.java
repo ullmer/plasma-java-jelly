@@ -17,32 +17,32 @@ import java.util.Random;
  * Time: 1:44 PM
  */
 @Immutable
-public class SleepTimeMs extends SkewedIntDistribution {
+public class TimeMs extends SkewedIntDistribution {
 
-	public SleepTimeMs(double chanceOfPickingFromDistribution, ValueDistribution<Integer> range) {
+	public TimeMs(double chanceOfPickingFromDistribution, Distribution<Integer> range) {
 		this(new Chance(chanceOfPickingFromDistribution), range);
 	}
 
-	public SleepTimeMs(Chance chanceOfPickingFromDistribution, ValueDistribution<Integer> range) {
+	public TimeMs(Chance chanceOfPickingFromDistribution, Distribution<Integer> range) {
 		super(chanceOfPickingFromDistribution, range);
 	}
 
-	public SleepTimeMs(int exactValue) {
+	public TimeMs(int exactValue) {
 		this(SURE_CHANCE, new IntRange(exactValue));
 	}
 
 	@Override
-	public SleepTimeMs newInstance(Chance chanceOfPickingFromDistribution, ValueDistribution<Integer> distribution) {
-		return new SleepTimeMs(chanceOfPickingFromDistribution, distribution);
+	public TimeMs newInstance(Chance chanceOfPickingFromDistribution, Distribution<Integer> distribution) {
+		return new TimeMs(chanceOfPickingFromDistribution, distribution);
 	}
 
-	public void randomSleep(Random random) {
+	public void sleep(Random random) {
 		Util.sleepUninterruptibly(random(random));
 	}
 
 	@Override
-	public SleepTimeMs multiplyMaxInclusive(double multiplier) {
-		return (SleepTimeMs) super.multiplyMaxInclusive(multiplier);
+	public TimeMs multiplyMaxInclusive(double multiplier) {
+		return (TimeMs) super.multiplyMaxInclusive(multiplier);
 	}
 
 }

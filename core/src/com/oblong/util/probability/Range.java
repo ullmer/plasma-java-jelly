@@ -10,7 +10,7 @@ import net.jcip.annotations.Immutable;
  * To change this template use File | Settings | File Templates.
  */
 @Immutable
-public abstract class Range<T extends Number> extends ValueDistribution<T> {
+public abstract class Range<T extends Number> extends Distribution<T> {
 
 	public final T minInclusive;
 	public final T maxInclusive;

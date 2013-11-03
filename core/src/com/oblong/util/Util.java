@@ -1,5 +1,7 @@
 package com.oblong.util;
 
+import org.apache.log4j.Logger;
+
 import java.util.Random;
 
 /**
@@ -8,6 +10,11 @@ import java.util.Random;
  * Time: 12:40 PM
  */
 public class Util {
+
+	private static Logger logger = Logger.getLogger(Util.class);
+
+
+	/** An idiom for circumventing Java's annoying (at least for prototyping) checked exceptions mandatoriness. */
 	public static RuntimeException rethrow(Throwable throwable) {
 		RuntimeException toReThrow;
 		if ( throwable instanceof RuntimeException ) {
@@ -17,7 +24,8 @@ public class Util {
 		}
 		throw toReThrow;
 
-		// the fact that we don't return anything, but throw instead, is an idiom
+		// The fact that we don't return anything, but throw instead, is part of the idiom.
+		// It protects against client code forgetting to throw.
 	}
 
 	public static void sleepUninterruptibly(int millis) {
@@ -30,6 +38,17 @@ public class Util {
 
 	public static void randomSleep(Random r, int sleepMs) throws InterruptedException {
 		Thread.sleep(r.nextInt(sleepMs));
+	}
+
+	public static String getMandatorySystemProperty(String propertyName, String exampleValue) {
+		String propertyValue = System.getProperty(propertyName);
+		if ( propertyValue == null ) {
+			throw new RuntimeException("Mandatory system property " + propertyName + " not set." +
+					" To set it, use e.g.: -D" + propertyName + "=" + exampleValue);
+		} else {
+			logger.info("System property " + propertyName + ": " + propertyValue);
+		}
+		return propertyValue;
 	}
 
 }

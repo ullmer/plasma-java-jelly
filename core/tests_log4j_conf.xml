@@ -15,16 +15,19 @@
        * DEBUG - output which constantly indicates that the test is running and not hanging and what is happening.
          Fast-moving, but not too verbose.
 
-       * INFO - higher-level progress information, like e.g. starting test, configuration, every-hundred proteins, finishing batch of proteins.
+       * INFO - higher-level progress information, like e.g. starting test, configuration, every-hundred proteins,
+         finishing batch of proteins.
 
-       * WARN - when something not-exactly-expected happens, which is not necessarilly a bug in Jelly, e.g. getting disconnected.
-         Note that not being able to connect should be signalled as an error, because it could mean incorrectly configured
-         server address and should be signalled to the user as soon as possible
+       * WARN - when something not-exactly-expected happens, which is not necessarilly a bug in Jelly, e.g. getting
+         disconnected.
+         Note that not being able to connect should be signalled as an error, because it could mean incorrectly
+         configured server address and should be signalled to the user as soon as possible
 
        * ERROR - errors. E.g. wrong protein arrived or getting an exception.
 
-       * FATAL - things which make the test unable to start/contiune. E.g. failing first connection attempt or pool creation.
-       Those things should stop the whole test (although stopping the test should be avoided if possible).
+       * FATAL - things which make the test unable to start/contiune. E.g. failing first connection attempt or pool
+         creation.
+         Those things should stop the whole test (although stopping the test should be avoided if possible).
 
 
      We could use Log4J Chainsaw to filter the logs: http://logging.apache.org/chainsaw/ .
@@ -35,7 +38,7 @@
 
     <!-- APPENDERS LIST -->
     <appender name="JellyConsoleAppender" class="org.apache.log4j.ConsoleAppender">
-        <param name="Threshold" value="INFO"/>
+        <param name="Threshold" value="TRACE"/>
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="%d{ABSOLUTE} %5p [%t] - %m%n"/>
         </layout>
@@ -49,7 +52,7 @@
             <conversionPattern value="%date [%thread] %-5level %logger [%property{NDC}] - %message%newline" />
         </layout>
     </appender>
-
+ß
     <appender name="FileAppender" class="log4net.Appender.FileAppender">
         <file value="logs/tests_trace.log" />
         <threshold value="WARN"/>
@@ -73,6 +76,16 @@
     <appender name="JellyErrorWarnFile" class="org.apache.log4j.FileAppender">
         <param name="Threshold" value="WARN"/>
         <param name="file" value="logs/jelly_tests_errors_warn.log" />
+        <param name="append" value="true" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d %-5p [%t] %C{6} - %m%n"/>
+        </layout>
+    </appender>
+
+
+    <appender name="JellyErrorFile" class="org.apache.log4j.FileAppender">
+        <param name="Threshold" value="ERROR"/>
+        <param name="file" value="logs/jelly_tests_errors.log" />
         <param name="append" value="true" />
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="%d %-5p [%t] %C{6} - %m%n"/>
@@ -110,11 +123,12 @@
 -->
 
     <root>
-        <priority value="trace"></priority>
+        <priority value="debug"></priority>
 
         <appender-ref ref="JellyConsoleAppender"/>
         <appender-ref ref="JellyErrorWarnFile"/>
         <appender-ref ref="JellyTrace"/>
+        <appender-ref ref="JellyErrorFile"/>
 
         <!-- push all error logs to mailAppender -->
         <!--<appender-ref ref="mailAppender"/>-->
