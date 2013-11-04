@@ -15,15 +15,15 @@ public class TestConfig {
 	public static final boolean MAKE_FAIL = false;
 
 
-	public TimeMs sleepBetweenProteinBatches = new TimeMs(0.30, new IntRange(0, 100));
+	public TimeMs sleepBetweenProteinBatches = new TimeMs(0.20, new IntRange(0, 100));
 	public TimeMs sleepBetweenProteinsInBatch = new TimeMs(0.05, new IntRange(0, 15));
 
 	public TimeMs awaitNextTimeout = new TimeMs(0.90, new IntRange(0, 20 * 1000));
 
 	/** Caution: too big value will cause Receiver to never catch-up with Sender */
-	public TimeMs sleepBetweenAwaitNext = new TimeMs(0.50, new IntRange(0, 300));
+	public TimeMs sleepBetweenAwaitNext = new TimeMs(0.20, new IntRange(0, 300));
 
-	public TimeMs sleepAfterRemovingPool = new TimeMs(0.50, new IntRange(0, 300));
+	public TimeMs sleepAfterRemovingPool = new TimeMs(0.20, new IntRange(0, 300));
 
 	/** Cannot be zero, because Receiver depends on receiving a protein with last-protein-in-connection-session flag */
 	public Distribution<Integer> qtyProteinsInBatch = new IntRange(1, 20);
