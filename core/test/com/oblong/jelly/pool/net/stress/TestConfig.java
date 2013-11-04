@@ -31,7 +31,7 @@ public class TestConfig {
 
 	public Distribution<Integer> qtyRudeDataBytes = new SkewedIntDistribution(0.90, new IntRange(0, 3000));
 
-	public Chance chanceOfRecreatingPool = new Chance(0.30);
+	public Chance chanceOfRecreatingPool = new Chance(0.01);
 
 	public long qtyConnectionSessionCycles = Long.MAX_VALUE;
 

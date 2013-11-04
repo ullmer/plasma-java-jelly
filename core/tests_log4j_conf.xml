@@ -92,7 +92,16 @@
         </layout>
     </appender>
 
-<!--    &lt;!&ndash; send all error logs to my email address &ndash;&gt;
+    <appender name="JellyInfoFile" class="org.apache.log4j.FileAppender">
+        <param name="Threshold" value="INFO"/>
+        <param name="file" value="logs/jelly_tests_info.log" />
+        <param name="append" value="true" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d %-5p [%t] %C{6} - %m%n"/>
+        </layout>
+    </appender>
+
+    <!--    &lt;!&ndash; send all error logs to my email address &ndash;&gt;
     <appender name="mailAppender" class="org.apache.log4j.net.SMTPAppender">
         <param name="SMTPHost" value="localhost" />
         <param name="From" value="info@developers-blog.org" />
@@ -123,7 +132,7 @@
 -->
 
     <root>
-        <priority value="debug"></priority>
+        <priority value="info" />
 
         <appender-ref ref="JellyConsoleAppender"/>
         <appender-ref ref="JellyErrorWarnFile"/>

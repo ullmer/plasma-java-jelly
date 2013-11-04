@@ -35,7 +35,7 @@ public class ProteinGenerator {
 	public static final SlawString CONNECTION_SESSION_CYCLE_ID = string("connection-session-cycle-id");
 
 	final ConnectionSession connectionSession;
-	final ExternalStressTest test;
+	final StressTestJelly test;
 	final Random random;
 
 	public ProteinGenerator(ConnectionSession connectionSession) {

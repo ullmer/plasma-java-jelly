@@ -18,7 +18,7 @@ public class Sender extends ConnectionParticipant {
 
 	private static final Logger logger = Logger.getLogger(Sender.class);
 
-	final ExternalStressTest test;
+	final StressTestJelly test;
 	final Random random;
 	final ProteinGenerator proteinGenerator;
 	final Receiver receiver;

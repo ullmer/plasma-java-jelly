@@ -2,7 +2,6 @@ package com.oblong.jelly.pool.net.stress;
 
 import com.oblong.jelly.*;
 import com.oblong.util.Util;
-import net.jcip.annotations.GuardedBy;
 import org.apache.log4j.Logger;
 
 
@@ -17,7 +16,7 @@ public class ConnectionSession {
 
 	public static final PoolOptions POOL_OPTIONS = PoolOptions.MEDIUM;
 
-	final ExternalStressTest parentTest;
+	final StressTestJelly parentTest;
 
 	private final long cycleId;
 
@@ -28,7 +27,7 @@ public class ConnectionSession {
 	final Receiver receiver;
 	private final Sender sender;
 
-	public ConnectionSession(ExternalStressTest parentTest, long cycleId) {
+	public ConnectionSession(StressTestJelly parentTest, long cycleId) {
 		this.parentTest = parentTest;
 		this.cycleId = cycleId;
 		this.proteinGenerator = new ProteinGenerator(this);
