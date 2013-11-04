@@ -1,7 +1,6 @@
 package com.oblong.jelly.pool.net.stress;
 
 import com.oblong.jelly.*;
-import com.oblong.jelly.util.ExceptionHandler;
 import com.oblong.util.Util;
 import net.jcip.annotations.GuardedBy;
 import org.apache.log4j.Logger;
@@ -36,7 +35,7 @@ public class Receiver extends ConnectionParticipant {
 		super(connectionSession);
 	}
 
-	volatile int qtyProcessedProteins = 0;
+	volatile int qtyProcessedReceivedProteins = 0;
 
 	private Thread awaitNextThread = new AwaitNextThread();
 
@@ -59,17 +58,17 @@ public class Receiver extends ConnectionParticipant {
 			try {
 				logger.info("Started " + getName() + " thread");
 				Protein lastSuccessfullyObtainedProtein;
-				qtyProcessedProteins = 0;
+				qtyProcessedReceivedProteins = 0;
 //			int maxNumberOfProteins = ExternalTCPMultiProteinTestConfig.getTotalNumberOfProteins();
 //			printLogIfRequired(currentRound+1, 1, "Number of expected proteins "+ maxNumberOfProteins);
 				while (true) {
 					try {
-						logEveryNth(qtyProcessedProteins, 100, "Before awaitNext(). qtyReceivedProteins= " +
-								qtyProcessedProteins);
+						logEveryNth(qtyProcessedReceivedProteins, 100, "Before awaitNext(). qtyProcessedReceivedProteins= " +
+								qtyProcessedReceivedProteins);
 						setReadyToReceive();
 						Protein protein = hose.awaitNext(testConfig.awaitNextTimeout.random(random),
 								TimeUnit.MILLISECONDS);
-						logger.debug("Protein received. qtyProcessedProteins: "+qtyProcessedProteins);
+						logger.debug("Protein received. qtyProcessedReceivedProteins: "+ qtyProcessedReceivedProteins);
 						if(logger.isTraceEnabled()) logger.trace("Protein received (details) : "+protein);
 
 						if (protein!=null) {
@@ -78,17 +77,17 @@ public class Receiver extends ConnectionParticipant {
 	//						logEveryNth(qtyReceivedProteins, frequency2, textToPrint2);
 							String textToPrint;
 							if(protein.matches(proteinGenerator.getTestProteinDescrip())){
-								boolean incrementCounter = proteinGenerator.checkProtein(protein, qtyProcessedProteins, hose);
-								textToPrint = "Protein no. " + qtyProcessedProteins + " received ok";
+								boolean incrementCounter = proteinGenerator.checkProtein(protein, qtyProcessedReceivedProteins, hose);
+								textToPrint = "Protein no. " + qtyProcessedReceivedProteins + " received ok";
 								if ( incrementCounter ) {
-									qtyProcessedProteins++;
+									qtyProcessedReceivedProteins++;
 									parentConnectionSession.parentTest.incrementQtyReceivedProteins();
 								}
 								lastSuccessfullyObtainedProtein = protein;
 							} else {
 								textToPrint = "Protein doesn't match target descrips";
 							}
-							logEveryNth(qtyProcessedProteins, frequency, textToPrint);
+							logEveryNth(qtyProcessedReceivedProteins, frequency, textToPrint);
 
 							if ( proteinGenerator.isLastProteinInConnectionSession(protein) ) {
 								logger.info("Received last protein in connection session. Not awaitNext-ing more.");
@@ -98,11 +97,11 @@ public class Receiver extends ConnectionParticipant {
 						testConfig.sleepBetweenAwaitNext.random(random);
 
 					} catch (TimeoutException e) {
-						printNoProteinReceivedYet("Timeout ", qtyProcessedProteins);
+						printNoProteinReceivedYet("Timeout ", qtyProcessedReceivedProteins);
 						//if timeout we skip this round otherwise we lose descripts field
 					} catch (NoSuchProteinException e){
 						//No protein found
-						printNoProteinReceivedYet("NoSuchProtein ", qtyProcessedProteins);
+						printNoProteinReceivedYet("NoSuchProtein ", qtyProcessedReceivedProteins);
 					} catch (PoolException e){
 						throw Util.rethrow(e);
 					}

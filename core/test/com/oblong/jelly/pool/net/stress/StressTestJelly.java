@@ -3,6 +3,7 @@ package com.oblong.jelly.pool.net.stress;
 import com.oblong.jelly.*;
 import com.oblong.util.Util;
 import net.jcip.annotations.GuardedBy;
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
 
@@ -48,7 +49,7 @@ public class StressTestJelly {
 	final Random random = new Random();
 
 	@GuardedBy("this")
-	long qtyReceivedProteins = 0;
+	private long qtyProteinsReceivedInWholeTest = 0;
 
 
 	public StressTestJelly(boolean runningViaJUnit) {
@@ -125,8 +126,18 @@ public class StressTestJelly {
 	}
 
 	public synchronized void incrementQtyReceivedProteins() {
-		qtyReceivedProteins ++;
-		logger.debug("qtyReceivedProteins for whole test: " + qtyReceivedProteins);
+		qtyProteinsReceivedInWholeTest++;
+
+		Level level;
+		if ( qtyProteinsReceivedInWholeTest % 1000 == 0 ) {
+			level = Level.INFO;
+		} else {
+			level = Level.DEBUG;
+		}
+
+		if ( logger.isEnabledFor(level) ) {
+			logger.log(level, "qtyProteinsReceivedInWholeTest: " + qtyProteinsReceivedInWholeTest);
+		}
 	}
 
 
