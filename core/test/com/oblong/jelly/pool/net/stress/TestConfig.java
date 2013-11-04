@@ -23,6 +23,8 @@ public class TestConfig {
 	/** Caution: too big value will cause Receiver to never catch-up with Sender */
 	public TimeMs sleepBetweenAwaitNext = new TimeMs(0.50, new IntRange(0, 300));
 
+	public TimeMs sleepAfterRemovingPool = new TimeMs(0.50, new IntRange(0, 300));
+
 	/** Cannot be zero, because Receiver depends on receiving a protein with last-protein-in-connection-session flag */
 	public Distribution<Integer> qtyProteinsInBatch = new IntRange(1, 20);
 
@@ -31,7 +33,7 @@ public class TestConfig {
 
 	public Distribution<Integer> qtyRudeDataBytes = new SkewedIntDistribution(0.90, new IntRange(0, 3000));
 
-	public Chance chanceOfRecreatingPool = new Chance(0.01);
+	public Chance chanceOfRemovingPool = new Chance(0.05);
 
 	public long qtyConnectionSessionCycles = Long.MAX_VALUE;
 

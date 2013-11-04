@@ -4,6 +4,8 @@ import com.oblong.jelly.*;
 import com.oblong.util.Util;
 import org.apache.log4j.Logger;
 
+import java.util.Random;
+
 
 /**
  * User: karol
@@ -18,6 +20,8 @@ public class ConnectionSession {
 
 	final StressTestJelly parentTest;
 
+	final Random random;
+
 	private final long cycleId;
 
 	final TestConfig testConfig;
@@ -29,6 +33,7 @@ public class ConnectionSession {
 
 	public ConnectionSession(StressTestJelly parentTest, long cycleId) {
 		this.parentTest = parentTest;
+		this.random = parentTest.random;
 		this.cycleId = cycleId;
 		this.proteinGenerator = new ProteinGenerator(this);
 		this.testConfig = parentTest.testConfig;
@@ -49,8 +54,12 @@ public class ConnectionSession {
 //		stop();
 	}
 
-	static void createPoolIfNonExisting(PoolAddress poolAddress) {
+	void createPoolIfNonExisting(PoolAddress poolAddress) {
 		try {
+			if ( testConfig.chanceOfRemovingPool.randomBool(random) ) {
+				removePool();
+				testConfig.sleepAfterRemovingPool.sleep(random);
+			}
 			if(!Pool.exists(poolAddress)){
 				Pool.create(poolAddress, POOL_OPTIONS);
 			}
@@ -81,7 +90,9 @@ public class ConnectionSession {
 
 	protected void removePool () {
 		try {
-			Pool.dispose(parentTest.poolAddress);
+			PoolAddress poolAddress = parentTest.poolAddress;
+			logger.info("Removing pool " + poolAddress);
+			Pool.dispose(poolAddress);
 		} catch (PoolException e) {
 			throw Util.rethrow(e);
 		}
