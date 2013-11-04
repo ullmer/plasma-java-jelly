@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd" >
+<log4j:configuration>
+    <!--
+
+     ==== Jelly long-running test logging policy:
+
+     Levels:
+
+       * TRACE - very verbose diagnostic output, like logging every received protein.
+         Normally should be off (except for development/troubleshooting), to avoid performance hit and huge log files.
+         In code, we should check via isTraceEnabled() (and analogically via isDebugEnabled(),
+         whether to log on this level to avoid unnecessary e.g. string concatenation/construction.
+
+       * DEBUG - output which constantly indicates that the test is running and not hanging and what is happening.
+         Fast-moving, but not too verbose.
+
+       * INFO - higher-level progress information, like e.g. starting test, configuration, every-hundred proteins,
+         finishing batch of proteins.
+
+       * WARN - when something not-exactly-expected happens, which is not necessarilly a bug in Jelly, e.g. getting
+         disconnected.
+         Note that not being able to connect should be signalled as an error, because it could mean incorrectly
+         configured server address and should be signalled to the user as soon as possible
+
+       * ERROR - errors. E.g. wrong protein arrived or getting an exception.
+
+       * FATAL - things which make the test unable to start/contiune. E.g. failing first connection attempt or pool
+         creation.
+         Those things should stop the whole test (although stopping the test should be avoided if possible).
+
+
+     We could use Log4J Chainsaw to filter the logs: http://logging.apache.org/chainsaw/ .
+       TODO: XML format for Chainsaw?
+
+     -->
+
+
+    <!-- APPENDERS LIST -->
+    <appender name="JellyConsoleAppender" class="org.apache.log4j.ConsoleAppender">
+        <param name="Threshold" value="TRACE"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{ABSOLUTE} %5p [%t] - %m%n"/>
+        </layout>
+    </appender>
+
+<!--    <appender name="FileAppender" class="log4net.Appender.FileAppender">
+        <param name="File" value="logs/tests_errors_warn.log"/>
+        <param name="Threshold" value="WARN"/>
+        <appendToFile value="true" />
+        <layout type="log4net.Layout.PatternLayout">
+            <conversionPattern value="%date [%thread] %-5level %logger [%property{NDC}] - %message%newline" />
+        </layout>
+    </appender>
+ß
+    <appender name="FileAppender" class="log4net.Appender.FileAppender">
+        <file value="logs/tests_trace.log" />
+        <threshold value="WARN"/>
+        <appendToFile value="true" />
+        <layout type="log4net.Layout.PatternLayout">
+            <conversionPattern value="%date [%thread] %-5level %logger [%property{NDC}] - %message%newline" />
+        </layout>
+    </appender>-->
+
+    <!-- log all logs to a separate log file every day -->
+    <appender name="JellyTrace" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="Threshold" value="TRACE"/>
+        <param name="file" value="logs/jelly_tests_trace.log" />
+        <param name="datePattern" value="'.'yyyy-MM-dd" />
+        <param name="append" value="true" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d %-5p [%t] %C{6} - %m%n"/>
+        </layout>
+    </appender>
+
+    <appender name="JellyErrorWarnFile" class="org.apache.log4j.FileAppender">
+        <param name="Threshold" value="WARN"/>
+        <param name="file" value="logs/jelly_tests_errors_warn.log" />
+        <param name="append" value="true" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d %-5p [%t] %C{6} - %m%n"/>
+        </layout>
+    </appender>
+
+
+    <appender name="JellyErrorFile" class="org.apache.log4j.FileAppender">
+        <param name="Threshold" value="ERROR"/>
+        <param name="file" value="logs/jelly_tests_errors.log" />
+        <param name="append" value="true" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d %-5p [%t] %C{6} - %m%n"/>
+        </layout>
+    </appender>
+
+    <appender name="JellyInfoFile" class="org.apache.log4j.FileAppender">
+        <param name="Threshold" value="INFO"/>
+        <param name="file" value="logs/jelly_tests_info.log" />
+        <param name="append" value="true" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d %-5p [%t] %C{6} - %m%n"/>
+        </layout>
+    </appender>
+
+    <!--    &lt;!&ndash; send all error logs to my email address &ndash;&gt;
+    <appender name="mailAppender" class="org.apache.log4j.net.SMTPAppender">
+        <param name="SMTPHost" value="localhost" />
+        <param name="From" value="info@developers-blog.org" />
+        <param name="To" value="rafael@developers-blog.org" />
+        <param name="Subject" value="[BLOG ERROR LOG] ErrorList" />
+        &lt;!&ndash; if your buffer contains 50 mails, an email should be sent &ndash;&gt;
+        <param name="BufferSize" value="50" />
+        &lt;!&ndash; send only errors per email &ndash;&gt;
+        <param name="threshold" value="error" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{ABSOLUTE} %5p %c{1}:%L - %m%n" />
+        </layout>
+    </appender>-->
+
+<!--
+    &lt;!&ndash; LOGGER LIST &ndash;&gt;
+    &lt;!&ndash; log all classes in org.developers package &ndash;&gt;
+    <logger name="org.developers">
+        &lt;!&ndash; level info logs &ndash;&gt;
+        <level value="INFO" />
+        <appender-ref ref="orgDevelopersLogFileAppender"/>
+    </logger>
+    <logger name="com.developers">
+        &lt;!&ndash; level debug logs &ndash;&gt;
+        <level value="DEBUG" />
+        <appender-ref ref="mailAppender"/>
+    </logger>
+-->
+
+    <root>
+        <priority value="info" />
+
+        <appender-ref ref="JellyConsoleAppender"/>
+        <appender-ref ref="JellyErrorWarnFile"/>
+        <appender-ref ref="JellyTrace"/>
+        <appender-ref ref="JellyErrorFile"/>
+
+        <!-- push all error logs to mailAppender -->
+        <!--<appender-ref ref="mailAppender"/>-->
+    </root>
+</log4j:configuration>

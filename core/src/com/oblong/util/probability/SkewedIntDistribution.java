@@ -9,16 +9,17 @@ import java.util.Random;
  */
 public class SkewedIntDistribution extends SkewedDistribution<Integer> {
 
-	public SkewedIntDistribution(double chanceOfPickingFromDistribution,  ValueDistribution<Integer> distribution) {
+	public SkewedIntDistribution(double chanceOfPickingFromDistribution,  Distribution<Integer> distribution) {
 		this(new Chance(chanceOfPickingFromDistribution), distribution);
 	}
 
-	public SkewedIntDistribution(Chance chanceOfPickingFromDistribution, ValueDistribution<Integer> distribution) {
+	public SkewedIntDistribution(Chance chanceOfPickingFromDistribution, Distribution<Integer> distribution) {
 		super(chanceOfPickingFromDistribution, distribution);
 	}
 
 	@Override
-	public SkewedDistribution<Integer> newInstance(Chance chanceOfPickingFromDistribution, ValueDistribution<Integer> distribution) {
+	public SkewedDistribution<Integer> newInstance(Chance chanceOfPickingFromDistribution,
+			Distribution<Integer> distribution) {
 		return new SkewedIntDistribution(chanceOfPickingFromDistribution, distribution);
 	}
 
