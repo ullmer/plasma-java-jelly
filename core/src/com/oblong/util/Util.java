@@ -36,10 +36,6 @@ public class Util {
 		}
 	}
 
-	public static void randomSleep(Random r, int sleepMs) throws InterruptedException {
-		Thread.sleep(r.nextInt(sleepMs));
-	}
-
 	public static String getMandatorySystemProperty(String propertyName, String exampleValue) {
 		String propertyValue = System.getProperty(propertyName);
 		if ( propertyValue == null ) {
