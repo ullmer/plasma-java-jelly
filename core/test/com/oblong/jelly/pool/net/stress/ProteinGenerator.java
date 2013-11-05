@@ -79,7 +79,7 @@ public class ProteinGenerator {
 		boolean isProteinFromThisConnectionSession = isProteinFromThisConnSession(ingestsMap);
 		long connCycleIdOfReceivedProtein = ingestsMap.get(CONNECTION_SESSION_CYCLE_ID).emitLong();
 		if ( !isProteinFromThisConnectionSession ) {
-			logger.warn("Got protein from wrong connection session cycleId " +
+			logger.warn("Ignoring received protein from wrong ConnectionSession cycleId " +
 					connCycleIdOfReceivedProtein + " vs current: " + connectionSession.getCycleId() +
 					"; cycleId diff: " + (connectionSession.getCycleId() -
 					ingestsMap.get(CONNECTION_SESSION_CYCLE_ID).emitLong()));
