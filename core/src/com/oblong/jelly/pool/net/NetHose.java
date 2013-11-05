@@ -328,4 +328,15 @@ public final class NetHose implements Hose {
     private volatile String name;
     private volatile long index;
     private volatile boolean dirtyIndex;
+
+    /**
+     * NOTE: This is useful only for debugging/testing purposes, for simulating connection going down.
+     *   It is a public method, because it is used by external automatic-testing code.
+     *
+     * Closes socket abrutply, without any prior "withdraw"-style communication.
+     */
+    public void closeConnection() {
+        connection.close();
+    }
+
 }
