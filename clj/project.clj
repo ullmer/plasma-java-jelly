@@ -4,7 +4,8 @@
   :dependencies [[org.clojure/clojure "1.4.0"]
                  [org.clojure/data.codec "0.1.0"]
                  [org.yaml/snakeyaml "1.7"]
-                 [net.jcip/jcip-annotations "1.0"]]
+                 [net.jcip/jcip-annotations "1.0"]
+                 [log4j/log4j "1.2.14"]]
 
   :dev-dependencies [[swank-clojure "1.3.4"]
                      [lein-marginalia "0.7.0"]]
