@@ -164,7 +164,7 @@ public abstract class ObPoolConnector extends Thread {
 
 	protected void initHose() throws PoolException {
 		if ( hoseFactory != null ) {
-			hose = hoseFactory.createHose(this, obPoolsAddr, obPool);
+			hose = hoseFactory.createHose(ObPoolConnector.this, obPoolsAddr, obPool);
 		} else {
 			PoolAddress address = new PoolAddress(obPoolsAddr, obPool);
 			hose = Pool.participate(address, DEFAULT_POOL_OPTIONS);
