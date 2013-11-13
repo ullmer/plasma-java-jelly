@@ -428,4 +428,5 @@ public interface Hose {
      * its connection to the returned one.
      */
     Hose dupAndClose() throws PoolException;
+
 }
