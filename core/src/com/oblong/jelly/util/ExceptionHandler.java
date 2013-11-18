@@ -65,4 +65,14 @@ public abstract class ExceptionHandler {
 	}
 
 	public static class JustToGetStackTrace extends Exception { /*nothing*/ }
+
+	public static void testException() {
+		try {
+			throw new Exception("testing exception");
+		} catch ( Exception e ) {
+			ExceptionHandler.handleException(e);
+		}
+	}
+
+
 }
