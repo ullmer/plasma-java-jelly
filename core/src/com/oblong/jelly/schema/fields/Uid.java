@@ -17,10 +17,12 @@ public class Uid<T extends HasUid> {
 
 	@Override
 	public boolean equals(Object o) {
-		if ( ! (o instanceof Uid) ) {
+		if (o instanceof Uid) {
+			Uid o1 = (Uid) o;
+			return this.uid.equals(o1.uid);
+		} else {
 			throw new RuntimeException("Probably bug, trying to compare this with object of other type: " + o);
 		}
-		return uid.equals(o);
 	}
 
 	@Override
