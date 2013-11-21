@@ -8,30 +8,27 @@ import java.net.*;
 import java.security.*;
 import java.security.cert.CertificateException;
 import javax.net.ssl.*;
-import com.oblong.tls.verifier.*;
+
+import com.oblong.tls.random.*;
+import com.oblong.tls.util.*;
 
 final class TLS {
     public static Socket startTLS (Socket sock, String host, int port)
         throws IOException,
                GeneralSecurityException {
-        SSLSocketFactory fact = getFactory ();
-        SSLSocket ssock = (SSLSocket)
-            fact . createSocket (sock, host, port, true);
-
-        ssock . startHandshake ();
-        X509HostnameVerifier vfy = new BrowserCompatHostnameVerifier ();
-        vfy . verify (host, ssock); // throws IOException if not valid
-        return ssock;
+        TLSFactory fact = getFactory ();
+        return fact . startTLS (sock, host, port);
     }
 
-    private static synchronized SSLSocketFactory getFactory ()
+    private static synchronized TLSFactory getFactory ()
         throws IOException,
                GeneralSecurityException {
         if (factory == null) {
             InputStream trustStream = new BufferedInputStream (new FileInputStream ("/etc/oblong/certificate-authorities.jks"));
             InputStream keyStream = null;
-            factory = makeFactory ("JKS", trustStream,
-                                   "JKS", keyStream, null, null);
+            factory = new TLSFactory (makeFactory ("JKS", trustStream,
+                                                   "JKS", keyStream,
+                                                   null, null));
         }
         return factory;
     }
@@ -61,10 +58,10 @@ final class TLS {
         SSLContext ctx = SSLContext . getInstance ("TLS");
         ctx . init (kmf . getKeyManagers (),
                     tmf . getTrustManagers (),
-                    new SecureRandom ());
+                    Util . getInstance ());
 
         return ctx . getSocketFactory ();
     }
 
-    private static SSLSocketFactory factory = null;
+    private static TLSFactory factory = null;
 }
