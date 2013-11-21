@@ -10,11 +10,11 @@ import com.oblong.jelly.schema.SlawSchema;
  */
 public class JellyFieldUid <T extends HasUid> extends JellyField<Uid<T>> {
 
-	public JellyFieldUid(String name) {
-		super(name);
+	public <T> JellyFieldUid(Class<T> tClass, String name) {
+		this(tClass, name, null);
 	}
 
-	public JellyFieldUid(String name, SlawSchema schema) {
+	public <T> JellyFieldUid(Class<T> tClass, String name, SlawSchema schema) {
 		super(name, schema);
 	}
 
@@ -26,5 +26,13 @@ public class JellyFieldUid <T extends HasUid> extends JellyField<Uid<T>> {
 	@Override
 	public Slaw toSlaw(Uid<T> value) {
 		return Slaw.string(value.uid);
+	}
+
+	public static <T extends HasUid> JellyFieldUid<T> get(Class<T> tClass, String name) {
+		return get(null, name, tClass);
+	}
+
+	public static <T extends HasUid> JellyFieldUid<T> get(SlawSchema slawSchema, String name, Class<T> tClass) {
+		return new JellyFieldUid<T>(tClass, name, slawSchema);
 	}
 }
