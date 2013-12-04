@@ -81,7 +81,7 @@ public final class SlawList extends JavaSlaw {
     }
 
     @Override public Map<Slaw,Slaw> emitMap() {
-        final Map<Slaw,Slaw> map = new HashMap<Slaw,Slaw>();
+        final Map<Slaw,Slaw> map = new SlawSlawHashMap();
         if (listOfConses(elements)) {
             for (Slaw e : elements) map.put(e.car(), e.cdr());
         } else {
@@ -117,4 +117,14 @@ public final class SlawList extends JavaSlaw {
     }
 
     private final List<Slaw> elements;
+
+    private static class SlawSlawHashMap extends HashMap<Slaw,Slaw> {
+        @Override public Slaw get(Object key) {
+            if ( ! (key instanceof Slaw) ) {
+                throw new IllegalArgumentException("The requested key must be a slaw: " + key);
+            }
+            return super.get(key);
+        }
+    }
+
 }

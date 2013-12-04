@@ -19,7 +19,7 @@ public class JellyFieldUid <T extends HasUid> extends JellyField<Uid<T>> {
 	}
 
 	@Override
-	public Uid<T> getCustom(Slaw slaw) {
+	protected Uid<T> getCustom(Slaw slaw) {
 		return new Uid<T> ( slaw.emitString() );
 	}
 

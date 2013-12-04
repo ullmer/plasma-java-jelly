@@ -12,7 +12,6 @@ import java.util.List;
  * User: karol
  * Date: 9/5/13
  * Time: 2:00 PM
- * To change this template use File | Settings | File Templates.
  */
 public class SlawSchema {
 	private final List<JellyField<?>> fields = new ArrayList<JellyField<?>>();

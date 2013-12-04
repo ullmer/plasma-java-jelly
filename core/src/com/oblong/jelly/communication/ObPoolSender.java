@@ -57,16 +57,11 @@ public class ObPoolSender extends ObPoolConnector {
 	public void connect() {
 		super.connect();
 		
-		if (hose != null)
-		{
+		if (hose != null) {
 			System.out.println(TAG + " : Connection successful! to " + obPool + " id=" + getId());
- 		}
-		else
-		{
+ 		} else {
 			System.err.println(TAG + " : Unable to connect to pool!");
 		}
 	}
-
-
 
 }

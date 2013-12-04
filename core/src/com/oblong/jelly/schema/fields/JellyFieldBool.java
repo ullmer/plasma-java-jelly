@@ -1,6 +1,7 @@
 package com.oblong.jelly.schema.fields;
 
 import com.oblong.jelly.Slaw;
+import com.oblong.jelly.schema.SlawSchema;
 
 /**
  * Created with IntelliJ IDEA.
@@ -13,6 +14,10 @@ public class JellyFieldBool extends JellyField<Boolean> {
 
 	public JellyFieldBool(String name) {
 		super(name);
+	}
+
+	public JellyFieldBool(String name, SlawSchema schema) {
+		super(name, schema);
 	}
 
 	@Override

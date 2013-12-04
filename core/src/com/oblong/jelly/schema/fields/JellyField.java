@@ -39,14 +39,23 @@ public abstract class JellyField <T> {
 		return name;
 	}
 
-	public final T getFrom(SlawMap mapSlaw) {
-		return getCustom(mapSlaw.emitMap().get(nameSlaw));
+	public final T getFrom(final SlawMap mapSlaw) {
+		Slaw slaw = mapSlaw.emitMap().get(nameSlaw);
+		if ( slaw == null ) {
+			return null;
+		}
+		return getCustom(slaw);
 	}
 
 //	public Type get(Protein protein) {
 //		return getCustom(protein.emitMap().get(nameSlaw));
 //	}
 
+
+	/**
+	 * This method has protected access in order to enforce the binding between the name and the type.
+	 * Otherwise it would be possible to get the value from _any_ slaw via this method and we don't want this.
+	 */
 	protected abstract T getCustom(Slaw slaw);
 
 	public Slaw getNameSlaw() {

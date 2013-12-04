@@ -147,17 +147,16 @@ public abstract class ObPoolConnector extends Thread {
 			initHose();
 		} catch (BadAddressException e) {
 			e.printStackTrace();
+			listener.onErrorConnecting(new UnableToConnectEvent(UnableToConnectEvent.Reason.BAD_ADDRESS));
 		} catch (PoolException e) {
 			e.printStackTrace();
+			listener.onErrorConnecting(new UnableToConnectEvent(UnableToConnectEvent.Reason.POOL_EXCEPTION));
 		}
 		
-		if (hose != null)
-		{
+		if (hose != null) {
 			if(D)System.out.println(TAG + " : Connection successful! id=" + getId());
 			
-		}
-		else
-		{
+		} else {
 			if(D)System.out.println(TAG + " : Unable to connect to pool!");
 		}
 	}

@@ -15,10 +15,8 @@ public interface ObPoolCommunicationEventHandler {
 	/** sender thread connected */
 	void onConnected();
 	
-	void onErrorConnecting();
+	void onErrorConnecting(UnableToConnectEvent unableToConnectEvent);
 
 	void onConnectionLost(String reason);
-
-
 
 }

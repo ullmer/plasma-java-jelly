@@ -8,7 +8,6 @@ import com.oblong.jelly.schema.SlawSchema;
  * User: karol
  * Date: 7/10/13
  * Time: 1:33 PM
- * To change this template use File | Settings | File Templates.
  */
 public class JellyFieldString extends JellyField<String> {
 
@@ -21,7 +20,7 @@ public class JellyFieldString extends JellyField<String> {
 	}
 
 	@Override
-	public String getCustom(Slaw slaw) {
+	protected String getCustom(Slaw slaw) {
 		return slaw.emitString();
 	}
 
