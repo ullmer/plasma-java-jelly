@@ -24,8 +24,8 @@ public class DefaultDisconnectEvent extends AbstractDisconnectEvent {
 		UNKNOWN_DISCONNECT_REASON,
 		USER_REFUSED_TO_ENTER_PASSPHRASE,
 
-		/** Is this really disconnect or just kicked out of session? */
-		PASSPHRASE_BECAME_ENABLED,
+//		/** Is this really disconnect or just kicked out of session? */
+//		PASSPHRASE_BECAME_ENABLED,
 
 		USER_REQUESTED_DISCONNECTING
 	}
