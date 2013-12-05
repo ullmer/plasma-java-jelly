@@ -79,7 +79,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
  *
  * <h2>Dead Events</h2>
  * If an event is posted, but no registered handlers can accept it, it is considered "dead."  To give the system a
- * second chance to handle dead events, they are wrapped in an instance of {@link DeadEvent} and
+ * second chance to handle dead events, they are wrapped in an instance of {@link UnhandledEvent} and
  * reposted.
  *
  * <p>This class is safe for concurrent use.
@@ -320,7 +320,7 @@ public class Bus {
    * all handlers, and regardless of any exceptions thrown by handlers.
    *
    * <p>If no handlers have been subscribed for {@code event}'s class, and {@code event} is not already a
-   * {@link com.squareup.otto.DeadEvent}, it will be wrapped in a DeadEvent and reposted.
+   * {@link UnhandledEvent}, it will be wrapped in a DeadEvent and reposted.
    *
    * @param event event to post.
    */
@@ -341,8 +341,8 @@ public class Bus {
       }
     }
 
-    if (!dispatched && !(event instanceof DeadEvent)) {
-      post(new DeadEvent(this, event));
+    if (!dispatched && !(event instanceof UnhandledEvent)) {
+      post(new UnhandledEvent(this, event));
     }
 
     dispatchQueuedEvents();

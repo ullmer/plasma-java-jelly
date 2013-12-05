@@ -26,7 +26,7 @@ import com.oblong.jelly.communication.OttoEvent;
  *
  * @author Cliff Biffle
  */
-public class DeadEvent implements OttoEvent {
+public class UnhandledEvent extends OttoEvent {
 
   public final Bus source;
   public final OttoEvent event;
@@ -37,9 +37,16 @@ public class DeadEvent implements OttoEvent {
    * @param source object broadcasting the DeadEvent (generally the {@link com.squareup.otto.Bus}).
    * @param event the event that could not be delivered.
    */
-  public DeadEvent(Bus source, OttoEvent event) {
+  public UnhandledEvent(Bus source, OttoEvent event) {
     this.source = source;
     this.event = event;
   }
 
+	@Override
+	public String toString() {
+		return "DeadEvent{" +
+				"source=" + source +
+				", event=" + event +
+				"} " + super.toString();
+	}
 }
