@@ -18,6 +18,7 @@
 package com.squareup.otto;
 
 import com.oblong.jelly.communication.OttoEvent;
+import com.oblong.jelly.util.ExceptionHandler;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
@@ -279,9 +280,10 @@ public class Bus {
 
       if (currentHandlers == null || !currentHandlers.removeAll(eventMethodsInListener)) {
         if ( !allowNoOp ) {
-          throw new IllegalArgumentException(
-            "Missing event handler for an annotated method. Is " + object.getClass()
-                + " registered?");
+	        String msg = "Missing event handler for an annotated method. Is " + object.getClass()
+			        + " registered?";
+	        ExceptionHandler.handleException(msg);
+//	        throw new IllegalArgumentException( msg);
         }
       }
     }
