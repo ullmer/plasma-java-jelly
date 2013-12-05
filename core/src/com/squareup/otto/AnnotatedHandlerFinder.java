@@ -71,10 +71,10 @@ final class AnnotatedHandlerFinder {
               + " but does not take a subclass of " + EVENT_BASE_CLASS + " as argument");
         }
 
-        if ((method.getModifiers() & Modifier.PUBLIC) == 0) {
-          throw new IllegalArgumentException("Method " + method + " has @Subscribe annotation on " + eventType
-              + " but is not 'public'.");
-        }
+//        if ((method.getModifiers() & (Modifier.PUBLIC | Modifier.) == 0) {
+//          throw new IllegalArgumentException("Method " + method + " has @Subscribe annotation on " + eventType
+//              + " but is not 'public'.");
+//        }
 
         Set<Method> methods = subscriberMethods.get(eventType);
         if (methods == null) {
