@@ -6,5 +6,5 @@ package com.oblong.jelly.communication;
  * Date: 8/1/13
  * Time: 5:23 PM
  */
-public interface OttoEvent {
+public class OttoEvent {
 }

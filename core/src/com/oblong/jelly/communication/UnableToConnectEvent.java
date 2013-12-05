@@ -5,7 +5,7 @@ package com.oblong.jelly.communication;
  * Date: 12/3/13
  * Time: 6:01 PM
  */
-public class UnableToConnectEvent extends ConnectionErrorEvent implements OttoEvent {
+public class UnableToConnectEvent extends ConnectionErrorEvent {
 
 	public final Reason reason;
 
