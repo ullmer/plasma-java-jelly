@@ -14,6 +14,7 @@ public class UnableToConnectEvent extends ConnectionErrorEvent {
 		UNABLE_TO_RESOLVE_ADDRESS,
 		POOL_EXCEPTION,
 		TIMEOUT,
+		INVALID_CERTIFICATE,
 	}
 
 	public UnableToConnectEvent(Reason reason) {
