@@ -396,7 +396,7 @@ public class Bus {
       wrapper.handleEvent(event);
     } catch (InvocationTargetException e) {
       throw new RuntimeException(
-          "Could not dispatch event: " + event.getClass() + " to handler " + wrapper, e);
+          "Exception while dispatching event: " + event.getClass() + " to handler " + wrapper, e);
     }
   }
 
