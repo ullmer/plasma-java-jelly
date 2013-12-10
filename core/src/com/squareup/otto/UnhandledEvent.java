@@ -21,7 +21,7 @@ import com.oblong.jelly.communication.OttoEvent;
 /**
  * Wraps an event that was posted, but which had no subscribers and thus could not be delivered.
  *
- * <p>Subscribing a DeadEvent handler is useful for debugging or logging, as it can detect misconfigurations in a
+ * <p>Subscribing a {@link UnhandledEvent} handler is useful for debugging or logging, as it can detect misconfigurations in a
  * system's event distribution.
  *
  * @author Cliff Biffle
@@ -44,7 +44,7 @@ public class UnhandledEvent extends OttoEvent {
 
 	@Override
 	public String toString() {
-		return "DeadEvent{" +
+		return "UnhandledEvent{" +
 				"source=" + source +
 				", event=" + event +
 				"} " + super.toString();
