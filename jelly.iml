@@ -19,6 +19,7 @@
         <SOURCES>
           <root url="file://$MODULE_DIR$/lib/src/jmdns" />
           <root url="file://$MODULE_DIR$/lib" />
+          <root url="jar://$MODULE_DIR$/libsrc/guice-3.0-sources.jar!/" />
         </SOURCES>
         <jarDirectory url="file://$MODULE_DIR$/lib" recursive="false" />
         <jarDirectory url="file://$MODULE_DIR$/lib" recursive="false" type="SOURCES" />
