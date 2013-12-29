@@ -15,9 +15,9 @@ import java.util.List;
  * Time: 2:04 PM
  * To change this template use File | Settings | File Templates.
  */
-public class JellyFieldList extends JellyField<List<Slaw>> {
+public class ListField extends AbstractField<List<Slaw>> {
 
-	public JellyFieldList(String name, SlawSchema schema) {
+	public ListField(String name, SlawSchema schema) {
 		super(name, schema);
 	}
 

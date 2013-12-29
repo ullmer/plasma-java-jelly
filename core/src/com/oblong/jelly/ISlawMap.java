@@ -1,6 +1,6 @@
 package com.oblong.jelly;
 
-import com.oblong.jelly.schema.fields.JellyField;
+import com.oblong.jelly.schema.fields.AbstractField;
 
 /**
 * Created with IntelliJ IDEA.
@@ -11,6 +11,6 @@ import com.oblong.jelly.schema.fields.JellyField;
 */
 public interface ISlawMap {
 
-	<Type> Type get(JellyField<Type> field);
+	<Type> Type get(AbstractField<Type> field);
 
 }

@@ -10,13 +10,13 @@ import com.oblong.jelly.schema.SlawSchema;
  * Time: 6:14 PM
  * To change this template use File | Settings | File Templates.
  */
-public class JellyFieldFloat extends JellyField<Float> {
+public class FloatField extends AbstractField<Float> {
 
-	public JellyFieldFloat(String name) {
+	public FloatField(String name) {
 		this(name, null);
 	}
 
-	public JellyFieldFloat(String name, SlawSchema schema) {
+	public FloatField(String name, SlawSchema schema) {
 		super(name, schema);
 	}
 

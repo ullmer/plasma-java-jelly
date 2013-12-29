@@ -9,13 +9,13 @@ import com.oblong.jelly.schema.SlawSchema;
  * Date: 7/10/13
  * Time: 1:33 PM
  */
-public class JellyFieldString extends JellyField<String> {
+public class StringField extends AbstractField<String> {
 
-	public JellyFieldString(String name) {
+	public StringField(String name) {
 		super(name);
 	}
 
-	public JellyFieldString(String name, SlawSchema schema) {
+	public StringField(String name, SlawSchema schema) {
 		super(name, schema);
 	}
 

@@ -10,13 +10,13 @@ import com.oblong.jelly.schema.SlawSchema;
  * Time: 2:29 PM
  * To change this template use File | Settings | File Templates.
  */
-public class JellyFieldBool extends JellyField<Boolean> {
+public class BoolField extends AbstractField<Boolean> {
 
-	public JellyFieldBool(String name) {
+	public BoolField(String name) {
 		super(name);
 	}
 
-	public JellyFieldBool(String name, SlawSchema schema) {
+	public BoolField(String name, SlawSchema schema) {
 		super(name, schema);
 	}
 

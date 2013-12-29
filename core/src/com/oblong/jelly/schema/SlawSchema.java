@@ -1,6 +1,6 @@
 package com.oblong.jelly.schema;
 
-import com.oblong.jelly.schema.fields.JellyField;
+import com.oblong.jelly.schema.fields.AbstractField;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,10 +14,10 @@ import java.util.List;
  * Time: 2:00 PM
  */
 public class SlawSchema {
-	private final List<JellyField<?>> fields = new ArrayList<JellyField<?>>();
+	private final List<AbstractField<?>> fields = new ArrayList<AbstractField<?>>();
 
-	public void add(JellyField<?> fieldToAdd) {
-		for (JellyField<?> existingField : fields) {
+	public void add(AbstractField<?> fieldToAdd) {
+		for (AbstractField<?> existingField : fields) {
 			if ( fieldToAdd.getName().equals(existingField.getName() )) {
 				throw new RuntimeException("Field with the same name was already added: " + existingField);
 			}
@@ -25,7 +25,7 @@ public class SlawSchema {
 		fields.add(fieldToAdd);
 	}
 
-	public <T> boolean has(JellyField<T> field) {
+	public <T> boolean has(AbstractField<T> field) {
 		return fields.contains(field);
 	}
 }

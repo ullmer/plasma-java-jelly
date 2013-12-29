@@ -10,9 +10,9 @@ import com.oblong.jelly.slaw.java.SlawMap;
  * Time: 1:38 PM
  * To change this template use File | Settings | File Templates.
  */
-public class JellyFieldMap extends JellyField<SlawMap> {
+public class MapField extends AbstractField<SlawMap> {
 
-	public JellyFieldMap(String name) {
+	public MapField(String name) {
 		super(name);
 	}
 

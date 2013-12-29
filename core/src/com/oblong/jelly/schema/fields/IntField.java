@@ -10,9 +10,9 @@ import com.oblong.jelly.schema.SlawSchema;
  * Time: 1:16 PM
  * To change this template use File | Settings | File Templates.
  */
-public class JellyFieldInt extends JellyField<Integer> {
+public class IntField extends AbstractField<Integer> {
 
-	public JellyFieldInt(String name, SlawSchema schema) {
+	public IntField(String name, SlawSchema schema) {
 		super(name, schema);
 	}
 

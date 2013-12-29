@@ -11,9 +11,9 @@ import com.oblong.jelly.schema.UnmarshalledSlaw;
  * Time: 4:13 PM
  * To change this template use File | Settings | File Templates.
  */
-public class JellyFieldObject <T extends UnmarshalledSlaw> extends JellyField<T /* consider SlawMap..? */ > {
+public class ObjectField<T extends UnmarshalledSlaw> extends AbstractField<T /* consider SlawMap..? */ > {
 
-	public JellyFieldObject(String name, SlawSchema schema) {
+	public ObjectField(String name, SlawSchema schema) {
 		super(name, schema);
 	}
 

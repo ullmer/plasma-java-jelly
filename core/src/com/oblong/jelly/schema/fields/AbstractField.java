@@ -16,17 +16,17 @@ import java.util.Map;
  * Date: 7/10/13
  * Time: 1:31 PM
  */
-public abstract class JellyField <T> {
+public abstract class AbstractField<T> {
 
 	private final String name;
 	private final SlawSchema schema;
 	private final Slaw nameSlaw;
 
-	public JellyField(String name) {
+	public AbstractField(String name) {
 		this(name, null);
 	}
 
-	public JellyField(String name, SlawSchema schema) {
+	public AbstractField(String name, SlawSchema schema) {
 		this.name = name;
 		this.schema = schema;
 		this.nameSlaw = Slaw.string(name);

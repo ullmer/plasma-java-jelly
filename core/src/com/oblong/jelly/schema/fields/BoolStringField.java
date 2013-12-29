@@ -9,9 +9,9 @@ import com.oblong.jelly.SlawIlk;
  * Date: 12/19/13
  * Time: 1:56 PM
  */
-public class JellyFieldBoolString extends JellyField<Object> {
+public class BoolStringField extends AbstractField<Object> {
 
-	public JellyFieldBoolString(String name) {
+	public BoolStringField(String name) {
 		super(name);
 	}
 
