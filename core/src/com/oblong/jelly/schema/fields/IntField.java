@@ -8,12 +8,15 @@ import com.oblong.jelly.schema.SlawSchema;
  * User: karol
  * Date: 9/2/13
  * Time: 1:16 PM
- * To change this template use File | Settings | File Templates.
  */
 public class IntField extends AbstractField<Integer> {
 
 	public IntField(String name, SlawSchema schema) {
 		super(name, schema);
+	}
+
+	public IntField(String name) {
+		super(name, null);
 	}
 
 	@Override

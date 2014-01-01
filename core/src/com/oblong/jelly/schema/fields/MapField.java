@@ -1,6 +1,7 @@
 package com.oblong.jelly.schema.fields;
 
 import com.oblong.jelly.Slaw;
+import com.oblong.jelly.schema.SlawSchema;
 import com.oblong.jelly.slaw.java.SlawMap;
 
 /**
@@ -8,9 +9,12 @@ import com.oblong.jelly.slaw.java.SlawMap;
  * User: karol
  * Date: 7/10/13
  * Time: 1:38 PM
- * To change this template use File | Settings | File Templates.
  */
 public class MapField extends AbstractField<SlawMap> {
+
+	public MapField(String name, SlawSchema schema) {
+		super(name, schema);
+	}
 
 	public MapField(String name) {
 		super(name);

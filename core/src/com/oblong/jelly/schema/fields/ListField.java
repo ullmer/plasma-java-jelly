@@ -21,6 +21,10 @@ public class ListField extends AbstractField<List<Slaw>> {
 		super(name, schema);
 	}
 
+	public ListField(String name) {
+		super(name, null);
+	}
+
 	@Override
 	protected List<Slaw> getCustom(Slaw containingSlaw) {
 		return containingSlaw.emitList();
