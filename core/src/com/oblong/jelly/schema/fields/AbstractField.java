@@ -82,6 +82,10 @@ public abstract class AbstractField<T> {
 	}
 
 	public T getFrom(Map<Slaw,Slaw> map) {
-		return getCustom(map.get(getNameSlaw()));
+		return getCustom(getRawSlawFrom(map));
+	}
+
+	public Slaw getRawSlawFrom(Map<Slaw,Slaw> map) {
+		return map.get(getNameSlaw());
 	}
 }
