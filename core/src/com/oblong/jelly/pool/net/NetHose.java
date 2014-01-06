@@ -335,7 +335,7 @@ public final class NetHose implements Hose {
      *
      * Closes socket abrutply, without any prior "withdraw"-style communication.
      */
-    public void closeConnection() {
+    public void closeConnectionAbruptly() {
         connection.close();
     }
 
