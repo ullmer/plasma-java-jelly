@@ -7,11 +7,13 @@ package com.oblong.jelly.schema.fields;
  */
 public class Uid<T extends HasUid> {
 	public final String uid;
+	public final Class<T> targetClass;
 
-	public Uid(String uid) {
+	protected Uid(Class<T> targetClass, String uid) {
 		if ( uid == null || "".equals(uid) ) {
 			throw new IllegalArgumentException("uid cannot be: [" + uid + " ]");
 		}
+		this.targetClass = targetClass;
 		this.uid = uid;
 	}
 
@@ -37,6 +39,11 @@ public class Uid<T extends HasUid> {
 
 	public boolean safeEquals(Uid uid) {
 		return equals(uid);
+	}
+
+	/** Acquire Uid object */
+	public static <T extends HasUid> Uid<T> a(Class<T> targetClass, String uidString) {
+		return new Uid<T>(targetClass, uidString);
 	}
 
 }

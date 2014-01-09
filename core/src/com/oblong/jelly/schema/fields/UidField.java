@@ -10,17 +10,20 @@ import com.oblong.jelly.schema.SlawSchema;
  */
 public class UidField<T extends HasUid> extends AbstractField<Uid<T>> {
 
-	public <T> UidField(Class<T> tClass, String name) {
+	private final Class<T> tClass;
+
+	public UidField(Class<T> tClass, String name) {
 		this(tClass, name, null);
 	}
 
-	public <T> UidField(Class<T> tClass, String name, SlawSchema schema) {
+	public UidField(Class<T> tClass, String name, SlawSchema schema) {
 		super(name, schema);
+		this.tClass = tClass;
 	}
 
 	@Override
 	protected Uid<T> getCustom(Slaw slaw) {
-		return new Uid<T> ( slaw.emitString() );
+		return Uid.a(tClass, slaw.emitString());
 	}
 
 	@Override
