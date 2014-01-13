@@ -34,7 +34,7 @@ public class Uid<T extends HasUid> {
 
 	@Override
 	public String toString() {
-		return uid;
+		return "(Uid " + uid + " with targetClass " + targetClass + ")";
 	}
 
 	public boolean safeEquals(Uid uid) {
