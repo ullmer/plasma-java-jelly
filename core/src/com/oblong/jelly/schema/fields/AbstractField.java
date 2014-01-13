@@ -41,6 +41,8 @@ public abstract class AbstractField<T> {
 
 	public final T getFrom(final SlawMap mapSlaw) {
 		Slaw slaw = mapSlaw.emitMap().get(nameSlaw);
+		// NOTE: this mapSlaw.emitMap() when called repeatedly through this method, could be a performance problem
+		// thus, with repeated access, it's better to use getFrom(Map<Slaw,Slaw> map)
 		if ( slaw == null ) {
 			return null;
 		}
