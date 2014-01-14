@@ -11,7 +11,8 @@ public abstract class UnmarshalledProtein extends UnmarshalledSlawMap {
 
 
   public UnmarshalledProtein(Protein protein) {
-    super((SlawMap) protein.ingests()); // note, allowing only map slaws, for simplification of ProteinLang
-    // ingests = protein.getIngests(); 
+//    super((SlawMap) protein.ingests()); // note, allowing only map slaws, for simplification of ProteinLang
+    super(null); //avoid NPE after I've moved to final fields initialized in ctors
+    // ingests = protein.getIngests();
   }
 }
