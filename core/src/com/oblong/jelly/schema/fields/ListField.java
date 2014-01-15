@@ -4,10 +4,12 @@ import com.oblong.jelly.Slaw;
 import com.oblong.jelly.schema.HasToSlaw;
 import com.oblong.jelly.schema.SlawSchema;
 import com.oblong.jelly.schema.UnmarshalledSlaw;
+import com.oblong.jelly.slaw.java.SlawList;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The creation of lists of appropriate item objects (e.g. List<SlideSlaw>) is offloaded to ProteinLang.
@@ -46,5 +48,10 @@ public class ListField<T extends HasToSlaw> extends AbstractField<List<T>> {
 
 	public void putTo(UnmarshalledSlaw targetUnmarshalledSlaw, List<T> listUSlaws) {
 		targetUnmarshalledSlaw.put(this, listUSlaws);
+	}
+
+	@Override
+	public SlawList getRawSlawFrom(Map<Slaw, Slaw> map) {
+		return (SlawList) super.getRawSlawFrom(map);
 	}
 }
