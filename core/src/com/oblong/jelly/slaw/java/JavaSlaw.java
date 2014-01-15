@@ -58,16 +58,16 @@ abstract class JavaSlaw extends Slaw {
     }
 
     @Override public Slaw car() {
-        throw new UnsupportedOperationException(ilk() + "as pair");
+        throw new UnsupportedOperationException(ilk() + " as pair");
     }
 
     @Override public Slaw cdr() {
-        throw new UnsupportedOperationException(ilk() + "as pair");
+        throw new UnsupportedOperationException(ilk() + " as pair");
     }
 
     @Override public Map<Slaw,Slaw> emitMap() {
-	    throw new UnsupportedOperationException(ilk() + "as map");
-//        return new HashMap<Slaw,Slaw>(); // TODO: this might be hiding bugs
+//	    throw new UnsupportedOperationException(ilk() + " as map");
+        return new HashMap<Slaw,Slaw>(); // TODO: this might be hiding bugs
     }
 
     @Override public Slaw withNumericIlk(NumericIlk ilk) {
