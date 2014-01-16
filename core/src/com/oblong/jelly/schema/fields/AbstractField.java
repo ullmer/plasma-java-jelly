@@ -1,5 +1,6 @@
 package com.oblong.jelly.schema.fields;
 
+import com.oblong.jelly.ISlawMap;
 import com.oblong.jelly.Slaw;
 import com.oblong.jelly.schema.SlawSchema;
 import com.oblong.jelly.schema.UnmarshalledSlaw;
@@ -39,7 +40,11 @@ public abstract class AbstractField<T> {
 		return name;
 	}
 
-	public final T getFrom(final SlawMap mapSlaw) {
+	public final T getFrom(final ISlawMap mapSlaw) {
+		if (mapSlaw==null) {
+			return null;
+		}
+
 		Slaw slaw = mapSlaw.emitMap().get(nameSlaw);
 		// NOTE: this mapSlaw.emitMap() when called repeatedly through this method, could be a performance problem
 		// thus, with repeated access, it's better to use getFrom(Map<Slaw,Slaw> map)
@@ -84,10 +89,16 @@ public abstract class AbstractField<T> {
 	}
 
 	public T getFrom(Map<Slaw,Slaw> map) {
+		if (map==null) {
+			return null;
+		}
 		return getCustom(getRawSlawFrom(map));
 	}
 
 	public Slaw getRawSlawFrom(Map<Slaw,Slaw> map) {
+		if (map==null) {
+			return null;
+		}
 		return map.get(getNameSlaw());
 	}
 }
