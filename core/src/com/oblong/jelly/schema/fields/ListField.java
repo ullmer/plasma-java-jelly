@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * The creation of lists of appropriate item objects (e.g. List<SlideSlaw>) is offloaded to ProteinLang.
+ * Note: The creation of lists of appropriate item objects (e.g. List<SlideSlaw>) is offloaded to ProteinLang.
  * This is done to prevent bloated number of inner classes (and, hypothetically,
  * risk of bloated app binary and slow startup speed).
  *

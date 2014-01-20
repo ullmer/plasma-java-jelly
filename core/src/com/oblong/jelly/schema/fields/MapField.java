@@ -5,6 +5,9 @@ import com.oblong.jelly.schema.SlawSchema;
 import com.oblong.jelly.slaw.java.SlawMap;
 
 /**
+ *
+ * TODO: consider making it "extends AbstractField<T>", for consistency with ListField
+ *
  * Created with IntelliJ IDEA.
  * User: karol
  * Date: 7/10/13
