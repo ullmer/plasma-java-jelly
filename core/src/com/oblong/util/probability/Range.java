@@ -7,7 +7,7 @@ import net.jcip.annotations.Immutable;
  * User: karol
  * Date: 9/6/13
  * Time: 2:22 PM
- * To change this template use File | Settings | File Templates.
+ *
  */
 @Immutable
 public abstract class Range<T extends Number> extends Distribution<T> {

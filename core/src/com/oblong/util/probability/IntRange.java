@@ -9,7 +9,7 @@ import java.util.Random;
  * User: karol
  * Date: 9/6/13
  * Time: 2:29 PM
- * To change this template use File | Settings | File Templates.
+ *
  */
 @Immutable
 public class IntRange extends Range<Integer> {

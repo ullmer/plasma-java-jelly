@@ -12,7 +12,7 @@ import java.util.Map;
  * User: karol
  * Date: 9/2/13
  * Time: 1:09 PM
- * To change this template use File | Settings | File Templates.
+ *
  */
 public class MapSlawToSlaw {
 	protected Map<Slaw, Slaw> map = new HashMap<Slaw,Slaw>();

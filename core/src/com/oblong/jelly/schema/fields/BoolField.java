@@ -8,7 +8,7 @@ import com.oblong.jelly.schema.SlawSchema;
  * User: karol
  * Date: 7/12/13
  * Time: 2:29 PM
- * To change this template use File | Settings | File Templates.
+ *
  */
 public class BoolField extends AbstractField<Boolean> {
 

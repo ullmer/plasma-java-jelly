@@ -9,7 +9,7 @@ import com.oblong.jelly.communication.ObPoolConnector;
  * User: karol
  * Date: 8/30/13
  * Time: 1:59 PM
- * To change this template use File | Settings | File Templates.
+ *
  */
 public abstract class HoseFactory {
 	public abstract Hose createHose(ObPoolConnector obPoolConnector, PoolServerAddress obPoolsAddr, String obPool);

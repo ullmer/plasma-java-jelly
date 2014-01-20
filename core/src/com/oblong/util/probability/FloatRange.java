@@ -7,7 +7,7 @@ import java.util.Random;
  * User: karol
  * Date: 9/6/13
  * Time: 2:41 PM
- * To change this template use File | Settings | File Templates.
+ *
  */
 public class FloatRange extends Range<Float> {
 	public FloatRange(Float minInclusive, Float maxInclusive) {

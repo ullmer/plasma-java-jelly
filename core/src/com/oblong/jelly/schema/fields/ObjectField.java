@@ -9,7 +9,7 @@ import com.oblong.jelly.schema.UnmarshalledSlaw;
  * User: karol
  * Date: 9/5/13
  * Time: 4:13 PM
- * To change this template use File | Settings | File Templates.
+ *
  */
 public class ObjectField<T extends UnmarshalledSlaw> extends AbstractField<T /* consider SlawMap..? */ > {
 

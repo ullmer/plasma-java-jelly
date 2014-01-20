@@ -8,7 +8,7 @@ import com.oblong.jelly.schema.SlawSchema;
  * User: karol
  * Date: 9/3/13
  * Time: 6:14 PM
- * To change this template use File | Settings | File Templates.
+ *
  */
 public class FloatField extends AbstractField<Float> {
 

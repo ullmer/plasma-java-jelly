@@ -5,7 +5,7 @@ package com.oblong.jelly.util;
  * User: valeria
  * Date: 8/21/13
  * Time: 3:34 PM
- * To change this template use File | Settings | File Templates.
+ *
  */
 public abstract class ExceptionHandler {
 
