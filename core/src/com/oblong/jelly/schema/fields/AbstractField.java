@@ -98,6 +98,15 @@ public abstract class AbstractField<T> {
 	}
 
 	protected T getFromRawSlaw(Slaw rawSlaw) {
+		return getCustom(rawSlaw);
+	}
+
+	public Slaw getRawSlawFrom(Map<Slaw,Slaw> map) {
+		if (map==null) {
+//			return null;
+			throw new IllegalArgumentException("Map<Slaw,Slaw> is null. Cannot retrieve this field " + this);
+		}
+		Slaw rawSlaw = map.get(getNameSlaw());
 		if (rawSlaw == null ) {
 			if ( isOptional ) {
 				return null;
@@ -106,13 +115,6 @@ public abstract class AbstractField<T> {
 						"This field, " + this + ", is not optional and therefore the value cannot be " + rawSlaw);
 			}
 		}
-		return getCustom(rawSlaw);
-	}
-
-	public Slaw getRawSlawFrom(Map<Slaw,Slaw> map) {
-		if (map==null) {
-			return null;
-		}
-		return map.get(getNameSlaw());
+		return rawSlaw;
 	}
 }
