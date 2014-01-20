@@ -98,6 +98,13 @@ public abstract class AbstractField<T> {
 	}
 
 	protected T getFromRawSlaw(Slaw rawSlaw) {
+		if (rawSlaw == null ) {
+			if ( isOptional ) {
+				return null; // not calling custom to avoid null-check hassle for subclasses
+			} else {
+				throw createNullValException(rawSlaw);
+			}
+		}
 		return getCustom(rawSlaw);
 	}
 
@@ -111,10 +118,15 @@ public abstract class AbstractField<T> {
 			if ( isOptional ) {
 				return null;
 			} else {
-				throw new IllegalArgumentException(
-						"This field, " + this + ", is not optional and therefore the value cannot be " + rawSlaw);
+				throw createNullValException(rawSlaw);
 			}
 		}
 		return rawSlaw;
 	}
+
+	private IllegalArgumentException createNullValException(Slaw rawSlaw) {
+		return new IllegalArgumentException(
+				"This field, " + this + ", is not optional and therefore the value cannot be " + rawSlaw);
+	}
+
 }
