@@ -14,6 +14,6 @@ public interface ISlawMap {
 
 	<Type> Type get(AbstractField<Type> field);
 
-	Map<Slaw,Slaw> emitMap();
+	Map<Slaw,Slaw> emitContainedMap();
 
 }

@@ -104,4 +104,9 @@ public final class SlawMap extends JavaSlaw implements ISlawMap {
 	public <Type> Type get(AbstractField<Type> field) {
 		return field.getFrom(this);
 	}
+
+	@Override
+	public Map<Slaw, Slaw> emitContainedMap() {
+		return emitMap();
+	}
 }

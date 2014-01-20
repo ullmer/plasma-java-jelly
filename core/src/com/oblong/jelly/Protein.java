@@ -274,4 +274,9 @@ public abstract class Protein extends Slaw implements ISlawMap {
     public <Type> Type get(AbstractField<Type> field) {
         return field.getFrom((SlawMap) this.ingests());
     }
+
+	@Override
+	public Map<Slaw, Slaw> emitContainedMap() {
+		return ingests().emitMap();
+	}
 }
