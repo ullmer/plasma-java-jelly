@@ -8,6 +8,8 @@ import com.oblong.jelly.slaw.java.SlawMap;
  *
  * TODO: consider making it "extends AbstractField<T>", for consistency with ListField
  *
+ * TODO: consider making a relationship between MapField and SlawSchema, maybe through AbstractField[] fields
+ *
  * Created with IntelliJ IDEA.
  * User: karol
  * Date: 7/10/13
@@ -15,8 +17,8 @@ import com.oblong.jelly.slaw.java.SlawMap;
  */
 public class MapField extends AbstractField<SlawMap> {
 
-	public MapField(String name, SlawSchema schema) {
-		super(name, schema);
+	public MapField(SlawSchema schema, boolean isOptional, String name, AbstractField[] fields) {
+		super(schema, isOptional, name);
 	}
 
 	public MapField(String name) {

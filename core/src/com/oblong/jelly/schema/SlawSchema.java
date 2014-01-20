@@ -8,6 +8,9 @@ import java.util.List;
 /**
  *
  * Candidates for names: descriptor, metadata, contents, fields, structure, !!schema!!
+ *
+ *  TODO: consider making a relationship between MapField and SlawSchema
+ *
  * Created with IntelliJ IDEA.
  * User: karol
  * Date: 9/5/13

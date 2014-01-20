@@ -11,12 +11,12 @@ import com.oblong.jelly.schema.SlawSchema;
  */
 public class IntField extends AbstractField<Integer> {
 
-	public IntField(String name, SlawSchema schema) {
-		super(name, schema);
+	public IntField(SlawSchema schema, boolean isOptional, String name) {
+		super(schema, isOptional, name);
 	}
 
 	public IntField(String name) {
-		super(name, null);
+		super(null, false, name);
 	}
 
 	@Override

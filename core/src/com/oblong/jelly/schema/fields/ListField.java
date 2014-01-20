@@ -6,7 +6,6 @@ import com.oblong.jelly.schema.SlawSchema;
 import com.oblong.jelly.schema.UnmarshalledSlaw;
 import com.oblong.jelly.slaw.java.SlawList;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -22,12 +21,12 @@ import java.util.Map;
  */
 public class ListField<T extends HasToSlaw> extends AbstractField<List<T>> {
 
-	public ListField(String name, SlawSchema schema) {
-		super(name, schema);
+	public ListField(SlawSchema schema, boolean isOptional, String name) {
+		super(schema, isOptional, name);
 	}
 
 	public ListField(String name) {
-		super(name, null);
+		super(null, false, name);
 	}
 
 	@Override

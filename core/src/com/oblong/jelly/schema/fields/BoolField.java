@@ -16,8 +16,8 @@ public class BoolField extends AbstractField<Boolean> {
 		super(name);
 	}
 
-	public BoolField(String name, SlawSchema schema) {
-		super(name, schema);
+	public BoolField(SlawSchema schema, boolean isOptional, String name) {
+		super(schema, isOptional, name);
 	}
 
 	@Override

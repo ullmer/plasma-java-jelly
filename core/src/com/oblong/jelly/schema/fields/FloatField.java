@@ -13,11 +13,11 @@ import com.oblong.jelly.schema.SlawSchema;
 public class FloatField extends AbstractField<Float> {
 
 	public FloatField(String name) {
-		this(name, null);
+		this(null, false, name);
 	}
 
-	public FloatField(String name, SlawSchema schema) {
-		super(name, schema);
+	public FloatField(SlawSchema schema, boolean isOptional, String name) {
+		super(schema, isOptional, name);
 	}
 
 	@Override

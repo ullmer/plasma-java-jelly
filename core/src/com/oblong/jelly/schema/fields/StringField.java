@@ -12,11 +12,11 @@ import com.oblong.jelly.schema.SlawSchema;
 public class StringField extends AbstractField<String> {
 
 	public StringField(String name) {
-		super(name);
+		this(null, false, name);
 	}
 
-	public StringField(String name, SlawSchema schema) {
-		super(name, schema);
+	public StringField(SlawSchema schema, boolean isOptional, String name) {
+		super(schema, isOptional, name);
 	}
 
 	@Override

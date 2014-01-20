@@ -13,8 +13,8 @@ import com.oblong.jelly.schema.UnmarshalledSlaw;
  */
 public class ObjectField<T extends UnmarshalledSlaw> extends AbstractField<T /* consider SlawMap..? */ > {
 
-	public ObjectField(String name, SlawSchema schema) {
-		super(name, schema);
+	public ObjectField(SlawSchema schema, boolean isOptional, String name) {
+		super(schema, isOptional, name);
 	}
 
 	@Override

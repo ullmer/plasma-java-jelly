@@ -4,7 +4,6 @@ import com.oblong.jelly.ISlawMap;
 import com.oblong.jelly.Slaw;
 import com.oblong.jelly.schema.SlawSchema;
 import com.oblong.jelly.schema.UnmarshalledSlaw;
-import com.oblong.jelly.slaw.java.SlawMap;
 
 import java.util.Map;
 
@@ -22,14 +21,16 @@ public abstract class AbstractField<T> {
 	private final String name;
 	private final SlawSchema schema;
 	private final Slaw nameSlaw;
+	private final boolean isOptional;
 
 	public AbstractField(String name) {
-		this(name, null);
+		this(null, false, name);
 	}
 
-	public AbstractField(String name, SlawSchema schema) {
-		this.name = name;
+	public AbstractField(SlawSchema schema, boolean isOptional, String name) {
 		this.schema = schema;
+		this.isOptional = isOptional;
+		this.name = name;
 		this.nameSlaw = Slaw.string(name);
 		if ( schema != null ) {
 			schema.add(this);
@@ -90,9 +91,20 @@ public abstract class AbstractField<T> {
 
 	public T getFrom(Map<Slaw,Slaw> map) {
 		if (map==null) {
-			return null;
+			return null; // not yet totally sure if this case should be fatal or allowed
 		}
-		return getCustom(getRawSlawFrom(map));
+		Slaw rawSlaw = getRawSlawFrom(map);
+		if (rawSlaw == null ) {
+			if ( isOptional ) {
+				return null;
+			} else {
+				throw new IllegalArgumentException(
+						"This field, named '" + this.name +
+						"', is not optional and therefore the value cannot be " + rawSlaw);
+			}
+		} else {
+			return getCustom(rawSlaw);
+		}
 	}
 
 	public Slaw getRawSlawFrom(Map<Slaw,Slaw> map) {
