@@ -75,7 +75,7 @@ public abstract class AbstractField<T> {
 
 	@Override
 	public String toString() {
-		return super.toString() + ";name=" + getName();
+		return "{" + getClass().getSimpleName() + ";name=" + getName() + "}";
 	}
 
 	public void set(UnmarshalledSlaw unmarshalledSlaw, T value) {
@@ -94,17 +94,19 @@ public abstract class AbstractField<T> {
 			return null; // not yet totally sure if this case should be fatal or allowed
 		}
 		Slaw rawSlaw = getRawSlawFrom(map);
+		return getFromRawSlaw(rawSlaw);
+	}
+
+	protected T getFromRawSlaw(Slaw rawSlaw) {
 		if (rawSlaw == null ) {
 			if ( isOptional ) {
 				return null;
 			} else {
 				throw new IllegalArgumentException(
-						"This field, named '" + this.name +
-						"', is not optional and therefore the value cannot be " + rawSlaw);
+						"This field, " + this + ", is not optional and therefore the value cannot be " + rawSlaw);
 			}
-		} else {
-			return getCustom(rawSlaw);
 		}
+		return getCustom(rawSlaw);
 	}
 
 	public Slaw getRawSlawFrom(Map<Slaw,Slaw> map) {
