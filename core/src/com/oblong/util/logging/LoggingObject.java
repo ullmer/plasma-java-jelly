@@ -6,4 +6,8 @@ package com.oblong.util.logging;
  * Time: 2:08 PM
  */
 public interface LoggingObject {
+
+	// TODO: toLoggableString
+
+	// TODO: interface LoggedObject
 }
