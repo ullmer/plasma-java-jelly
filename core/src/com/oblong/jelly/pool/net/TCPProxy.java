@@ -13,7 +13,7 @@ import java.util.logging.Logger;
 import com.oblong.jelly.PoolException;
 import com.oblong.jelly.PoolServer;
 import com.oblong.jelly.PoolServerAddress;
-import com.oblong.jelly.util.ExceptionHandler;
+import com.oblong.util.ExceptionHandler;
 
 
 /**

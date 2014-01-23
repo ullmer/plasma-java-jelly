@@ -1,7 +1,7 @@
 package com.oblong.jelly.pool.net.stress;
 
 import com.oblong.jelly.Hose;
-import com.oblong.jelly.util.ExceptionHandler;
+import com.oblong.util.ExceptionHandler;
 import org.apache.log4j.Logger;
 
 /**

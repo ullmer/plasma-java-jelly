@@ -4,7 +4,7 @@
 
 package javax.jmdns.impl;
 
-import com.oblong.jelly.util.ExceptionHandler;
+import com.oblong.util.ExceptionHandler;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

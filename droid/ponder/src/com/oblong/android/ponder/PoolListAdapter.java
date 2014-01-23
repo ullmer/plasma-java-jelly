@@ -2,7 +2,6 @@
 
 package com.oblong.android.ponder;
 
-import android.app.ListActivity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +11,7 @@ import android.widget.TextView;
 
 import com.oblong.jelly.PoolAddress;
 import com.oblong.jelly.PoolServerAddress;
-import com.oblong.jelly.util.ExceptionHandler;
+import com.oblong.util.ExceptionHandler;
 
 final class PoolListRow {
     String name;

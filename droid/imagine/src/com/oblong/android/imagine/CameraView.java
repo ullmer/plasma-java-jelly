@@ -11,7 +11,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import com.oblong.jelly.util.ExceptionHandler;
+import com.oblong.util.ExceptionHandler;
 
 /**
  *

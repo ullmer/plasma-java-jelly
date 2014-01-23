@@ -4,10 +4,8 @@ package com.oblong.jelly.pool.net;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
 import javax.jmdns.JmDNS;
@@ -15,7 +13,7 @@ import javax.jmdns.ServiceEvent;
 import javax.jmdns.ServiceInfo;
 import javax.jmdns.ServiceListener;
 
-import com.oblong.jelly.util.ExceptionHandler;
+import com.oblong.util.ExceptionHandler;
 import net.jcip.annotations.ThreadSafe;
 
 import com.oblong.jelly.PoolServer;

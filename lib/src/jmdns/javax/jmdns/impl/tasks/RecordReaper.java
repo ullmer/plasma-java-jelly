@@ -4,7 +4,7 @@
 
 package javax.jmdns.impl.tasks;
 
-import com.oblong.jelly.util.ExceptionHandler;
+import com.oblong.util.ExceptionHandler;
 
 import java.util.Timer;
 import java.util.logging.Level;

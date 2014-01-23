@@ -6,7 +6,7 @@ package com.oblong.jelly;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import com.oblong.jelly.util.ExceptionHandler;
+import com.oblong.util.ExceptionHandler;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

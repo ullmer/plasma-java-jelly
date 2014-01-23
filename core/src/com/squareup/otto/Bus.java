@@ -18,7 +18,7 @@
 package com.squareup.otto;
 
 import com.oblong.jelly.communication.OttoEvent;
-import com.oblong.jelly.util.ExceptionHandler;
+import com.oblong.util.ExceptionHandler;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;

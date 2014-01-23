@@ -17,7 +17,7 @@ import static com.oblong.jelly.SlawIlk.*;
 import com.oblong.jelly.slaw.java.SlawList;
 import com.oblong.jelly.slaw.java.SlawMap;
 import com.oblong.jelly.slaw.java.SlawString;
-import com.oblong.jelly.util.ExceptionHandler;
+import com.oblong.util.ExceptionHandler;
 import net.jcip.annotations.Immutable;
 
 /**

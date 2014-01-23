@@ -5,7 +5,7 @@ package com.oblong.jelly.slaw.io;
 import java.io.InputStream;
 import java.util.logging.Logger;
 
-import com.oblong.jelly.util.ExceptionHandler;
+import com.oblong.util.ExceptionHandler;
 import net.jcip.annotations.NotThreadSafe;
 
 import com.oblong.jelly.Slaw;

@@ -3,7 +3,7 @@
  */
 package javax.jmdns.impl;
 
-import com.oblong.jelly.util.ExceptionHandler;
+import com.oblong.util.ExceptionHandler;
 
 import java.io.IOException;
 import java.net.InetAddress;

@@ -3,7 +3,7 @@ package com.oblong.jelly.communication;
 import java.util.List;
 
 import com.oblong.jelly.*;
-import com.oblong.jelly.util.ExceptionHandler;
+import com.oblong.util.ExceptionHandler;
 
 public class ObPoolSender extends ObPoolConnector {
 

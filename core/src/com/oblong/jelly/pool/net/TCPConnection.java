@@ -20,9 +20,8 @@ import com.oblong.jelly.slaw.SlawExternalizer;
 import com.oblong.jelly.slaw.SlawFactory;
 import com.oblong.jelly.slaw.SlawInternalizer;
 import com.oblong.jelly.pool.Configuration;
-import com.oblong.jelly.pool.PoolProtein;
 import com.oblong.jelly.util.ByteReader;
-import com.oblong.jelly.util.ExceptionHandler;
+import com.oblong.util.ExceptionHandler;
 
 import static com.oblong.jelly.pool.net.Request.*;
 

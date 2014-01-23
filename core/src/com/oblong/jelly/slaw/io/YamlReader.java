@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import com.oblong.jelly.util.ExceptionHandler;
+import com.oblong.util.ExceptionHandler;
 import net.jcip.annotations.NotThreadSafe;
 
 import org.yaml.snakeyaml.Yaml;

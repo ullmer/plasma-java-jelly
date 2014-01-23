@@ -10,7 +10,6 @@ import java.util.Arrays;
 import java.util.logging.Logger;
 
 import com.oblong.jelly.*;
-import com.oblong.jelly.pool.PoolProtein;
 import com.oblong.jelly.pool.ServerErrorCode;
 import com.oblong.jelly.slaw.SlawExternalizer;
 import com.oblong.jelly.slaw.SlawFactory;
@@ -20,7 +19,7 @@ import com.oblong.jelly.slaw.io.BinaryExternalizer;
 import com.oblong.jelly.slaw.io.BinaryInternalizer;
 import com.oblong.jelly.slaw.java.JavaSlawFactory;
 import com.oblong.jelly.util.ByteReader;
-import com.oblong.jelly.util.ExceptionHandler;
+import com.oblong.util.ExceptionHandler;
 import com.oblong.util.Pair;
 
 /**

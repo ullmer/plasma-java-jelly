@@ -8,14 +8,12 @@ import java.io.InputStream;
 
 import static org.junit.Assert.*;
 
-import com.oblong.jelly.util.ExceptionHandler;
+import com.oblong.util.ExceptionHandler;
 import org.junit.Test;
 
 import com.oblong.jelly.*;
 import static com.oblong.jelly.Slaw.*;
 import com.oblong.jelly.slaw.*;
-import com.oblong.jelly.slaw.io.BinaryExternalizer;
-import com.oblong.jelly.slaw.io.BinaryInternalizer;
 
 /**
  * Unit test for PlasmaV2 serialization: proteins.

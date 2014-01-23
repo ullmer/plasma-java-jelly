@@ -2,7 +2,7 @@ package com.oblong.jelly.communication;
 
 
 import com.oblong.jelly.*;
-import com.oblong.jelly.util.ExceptionHandler;
+import com.oblong.util.ExceptionHandler;
 
 public abstract class ObPoolConnector extends Thread {
 

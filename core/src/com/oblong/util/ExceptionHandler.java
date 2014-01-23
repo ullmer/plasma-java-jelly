@@ -1,4 +1,4 @@
-package com.oblong.jelly.util;
+package com.oblong.util;
 
 /**
  * Created with IntelliJ IDEA.
@@ -28,7 +28,7 @@ public abstract class ExceptionHandler {
 	}
 
 	private static String createMessage(String duringMsg) {
-		return "Exception during : " + duringMsg;
+		return "Exception: " + duringMsg;
 	}
 
 	private static void defaultHandleException(Throwable e, String duringMsg) {

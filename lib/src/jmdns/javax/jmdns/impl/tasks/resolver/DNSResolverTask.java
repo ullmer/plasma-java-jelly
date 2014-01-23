@@ -1,7 +1,7 @@
 //Licensed under Apache License version 2.0
 package javax.jmdns.impl.tasks.resolver;
 
-import com.oblong.jelly.util.ExceptionHandler;
+import com.oblong.util.ExceptionHandler;
 
 import java.io.IOException;
 import java.util.Timer;
