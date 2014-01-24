@@ -13,7 +13,7 @@ public class ObPoolSender extends ObPoolConnector {
 	protected final List<Protein> proteinQueue;
 
 
-	public ObPoolSender(PoolServerAddress pools,String pool,ObPoolCommunicationEventHandler lis, int sleepSecs,
+	public ObPoolSender(PoolServerAddress pools, String pool, ObPoolCommunicationEventHandler lis, int sleepSecs,
 			List<Protein> proteinQueue, HoseFactory hoseFactory) {
 		super(pools, pool, lis, hoseFactory);
 		this.sleepMs = sleepSecs;
@@ -35,7 +35,6 @@ public class ObPoolSender extends ObPoolConnector {
 				hose.deposit(protein);
 			} catch (PoolException e) {
 				ExceptionHandler.handleException(e);
-//				throw new RuntimeException(e);
 			}
 		}
 	}
@@ -52,16 +51,6 @@ public class ObPoolSender extends ObPoolConnector {
 				remove = proteinQueue.remove(0);
 		}
 		return remove;
-	}
-
-	public void connect() {
-		super.connect();
-		
-		if (hose != null) {
-			System.out.println(TAG + " : Connection successful! to " + obPool + " id=" + getId());
- 		} else {
-			System.err.println(TAG + " : Unable to connect to pool!");
-		}
 	}
 
 }
