@@ -8,11 +8,14 @@ import com.oblong.jelly.slaw.java.SlawMap;
 
 public class UnmarshalledSlawMap extends UnmarshalledSlaw {
 
-  protected ISlawMap slawMap = null;
+//  protected ISlawMap slawMap = null;
 
+  public UnmarshalledSlawMap() {
+  }
 
   public UnmarshalledSlawMap(ISlawMap slawMap) {
-    this.slawMap = slawMap;
+    // nothing to do with the parem; it is here just for consistency with subclasses
+//    this.slawMap = slawMap;
   }
 
   @Override
