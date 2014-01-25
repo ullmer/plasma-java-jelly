@@ -8,7 +8,9 @@ import com.oblong.jelly.slaw.java.SlawMap;
 
 public abstract class UnmarshalledProtein extends UnmarshalledSlawMap {
 
-
+  public UnmarshalledProtein() {
+    // no need to do anything (subclasses will init their fields)
+  }
 
   public UnmarshalledProtein(Protein protein) {
 //    super((SlawMap) protein.ingests()); // note, allowing only map slaws, for simplification of ProteinLang
