@@ -3,8 +3,9 @@ package com.oblong.jelly.communication;
 
 import com.oblong.jelly.*;
 import com.oblong.util.ExceptionHandler;
+import com.oblong.util.logging.LoggingObject;
 
-public abstract class ObPoolConnector extends Thread {
+public abstract class ObPoolConnector extends Thread implements LoggingObject {
 
 	private static final String TAG = "ObPoolConnector";
 	private static final boolean  D = true;
