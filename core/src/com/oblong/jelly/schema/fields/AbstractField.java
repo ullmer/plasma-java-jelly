@@ -125,7 +125,7 @@ public abstract class AbstractField<T> {
 	}
 
 	private IllegalArgumentException createNullValException(Slaw rawSlaw) {
-		return new IllegalArgumentException(
+		throw new IllegalArgumentException(
 				"This field, " + this + ", is not optional and therefore the value cannot be " + rawSlaw);
 	}
 
