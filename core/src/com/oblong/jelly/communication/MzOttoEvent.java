@@ -8,6 +8,6 @@ import com.oblong.jelly.communication.OttoEvent;
  * Allows one to write generic utility methods or collections.
  *
  */
-public class MzOttoEvent extends OttoEvent {
+public class MzOttoEvent implements OttoEvent {
 
 }

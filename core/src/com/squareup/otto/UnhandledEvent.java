@@ -26,7 +26,7 @@ import com.oblong.jelly.communication.OttoEvent;
  *
  * @author Cliff Biffle
  */
-public class UnhandledEvent extends OttoEvent {
+public class UnhandledEvent implements OttoEvent {
 
   public final Bus source;
   public final OttoEvent event;
