@@ -4,11 +4,14 @@ package com.oblong.jelly.communication;
 import com.oblong.jelly.*;
 import com.oblong.util.ExceptionHandler;
 import com.oblong.util.logging.LoggingObject;
+import com.oblong.util.logging.ObLogger;
 
 public abstract class ObPoolConnector extends Thread implements LoggingObject {
 
 	private static final String TAG = "ObPoolConnector";
 	private static final boolean  D = true;
+
+	private final ObLogger logger = ObLogger.get(this);
 
 	/***
 	 * According to javadoc this field should be ignored if the pool already exists
@@ -40,20 +43,33 @@ public abstract class ObPoolConnector extends Thread implements LoggingObject {
 		connect();
 		while (!stopMe) {
 			if (isHoseOkay(hose)) {
-				handleProtein();
-				maybeSleep();
+				operateOnProtein();
 			} else {
-				if(TRY_RECONNECT)
-					reconnect();
-				else notifyConnectionLost(getReasonForHoseError());
+				reconnectOrNotify();
 			}
 		}
-		System.out.println(TAG + ": Thread Stopped" + getThreadNameID());
-		//withdrawHose();
+		logThreadStopped();
+	}
+
+	protected void operateOnProtein() {
+		handleProtein();
+		maybeSleep();
+	}
+
+	protected void reconnectOrNotify() {
+		if(TRY_RECONNECT){
+			reconnect();
+		} else {
+			notifyConnectionLost(getReasonForHoseError());
+		}
+	}
+
+	protected void logThreadStopped() {
+		logger.debug(this.toString() + " stopped ");
 	}
 
 	public String getReasonForHoseError() {
-		return "Hose with address "+obPoolsAddr.toString()+" is null or disconnected ";
+		return "Hose with address "+obPoolsAddr.toString()+" is null or disconnected.";
 	}
 
 	protected void reconnect() {
@@ -61,27 +77,26 @@ public abstract class ObPoolConnector extends Thread implements LoggingObject {
 			PoolAddress address = hose.poolAddress();
 			
 			if (address != null) {
-				if(D) System.out.println(TAG + ": will try to reconnect to " + address.toString());
+				if(D) logger.debug(" Will try to reconnect to " + address.toString());
 				hose = Pool.participate(address, DEFAULT_POOL_OPTIONS);
-				if(D) System.out.println(TAG + ": Reconnected OK");
+				if(D) logger.debug(" Reconnected OK");
 			} else {
-				if(D) System.out.println(TAG + "Address is null or hose is null");
+				if(D) logger.debug("Address is null");
 			}
 		} catch (PoolException e) {
-			if(D)System.err.println(TAG + ": Reconnected KO " + e.getMessage());
-		}catch (Exception e) {
+			if(D)logger.error(" Reconnected KO " + e.getMessage());
+		} catch (Exception e) {
+			if(D)logger.error("Unable to reconnect ");
 			ExceptionHandler.handleException(e);
-			if(D)System.err.println(TAG + "Unable to reconnect ");
 		}
-
 	}
 
 	public void halt() {
 		this.stopMe = true;
-		System.out.println("Halting " + getThreadNameID())  ;
+		logger.debug("Halting " + this.toString())  ;
 		try {
 			withdrawHose();
-			System.out.println("Halted " + getThreadNameID())  ;
+			logger.debug("Halted " + this.toString())  ;
 		} catch(NoClassDefFoundError ex){
 			//TODO: maybe remove this catch clause
 			ExceptionHandler.handleException(ex);
@@ -99,7 +114,7 @@ public abstract class ObPoolConnector extends Thread implements LoggingObject {
 
 	private void withdrawHose() {
 		if (hose == null) {
-			if(D)System.out.println(TAG + " : Hose is already null.");
+			if(D)logger.debug(" Hose is already null.");
 		} else {
 			try {
 				//this throws out of memory exception many times
@@ -128,10 +143,10 @@ public abstract class ObPoolConnector extends Thread implements LoggingObject {
 
 	protected boolean isHoseOkay(Hose h) {
 		if (h == null) {
-			if(D)System.out.println(TAG + " : Hose is null from thread id=" + getId());
+			if(D)logger.debug(" Hose is null from thread " + this.toString());
 			return false;
 		} else if (!h.isConnected()) {
-			System.out.println(TAG + ": Hose was disconnected from thread id= " + getThreadNameID());
+			logger.debug(" Hose was disconnected from thread  " + this.toString());
 			return false;
 		} else {
 			return true;
@@ -143,23 +158,28 @@ public abstract class ObPoolConnector extends Thread implements LoggingObject {
 	}
 	
 	protected void connect() {
-		if(D)System.out.println(TAG + ": Connecting to pool " + "/" + obPool);
+		if(D)logger.debug(" Connecting to pool " + "/" + obPool);
 		try {
 			initHose();
 		} catch (BadAddressException e) {
-			e.printStackTrace();
-			listener.onErrorConnecting(new UnableToConnectEvent(UnableToConnectEvent.Reason.BAD_ADDRESS));
+			logAndNotify(e, UnableToConnectEvent.Reason.BAD_ADDRESS);
+		} catch (InvalidOperationException e){
+			//this happens when for ex we try to connect to secure pools
+			logAndNotify(e, UnableToConnectEvent.Reason.UNSUPPORTED_OPERATION);
 		} catch (PoolException e) {
-			e.printStackTrace();
-			listener.onErrorConnecting(new UnableToConnectEvent(UnableToConnectEvent.Reason.POOL_EXCEPTION));
+			logAndNotify(e, UnableToConnectEvent.Reason.POOL_EXCEPTION);
 		}
 		
 		if (hose != null) {
-			if(D)System.out.println(TAG + " : Connection successful! id=" + getId());
-			
+			if(D)logger.debug(" Connection successful to " + this.toString());
 		} else {
-			if(D)System.out.println(TAG + " : Unable to connect to pool!");
+			if(D)logger.debug(" Unable to connect to pool "+obPool);
 		}
+	}
+
+	private void logAndNotify(Exception e, UnableToConnectEvent.Reason reason) {
+		logger.error(TAG + " connect", e);
+		listener.onErrorConnecting(new UnableToConnectEvent(reason));
 	}
 
 	protected void initHose() throws PoolException {
@@ -182,8 +202,12 @@ public abstract class ObPoolConnector extends Thread implements LoggingObject {
 		listener.onConnectionLost(reason);
 	}
 
-	private String getThreadNameID(){
-		return getName()+"-"+getId()+"-"+getState()+"_"+getClass().getName();
+	@Override
+	public String toString() {
+		return getClass().getName()+"{" +
+				"obPoolsAddr=" + obPoolsAddr +
+				", obPool='" + obPool + '\'' +
+				", hoseFactory=" + hoseFactory +
+				"} " + super.toString();
 	}
-
 }
