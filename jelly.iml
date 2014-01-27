@@ -9,7 +9,7 @@
       <excludeFolder url="file://$MODULE_DIR$/clj" />
       <excludeFolder url="file://$MODULE_DIR$/core/src/com/src" />
     </content>
-    <orderEntry type="jdk" jdkName="Android 4.2.2 Platform" jdkType="Android SDK" />
+    <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module-library" exported="">
       <library>
