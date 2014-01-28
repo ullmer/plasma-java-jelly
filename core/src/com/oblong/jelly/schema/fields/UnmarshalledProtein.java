@@ -6,6 +6,7 @@ package com.oblong.jelly.schema.fields;
 import com.oblong.jelly.Protein;
 import com.oblong.jelly.communication.OttoEvent;
 import com.oblong.jelly.slaw.java.SlawMap;
+import com.oblong.jelly.slaw.java.SlawString;
 
 public abstract class UnmarshalledProtein extends UnmarshalledSlawMap implements OttoEvent {
 
@@ -18,4 +19,6 @@ public abstract class UnmarshalledProtein extends UnmarshalledSlawMap implements
     super(null); //avoid NPE after I've moved to final fields initialized in ctors
     // ingests = protein.getIngests();
   }
+
+  public abstract SlawString getMainDescrip();
 }
