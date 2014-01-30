@@ -4,14 +4,14 @@ package com.oblong.jelly.communication;
 import com.oblong.jelly.*;
 import com.oblong.util.ExceptionHandler;
 import com.oblong.util.logging.LoggingObject;
-import com.oblong.util.logging.ObLogger;
+import com.oblong.util.logging.ObLog;
 
 public abstract class ObPoolConnector extends Thread implements LoggingObject {
 
 //	private static final String TAG = "ObPoolConnector";
 	private static final boolean  D = true;
 
-	private final ObLogger logger = ObLogger.get(this);
+	private final ObLog logger = ObLog.get(this);
 
 	/***
 	 * According to javadoc this field should be ignored if the pool already exists

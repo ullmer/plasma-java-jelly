@@ -125,7 +125,7 @@ public class Sender extends Activity implements View.OnClickListener {
                 h = Pool.participate(address);
                 h.deposit(Sender.this.ensureProtein());
             } catch (PoolException e) {
-                Log.e("SenderThread", "Error depositing protein", e);
+                log.e("SenderThread", "Error depositing protein", e);
                 dlg = SENT_DLG_KO;
                 SENT_DLG_MSGS[SENT_DLG_KO] =
                     "Error connecting to pool:\n" + e.getMessage();
@@ -144,7 +144,7 @@ public class Sender extends Activity implements View.OnClickListener {
             view.setImageBitmap(ImageStore.imageBitmap());
         } catch (Throwable e) {
             ExceptionHandler.handleException(e);
-            Log.e("Sender", "Error reading image file", e);
+            log.e("Sender", "Error reading image file", e);
             finish();
         }
     }
@@ -161,7 +161,7 @@ public class Sender extends Activity implements View.OnClickListener {
                 ImageStore.clear();
             } catch (Throwable e) {
                 ExceptionHandler.handleException(e);
-                Log.e("Sender", "Error converting image", e);
+                log.e("Sender", "Error converting image", e);
                 return null;
             }
         }

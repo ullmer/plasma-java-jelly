@@ -44,7 +44,7 @@ public class CameraView extends SurfaceView
             ExceptionHandler.handleException(e);
             if (camera != null) camera.release();
             camera = null;
-            Log.e("CameraView", "Error accessing camera", e);
+            log.1("CameraView", "Error accessing camera", e);
         }
     }
 

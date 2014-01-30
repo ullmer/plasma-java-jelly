@@ -1,6 +1,6 @@
 package com.oblong.util;
 
-import com.oblong.util.logging.ObLogger;
+import com.oblong.util.logging.ObLog;
 
 /**
  * Created with IntelliJ IDEA.
@@ -11,7 +11,7 @@ import com.oblong.util.logging.ObLogger;
  */
 public abstract class ExceptionHandler {
 
-	private static final ObLogger logger = ObLogger.get(ExceptionHandler.class);
+	private static final ObLog logger = ObLog.get(ExceptionHandler.class);
 
 	private static volatile ExceptionHandler exceptionHandler;
 
