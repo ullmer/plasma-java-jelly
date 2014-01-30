@@ -8,7 +8,7 @@ import com.oblong.util.logging.ObLogger;
 
 public abstract class ObPoolConnector extends Thread implements LoggingObject {
 
-	private static final String TAG = "ObPoolConnector";
+//	private static final String TAG = "ObPoolConnector";
 	private static final boolean  D = true;
 
 	private final ObLogger logger = ObLogger.get(this);
@@ -31,7 +31,7 @@ public abstract class ObPoolConnector extends Thread implements LoggingObject {
 	private final HoseFactory hoseFactory;
 
 	protected ObPoolConnector(PoolServerAddress addr, String pool, ObPoolCommunicationEventHandler lis, HoseFactory hoseFactory) {
-		super(TAG);
+		super(ObPoolConnector.class.getName());
 		this.obPool = pool;
 		this.obPoolsAddr = addr;
 		this.hoseFactory = hoseFactory;
@@ -178,7 +178,7 @@ public abstract class ObPoolConnector extends Thread implements LoggingObject {
 	}
 
 	private void logAndNotify(Exception e, UnableToConnectEvent.Reason reason) {
-		logger.error(TAG + " connect", e);
+		logger.error("connect", e);
 		listener.onErrorConnecting(new UnableToConnectEvent(reason));
 	}
 

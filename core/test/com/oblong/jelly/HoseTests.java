@@ -25,7 +25,7 @@ import static com.oblong.jelly.Slaw.*;
  */
 public class HoseTests {
 
-    public static final String TAG = "HoseTests";
+//    public static final String TAG = "HoseTests";
     public static final PoolOptions POOL_OPTIONS = PoolOptions.MEDIUM;
 	private static final Logger logger = Logger.getLogger(HoseTests.class);
 
@@ -133,7 +133,7 @@ public class HoseTests {
         try {
             Pool.dispose(pa);
         } catch (NoSuchPoolException e) {
-            ExceptionHandler.handleException(e, TAG);
+            ExceptionHandler.handleException(e, "Exception in getPoolAddress");
         }
         return pa;
     }

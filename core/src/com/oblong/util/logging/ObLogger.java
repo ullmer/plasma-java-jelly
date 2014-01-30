@@ -1,5 +1,6 @@
 package com.oblong.util.logging;
 
+import com.oblong.jelly.Protein;
 import org.apache.log4j.Logger;
 import org.apache.log4j.Priority;
 
@@ -28,7 +29,7 @@ public class ObLogger {
 		return new ObLogger(aClass);
 	}
 
-	public static ObLogger get(LoggingObject o) {
+	public static ObLogger get(Object o) {
 		// later we might also show the address of the object to allow distinguishing of object instances
 		return get(o.getClass());
 	}
@@ -112,4 +113,15 @@ public class ObLogger {
 	public boolean isTraceEnabled() {
 		return logger.isTraceEnabled();
 	}
+
+
+	public void e(Object message) { error(message); }
+
+	public void w(Object message) { warn(message); }
+
+	public void i(Object message) { info(message); }
+
+	public void d(Object message) { debug(message); }
+
+	public void t(Object message) { trace(message); }
 }
