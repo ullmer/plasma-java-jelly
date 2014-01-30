@@ -1,5 +1,7 @@
 package com.oblong.util;
 
+import com.oblong.util.logging.ObLogger;
+
 /**
  * Created with IntelliJ IDEA.
  * User: valeria
@@ -8,6 +10,8 @@ package com.oblong.util;
  *
  */
 public abstract class ExceptionHandler {
+
+	private static final ObLogger logger = ObLogger.get(ExceptionHandler.class);
 
 	private static volatile ExceptionHandler exceptionHandler;
 
@@ -33,11 +37,11 @@ public abstract class ExceptionHandler {
 
 	private static void defaultHandleException(Throwable e, String duringMsg) {
 		if ( DEFAULT_HANDLER_PRINTS ) {
-			System.err.println("========= " + createMessage(duringMsg));
+			logger.error("========= " + createMessage(duringMsg));
 			if ( e != null ) {
 				e.printStackTrace();
 			}
-			System.err.println("(no installed ExceptionHandler)");
+			logger.error("(no installed ExceptionHandler)");
 		}
 		if ( DEFAULT_HANDLER_RETHROWS ) {
 			throw new RuntimeException(createMessage(duringMsg),e);
