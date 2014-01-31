@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import com.oblong.util.ExceptionHandler;
+import com.oblong.util.logging.ObLog;
 
 /**
  *
@@ -21,6 +22,8 @@ import com.oblong.util.ExceptionHandler;
  */
 public class CameraView extends SurfaceView
     implements SurfaceHolder.Callback, Camera.PictureCallback {
+
+    private static final ObLog log = ObLog.get(CameraView.class);
 
     @SuppressWarnings("deprecation")
 	public CameraView(Context context, AttributeSet attr) {
