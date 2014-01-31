@@ -65,7 +65,7 @@ public abstract class ObPoolConnector extends Thread implements LoggingObject {
 	}
 
 	protected void logThreadStopped() {
-		logger.debug(this.toString() + " stopped ");
+		logger.d(this.toString() + " stopped ");
 	}
 
 	public String getReasonForHoseError() {
@@ -77,11 +77,11 @@ public abstract class ObPoolConnector extends Thread implements LoggingObject {
 			PoolAddress address = hose.poolAddress();
 			
 			if (address != null) {
-				if(D) logger.debug(" Will try to reconnect to " + address.toString());
+				if(D) logger.d(" Will try to reconnect to " + address.toString());
 				hose = Pool.participate(address, DEFAULT_POOL_OPTIONS);
-				if(D) logger.debug(" Reconnected OK");
+				if(D) logger.d(" Reconnected OK");
 			} else {
-				if(D) logger.debug("Address is null");
+				if(D) logger.d("Address is null");
 			}
 		} catch (PoolException e) {
 			if(D)logger.error(" Reconnected KO " + e.getMessage());
@@ -93,10 +93,10 @@ public abstract class ObPoolConnector extends Thread implements LoggingObject {
 
 	public void halt() {
 		this.stopMe = true;
-		logger.debug("Halting " + this.toString())  ;
+		logger.d("Halting " + this.toString());
 		try {
 			withdrawHose();
-			logger.debug("Halted " + this.toString())  ;
+			logger.d("Halted " + this.toString());
 		} catch(NoClassDefFoundError ex){
 			//TODO: maybe remove this catch clause
 			ExceptionHandler.handleException(ex);
@@ -114,7 +114,7 @@ public abstract class ObPoolConnector extends Thread implements LoggingObject {
 
 	private void withdrawHose() {
 		if (hose == null) {
-			if(D)logger.debug(" Hose is already null.");
+			if(D) logger.d(" Hose is already null.");
 		} else {
 			try {
 				//this throws out of memory exception many times
@@ -143,10 +143,10 @@ public abstract class ObPoolConnector extends Thread implements LoggingObject {
 
 	protected boolean isHoseOkay(Hose h) {
 		if (h == null) {
-			if(D)logger.debug(" Hose is null from thread " + this.toString());
+			if(D) logger.d(" Hose is null from thread " + this.toString());
 			return false;
 		} else if (!h.isConnected()) {
-			logger.debug(" Hose was disconnected from thread  " + this.toString());
+			logger.d(" Hose was disconnected from thread  " + this.toString());
 			return false;
 		} else {
 			return true;
@@ -158,7 +158,7 @@ public abstract class ObPoolConnector extends Thread implements LoggingObject {
 	}
 	
 	protected void connect() {
-		if(D)logger.debug(" Connecting to pool " + "/" + obPool);
+		if(D) logger.d(" Connecting to pool " + "/" + obPool);
 		try {
 			initHose();
 		} catch (BadAddressException e) {
@@ -171,9 +171,9 @@ public abstract class ObPoolConnector extends Thread implements LoggingObject {
 		}
 		
 		if (hose != null) {
-			if(D)logger.debug(" Connection successful to " + this.toString());
+			if(D) logger.d(" Connection successful to " + this.toString());
 		} else {
-			if(D)logger.debug(" Unable to connect to pool "+obPool);
+			if(D) logger.d(" Unable to connect to pool " + obPool);
 		}
 	}
 
