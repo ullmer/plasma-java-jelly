@@ -21,6 +21,7 @@ import com.oblong.jelly.PoolException;
 import com.oblong.jelly.Protein;
 import com.oblong.jelly.Slaw;
 import com.oblong.util.ExceptionHandler;
+import com.oblong.util.logging.ObLog;
 
 /**
  *
@@ -29,6 +30,8 @@ import com.oblong.util.ExceptionHandler;
  * @author jao
  */
 public class Sender extends Activity implements View.OnClickListener {
+
+    private static final ObLog log = ObLog.get(CameraView.class);
 
     @Override public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -125,7 +128,7 @@ public class Sender extends Activity implements View.OnClickListener {
                 h = Pool.participate(address);
                 h.deposit(Sender.this.ensureProtein());
             } catch (PoolException e) {
-                log.e("SenderThread", "Error depositing protein", e);
+                log.e(e, "Error depositing protein");
                 dlg = SENT_DLG_KO;
                 SENT_DLG_MSGS[SENT_DLG_KO] =
                     "Error connecting to pool:\n" + e.getMessage();
@@ -144,7 +147,7 @@ public class Sender extends Activity implements View.OnClickListener {
             view.setImageBitmap(ImageStore.imageBitmap());
         } catch (Throwable e) {
             ExceptionHandler.handleException(e);
-            log.e("Sender", "Error reading image file", e);
+            log.e(e, "Error reading image file");
             finish();
         }
     }
@@ -161,7 +164,7 @@ public class Sender extends Activity implements View.OnClickListener {
                 ImageStore.clear();
             } catch (Throwable e) {
                 ExceptionHandler.handleException(e);
-                log.e("Sender", "Error converting image", e);
+                log.e("Error converting image", e);
                 return null;
             }
         }

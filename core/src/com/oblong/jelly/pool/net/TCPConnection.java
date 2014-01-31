@@ -22,10 +22,13 @@ import com.oblong.jelly.slaw.SlawInternalizer;
 import com.oblong.jelly.pool.Configuration;
 import com.oblong.jelly.util.ByteReader;
 import com.oblong.util.ExceptionHandler;
+import com.oblong.util.logging.ObLog;
 
 import static com.oblong.jelly.pool.net.Request.*;
 
 final class TCPConnection implements NetConnection {
+
+    private static final ObLog log = ObLog.get(TCPConnection.class);
 
     @Override public PoolServerAddress address() { return address; }
     @Override public int version() { return version; }
@@ -59,8 +62,8 @@ final class TCPConnection implements NetConnection {
         try {
             socket.close();
         } catch (IOException e) {
-            final Logger log = Logger.getLogger(getClass().getName());
-            log.warning("Error closing socket (ignored): " + e.getMessage());
+//            final Logger log = Logger.getLogger(getClass().getName());
+            log.w("Error closing socket (ignored): " + e.getMessage());
         }
     }
 

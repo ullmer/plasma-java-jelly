@@ -9,6 +9,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 
+import com.oblong.util.logging.ObLog;
 import net.jcip.annotations.NotThreadSafe;
 
 import com.oblong.jelly.MetadataRequest;
@@ -28,6 +29,8 @@ import com.oblong.jelly.slaw.SlawFactory;
 
 @NotThreadSafe
 public final class NetHose implements Hose {
+
+    private static final ObLog log = ObLog.get(NetHose.class);
 
     @Override public int version() {
         return connection.version();
@@ -58,8 +61,7 @@ public final class NetHose implements Hose {
         try {
             if (isConnected()) Request.WITHDRAW.sendAndClose(connection);
         } catch (PoolException e) {
-            final Logger log = Logger.getLogger(Hose.class.getName());
-            log.info("Error withdrawing Hose '" + name() + "':\n\t" + e);
+            log.i("Error withdrawing Hose '" + name() + "':\n\t" + e);
         }
     }
 
