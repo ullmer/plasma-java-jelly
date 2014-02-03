@@ -112,7 +112,7 @@ public final class JavaSlawFactory implements SlawFactory {
 
     @Override public Slaw array(Slaw[] sx) {
         if (sx == null || sx.length == 0)
-            throw new IllegalArgumentException("Arg cannot be empty");
+            throw new IllegalArgumentException("Arg cannot be empty or null");
         if (!SlawIlk.haveSameIlk(sx))
             throw new IllegalArgumentException(
                 "All args must have the same ilk");

@@ -14,6 +14,7 @@ import java.util.NoSuchElementException;
 import static com.oblong.jelly.NumericIlk.*;
 import static com.oblong.jelly.SlawIlk.*;
 
+import com.oblong.jelly.slaw.java.SlawArray;
 import com.oblong.jelly.slaw.java.SlawList;
 import com.oblong.jelly.slaw.java.SlawMap;
 import com.oblong.jelly.slaw.java.SlawString;
@@ -970,6 +971,15 @@ public abstract class Slaw implements Iterable<Slaw> {
      */
     public static Slaw array(Slaw[] sx) { return factory.array(sx); }
 
+    public static Slaw array(float[] array) {
+        // this could be performance-optimized; we don't really need to go through List
+        List<Slaw> slawList = new ArrayList<Slaw>();
+        for (float element : array) {
+            slawList.add(Slaw.float32(element));
+        }
+        return SlawArray.array(slawList);
+    }
+
     /**
      * A factory method creating an array of INT8 or UNT8. The given
      * data is copied, so modifying it won't modify the returned slaw.
@@ -1088,4 +1098,6 @@ public abstract class Slaw implements Iterable<Slaw> {
 
     private static final com.oblong.jelly.slaw.SlawExternalizer externalizer =
         com.oblong.jelly.slaw.io.YamlExternalizer.rawExternalizer();
+
+
 }

@@ -14,9 +14,9 @@ import static com.oblong.jelly.SlawIlk.*;
 import net.jcip.annotations.Immutable;
 
 @Immutable
-final class SlawArray extends CompositeNumericSlaw {
+public final class SlawArray extends CompositeNumericSlaw {
 
-    static Slaw valueOf(List<Slaw> cmps) {
+    public static Slaw valueOf(List<Slaw> cmps) {
         assert cmps.size() > 0;
         NumericIlk ni = NumericIlk.dominantIlkForList(cmps);
         return cmps.get(0).isNumber() && ni.width() == 8
