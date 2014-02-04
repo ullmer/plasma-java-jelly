@@ -14,6 +14,7 @@ import java.util.NoSuchElementException;
 import static com.oblong.jelly.NumericIlk.*;
 import static com.oblong.jelly.SlawIlk.*;
 
+import com.oblong.jelly.schema.HasToSlaw;
 import com.oblong.jelly.slaw.java.SlawArray;
 import com.oblong.jelly.slaw.java.SlawList;
 import com.oblong.jelly.slaw.java.SlawMap;
@@ -106,7 +107,7 @@ import net.jcip.annotations.Immutable;
  * @author jao
  */
 @Immutable
-public abstract class Slaw implements Iterable<Slaw> {
+public abstract class Slaw implements Iterable<Slaw>, HasToSlaw {
 
     /**
      * The ilk (or kind) of this slaw. The return value of this method
@@ -1099,5 +1100,9 @@ public abstract class Slaw implements Iterable<Slaw> {
     private static final com.oblong.jelly.slaw.SlawExternalizer externalizer =
         com.oblong.jelly.slaw.io.YamlExternalizer.rawExternalizer();
 
+
+    @Override public Slaw toSlaw() {
+        return this;
+    }
 
 }
