@@ -41,7 +41,7 @@ public interface SlawFactory {
 
     Slaw cons(Slaw car, Slaw cdr);
 
-    Slaw list(List<Slaw> s);
+    Slaw list(List<? extends Slaw> s);
     SlawList list(Slaw... s);
 
     SlawMap map(Map<Slaw,Slaw> m);

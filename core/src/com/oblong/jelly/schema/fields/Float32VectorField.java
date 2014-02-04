@@ -5,8 +5,6 @@ import com.oblong.jelly.schema.SlawSchema;
 import com.oblong.util.ExceptionHandler;
 
 /**
- * Maybe call it "FloatVectorField"...
- *
  * User: karol
  * Date: 2/3/14
  * Time: 5:31 PM

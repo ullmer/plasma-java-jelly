@@ -25,12 +25,12 @@ public final class SlawList extends JavaSlaw {
         return new SlawList(sx);
     }
 
-    static Slaw valueOf(List<Slaw> sx, boolean copy) {
+    static Slaw valueOf(List<? extends Slaw> sx, boolean copy) {
         if (sx.size() == 0) return EMPTY_LIST;
         return new SlawList(sx, copy);
     }
 
-    static Slaw valueOf(List<Slaw> sx) {
+    static Slaw valueOf(List<? extends Slaw> sx) {
         return valueOf(sx, true);
     }
 
@@ -101,8 +101,9 @@ public final class SlawList extends JavaSlaw {
         return true;
     }
 
-    SlawList(List<Slaw> elems, boolean copy) {
-        elements = copy ? new ArrayList<Slaw>(elems) : elems;
+    SlawList(List<? extends Slaw> elems, boolean copy) {
+        elements = copy ? new ArrayList<Slaw>(elems)
+                : (List<Slaw>) elems /* it is final anyway, so we can cast */;
         while (elements.remove(null));
     }
 

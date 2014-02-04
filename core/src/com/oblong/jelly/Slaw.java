@@ -698,7 +698,7 @@ public abstract class Slaw implements Iterable<Slaw> {
      * <code>s</code> are discarded. If its argument is null, it
      * returns an empty Slaw list.
      */
-    public static Slaw list(List<Slaw> s) { return factory.list(s); }
+    public static Slaw list(List<? extends Slaw> s) { return factory.list(s); }
 
     /**
      * A factory method constructing a Slaw with ilk {@link SlawIlk#MAP}

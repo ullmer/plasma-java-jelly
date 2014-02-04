@@ -130,7 +130,7 @@ public final class JavaSlawFactory implements SlawFactory {
 
     @Override public SlawList list(Slaw... sx) { return SlawList.valueOf(sx); }
 
-    @Override public Slaw list(List<Slaw> sx) {
+    @Override public Slaw list(List<? extends Slaw> sx) {
         return SlawList.valueOf(sx);
     }
 
