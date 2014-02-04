@@ -2,6 +2,7 @@ package com.oblong.jelly.schema.fields;
 
 import com.oblong.jelly.Slaw;
 import com.oblong.jelly.schema.SlawSchema;
+import com.oblong.util.logging.ObLog;
 
 /**
  * Created with IntelliJ IDEA.
@@ -11,6 +12,8 @@ import com.oblong.jelly.schema.SlawSchema;
  *
  */
 public class BoolField extends AbstractField<Boolean> {
+
+	private final ObLog log = ObLog.get(this);
 
 	public BoolField(String name) {
 		super(name);
@@ -22,7 +25,27 @@ public class BoolField extends AbstractField<Boolean> {
 
 	@Override
 	protected Boolean getCustom(Slaw slaw) {
-		return slaw.emitBoolean();
+		if ( slaw.isBoolean() ) {
+			return slaw.emitBoolean();
+		} else {
+			if ( slaw.isString() ) {
+				String str = slaw.emitString();
+				/*--*/ if ( "true".equals(str) ) {
+					logBoolFromStringWarning(str);
+					return true;
+				} else if ( "false".equals(str) ) {
+					logBoolFromStringWarning(str);
+					return false;
+				}
+			}
+		}
+//		return slaw.emitBoolean();
+		throw new RuntimeException("Unable to convert slaw to bool. Field : " + BoolField.this
+				+ "; slaw:" + slaw);
+	}
+
+	private void logBoolFromStringWarning(String str) {
+		log.e("Bool from string '"+str+"', for field " + toString() + " - will work, but is discouraged.");
 	}
 
 	@Override
