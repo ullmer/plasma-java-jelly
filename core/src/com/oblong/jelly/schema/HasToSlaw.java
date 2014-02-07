@@ -10,5 +10,5 @@ import com.oblong.jelly.Slaw;
  *
  */
 public interface HasToSlaw<T extends Slaw> {
-	Slaw toSlaw();
+	T toSlaw();
 }
