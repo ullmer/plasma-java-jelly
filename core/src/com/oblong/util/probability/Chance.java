@@ -42,4 +42,10 @@ public class Chance {
 		return new Chance(chance);
 	}
 
+	@Override
+	public String toString() {
+		return "Chance{" +
+				"chance=" + chance +
+				'}';
+	}
 }
