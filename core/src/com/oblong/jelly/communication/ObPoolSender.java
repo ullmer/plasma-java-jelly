@@ -53,4 +53,8 @@ public class ObPoolSender extends ObPoolConnector {
 		return remove;
 	}
 
+//	@Override public String getLoggerName() {
+//		return super.toString();
+//	}
+
 }

@@ -6,7 +6,7 @@ import com.oblong.util.ExceptionHandler;
 import com.oblong.util.logging.LoggingObject;
 import com.oblong.util.logging.ObLog;
 
-public abstract class ObPoolConnector extends Thread implements LoggingObject {
+public abstract class ObPoolConnector extends Thread {
 
 //	private static final String TAG = "ObPoolConnector";
 	private static final boolean  D = true;

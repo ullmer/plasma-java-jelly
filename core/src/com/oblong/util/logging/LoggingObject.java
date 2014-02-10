@@ -6,6 +6,7 @@ package com.oblong.util.logging;
  * Time: 2:08 PM
  */
 public interface LoggingObject {
+//	String getLoggerName();
 
 	// TODO: toLoggableString
 

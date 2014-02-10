@@ -13,6 +13,7 @@ import org.apache.log4j.Priority;
  */
 public class ObLog {
 
+	private final Object loggingObject;
 	/**
 	 * Using composition instead of inheritance because of the complexity of creating a subclass
 	 * of org.apache.log4j.Logger, due to e.g. interactions with LoggerRepository and static factory methods.
@@ -20,11 +21,16 @@ public class ObLog {
 	protected final Logger logger;
 
 	protected ObLog(Class<?> aClass) {
-		this(Logger.getLogger(aClass));
+		this(getLoggerForClass(aClass), null);
 	}
 
-	protected ObLog(Logger logger) {
+	private static Logger getLoggerForClass(Class<?> aClass) {
+		return Logger.getLogger(aClass);
+	}
+
+	protected ObLog(Logger logger, Object loggingObject) {
 		this.logger = logger;
+		this.loggingObject = loggingObject;
 	}
 
 	public static ObLog get(Class<?> aClass) {
@@ -32,8 +38,24 @@ public class ObLog {
 	}
 
 	public static ObLog get(Object o) {
+//		loggingObject = o;
+//		String loggerName;
+//		if (o instanceof LoggingObject) {
+//			LoggingObject loggingObject = (LoggingObject) o;
+////			loggerName = loggingObject.getLoggerName();
+//		} else {
+//			loggerName = o.toString();
+//		}
 		// later we might also show the address of the object to allow distinguishing of object instances
-		return get(o.getClass());
+		return new ObLog(getLoggerForClass(o.getClass()), o);
+	}
+
+	private CharSequence addExtraInfo(CharSequence message) {
+		if ( loggingObject == null ) {
+			return message;
+		} else {
+			return loggingObject + "=> " + message;
+		}
 	}
 
 	public void assertLog(boolean assertion, String msg) { logger.assertLog(assertion, msg); }
@@ -62,32 +84,38 @@ public class ObLog {
 	public boolean d() { return logger.isDebugEnabled(); }
 	public boolean t() { return logger.isTraceEnabled(); }
 
-	public void f(CharSequence message) { logger.fatal(message); }
-	public void e(CharSequence message) { logger.error(message); }
-	public void w(CharSequence message) { logger.warn(message); }
-	public void i(CharSequence message) { logger.info(message); }
-	public void d(CharSequence message) { logger.debug(message); }
-	public void t(CharSequence message) { logger.trace(message); }
+	public void f(CharSequence message) { logger.fatal(addExtraInfo(message)); }
+	public void e(CharSequence message) { logger.error(addExtraInfo(message)); }
 
-	public void f(CharSequence prefix, Object message) { f(prefix + ": " + message); }
-	public void e(CharSequence prefix, Object message) { e(prefix + ": " + message); }
-	public void w(CharSequence prefix, Object message) { w(prefix + ": " + message); }
-	public void i(CharSequence prefix, Object message) { i(prefix + ": " + message); }
-	public void d(CharSequence prefix, Object message) { d(prefix + ": " + message); }
-	public void t(CharSequence prefix, Object message) { t(prefix + ": " + message); }
+	public void w(CharSequence message) { logger.warn(addExtraInfo(message)); }
+	public void i(CharSequence message) { logger.info(addExtraInfo(message)); }
+	public void d(CharSequence message) { logger.debug(addExtraInfo(message)); }
+	public void t(CharSequence message) { logger.trace(addExtraInfo(message)); }
 
-	public void f(Throwable t, CharSequence msg) { logger.fatal(msg, t); };
-	public void e(Throwable t, CharSequence msg) { logger.error(msg, t); };
-	public void w(Throwable t, CharSequence msg) { logger.warn (msg, t); };
-	public void i(Throwable t, CharSequence msg) { logger.info (msg, t); };
-	public void d(Throwable t, CharSequence msg) { logger.debug(msg, t); };
-	public void t(Throwable t, CharSequence msg) { logger.trace(msg, t); };
+	public void f(CharSequence prefix, Object message) { f(addExtraInfo(PrefixMessage(prefix, message))); }
 
-	public void f(CharSequence msg, Throwable t) { logger.fatal(msg, t); };
-	public void e(CharSequence msg, Throwable t) { logger.error(msg, t); };
-	public void w(CharSequence msg, Throwable t) { logger.warn (msg, t); };
-	public void i(CharSequence msg, Throwable t) { logger.info (msg, t); };
-	public void d(CharSequence msg, Throwable t) { logger.debug(msg, t); };
-	public void t(CharSequence msg, Throwable t) { logger.trace(msg, t); };
+	private String PrefixMessage(CharSequence prefix, Object message) {
+		return prefix + ": " + message;
+	}
+
+	public void e(CharSequence prefix, Object message) { e(addExtraInfo(PrefixMessage(prefix, message))); }
+	public void w(CharSequence prefix, Object message) { w(addExtraInfo(PrefixMessage(prefix, message))); }
+	public void i(CharSequence prefix, Object message) { i(addExtraInfo(PrefixMessage(prefix, message))); }
+	public void d(CharSequence prefix, Object message) { d(addExtraInfo(PrefixMessage(prefix, message))); }
+	public void t(CharSequence prefix, Object message) { t(addExtraInfo(PrefixMessage(prefix, message))); }
+
+	public void f(Throwable t, CharSequence message) { logger.fatal(addExtraInfo(message), t); };
+	public void e(Throwable t, CharSequence message) { logger.error(addExtraInfo(message), t); };
+	public void w(Throwable t, CharSequence message) { logger.warn (addExtraInfo(message), t); };
+	public void i(Throwable t, CharSequence message) { logger.info (addExtraInfo(message), t); };
+	public void d(Throwable t, CharSequence message) { logger.debug(addExtraInfo(message), t); };
+	public void t(Throwable t, CharSequence message) { logger.trace(addExtraInfo(message), t); };
+
+	public void f(CharSequence message, Throwable t) { logger.fatal(addExtraInfo(message), t); };
+	public void e(CharSequence message, Throwable t) { logger.error(addExtraInfo(message), t); };
+	public void w(CharSequence message, Throwable t) { logger.warn (addExtraInfo(message), t); };
+	public void i(CharSequence message, Throwable t) { logger.info (addExtraInfo(message), t); };
+	public void d(CharSequence message, Throwable t) { logger.debug(addExtraInfo(message), t); };
+	public void t(CharSequence message, Throwable t) { logger.trace(addExtraInfo(message), t); };
 
 }
