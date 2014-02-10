@@ -9,7 +9,7 @@ public class Uid<T extends HasUid> {
 	public final String uid;
 	public final Class<T> targetClass;
 
-	protected Uid(Class<T> targetClass, String uid) {
+	public Uid(Class<T> targetClass, String uid) {
 		if ( uid == null || "".equals(uid) ) {
 			throw new IllegalArgumentException("uid cannot be: [" + uid + " ]");
 		}
