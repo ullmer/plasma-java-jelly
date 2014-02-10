@@ -46,4 +46,11 @@ public abstract class SkewedDistribution<T extends Number> extends Distribution<
 		);
 	}
 
+	@Override
+	public String toString() {
+		return "SkewedDistribution{" +
+				"chanceOfPickingFromDistribution=" + chanceOfPickingFromDistribution +
+				", distribution=" + distribution +
+				'}';
+	}
 }

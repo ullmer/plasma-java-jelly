@@ -9,6 +9,6 @@ import com.oblong.jelly.Slaw;
  * Time: 10:17 PM
  *
  */
-public interface HasToSlaw {
-	Slaw toSlaw();
+public interface HasToSlaw<T extends Slaw> {
+	T toSlaw();
 }

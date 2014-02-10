@@ -1,11 +1,15 @@
 package com.oblong.jelly.schema.fields;
 
+import com.oblong.jelly.Slaw;
+import com.oblong.jelly.schema.HasToSlaw;
+import com.oblong.jelly.slaw.java.SlawString;
+
 /**
  * User: karol
  * Date: 11/18/13
  * Time: 4:34 PM
  */
-public class Uid<T extends HasUid> {
+public class Uid<T extends HasUid> implements HasToSlaw<SlawString> {
 	public final String uid;
 	public final Class<T> targetClass;
 
@@ -38,13 +42,23 @@ public class Uid<T extends HasUid> {
 		return uid; // basic form, because it is sometimes sent to native
 	}
 
+	public String toParsableString() {
+		return this.uid;
+	}
+
 	public boolean safeEquals(Uid uid) {
 		return equals(uid);
 	}
 
-	/** Acquire Uid object */
+	/**
+	 * _A_cquire _a_ Uid object
+	 */
 	public static <T extends HasUid> Uid<T> a(Class<T> targetClass, String uidString) {
 		return new Uid<T>(targetClass, uidString);
 	}
 
+	@Override
+	public SlawString toSlaw() {
+		return Slaw.string(this.uid);
+	}
 }

@@ -42,4 +42,11 @@ public abstract class Range<T extends Number> extends Distribution<T> {
 	}
 
 
+	@Override
+	public String toString() {
+		return "Range{" +
+				"minInclusive=" + minInclusive +
+				", maxInclusive=" + maxInclusive +
+				'}';
+	}
 }
