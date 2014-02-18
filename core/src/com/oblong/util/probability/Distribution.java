@@ -9,7 +9,17 @@ import java.util.Random;
  */
 public abstract class Distribution<T extends Number> {
 
-	public abstract T random(Random random);
+	protected final ProbabilityHost ph;
+
+	protected Distribution(ProbabilityHost ph) {
+		this.ph = ph;
+	}
+
+	protected Distribution() {
+		this(ProbabilityHost.the);
+	}
+
+	public abstract T random();
 
 	public abstract T getMinInclusive();
 	public abstract T getMaxInclusive();

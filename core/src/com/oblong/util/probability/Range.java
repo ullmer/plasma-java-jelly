@@ -7,7 +7,6 @@ import net.jcip.annotations.Immutable;
  * User: karol
  * Date: 9/6/13
  * Time: 2:22 PM
- *
  */
 @Immutable
 public abstract class Range<T extends Number> extends Distribution<T> {
@@ -26,6 +25,7 @@ public abstract class Range<T extends Number> extends Distribution<T> {
 	}
 
 	public Range(T minInclusive, T maxInclusive) {
+		super();
 		this.minInclusive = minInclusive;
 		this.maxInclusive = maxInclusive;
 	}
@@ -34,13 +34,13 @@ public abstract class Range<T extends Number> extends Distribution<T> {
 		this(minMaxInclusive, minMaxInclusive);
 	}
 
+	/** Used to obtain an instance of the same class but default values */
 	public abstract Range<T> newInstance(T minInclusive, T maxInclusive);
 
 	@Override
 	public Range<T> multiplyMaxInclusive(double multiplier) {
 		return newInstance(minInclusive, multiply(maxInclusive, multiplier));
 	}
-
 
 	@Override
 	public String toString() {

@@ -1,17 +1,15 @@
 package com.oblong.jelly.pool.net.stress;
 
-import com.oblong.jelly.*;
+import com.oblong.jelly.NoSuchProteinException;
+import com.oblong.jelly.PoolException;
+import com.oblong.jelly.Protein;
 import com.oblong.util.Util;
 import net.jcip.annotations.GuardedBy;
 import org.apache.log4j.Logger;
 
-import java.util.Random;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import static com.oblong.jelly.Slaw.protein;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 /**
  * Created with IntelliJ IDEA.
@@ -22,8 +20,6 @@ import static org.junit.Assert.assertTrue;
 public class Receiver extends ConnectionParticipant {
 
 	private static final Logger logger = Logger.getLogger(Receiver.class);
-
-	static final Random random = new Random();
 
 	@GuardedBy("this")
 	private boolean finishedReceiving = false;
@@ -66,8 +62,7 @@ public class Receiver extends ConnectionParticipant {
 						logEveryNth(qtyProcessedReceivedProteins, 100, "Before awaitNext(). qtyProcessedReceivedProteins= " +
 								qtyProcessedReceivedProteins);
 						setReadyToReceive();
-						Protein protein = hose.awaitNext(testConfig.awaitNextTimeout.random(random),
-								TimeUnit.MILLISECONDS);
+						Protein protein = hose.awaitNext(testConfig.awaitNextTimeout.random(), MILLISECONDS);
 						logger.debug("Protein received. qtyProcessedReceivedProteins: "+ qtyProcessedReceivedProteins);
 						if(logger.isTraceEnabled()) logger.trace("Protein received (details) : "+protein);
 
@@ -94,7 +89,7 @@ public class Receiver extends ConnectionParticipant {
 								break;
 							}
 						}
-						testConfig.sleepBetweenAwaitNext.random(random);
+						testConfig.sleepBetweenAwaitNext.random();
 
 					} catch (TimeoutException e) {
 						printNoProteinReceivedYet("Timeout ", qtyProcessedReceivedProteins);

@@ -9,7 +9,6 @@ import java.util.Random;
  * User: karol
  * Date: 9/6/13
  * Time: 2:29 PM
- *
  */
 @Immutable
 public class IntRange extends Range<Integer> {
@@ -30,8 +29,8 @@ public class IntRange extends Range<Integer> {
 	/**
 	 * NOTE: max value is intentionally *inclusive*, unlike in java.util.Random.nextInt
 	 */
-	@Override public Integer random(Random random) {
-		return randomInt(minInclusive, maxInclusive, random);
+	@Override public Integer random() {
+		return randomInt(minInclusive, maxInclusive);
 	}
 
 	@Override
@@ -44,14 +43,13 @@ public class IntRange extends Range<Integer> {
 		return Integer.valueOf((int) (maxInclusive * multiplier));
 	}
 
-	public static int randomInt(int minInclusive, int maxInclusive, Random random) {
+	public static int randomInt(int minInclusive, int maxInclusive) {
 		int diff = maxInclusive - minInclusive;
 		if ( diff > 0 ) {
-			return minInclusive + random.nextInt(diff + 1);
+			return minInclusive + ProbabilityHost.the.getRandom().nextInt(diff + 1);
 		} else {
 			return minInclusive;
 		}
 	}
-
 
 }

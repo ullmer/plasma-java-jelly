@@ -16,6 +16,7 @@ public abstract class SkewedDistribution<T extends Number> extends Distribution<
 	public final Distribution<T> distribution;
 
 	public SkewedDistribution(Chance chanceOfPickingFromDistribution, Distribution<T> range)  {
+		super();
 		this.chanceOfPickingFromDistribution = chanceOfPickingFromDistribution;
 		this.distribution = range;
 	}
@@ -36,7 +37,7 @@ public abstract class SkewedDistribution<T extends Number> extends Distribution<
 	}
 
 	public abstract SkewedDistribution<T> newInstance(Chance chanceOfPickingFromDistribution,
-		Distribution<T> distribution);
+	                                                  Distribution<T> distribution);
 
 	@Override
 	public SkewedDistribution<T> multiplyMaxInclusive(double multiplier) {

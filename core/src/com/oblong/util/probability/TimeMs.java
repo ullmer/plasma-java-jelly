@@ -1,6 +1,7 @@
 package com.oblong.util.probability;
 
 import com.oblong.util.Util;
+import com.oblong.util.logging.ObLog;
 import net.jcip.annotations.Immutable;
 
 import java.util.Random;
@@ -19,6 +20,8 @@ import java.util.Random;
 @Immutable
 public class TimeMs extends SkewedIntDistribution {
 
+	private final ObLog log = ObLog.get(this);
+
 	public TimeMs(double chanceOfPickingFromDistribution, Distribution<Integer> range) {
 		this(new Chance(chanceOfPickingFromDistribution), range);
 	}
@@ -28,16 +31,19 @@ public class TimeMs extends SkewedIntDistribution {
 	}
 
 	public TimeMs(int exactValue) {
-		this(SURE_CHANCE, new IntRange(exactValue));
+		this(SURE_CHANCE, new IntRange(0, exactValue));
 	}
 
 	@Override
-	public TimeMs newInstance(Chance chanceOfPickingFromDistribution, Distribution<Integer> distribution) {
+	public TimeMs newInstance(Chance chanceOfPickingFromDistribution,
+	                          Distribution<Integer> distribution) {
 		return new TimeMs(chanceOfPickingFromDistribution, distribution);
 	}
 
-	public void sleep(Random random) {
-		Util.sleepUninterruptibly(random(random));
+	public void sleep() {
+		Integer randomMs = random();
+		if(log.d()) log.d("random sleep for " + randomMs + " ms");
+		Util.sleepUninterruptibly(randomMs);
 	}
 
 	@Override

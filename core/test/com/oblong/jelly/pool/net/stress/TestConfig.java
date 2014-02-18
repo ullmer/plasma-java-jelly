@@ -11,7 +11,7 @@ public class TestConfig {
 
 	public static final int MB = 1024 * 1024;
 
-	/** Simluate failure in the test */
+	/** Simulate failure in the test */
 	public static final boolean MAKE_FAIL = false;
 
 

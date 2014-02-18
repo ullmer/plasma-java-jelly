@@ -74,7 +74,7 @@ public class Sender extends ConnectionParticipant {
 
 	/** @return whether a premature stop occured */
 	public boolean createAndSendBatch(boolean lastBatch) {
-		int batchSize = testConfig.qtyProteinsInBatch.random(random);
+		int batchSize = testConfig.qtyProteinsInBatch.random();
 		logger.debug("Will send batch of " + batchSize + " proteins");
 		for(int iProtein=0; iProtein < batchSize; iProtein++) {
 			if ( checkReceiverFinishedPrematurely() ) {
@@ -83,7 +83,7 @@ public class Sender extends ConnectionParticipant {
 			boolean isLastProteinInConnectionSession = lastBatch && iProtein == batchSize - 1;
 			Protein protein = proteinGenerator.makeProtein(qtySentProteins,
 					test.poolName, proteinGenerator.getTestProteinDescrip(), isLastProteinInConnectionSession);
-			testConfig.sleepBetweenProteinsInBatch.sleep(random);
+			testConfig.sleepBetweenProteinsInBatch.sleep();
 			sendProtein(protein);
 			if ( isLastProteinInConnectionSession ) {
 				logger.info("Sent last protein in connection session");
@@ -118,11 +118,11 @@ public class Sender extends ConnectionParticipant {
 	}
 
 	private void sendAllProteinBatches() {
-		int qtyBatches = testConfig.qtyBatchesBeforeDisconnect.random(random);
+		int qtyBatches = testConfig.qtyBatchesBeforeDisconnect.random();
 		receiver.waitTillReadyToReceive();
 		logger.info("Will send " + qtyBatches + " protein batches");
 		for ( int iBatch = 0; iBatch < qtyBatches; iBatch ++ ) {
-			testConfig.sleepBetweenProteinBatches.sleep(random);
+			testConfig.sleepBetweenProteinBatches.sleep();
 			boolean prematureStop = createAndSendBatch(iBatch == qtyBatches - 1);
 			if ( prematureStop ) {
 				break;

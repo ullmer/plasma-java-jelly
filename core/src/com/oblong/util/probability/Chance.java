@@ -2,8 +2,6 @@ package com.oblong.util.probability;
 
 import net.jcip.annotations.Immutable;
 
-import java.util.Random;
-
 /**
  * AKA probability
  *
@@ -17,19 +15,23 @@ public class Chance {
 	private static final int MULTIPLY_TO_INT = 100;
 
 	public final double chance;
+	private final ProbabilityHost ph;
 
 	public Chance(double chance) {
+		this.ph = ProbabilityHost.the;
 		if ( chance < 0.0 || chance > 1.0 ) {
 			throw new IllegalArgumentException("Chance not in 0..1 range: " + chance);
 		}
 		this.chance = chance;
 	}
 
-	public boolean randomBool(Random random) {
+	public boolean randomBool() {
 		if ( chance == 0 ) {
 			return false; // a bit of speedup
+		} else if (chance == 1.0) {
+			return true;
 		} else {
-			return random.nextInt(MULTIPLY_TO_INT) < chance * MULTIPLY_TO_INT;
+			return ph.getRandom().nextInt(MULTIPLY_TO_INT) < chance * MULTIPLY_TO_INT;
 		}
 
 		// examples:

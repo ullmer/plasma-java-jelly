@@ -60,7 +60,7 @@ public class ProteinGenerator {
 				CONNECTION_SESSION_CYCLE_ID, int64(connectionSession.getCycleId()));
 
 		//how much is enough?
-		int randomDataLength = connectionSession.testConfig.qtyRudeDataBytes.random(random);
+		int randomDataLength = connectionSession.testConfig.qtyRudeDataBytes.random();
 		if (randomDataLength > 0) {
 			final byte[] data = new byte[randomDataLength];
 			random.nextBytes(data);

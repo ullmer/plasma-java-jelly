@@ -7,7 +7,6 @@ import java.util.Random;
  * User: karol
  * Date: 9/6/13
  * Time: 2:41 PM
- *
  */
 public class FloatRange extends Range<Float> {
 	public FloatRange(Float minInclusive, Float maxInclusive) {
@@ -20,8 +19,8 @@ public class FloatRange extends Range<Float> {
 	}
 
 
-	public Float random(Random random) {
-		float rnd = random.nextFloat();
+	public Float random() {
+		float rnd = ProbabilityHost.the.getRandom().nextFloat();
 		float diff = maxInclusive - minInclusive;
 		return minInclusive + rnd * diff;
 

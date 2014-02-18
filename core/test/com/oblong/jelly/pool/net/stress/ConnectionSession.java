@@ -56,9 +56,9 @@ public class ConnectionSession {
 
 	void createPoolIfNonExisting(PoolAddress poolAddress) {
 		try {
-			if ( testConfig.chanceOfRemovingPool.randomBool(random) ) {
+			if ( testConfig.chanceOfRemovingPool.randomBool() ) {
 				removePool();
-				testConfig.sleepAfterRemovingPool.sleep(random);
+				testConfig.sleepAfterRemovingPool.sleep();
 			}
 			if(!Pool.exists(poolAddress)){
 				Pool.create(poolAddress, POOL_OPTIONS);
