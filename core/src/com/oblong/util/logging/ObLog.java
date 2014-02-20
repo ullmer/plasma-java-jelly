@@ -48,13 +48,20 @@ public class ObLog {
 //		}
 		// later we might also show the address of the object to allow distinguishing of object instances
 		return new ObLog(getLoggerForClass(o.getClass()), o);
+
+
+//		return new ObLog(Logger.getLogger("_"), o); /* not the real logger, since we don't want to repeat the whole package
+//				name and class name in log text */
 	}
 
 	private CharSequence addExtraInfo(CharSequence message) {
 		if ( loggingObject == null ) {
 			return message;
 		} else {
-			return loggingObject + "=> " + message;
+			String loggingObjectString = "" + loggingObject;
+			loggingObjectString = loggingObjectString.replace(logger.getName(), "#"); /* too avoid FQCN twice. #@
+					to have a visual pattern */
+			return loggingObjectString + " ==>  " + message;
 		}
 	}
 
