@@ -60,7 +60,7 @@ import net.jcip.annotations.Immutable;
  * @author jao
  */
 @Immutable
-public class PoolException extends Exception {
+public class PoolException extends RuntimeException {
 
     /**
      * Each PoolException has a kind, which describes the type of the
