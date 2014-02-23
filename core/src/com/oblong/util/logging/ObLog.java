@@ -99,17 +99,17 @@ public class ObLog {
 	public void d(CharSequence message) { logger.debug(addExtraInfo(message)); }
 	public void t(CharSequence message) { logger.trace(addExtraInfo(message)); }
 
-	public void f(CharSequence prefix, Object message) { f(addExtraInfo(PrefixMessage(prefix, message))); }
+	public void f(CharSequence prefix, Object message) { f(addExtraInfo(prefixMessage(prefix, message))); }
 
-	private String PrefixMessage(CharSequence prefix, Object message) {
+	private String prefixMessage(CharSequence prefix, Object message) {
 		return prefix + ": " + message;
 	}
 
-	public void e(CharSequence prefix, Object message) { e(addExtraInfo(PrefixMessage(prefix, message))); }
-	public void w(CharSequence prefix, Object message) { w(addExtraInfo(PrefixMessage(prefix, message))); }
-	public void i(CharSequence prefix, Object message) { i(addExtraInfo(PrefixMessage(prefix, message))); }
-	public void d(CharSequence prefix, Object message) { d(addExtraInfo(PrefixMessage(prefix, message))); }
-	public void t(CharSequence prefix, Object message) { t(addExtraInfo(PrefixMessage(prefix, message))); }
+	public void e(CharSequence prefix, Object message) { e(addExtraInfo(prefixMessage(prefix, message))); }
+	public void w(CharSequence prefix, Object message) { w(addExtraInfo(prefixMessage(prefix, message))); }
+	public void i(CharSequence prefix, Object message) { i(addExtraInfo(prefixMessage(prefix, message))); }
+	public void d(CharSequence prefix, Object message) { d(addExtraInfo(prefixMessage(prefix, message))); }
+	public void t(CharSequence prefix, Object message) { t(addExtraInfo(prefixMessage(prefix, message))); }
 
 	public void f(Throwable t, CharSequence message) { logger.fatal(addExtraInfo(message), t); };
 	public void e(Throwable t, CharSequence message) { logger.error(addExtraInfo(message), t); };
