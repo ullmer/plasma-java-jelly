@@ -14,6 +14,10 @@ public class ThreadChecker {
 
 	}
 
+	public ThreadChecker() {
+		this(Thread.currentThread());
+	}
+
 	public void check() {
 		// TODO: disable for release to avoid performance penalty
 		Thread currentThread = Thread.currentThread();
