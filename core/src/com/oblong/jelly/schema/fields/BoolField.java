@@ -2,6 +2,7 @@ package com.oblong.jelly.schema.fields;
 
 import com.oblong.jelly.Slaw;
 import com.oblong.jelly.schema.SlawSchema;
+import com.oblong.util.ExceptionHandler;
 import com.oblong.util.logging.ObLog;
 
 /**
@@ -30,6 +31,7 @@ public class BoolField extends AbstractField<Boolean> {
 		} else {
 			if ( slaw.isString() ) {
 				String str = slaw.emitString();
+				ExceptionHandler.handleException("Expected bool but got string. Will try to parse: " + str);
 				/*--*/ if ( "true".equals(str) ) {
 					logBoolFromStringWarning(str);
 					return true;
