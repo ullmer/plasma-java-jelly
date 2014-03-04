@@ -19,6 +19,7 @@ package com.squareup.otto;
 
 import com.oblong.jelly.communication.OttoEvent;
 import com.oblong.util.ExceptionHandler;
+import com.oblong.util.logging.ObLog;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
@@ -89,6 +90,8 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * @author Jake Wharton
  */
 public class Bus {
+  protected final ObLog log = ObLog.get(this);
+
   public static final String DEFAULT_IDENTIFIER = "default";
 
   /** All registered event handlers, indexed by event type. */
@@ -328,7 +331,7 @@ public class Bus {
    */
   public void post(OttoEvent event) {
     enforcer.enforce(this);
-
+    if(log.d()) log.d("Will post event", event);
     Set<Class<?>> dispatchTypes = flattenHierarchy(event.getClass());
 
     boolean dispatched = false;
@@ -344,6 +347,7 @@ public class Bus {
     }
 
     if (!dispatched && !(event instanceof UnhandledEvent)) {
+      if(log.d()) log.d("Unhandled event", event);
       post(new UnhandledEvent(this, event));
     }
 
