@@ -22,12 +22,12 @@ public class UidField<T extends HasUid> extends AbstractField<Uid<T>> {
 	}
 
 	@Override
-	protected Uid<T> getCustom(Slaw slaw) {
+	protected Uid<T> fromSlaw_Custom(Slaw slaw) {
 		return Uid.a(tClass, slaw.emitString());
 	}
 
 	@Override
-	public Slaw toSlaw(Uid<T> value) {
+	public Slaw toSlaw_Custom(Uid<T> value) {
 		return Slaw.string(value.uid);
 	}
 

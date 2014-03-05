@@ -20,12 +20,12 @@ public class IntField extends AbstractField<Integer> {
 	}
 
 	@Override
-	protected Integer getCustom(Slaw slaw) {
+	protected Integer fromSlaw_Custom(Slaw slaw) {
 		return slaw.emitInt();
 	}
 
 	@Override
-	public Slaw toSlaw(Integer value) {
+	public Slaw toSlaw_Custom(Integer value) {
 		return Slaw.int32(value); // not sure if 32 bits
 	}
 }

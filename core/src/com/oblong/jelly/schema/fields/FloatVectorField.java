@@ -21,7 +21,7 @@ public class FloatVectorField extends AbstractField<float[]> {
 	}
 
 	@Override
-	protected float[] getCustom(Slaw slaw) {
+	protected float[] fromSlaw_Custom(Slaw slaw) {
 		Slaw[] slaws = slaw.emitArray();
 		if ( slaws.length != numDims ) {
 			ExceptionHandler.handleException("slaws.length != numDims: " + slaws.length +  " vs " + numDims +
@@ -37,7 +37,7 @@ public class FloatVectorField extends AbstractField<float[]> {
 	}
 
 	@Override
-	public Slaw toSlaw(float[] value) {
+	public Slaw toSlaw_Custom(float[] value) {
 		return Slaw.array(value);
 	}
 

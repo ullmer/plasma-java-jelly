@@ -20,12 +20,12 @@ public class StringField extends AbstractField<String> {
 	}
 
 	@Override
-	protected String getCustom(Slaw slaw) {
+	protected String fromSlaw_Custom(Slaw slaw) {
 		return slaw.emitString();
 	}
 
 	@Override
-	public Slaw toSlaw(String value) {
+	public Slaw toSlaw_Custom(String value) {
 		return Slaw.string(value);
 	}
 }

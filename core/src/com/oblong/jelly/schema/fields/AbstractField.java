@@ -52,7 +52,7 @@ public abstract class AbstractField<T> {
 		if ( slaw == null ) {
 			return null;
 		}
-		return getCustom(slaw);
+		return fromSlaw_Custom(slaw);
 	}
 
 //	public Type get(Protein protein) {
@@ -64,13 +64,28 @@ public abstract class AbstractField<T> {
 	 * This method has protected access in order to enforce the binding between the name and the type.
 	 * Otherwise it would be possible to get the value from _any_ slaw via this method and we don't want this.
 	 */
-	protected abstract T getCustom(Slaw slaw);
+	protected abstract T fromSlaw_Custom(Slaw slaw);
 
 	public Slaw getNameSlaw() {
 		return nameSlaw;
 	}
 
-	public abstract Slaw toSlaw(T value);
+	public final Slaw toSlaw(T value) {
+		checkValue(value);
+		if (value == null ) {
+			return Slaw.nil();
+		}
+		Slaw slaw = toSlaw_Custom(value);
+		return slaw;
+	}
+
+	protected abstract Slaw toSlaw_Custom(T value);
+
+	private final void checkValue(T value) {
+		if (value == null && !isOptional) {
+			throw throwNullValException(value);
+		}
+	}
 
 
 	@Override
@@ -102,10 +117,10 @@ public abstract class AbstractField<T> {
 			if ( isOptional ) {
 				return null; // not calling custom to avoid null-check hassle for subclasses
 			} else {
-				throw createNullValException(rawSlaw);
+				throw throwNullValException(rawSlaw);
 			}
 		}
-		return getCustom(rawSlaw);
+		return fromSlaw_Custom(rawSlaw);
 	}
 
 	public Slaw getRawSlawFrom(Map<Slaw,Slaw> map) {
@@ -116,17 +131,18 @@ public abstract class AbstractField<T> {
 		Slaw rawSlaw = map.get(getNameSlaw());
 		if (rawSlaw == null ) {
 			if ( isOptional ) {
-				return null;
+//				return null;
+				return Slaw.nil(); // correct way to express null value in jelly?
 			} else {
-				throw createNullValException(rawSlaw);
+				throw throwNullValException(rawSlaw);
 			}
 		}
 		return rawSlaw;
 	}
 
-	private IllegalArgumentException createNullValException(Slaw rawSlaw) {
+	private IllegalArgumentException throwNullValException(Object valueOrSlaw) {
 		throw new IllegalArgumentException(
-				"This field, " + this + ", is not optional and therefore the value cannot be " + rawSlaw);
+				"This field, " + this + ", is not optional and therefore the value cannot be " + valueOrSlaw);
 	}
 
 }

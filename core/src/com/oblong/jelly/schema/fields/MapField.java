@@ -22,7 +22,7 @@ public class MapField<T extends UnmarshalledSlawMap> extends AbstractField<T> {
 	}
 
 	@Override
-	protected T getCustom(Slaw slaw) {
+	protected T fromSlaw_Custom(Slaw slaw) {
 		throw new UnsupportedOperationException("This is handled in ProteinLang getters generation, instead of here," +
 				"to avoid using reflection or having a need for bloated number of inner classes.");
 	}
@@ -33,7 +33,7 @@ public class MapField<T extends UnmarshalledSlawMap> extends AbstractField<T> {
 	}
 
 	@Override
-	public SlawMap toSlaw(T value) {
+	public SlawMap toSlaw_Custom(T value) {
 		if ( value == null ) {
 			return null;
 		}

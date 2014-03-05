@@ -30,14 +30,14 @@ public class ListField<T extends HasToSlaw> extends AbstractField<List<T>> {
 	}
 
 	@Override
-	protected List<T> getCustom(Slaw containingSlaw) {
+	protected List<T> fromSlaw_Custom(Slaw containingSlaw) {
 		throw new UnsupportedOperationException("This is handled in ProteinLang getters generation, instead of here," +
 				"to avoid using reflection or having a need for bloated number of inner classes.");
 //		return containingSlaw.emitList();
 	}
 
 	@Override
-	public Slaw toSlaw(List<T> value) {
+	public Slaw toSlaw_Custom(List<T> value) {
 		List<Slaw> retList = new ArrayList<Slaw>();
 		for (T unmarshalledSlaw : value) {
 			retList.add(unmarshalledSlaw.toSlaw());

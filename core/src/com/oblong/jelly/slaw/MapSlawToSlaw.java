@@ -18,9 +18,6 @@ public class MapSlawToSlaw implements HasToSlaw<SlawMap> {
 
 	public <T> void put(AbstractField<T> field, T value) {
 		Slaw toSlaw = field.toSlaw(value);
-		if ( toSlaw == null ) {
-			toSlaw = Slaw.nil();
-		}
 		map.put(field.getNameSlaw(), toSlaw);
 
 		// consider what happens if value == null ?

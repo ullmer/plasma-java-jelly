@@ -25,7 +25,7 @@ public class BoolField extends AbstractField<Boolean> {
 	}
 
 	@Override
-	protected Boolean getCustom(Slaw slaw) {
+	protected Boolean fromSlaw_Custom(Slaw slaw) {
 		if ( slaw.isBoolean() ) {
 			return slaw.emitBoolean();
 		} else {
@@ -51,7 +51,7 @@ public class BoolField extends AbstractField<Boolean> {
 	}
 
 	@Override
-	public Slaw toSlaw(Boolean value) {
+	public Slaw toSlaw_Custom(Boolean value) {
 		return Slaw.bool(value);
 	}
 }

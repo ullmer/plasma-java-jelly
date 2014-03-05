@@ -2,7 +2,6 @@ package com.oblong.jelly.schema.fields;
 
 import com.oblong.jelly.Slaw;
 import com.oblong.jelly.schema.SlawSchema;
-import com.oblong.jelly.slaw.java.SlawList;
 import com.oblong.jelly.slaw.java.SlawMap;
 import com.oblong.util.logging.ObLog;
 
@@ -26,12 +25,12 @@ public class RawSlawMapField extends AbstractField<SlawMap> {
     }
 
     @Override
-    protected SlawMap getCustom(Slaw slaw) {
+    protected SlawMap fromSlaw_Custom(Slaw slaw) {
         return (SlawMap) slaw;
     }
 
     @Override
-    public Slaw toSlaw(SlawMap value) {
+    public Slaw toSlaw_Custom(SlawMap value) {
         return value;
     }
 

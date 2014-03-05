@@ -18,12 +18,12 @@ public class ObjectField<T extends UnmarshalledSlaw> extends AbstractField<T /* 
 	}
 
 	@Override
-	protected T getCustom(Slaw slaw) {
+	protected T fromSlaw_Custom(Slaw slaw) {
 		throw new UnsupportedOperationException("Not implemented yet. I was focused on setting values so far.");
 	}
 
 	@Override
-	public Slaw toSlaw(T value) {
+	public Slaw toSlaw_Custom(T value) {
 		return value.toSlaw();
 	}
 }

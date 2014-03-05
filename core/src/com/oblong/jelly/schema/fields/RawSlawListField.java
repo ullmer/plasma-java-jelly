@@ -25,12 +25,12 @@ public class RawSlawListField extends AbstractField<SlawList> {
     }
 
     @Override
-    protected SlawList getCustom(Slaw slaw) {
+    protected SlawList fromSlaw_Custom(Slaw slaw) {
         return (SlawList) slaw;
     }
 
     @Override
-    public Slaw toSlaw(SlawList value) {
+    public Slaw toSlaw_Custom(SlawList value) {
         return value;
     }
 
