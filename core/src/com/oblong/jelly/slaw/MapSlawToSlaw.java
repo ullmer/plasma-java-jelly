@@ -17,6 +17,9 @@ public class MapSlawToSlaw implements HasToSlaw<SlawMap> {
 	protected Map<Slaw, Slaw> map = new HashMap<Slaw,Slaw>();
 
 	public <T> void put(AbstractField<T> field, T value) {
+		if (value == null) {
+			return; // do not put anything
+		}
 		Slaw toSlaw = field.toSlaw(value);
 		map.put(field.getNameSlaw(), toSlaw);
 
