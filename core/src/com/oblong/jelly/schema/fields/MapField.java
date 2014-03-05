@@ -34,6 +34,9 @@ public class MapField<T extends UnmarshalledSlawMap> extends AbstractField<T> {
 
 	@Override
 	public SlawMap toSlaw(T value) {
+		if ( value == null ) {
+			return null;
+		}
 		return value.toSlaw();
 	}
 
