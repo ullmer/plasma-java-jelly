@@ -131,8 +131,8 @@ public abstract class AbstractField<T> {
 		Slaw rawSlaw = map.get(getNameSlaw());
 		if (rawSlaw == null ) {
 			if ( isOptional ) {
-//				return null;
-				return Slaw.nil(); // correct way to express null value in jelly?
+				return null;
+//				return Slaw.nil(); // correct way to express null value in jelly?
 			} else {
 				throw throwNullValException(rawSlaw);
 			}
