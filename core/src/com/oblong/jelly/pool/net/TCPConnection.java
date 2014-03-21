@@ -23,6 +23,7 @@ import com.oblong.jelly.pool.Configuration;
 import com.oblong.jelly.util.ByteReader;
 import com.oblong.util.ExceptionHandler;
 import com.oblong.util.logging.ObLog;
+import sun.print.resources.serviceui;
 
 import static com.oblong.jelly.pool.net.Request.*;
 
@@ -105,18 +106,25 @@ final class TCPConnection implements NetConnection {
         final ByteReader reader = new ByteReader(is);
         reader.get(data, len);
         final Set<Request> result = EnumSet.noneOf(Request.class);
-        for (Request c : Request.values()) {
+	    Request[] values = Request.values();
+	    for (Request c : values) {
             final int code = c.code();
             final int bn = code / 8;
-            if (bn < data.length && (data[bn] & (1<<(code % 8))) != 0)
+            if (bn < data.length && (data[bn] & (1<<(code % 8))) != 0){
+	            log.d("adding "+c);
                 result.add(c);
+            }
         }
+	    if(result.size()==1 && result.contains(Request.STARTTLS)){
+		    throw new TLSException();
+	    }
         return result;
-    }
+	}
 
-    private TCPConnection(PoolServer srv) throws PoolException {
+	private TCPConnection(PoolServer srv) throws PoolException {
         try {
             address = srv.address();
+	        log.d("Server :  "+ srv.toString());
             socket = new Socket(address.host(), address.port());
             input = new BufferedInputStream (socket.getInputStream());
             output = new BufferedOutputStream (socket.getOutputStream());
@@ -226,6 +234,7 @@ final class TCPConnection implements NetConnection {
         throws PoolException, IOException {
         final int tcpVersion = is.read();
         final int slawVersion = is.read();
+	    log.d("tcp Version "+tcpVersion+", slaw Version "+slawVersion);
         checkVersion(MIN_SLAW_VERSION, MAX_SLAW_VERSION, slawVersion, "slaw");
         checkVersion(MIN_TCP_VERSION, MAX_TCP_VERSION, tcpVersion, "tcp");
         return tcpVersion;

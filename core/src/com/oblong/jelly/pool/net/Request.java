@@ -130,7 +130,13 @@ public enum Request {
         Slaw getRetort(Slaw res, int v) throws ProtocolException {
             throw new ProtocolException (res, "GREENHOUSE is a dummy command");
         }
-    };
+    },
+	//TODO: find out what arity and responseArity should be for this one (2nd and 3rd args)
+	STARTTLS(30, 0, 0){
+		Slaw getRetort(Slaw res, int v) throws TLSException {
+			throw new TLSException();
+		}
+	};
 
     public static Request fromCode(int code) {
         return i2r.get(code);
@@ -156,15 +162,27 @@ public enum Request {
         }
     }
 
-    abstract Slaw getRetort(Slaw res, int v) throws ProtocolException;
+	@Override
+	public String toString() {
+		return "Request{" +
+				"code=" + code +
+				", arity=" + arity +
+				", responseArity=" + responseArity +
+				", timeouts=" + timeouts +
+				"} " + super.toString();
+	}
+
+	abstract Slaw getRetort(Slaw res, int v) throws ProtocolException;
 
     private void checkRequest(NetConnection conn, Slaw... args)
         throws PoolException {
         if (conn == null || !conn.isOpen()) {
             throw new InOutException("Connection closed");
         }
-        if (!conn.supportedRequests().contains(this))
-            throw new InvalidOperationException("Unsupported op " + this);
+        if (!conn.supportedRequests().contains(this)){
+            throw new InvalidOperationException("Unsupported op " + this.toString()+
+		            ", supported are "+conn.supportedRequests()+" total : "+conn.supportedRequests().size());
+        }
         if (arity != args.length)
             throw new ProtocolException(this + " expects " + arity + " args"
                                         + ", but was invoked with arg list "
