@@ -15,7 +15,8 @@ public class UnableToConnectEvent extends ConnectionErrorEvent {
 		POOL_EXCEPTION,
 		TIMEOUT,
 		INVALID_CERTIFICATE,
-		UNSUPPORTED_OPERATION
+		UNSUPPORTED_OPERATION,
+		POOL_REQUIRES_TLS
 	}
 
 	public UnableToConnectEvent(Reason reason) {

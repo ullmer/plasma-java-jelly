@@ -3,7 +3,6 @@ package com.oblong.jelly.communication;
 
 import com.oblong.jelly.*;
 import com.oblong.util.ExceptionHandler;
-import com.oblong.util.logging.LoggingObject;
 import com.oblong.util.logging.ObLog;
 
 public abstract class ObPoolConnector extends Thread {
@@ -164,6 +163,8 @@ public abstract class ObPoolConnector extends Thread {
 			initHose();
 		} catch (BadAddressException e) {
 			logAndNotify(e, UnableToConnectEvent.Reason.BAD_ADDRESS);
+		} catch (TLSException e){
+			logAndNotify(e, UnableToConnectEvent.Reason.POOL_REQUIRES_TLS);
 		} catch (InvalidOperationException e){
 			//this happens when for ex we try to connect to secure pools
 			logAndNotify(e, UnableToConnectEvent.Reason.UNSUPPORTED_OPERATION);
