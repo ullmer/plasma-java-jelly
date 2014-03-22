@@ -131,11 +131,6 @@ final class TCPConnection implements NetConnection {
             throw new InOutException(e);
         }
 
-		/**to detect pool is TLS straight away**/
-		if(supportedRequests().contains(Request.STARTTLS)){
-			throw new TLSException(address.host());
-		}
-
         if (Configuration.GREENHOUSE  &&
             ! supportedRequests () . contains (Request.GREENHOUSE))
             throw new PoolException (srv . address () +
