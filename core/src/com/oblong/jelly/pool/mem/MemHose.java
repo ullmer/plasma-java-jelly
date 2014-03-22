@@ -3,25 +3,13 @@
 
 package com.oblong.jelly.pool.mem;
 
+import com.oblong.jelly.*;
+import com.oblong.jelly.pool.PoolProtein;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
-import com.oblong.jelly.BadAddressException;
-import com.oblong.jelly.MetadataRequest;
-import com.oblong.jelly.Hose;
-import com.oblong.jelly.NoSuchPoolException;
-import com.oblong.jelly.NoSuchProteinException;
-import com.oblong.jelly.Pool;
-import com.oblong.jelly.PoolAddress;
-import com.oblong.jelly.PoolException;
-import com.oblong.jelly.PoolMetadata;
-import com.oblong.jelly.PoolServerAddress;
-import com.oblong.jelly.Protein;
-import com.oblong.jelly.ProteinMetadata;
-import com.oblong.jelly.Slaw;
-import com.oblong.jelly.pool.PoolProtein;
 
 public class MemHose implements Hose {
 
@@ -161,7 +149,8 @@ public class MemHose implements Hose {
 
     public MemHose(MemPool pool, PoolServerAddress addr) {
         this.pool = pool;
-        index = 0;
+        index = pool.newestIndex() + 1; // initializing to this value fixes duplicate protein bug
+//        index = 0;
         connected = true;
         try {
             address = new PoolAddress(addr, pool.name());
