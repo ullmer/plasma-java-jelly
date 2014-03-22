@@ -3,29 +3,16 @@
 
 package com.oblong.jelly.pool.net;
 
-import java.util.List;
-import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-import java.util.logging.Logger;
-
+import com.oblong.jelly.*;
+import com.oblong.jelly.pool.PoolProtein;
+import com.oblong.jelly.slaw.SlawFactory;
 import com.oblong.util.logging.ObLog;
 import net.jcip.annotations.NotThreadSafe;
 
-import com.oblong.jelly.MetadataRequest;
-import com.oblong.jelly.Hose;
-import com.oblong.jelly.InOutException;
-import com.oblong.jelly.NoSuchProteinException;
-import com.oblong.jelly.NumericIlk;
-import com.oblong.jelly.Pool;
-import com.oblong.jelly.PoolAddress;
-import com.oblong.jelly.PoolException;
-import com.oblong.jelly.PoolMetadata;
-import com.oblong.jelly.Protein;
-import com.oblong.jelly.ProteinMetadata;
-import com.oblong.jelly.Slaw;
-import com.oblong.jelly.pool.PoolProtein;
-import com.oblong.jelly.slaw.SlawFactory;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 @NotThreadSafe
 public final class NetHose implements Hose {
@@ -212,7 +199,7 @@ public final class NetHose implements Hose {
 
     NetHose(NetConnection con, String pn) throws PoolException {
         this(con, new PoolAddress(con.address(), pn), null, 0);
-        cleanIndex(newestIndex());
+        cleanIndex(newestIndex()); // TODO: Shouldn't it be +1 ??
     }
 
     NetHose(NetConnection conn, PoolAddress addr, String name, long idx) {
@@ -310,7 +297,7 @@ public final class NetHose implements Hose {
     }
 
     private long cleanIndex(long idx) {
-        dirtyIndex = false;
+        dirtyIndex = false; // TODO: Patrick and Karol: figure out what it is
         return index = idx;
     }
 
