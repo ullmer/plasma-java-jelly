@@ -131,12 +131,12 @@ public enum Request {
             throw new ProtocolException (res, "GREENHOUSE is a dummy command");
         }
     },
-	//TODO: find out what arity and responseArity should be for this one (2nd and 3rd args)
-	STARTTLS(30, 0, 0){
-		Slaw getRetort(Slaw res, int v) throws TLSException {
-			throw new TLSException();
-		}
-	};
+    //TODO: find out what arity and responseArity should be for this one (2nd and 3rd args)
+    STARTTLS(30, 0, 0){
+	Slaw getRetort(Slaw res, int v) throws TLSException {
+	    throw new TLSException();
+	}
+    };
 
     public static Request fromCode(int code) {
         return i2r.get(code);

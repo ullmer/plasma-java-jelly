@@ -109,9 +109,6 @@ final class TCPConnection implements NetConnection {
                 result.add(c);
             }
         }
-	    if(result.size()==1 && result.contains(Request.STARTTLS)){
-		    throw new TLSException();
-	    }
         return result;
 	}
 
@@ -133,6 +130,11 @@ final class TCPConnection implements NetConnection {
         } catch (IllegalArgumentException e) {
             throw new InOutException(e);
         }
+
+		/**to detect pool is TLS straight away**/
+		if(supportedRequests().contains(Request.STARTTLS)){
+			throw new TLSException(address.host());
+		}
 
         if (Configuration.GREENHOUSE  &&
             ! supportedRequests () . contains (Request.GREENHOUSE))
