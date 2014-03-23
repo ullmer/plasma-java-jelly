@@ -162,17 +162,17 @@ public enum Request {
         }
     }
 
-	@Override
-	public String toString() {
-		return "Request{" +
-				"code=" + code +
-				", arity=" + arity +
-				", responseArity=" + responseArity +
-				", timeouts=" + timeouts +
-				"} " + super.toString();
-	}
+    @Override
+        public String toString() {
+        return "Request{" +
+            "code=" + code +
+            ", arity=" + arity +
+            ", responseArity=" + responseArity +
+            ", timeouts=" + timeouts +
+            "} " + super.toString();
+    }
 
-	abstract Slaw getRetort(Slaw res, int v) throws ProtocolException;
+    abstract Slaw getRetort(Slaw res, int v) throws ProtocolException;
 
     private void checkRequest(NetConnection conn, Slaw... args)
         throws PoolException {
@@ -181,7 +181,7 @@ public enum Request {
         }
         if (!conn.supportedRequests().contains(this)){
             throw new InvalidOperationException("Unsupported op " + this.toString()+
-		            ", supported are "+conn.supportedRequests()+" total : "+conn.supportedRequests().size());
+                                                ", supported are "+conn.supportedRequests()+" total : "+conn.supportedRequests().size());
         }
         if (arity != args.length)
             throw new ProtocolException(this + " expects " + arity + " args"
