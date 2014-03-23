@@ -101,6 +101,7 @@ public final class SlawList extends JavaSlaw {
         return true;
     }
 
+    @SuppressWarnings("unchecked")
     SlawList(List<? extends Slaw> elems, boolean copy) {
         elements = copy ? new ArrayList<Slaw>(elems)
                 : (List<Slaw>) elems /* it is final anyway, so we can cast */;
