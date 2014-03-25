@@ -4,6 +4,7 @@
 package com.oblong.jelly.pool.net;
 
 import java.util.HashMap;
+import java.util.Set;
 
 import com.oblong.jelly.*;
 import com.oblong.jelly.pool.ServerErrorCode;
@@ -179,9 +180,14 @@ public enum Request {
         if (conn == null || !conn.isOpen()) {
             throw new InOutException("Connection closed");
         }
-        if (!conn.supportedRequests().contains(this)){
-            throw new InvalidOperationException("Unsupported op " + this.toString()+
-                                                ", supported are "+conn.supportedRequests()+" total : "+conn.supportedRequests().size());
+	    Set<Request> requests = conn.supportedRequests();
+	    if (!requests.contains(this)){
+	        if(requests.size() == 1 && requests.contains(Request.STARTTLS)){
+		        throw new TLSException(conn.address().host());
+	        } else {
+		        throw new InvalidOperationException("Unsupported op " + this.toString()+
+				        ", supported are "+ requests +" total : "+ requests.size());
+	        }
         }
         if (arity != args.length)
             throw new ProtocolException(this + " expects " + arity + " args"
