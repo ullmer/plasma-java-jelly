@@ -178,7 +178,7 @@ final class TCPConnection implements NetConnection {
         final Slaw code = ret.toProtein().ingests().find(OP_KEY);
         if (!VALID_RESULTS.contains(code)) {
             String safeMsg = "getResultCode: Unexpected response code. !VALID_RESULTS.contains(code). ret.ilk()=" +
-                    ret.ilk() + "; code.ilk()=" + code.ilk() + ";";
+                    ret==null?"null":ret.ilk() + "; code.ilk()=" + ret==null?"null":code.ilk() + ";";
             ExceptionHandler.handleException(safeMsg + "slaw will be printed in " +
                     "subsequent line, to avoid calling complex toString method on Slaw now");
             String msgWithDetails = safeMsg + " (more details: ) code=" + code + "; ret=" + ret;
