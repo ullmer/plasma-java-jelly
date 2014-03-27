@@ -2,15 +2,9 @@
 
 package com.oblong.jelly.pool.mem;
 
-import java.util.Set;
+import com.oblong.jelly.*;
 
-import com.oblong.jelly.Hose;
-import com.oblong.jelly.NoSuchPoolException;
-import com.oblong.jelly.PoolException;
-import com.oblong.jelly.PoolExistsException;
-import com.oblong.jelly.PoolOptions;
-import com.oblong.jelly.PoolServer;
-import com.oblong.jelly.PoolServerAddress;
+import java.util.Set;
 
 final class MemPoolServer implements PoolServer {
 

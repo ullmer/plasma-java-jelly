@@ -5,10 +5,11 @@ package com.oblong.jelly.schema.fields;
 
 import com.oblong.jelly.Protein;
 import com.oblong.jelly.communication.OttoEvent;
-import com.oblong.jelly.slaw.java.SlawMap;
 import com.oblong.jelly.slaw.java.SlawString;
 
 public abstract class UnmarshalledProtein extends UnmarshalledSlawMap implements OttoEvent {
+
+  // Navjot: put descrips
 
   public UnmarshalledProtein() {
     // no need to do anything (subclasses will init their fields)
