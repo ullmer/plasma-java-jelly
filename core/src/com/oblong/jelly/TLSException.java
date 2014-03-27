@@ -9,6 +9,10 @@ package com.oblong.jelly;
 public class TLSException extends ProtocolException {
 	private static final String MESSAGE = "TLS is not supported yet";
 
+	public TLSException(String poolAddress) {
+		super("pool : "+poolAddress+ " : "+MESSAGE);
+	}
+
 	public TLSException() {
 		super(MESSAGE);
 	}
