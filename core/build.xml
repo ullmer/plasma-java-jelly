@@ -145,6 +145,9 @@
     <unjar src="${lib.dir}/javax.inject-1.jar"
            dest="${build.3rdparty.dir}"
            overwrite="true" />
+    <unjar src="${lib.dir}/ob-tls-helpers.jar"
+           dest="${build.3rdparty.dir}"
+           overwrite="true" />
   </target>
 
   <target name="standalone-jar" depends="compile,-manifest,-extract-3rdparty"

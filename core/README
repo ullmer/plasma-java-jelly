@@ -98,8 +98,14 @@ other packages found under it are implementation details.
   text format in ${test.data.dir} (build/test/data by default).
 
   For 'test' and 'external-test', test execution halts if an error
-  occurrs. It's possible to change this behaviour by defining
+  occurs.  It's possible to change this behavior by defining
   'test.halt':
 
       ant -Dtest.halt=no -Dtest.server=tcp://192.168.1.34 external-test
 
+  To test TLS, you'd do something like this:
+
+       ant -Dtest.server=tcps://localhost external-test
+
+  But you'll also need /etc/oblong/certificate-authorities.jks set up
+  properly, too.

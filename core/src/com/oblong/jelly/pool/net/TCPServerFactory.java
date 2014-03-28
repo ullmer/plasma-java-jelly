@@ -83,10 +83,13 @@ public final class TCPServerFactory
     }
 
     public static void register() {
-        register(SCM, new TCPServerFactory());
+        final TCPServerFactory f = new TCPServerFactory ();
+        register (SCM, f);
+        register (SCM + "s", f);
     }
 
     public static void unregister() {
+        PoolServerFactory . unregister (SCM + "s");
         final TCPServerFactory f =
             (TCPServerFactory)PoolServerFactory.unregister(SCM);
         if (f != null) f.closeJmDNS();

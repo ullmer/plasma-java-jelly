@@ -127,16 +127,15 @@ public enum Request {
             return Slaw.int64(0);
         }
     },
+    STARTTLS(30, 1, 2) {
+        Slaw getRetort(Slaw res, int v) throws ProtocolException {
+            return retort (res, 0);
+        }
+    },
     GREENHOUSE(31, 0, 0) {
         Slaw getRetort(Slaw res, int v) throws ProtocolException {
             throw new ProtocolException (res, "GREENHOUSE is a dummy command");
         }
-    },
-    //TODO: find out what arity and responseArity should be for this one (2nd and 3rd args)
-    STARTTLS(30, 0, 0){
-	Slaw getRetort(Slaw res, int v) throws TLSException {
-	    throw new TLSException();
-	}
     };
 
     public static Request fromCode(int code) {
