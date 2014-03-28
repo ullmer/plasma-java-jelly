@@ -50,6 +50,23 @@ final class TLS {
         return fact . startTLS (sock, host, port);
     }
 
+	/***
+	 * Use sslSocketFactory provided by client
+	 * @param sock
+	 * @param host
+	 * @param port
+	 * @param sslSocketFactory
+	 * @return
+	 * @throws IOException
+	 * @throws GeneralSecurityException
+	 */
+	public static Socket startTLS (Socket sock, String host, int port, SSLSocketFactory sslSocketFactory)
+			throws IOException,
+			GeneralSecurityException {
+		TLSFactory fact = new TLSFactory(sslSocketFactory);
+		return fact . startTLS (sock, host, port);
+	}
+
     /**
      * Set the trusted root certificates used by Jelly.
      * trustStoreType is the name of a type of keystore (i. e. a

@@ -244,12 +244,12 @@ final class TCPConnection implements NetConnection {
         }
     }
 
-    private void startTLS () throws PoolException {
+    private void startTLS() throws PoolException {
         // send the STARTTLS command to the remote server
         Request.STARTTLS . send (this, factory . nil ());
         try {
             // now actually do the TLS handshake, using TLS helper class
-            socket = TLS.startTLS (socket, address . host (), address. port ());
+            socket = TLS.startTLS (socket, address . host(), address. port(), address.sslSocketFactory());
             // At this point, the connection is encrypted.
             // Now do the abbreviated Plasma handshake, as explained in
             // pool-tcp-protocol.txt.  (You need to read it; I'm not

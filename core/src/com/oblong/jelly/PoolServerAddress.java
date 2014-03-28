@@ -8,6 +8,8 @@ import java.util.regex.Pattern;
 
 import net.jcip.annotations.Immutable;
 
+import javax.net.ssl.SSLSocketFactory;
+
 /**
  * A wrapper around URIs representing pool server addresses.
  *
@@ -79,7 +81,19 @@ public final class PoolServerAddress {
          stringRep = this.scheme
              + (this.host.length() == 0 ? "" : ("://" + this.host))
              + ":" + this.port;
+	    sslSocketFactory = null;
     }
+
+	public PoolServerAddress(String scheme, String host, int port, SSLSocketFactory factory)
+			throws BadAddressException {
+		this.scheme = checkScheme(scheme);
+		this.host = checkHost(host);
+		this.port = port < 0 ? DEFAULT_PORT : port;
+		this.sslSocketFactory=factory;
+		stringRep = this.scheme
+				+ (this.host.length() == 0 ? "" : ("://" + this.host))
+				+ ":" + this.port;
+	}
 
     /**
      * Equivalent to
@@ -167,4 +181,9 @@ public final class PoolServerAddress {
     private final String host;
     private final int port;
     private final String stringRep;
+	private final SSLSocketFactory sslSocketFactory;
+
+	public SSLSocketFactory sslSocketFactory() {
+		return sslSocketFactory;
+	}
 }
