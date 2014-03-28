@@ -15,8 +15,12 @@ import com.oblong.tls.util.*;
 /**
  * Created with Emacs, since we seem to insist on filling doc comments with
  * what editor we use, instead of what the class does.  However, I'll tell
- * you what this class does, too.  It is non-instantiable, and has a single
- * public method, startTLS().  It wraps functionality in the separate
+ * you what this class does, too.  It is non-instantiable, and has a public
+ * method startTLS() which is called by Jelly, and a couple of public
+ * setCredentials() methods which can be called by the application to
+ * specify the trust store and the client certificate.
+ *
+ * This class wraps functionality in the separate
  * ob-tls-helpers library, which is available here:
  *
  * git.oblong.com:~ppelletier/pub/ob-tls-helpers.git
@@ -35,7 +39,9 @@ final class TLS {
      * socket.
      *
      * The remote server's certificate is validated against
-     * /etc/oblong/certificate-authorities.jks
+     * the credentials supplied with setCredentials(), or
+     * "/etc/oblong/certificate-authorities.jks" if no other
+     * credentials have been provided.
      */
     public static Socket startTLS (Socket sock, String host, int port)
         throws IOException,
@@ -44,15 +50,55 @@ final class TLS {
         return fact . startTLS (sock, host, port);
     }
 
+    /**
+     * Set the trusted root certificates used by Jelly.
+     * trustStoreType is the name of a type of keystore (i. e. a
+     * file format) as accepted by java.security.KeyStore.getInstance().
+     * trustStoreStream is (the contents of) a file, in the format
+     * named by trustStoreType, which contains all the root certificates
+     * we should trust, which will then be used to validate the
+     * pool server's certificate.
+     *
+     * Though I abhor global state, this is necessary because there
+     * isn't really any way to pass this information down through
+     * the Jelly pool API.  So just call this method at the beginning
+     * of your program, before you use any pools.
+     */
+    public static void setCredentials (String trustStoreType,
+                                       InputStream trustStoreStream)
+        throws IOException,
+               GeneralSecurityException {
+        setCredentials (trustStoreType, trustStoreStream,
+                        KeyStore . getDefaultType (), null, null, null);
+    }
+
+    /**
+     * This probably isn't needed until we start supporting
+     * client certificates.
+     */
+    public static synchronized
+        void setCredentials (String trustStoreType,
+                             InputStream trustStoreStream,
+                             String keyStoreType,
+                             InputStream keyStoreStream,
+                             char[] keyStorePassword,
+                             char[] privateKeyPassword)
+            throws IOException,
+                   GeneralSecurityException {
+            factory = new TLSFactory (makeFactory (trustStoreType,
+                                                   trustStoreStream,
+                                                   keyStoreType,
+                                                   keyStoreStream,
+                                                   keyStorePassword,
+                                                   privateKeyPassword));
+        }
+
     private static synchronized TLSFactory getFactory ()
         throws IOException,
                GeneralSecurityException {
         if (factory == null) {
             InputStream trustStream = new BufferedInputStream (new FileInputStream ("/etc/oblong/certificate-authorities.jks"));
-            InputStream keyStream = null;
-            factory = new TLSFactory (makeFactory ("JKS", trustStream,
-                                                   "JKS", keyStream,
-                                                   null, null));
+            setCredentials ("JKS", trustStream);
         }
         return factory;
     }
