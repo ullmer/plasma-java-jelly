@@ -12,7 +12,31 @@ import javax.net.ssl.*;
 import com.oblong.tls.random.*;
 import com.oblong.tls.util.*;
 
+/**
+ * Created with Emacs, since we seem to insist on filling doc comments with
+ * what editor we use, instead of what the class does.  However, I'll tell
+ * you what this class does, too.  It is non-instantiable, and has a single
+ * public method, startTLS().  It wraps functionality in the separate
+ * ob-tls-helpers library, which is available here:
+ *
+ * git.oblong.com:~ppelletier/pub/ob-tls-helpers.git
+ *
+ * (Which I separated because I thought its functionality might be more
+ * generally useful, since it seems like stuff which belongs in Java
+ * but isn't.  We might even want to post the library on Oblong's
+ * Github page.)
+ */
 final class TLS {
+    /**
+     * Given a socket which is already connected to the specified
+     * host and port (which we need to know for verification
+     * purposes), initiates TLS on the socket, and returns a new
+     * socket, which should now be used in place of the original
+     * socket.
+     *
+     * The remote server's certificate is validated against
+     * /etc/oblong/certificate-authorities.jks
+     */
     public static Socket startTLS (Socket sock, String host, int port)
         throws IOException,
                GeneralSecurityException {

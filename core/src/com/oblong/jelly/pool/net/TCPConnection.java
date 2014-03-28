@@ -245,9 +245,15 @@ final class TCPConnection implements NetConnection {
     }
 
     private void startTLS () throws PoolException {
+        // send the STARTTLS command to the remote server
         Request.STARTTLS . send (this, factory . nil ());
         try {
+            // now actually do the TLS handshake, using TLS helper class
             socket = TLS.startTLS (socket, address . host (), address. port ());
+            // At this point, the connection is encrypted.
+            // Now do the abbreviated Plasma handshake, as explained in
+            // pool-tcp-protocol.txt.  (You need to read it; I'm not
+            // going to hold your hand.)
             input = new BufferedInputStream (socket . getInputStream ());
             output = new BufferedOutputStream (socket . getOutputStream ());
             output . write (MAX_TCP_VERSION);
