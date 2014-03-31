@@ -30,7 +30,7 @@ import com.oblong.tls.util.*;
  * but isn't.  We might even want to post the library on Oblong's
  * Github page.)
  */
-final class TLS {
+public final class TLS {
     /**
      * Given a socket which is already connected to the specified
      * host and port (which we need to know for verification
@@ -49,23 +49,6 @@ final class TLS {
         TLSFactory fact = getFactory ();
         return fact . startTLS (sock, host, port);
     }
-
-	/***
-	 * Use sslSocketFactory provided by client
-	 * @param sock
-	 * @param host
-	 * @param port
-	 * @param sslSocketFactory
-	 * @return
-	 * @throws IOException
-	 * @throws GeneralSecurityException
-	 */
-	public static Socket startTLS (Socket sock, String host, int port, SSLSocketFactory sslSocketFactory)
-			throws IOException,
-			GeneralSecurityException {
-		TLSFactory fact = new TLSFactory(sslSocketFactory);
-		return fact . startTLS (sock, host, port);
-	}
 
     /**
      * Set the trusted root certificates used by Jelly.

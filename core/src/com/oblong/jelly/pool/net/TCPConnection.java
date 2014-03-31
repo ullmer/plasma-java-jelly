@@ -73,7 +73,7 @@ final class TCPConnection implements NetConnection {
         @Override public NetConnection get(PoolServer srv)
             throws PoolException {
             final TCPConnection t = new TCPConnection (srv);
-            if (srv . address () . scheme () . equals ("tcps"))
+            if (srv . address () . scheme () . equals (PoolServerAddress.TCPS_SCHEME))
                 t . startTLS ();
             return t;
         }
@@ -249,7 +249,7 @@ final class TCPConnection implements NetConnection {
         Request.STARTTLS . send (this, factory . nil ());
         try {
             // now actually do the TLS handshake, using TLS helper class
-            socket = TLS.startTLS (socket, address . host(), address. port(), address.sslSocketFactory());
+            socket = TLS.startTLS (socket, address . host(), address. port());
             // At this point, the connection is encrypted.
             // Now do the abbreviated Plasma handshake, as explained in
             // pool-tcp-protocol.txt.  (You need to read it; I'm not
