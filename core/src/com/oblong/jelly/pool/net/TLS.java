@@ -65,10 +65,11 @@ final class TLS {
      * of your program, before you use any pools.
      */
     public static void setCredentials (String trustStoreType,
-                                       InputStream trustStoreStream)
+                                       InputStream trustStoreStream,
+                                       char[] trustStorePassword)
         throws IOException,
                GeneralSecurityException {
-        setCredentials (trustStoreType, trustStoreStream,
+        setCredentials (trustStoreType, trustStoreStream, trustStorePassword,
                         KeyStore . getDefaultType (), null, null, null);
     }
 
@@ -79,6 +80,7 @@ final class TLS {
     public static synchronized
         void setCredentials (String trustStoreType,
                              InputStream trustStoreStream,
+                             char[] trustStorePassword,
                              String keyStoreType,
                              InputStream keyStoreStream,
                              char[] keyStorePassword,
@@ -87,24 +89,35 @@ final class TLS {
                    GeneralSecurityException {
             factory = new TLSFactory (makeFactory (trustStoreType,
                                                    trustStoreStream,
+                                                   trustStorePassword,
                                                    keyStoreType,
                                                    keyStoreStream,
                                                    keyStorePassword,
                                                    privateKeyPassword));
         }
 
+    /**
+     * This is lower-level than setCredentials(), and allows
+     * supplying your own SSLSocketFactory, instead of letting us
+     * make one for you.
+     */
+    public static synchronized void setFactory (SSLSocketFactory sslSockFact) {
+        factory = new TLSFactory (sslSockFact);
+    }
+
     private static synchronized TLSFactory getFactory ()
         throws IOException,
                GeneralSecurityException {
         if (factory == null) {
             InputStream trustStream = new BufferedInputStream (new FileInputStream ("/etc/oblong/certificate-authorities.jks"));
-            setCredentials ("JKS", trustStream);
+            setCredentials ("JKS", trustStream, null);
         }
         return factory;
     }
 
     private static SSLSocketFactory makeFactory (String trustStoreType,
                                                  InputStream trustStoreStream,
+                                                 char[] trustStorePassword,
                                                  String keyStoreType,
                                                  InputStream keyStoreStream,
                                                  char[] keyStorePassword,
@@ -116,7 +129,7 @@ final class TLS {
                KeyManagementException,
                UnrecoverableKeyException {
         KeyStore trustStore = KeyStore . getInstance (trustStoreType);
-        trustStore . load (trustStoreStream, null);
+        trustStore . load (trustStoreStream, trustStorePassword);
         TrustManagerFactory tmf = TrustManagerFactory . getInstance ("PKIX");
         tmf . init (trustStore);
 
