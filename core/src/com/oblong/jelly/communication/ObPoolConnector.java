@@ -2,6 +2,7 @@ package com.oblong.jelly.communication;
 
 
 import com.oblong.jelly.*;
+import com.oblong.jelly.pool.net.Request;
 import com.oblong.util.ExceptionHandler;
 import com.oblong.util.logging.ObLog;
 
@@ -166,8 +167,14 @@ public abstract class ObPoolConnector extends Thread {
 		} catch (TLSException e){
 			logAndNotify(e, UnableToConnectEvent.Reason.POOL_REQUIRES_TLS);
 		} catch (InvalidOperationException e){
-			//this happens when for ex we try to connect to secure pools
-			logAndNotify(e, UnableToConnectEvent.Reason.UNSUPPORTED_OPERATION);
+			/**this happens when for ex we try to connect to secure pools or
+			 * or if we try to connect to a non secure pool with tcps protocol**
+			 */
+			if(e.getMessage().contains(Request.STARTTLS.name())){
+				logAndNotify(e, UnableToConnectEvent.Reason.CLIENT_REQUIRES_TLS);
+			} else {
+				logAndNotify(e, UnableToConnectEvent.Reason.UNSUPPORTED_OPERATION);
+			}
 		} catch (PoolException e) {
 			logAndNotify(e, UnableToConnectEvent.Reason.POOL_EXCEPTION);
 		}
@@ -180,7 +187,7 @@ public abstract class ObPoolConnector extends Thread {
 	}
 
 	private void logAndNotify(Exception e, UnableToConnectEvent.Reason reason) {
-		logger.error("connect", e);
+		logger.error("connection error, reason : "+reason.name(), e);
 		listener.onErrorConnecting(new UnableToConnectEvent(reason));
 	}
 
