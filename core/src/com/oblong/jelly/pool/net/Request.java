@@ -174,25 +174,21 @@ public enum Request {
 
     abstract Slaw getRetort(Slaw res, int v) throws ProtocolException;
 
-    private void checkRequest(NetConnection conn, Slaw... args)
-        throws PoolException {
-        if (conn == null || !conn.isOpen()) {
-            throw new InOutException("Connection closed");
-        }
-	    Set<Request> requests = conn.supportedRequests();
-	    if (!requests.contains(this)){
-	        if(requests.size() == 1 && requests.contains(Request.STARTTLS)){
-		        throw new TLSException(conn.address().host());
-	        } else {
-		        throw new InvalidOperationException("Unsupported op " + this.toString()+
-				        ", supported are "+ requests +" total : "+ requests.size());
-	        }
-        }
-        if (arity != args.length)
-            throw new ProtocolException(this + " expects " + arity + " args"
-                                        + ", but was invoked with arg list "
-                                        + Slaw.list(args));
-    }
+	private void checkRequest(NetConnection conn, Slaw... args)
+			throws PoolException {
+		if (conn == null || !conn.isOpen()) {
+			throw new InOutException("Connection closed");
+		}
+		Set<Request> requests = conn.supportedRequests();
+		if (!requests.contains(this)){
+			throw new InvalidOperationException("Unsupported op " + this.toString()+
+					", supported are "+ requests +" total : "+ requests.size());
+		}
+		if (arity != args.length)
+			throw new ProtocolException(this + " expects " + arity + " args"
+					+ ", but was invoked with arg list "
+					+ Slaw.list(args));
+	}
 
     private Slaw checkResponse(Slaw res, int v) throws PoolException {
         if (timeouts) return checkTimeoutResponse(res, v);

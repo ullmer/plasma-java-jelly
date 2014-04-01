@@ -30,7 +30,7 @@ import com.oblong.tls.util.*;
  * but isn't.  We might even want to post the library on Oblong's
  * Github page.)
  */
-final class TLS {
+public final class TLS {
     /**
      * Given a socket which is already connected to the specified
      * host and port (which we need to know for verification

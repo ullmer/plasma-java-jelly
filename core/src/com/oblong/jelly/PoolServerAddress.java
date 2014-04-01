@@ -8,6 +8,8 @@ import java.util.regex.Pattern;
 
 import net.jcip.annotations.Immutable;
 
+import javax.net.ssl.SSLSocketFactory;
+
 /**
  * A wrapper around URIs representing pool server addresses.
  *
@@ -29,8 +31,9 @@ public final class PoolServerAddress {
 
     /** Default host for server addresses (localhost). */
     public static final String DEFAULT_HOST = "localhost";
+	public static final String TCPS_SCHEME = "tcps";
 
-    /**
+	/**
      * Creates a pool address by parsing the given string.
      *
      * <p> If either the hostname or the port are missing, default
