@@ -31,7 +31,7 @@ public final class PoolServerAddress {
 
     /** Default host for server addresses (localhost). */
     public static final String DEFAULT_HOST = "localhost";
-	public static final String TCPS_SCHEME = "tcps";
+	public static final String  TCPS_SCHEME = "tcps";
 
 	/**
      * Creates a pool address by parsing the given string.
