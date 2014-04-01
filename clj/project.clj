@@ -5,8 +5,11 @@
                  [org.clojure/data.codec "0.1.0"]
                  [org.yaml/snakeyaml "1.7"]
                  [net.jcip/jcip-annotations "1.0"]
-                 [log4j/log4j "1.2.14"]]
+                 [log4j/log4j "1.2.14"]
+		 [ob-tls-helpers "1.0"]]
 
+ 
+  :repositories {"ob-tls-helpers" ~(str(.toURI(java.io.File. "maven_repository")))}
   :dev-dependencies [[swank-clojure "1.3.4"]
                      [lein-marginalia "0.7.0"]]
 
