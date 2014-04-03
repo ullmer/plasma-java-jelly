@@ -5,6 +5,7 @@ package com.oblong.jelly.pool.mem;
 
 import com.oblong.jelly.*;
 import com.oblong.jelly.pool.PoolProtein;
+import com.oblong.util.ThreadChecker;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,62 +14,95 @@ import java.util.concurrent.TimeoutException;
 
 public class MemHose implements Hose {
 
+    protected final ThreadChecker threadChecker = new ThreadChecker();
+
     /* Ummm... version is an attribute of the TCP pool protocol,
      * so I'm unclear why we have one here in MemHose. */
-    @Override public int version() { return 3; }
+    @Override public int version() {
+        threadChecker.check();
+        return 3;
+    }
 
     @Override public PoolMetadata metadata() {
+        threadChecker.check();
         return nullMetadata;
     }
 
-    @Override public String name() { return name; }
+    @Override public String name() {
+        threadChecker.check();
+        return name;
+    }
 
-    @Override public void setName(String n) { name = n; }
+    @Override public void setName(String n) {
+        threadChecker.check();
+        name = n;
+    }
 
-    @Override public PoolAddress poolAddress() { return address; }
+    @Override public PoolAddress poolAddress() {
+        threadChecker.check();
+        return address;
+    }
 
-    @Override public boolean isConnected() { return connected; }
+    @Override public boolean isConnected() {
+        threadChecker.check();
+        return connected;
+    }
 
-    @Override public void withdraw() { connected = false; }
+    @Override public void withdraw() {
+        threadChecker.check();
+        connected = false;
+    }
 
-    @Override public long index() { return index; }
+    @Override public long index() {
+        threadChecker.check();
+        return index;
+    }
 
     @Override public long newestIndex() throws PoolException {
+        threadChecker.check();
         checkConnected();
         return pool.newestIndex();
     }
 
     @Override public long oldestIndex() throws PoolException {
+        threadChecker.check();
         checkConnected();
         return pool.oldestIndex();
     }
 
     @Override public void seekTo(long index) {
+        threadChecker.check();
         this.index = index;
     }
 
     @Override public void seekBy(long offset) {
+        threadChecker.check();
         seekTo(index + offset);
     }
 
     @Override public void toLast() throws PoolException {
+        threadChecker.check();
         seekTo(newestIndex());
     }
 
     @Override public void runOut() throws PoolException {
+        threadChecker.check();
         seekTo(1 + newestIndex());
     }
 
     @Override public void rewind() throws PoolException {
+        threadChecker.check();
         seekTo(oldestIndex());
     }
 
     @Override public Protein deposit(Protein p) throws PoolException {
+        threadChecker.check();
         final PoolProtein dp = new PoolProtein(pool.deposit(p), this);
         return dp;
     }
 
     @Override public Protein nth(long index) throws PoolException {
+        threadChecker.check();
         return checkProtein(pool.nth(index));
     }
 
@@ -76,11 +110,13 @@ public class MemHose implements Hose {
                                  boolean descrips,
                                  boolean ingests,
                                  boolean data) throws PoolException {
+        threadChecker.check();
         return checkProtein(partialProtein(index, descrips, ingests, data));
     }
 
     @Override public List<Protein> range(long from, long to)
-        throws PoolException {
+            throws PoolException {
+        threadChecker.check();
         final List<Protein> result = new ArrayList<Protein>();
         for (long k = from; k < to; ++k) {
             final Protein p = partialProtein(k, true, true, true);
@@ -90,14 +126,16 @@ public class MemHose implements Hose {
     }
 
     @Override public ProteinMetadata metadata(MetadataRequest req)
-        throws PoolException {
+            throws PoolException {
+        threadChecker.check();
         final ProteinMetadata md = makeMeta(req);
         if (md == null) throw new NoSuchProteinException(0);
         return md;
     }
 
     @Override public List<ProteinMetadata> metadata(MetadataRequest... rs)
-        throws PoolException {
+            throws PoolException {
+        threadChecker.check();
         final List<ProteinMetadata> result = new ArrayList<ProteinMetadata>();
         for (MetadataRequest r : rs) {
             final ProteinMetadata md = makeMeta(r);
@@ -107,15 +145,18 @@ public class MemHose implements Hose {
     }
 
     @Override public Protein current() throws PoolException {
+        threadChecker.check();
         return nth(index);
     }
 
     @Override public Protein next(Slaw... descrips) throws PoolException {
+        threadChecker.check();
         return checkProtein(getNext(descrips));
     }
 
     @Override public Protein awaitNext(long period, TimeUnit unit)
-        throws PoolException, TimeoutException {
+            throws PoolException, TimeoutException {
+        threadChecker.check();
         final PoolProtein p = await (unit . toMillis (period) / 1000.00);
         if (p == null)
             throw new TimeoutException();
@@ -123,6 +164,7 @@ public class MemHose implements Hose {
     }
 
     @Override public Protein awaitNext() throws PoolException {
+        threadChecker.check();
         /* -1 means "wait forever", although it might be nice to have
          * a defined constant for it, like POOL_WAIT_FOREVER which
          * is #defined in libPlasma/c/pool.h.  And actually, Jelly
@@ -132,10 +174,12 @@ public class MemHose implements Hose {
     }
 
     @Override public Protein previous(Slaw... descrips) throws PoolException {
+        threadChecker.check();
         return checkProtein(getPrev(descrips));
     }
 
     @Override public Hose dup() throws PoolException {
+        threadChecker.check();
         final Hose result = Pool.participate(address);
         result.setName(name);
         result.seekTo(index);
@@ -143,11 +187,13 @@ public class MemHose implements Hose {
     }
 
     @Override public Hose dupAndClose() throws PoolException {
+        threadChecker.check();
         withdraw();
         return dup();
     }
 
     public MemHose(MemPool pool, PoolServerAddress addr) {
+        threadChecker.check();
         this.pool = pool;
         index = pool.newestIndex() + 1; // initializing to this value fixes duplicate protein bug
 //        index = 0;
@@ -169,6 +215,7 @@ public class MemHose implements Hose {
     }
 
     private ProteinMetadata makeMeta(MetadataRequest r) {
+        threadChecker.check();
         final long i = r.index();
         final Protein p = pool.nth(i,
                                    r.descrips(),
@@ -179,6 +226,7 @@ public class MemHose implements Hose {
     }
 
     private PoolProtein getNext(Slaw... desc) {
+        threadChecker.check();
         final long idx = Math.max(pool.oldestIndex(), index);
         final PoolProtein p = desc.length == 0 ?
                 pool.next(idx, 0) : pool.find(idx, desc, true);
@@ -187,6 +235,7 @@ public class MemHose implements Hose {
     }
 
     private PoolProtein getPrev(Slaw... desc) {
+        threadChecker.check();
         final long idx = Math.min(pool.newestIndex(), index - 1);
         final PoolProtein p = desc.length == 0 ?
             pool.nth(idx) : pool.find(idx, desc, false);
@@ -195,6 +244,7 @@ public class MemHose implements Hose {
     }
 
     protected PoolProtein await(double timeout) throws PoolException {
+        threadChecker.check();
         if (timeout == 0) return getNext();
         PoolProtein p = pool.next(index, timeout);
         if (p != null) ++index;
@@ -202,12 +252,14 @@ public class MemHose implements Hose {
     }
 
     private void checkConnected() throws PoolException {
+        threadChecker.check();
         if (! connected)
             throw new NoSuchPoolException (0);
     }
 
     private PoolProtein partialProtein(long idx, boolean d,
                                        boolean i, boolean r) {
+        threadChecker.check();
         PoolProtein p = pool.nth (idx, d, i, r  ?  0  :  -1, -1);
         if (p == null)
             return null;
@@ -216,7 +268,8 @@ public class MemHose implements Hose {
     }
 
     private Protein checkProtein(PoolProtein p)
-        throws NoSuchProteinException {
+            throws NoSuchProteinException {
+        threadChecker.check();
         if (p == null) throw new NoSuchProteinException(0);
         return p.source() == null? new PoolProtein(p, this) : p;
     }
@@ -227,6 +280,7 @@ public class MemHose implements Hose {
     private PoolAddress address;
 
     public MemPool getPool () {
+        threadChecker.check();
         return pool;
     }
 

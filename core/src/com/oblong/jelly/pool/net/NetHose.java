@@ -6,6 +6,7 @@ package com.oblong.jelly.pool.net;
 import com.oblong.jelly.*;
 import com.oblong.jelly.pool.PoolProtein;
 import com.oblong.jelly.slaw.SlawFactory;
+import com.oblong.util.ThreadChecker;
 import com.oblong.util.logging.ObLog;
 import net.jcip.annotations.NotThreadSafe;
 
@@ -17,34 +18,43 @@ import java.util.concurrent.TimeoutException;
 @NotThreadSafe
 public final class NetHose implements Hose {
 
+    protected final ThreadChecker threadChecker = new ThreadChecker(Thread.currentThread());
+
     private static final ObLog log = ObLog.get(NetHose.class);
 
     @Override public int version() {
+        threadChecker.check();
         return connection.version();
     }
 
     @Override public PoolMetadata metadata() throws PoolException {
+        threadChecker.check();
         final Slaw res = Request.INFO.send(connection, longSlaw(-1));
         return new NetPoolMetadata(res.nth(1).toProtein().ingests());
     }
 
     @Override public String name() {
+        threadChecker.check();
         return name;
     }
 
     @Override public void setName(String n) {
+        threadChecker.check();
         name = n == null ? poolAddress.toString() : n;
     }
 
     @Override public PoolAddress poolAddress() {
+        threadChecker.check();
         return poolAddress;
     }
 
     @Override public boolean isConnected() {
+        threadChecker.check();
         return connection != null && connection.isOpen();
     }
 
     @Override public void withdraw() {
+        threadChecker.check();
         try {
             if (isConnected()) Request.WITHDRAW.sendAndClose(connection);
         } catch (PoolException e) {
@@ -53,10 +63,12 @@ public final class NetHose implements Hose {
     }
 
     @Override public long index() {
+        threadChecker.check();
         return index;
     }
 
     @Override public long newestIndex() throws PoolException {
+        threadChecker.check();
         try {
             final Slaw res = Request.NEWEST_INDEX.send(connection).nth(0);
             return res.emitLong();
@@ -66,6 +78,7 @@ public final class NetHose implements Hose {
     }
 
     @Override public long oldestIndex() throws PoolException {
+        threadChecker.check();
         try {
             final Slaw res = Request.OLDEST_INDEX.send(connection).nth(0);
             return res.emitLong();
@@ -75,27 +88,33 @@ public final class NetHose implements Hose {
     }
 
     @Override public void seekTo(long idx) {
+        threadChecker.check();
         index = idx;
         dirtyIndex = true;
     }
 
     @Override public void seekBy(long offset) {
+        threadChecker.check();
         seekTo(index + offset);
     }
 
     @Override public void toLast() throws PoolException {
+        threadChecker.check();
         seekTo(newestIndex());
     }
 
     @Override public void runOut() throws PoolException {
+        threadChecker.check();
         seekTo(1 + newestIndex());
     }
 
     @Override public void rewind() throws PoolException {
+        threadChecker.check();
         seekTo(oldestIndex());
     }
 
     @Override public Protein deposit(Protein p) throws PoolException {
+        threadChecker.check();
         final Slaw res = Request.DEPOSIT.send(connection, p);
         final long index = res.nth(0).emitLong();
         final double stamp = res.nth(2).emitDouble();
@@ -103,10 +122,12 @@ public final class NetHose implements Hose {
     }
 
     @Override public Protein current() throws PoolException {
+        threadChecker.check();
         return nth(index);
     }
 
     @Override public Protein next(Slaw... descrips) throws PoolException {
+        threadChecker.check();
         if (descrips.length == 0) return next();
         final Slaw res = Request.PROBE_FWD.send(connection,
                                                 indexSlaw(),
@@ -118,7 +139,8 @@ public final class NetHose implements Hose {
     }
 
     @Override public Protein awaitNext(long t, TimeUnit unit)
-        throws PoolException, TimeoutException {
+            throws PoolException, TimeoutException {
+        threadChecker.check();
         if (t == 0) return next();
         if (dirtyIndex)
             try {
@@ -130,6 +152,7 @@ public final class NetHose implements Hose {
     }
 
     @Override public Protein awaitNext() throws PoolException {
+        threadChecker.check();
         try {
             return awaitNext(-1, TimeUnit.SECONDS);
         } catch (TimeoutException e) {
@@ -139,6 +162,7 @@ public final class NetHose implements Hose {
     }
 
     @Override public Protein previous(Slaw... descrips) throws PoolException {
+        threadChecker.check();
         if (descrips.length == 0) return previous();
         final Slaw res = Request.PROBE_BACK.send(connection,
                                                  indexSlaw(),
@@ -150,6 +174,7 @@ public final class NetHose implements Hose {
     }
 
     @Override public Protein nth(long idx) throws PoolException {
+        threadChecker.check();
         final Slaw sidx = longSlaw(idx);
         final Slaw res = Request.NTH_PROTEIN.send(connection, sidx);
         return new PoolProtein(res.nth(0).toProtein(),
@@ -159,7 +184,8 @@ public final class NetHose implements Hose {
     }
 
     @Override public Protein nth(long idx, boolean d, boolean i, boolean dt)
-        throws PoolException {
+            throws PoolException {
+        threadChecker.check();
         final NetProteinMetadata md =
             firstFetch(subFetch(idx, idx + 1, d, i, dt));
         final Protein p = md.partialProtein();
@@ -168,22 +194,26 @@ public final class NetHose implements Hose {
     }
 
     @Override public List<Protein> range(long f, long t)
-        throws PoolException {
+            throws PoolException {
+        threadChecker.check();
         return NetProteinMetadata.parseProteins(
             subFetch(f, t, true, true, true), this);
     }
 
     @Override public ProteinMetadata metadata(MetadataRequest req)
-        throws PoolException {
+            throws PoolException {
+        threadChecker.check();
         return firstFetch(subFetch(req));
     }
 
     @Override public List<ProteinMetadata> metadata(MetadataRequest... rs)
-        throws PoolException {
+            throws PoolException {
+        threadChecker.check();
         return NetProteinMetadata.parseMeta(subFetch(rs), this);
     }
 
     @Override public Hose dup() throws PoolException {
+        threadChecker.check();
         final Hose result = Pool.participate(poolAddress);
         result.setName(name);
         result.seekTo(index);
@@ -191,6 +221,7 @@ public final class NetHose implements Hose {
     }
 
     @Override public Hose dupAndClose() throws PoolException {
+        threadChecker.check();
         if (!isConnected()) return dup();
         final NetConnection c = connection;
         connection = null;
@@ -199,10 +230,12 @@ public final class NetHose implements Hose {
 
     NetHose(NetConnection con, String pn) throws PoolException {
         this(con, new PoolAddress(con.address(), pn), null, 0);
+        threadChecker.check();
         cleanIndex(newestIndex()); // TODO: Shouldn't it be +1 ??
     }
 
     NetHose(NetConnection conn, PoolAddress addr, String name, long idx) {
+        threadChecker.check();
         connection = conn;
         factory = connection.factory();
         poolAddress = addr;
@@ -212,7 +245,8 @@ public final class NetHose implements Hose {
     }
 
     private Slaw subFetch(long f, long t, boolean d, boolean i, boolean dt)
-        throws PoolException {
+            throws PoolException {
+        threadChecker.check();
         if (f < 0) f = 0;
         if (f >= t) return factory.list();
         final List<Slaw> req = new ArrayList<Slaw>((int)(t - f));
@@ -222,6 +256,7 @@ public final class NetHose implements Hose {
     }
 
     private Slaw subFetch(MetadataRequest... rs) throws PoolException {
+        threadChecker.check();
         if (rs.length == 0) return factory.list();
         final List<Slaw> req = new ArrayList<Slaw>(rs.length);
         for (MetadataRequest r : rs) req.add(r.toSlaw());
@@ -229,7 +264,8 @@ public final class NetHose implements Hose {
     }
 
     private NetProteinMetadata firstFetch(Slaw f)
-        throws NoSuchProteinException {
+            throws NoSuchProteinException {
+        threadChecker.check();
         if (f.count() == 0) throw new NoSuchProteinException(0);
         final NetProteinMetadata md = new NetProteinMetadata(f.nth(0), this);
         if (md.retort() != 0) throw new NoSuchProteinException(md.retort());
@@ -237,6 +273,7 @@ public final class NetHose implements Hose {
     }
 
     private Protein next() throws PoolException {
+        threadChecker.check();
         final Slaw res = Request.NEXT.send(connection, indexSlaw());
         return new PoolProtein(res.nth(0).toProtein(),
                                cleanIndex(res.nth(2).emitLong() + 1) - 1,
@@ -245,6 +282,7 @@ public final class NetHose implements Hose {
     }
 
     private Protein previous() throws PoolException {
+        threadChecker.check();
         final Slaw res = Request.PREV.send(connection, indexSlaw());
         return new PoolProtein(res.nth(0).toProtein(),
                                cleanIndex(res.nth(2).emitLong()),
@@ -253,7 +291,8 @@ public final class NetHose implements Hose {
     }
 
     private Protein await(long t, TimeUnit u)
-        throws PoolException, TimeoutException {
+            throws PoolException, TimeoutException {
+        threadChecker.check();
         checkConnection();
         if (t > 0) connection.setTimeout(u.toMillis(t) + 100, // wtf: why + 100 ms ?
                                          TimeUnit.MILLISECONDS);
@@ -271,10 +310,12 @@ public final class NetHose implements Hose {
     }
 
     private Slaw matcher(Slaw... descrips) {
+        threadChecker.check();
         return factory.list(descrips);
     }
 
     private Slaw timeSlaw(long timeout, TimeUnit unit) {
+        threadChecker.check();
         double poolTimeout =
             timeout < 0 ? WAIT_FOREVER : ((double)unit.toNanos(timeout))/1e9;
         if (version() < FIRST_NEW_WAIT_V) {
@@ -285,23 +326,28 @@ public final class NetHose implements Hose {
     }
 
     private Slaw indexSlaw(long idx) {
+        threadChecker.check();
         return longSlaw(Math.max(0, idx));
     }
 
     private Slaw indexSlaw() {
+        threadChecker.check();
         return indexSlaw(index);
     }
 
     private Slaw longSlaw(long v) {
+        threadChecker.check();
         return factory.number(NumericIlk.INT64, v);
     }
 
     private long cleanIndex(long idx) {
-        dirtyIndex = false; // TODO: Patrick and Karol: figure out what it is
+        threadChecker.check();
+        dirtyIndex = false; // TODO: Patrick and Karol: figure out what it is (it looks suspicious)
         return index = idx;
     }
 
     private void checkConnection() throws InOutException {
+        threadChecker.check();
         if (!isConnected()) throw new InOutException("Connection closed");
     }
 
@@ -325,6 +371,7 @@ public final class NetHose implements Hose {
      * Closes socket abrutply, without any prior "withdraw"-style communication.
      */
     public void closeConnectionAbruptly() {
+        threadChecker.check();
         connection.close();
     }
 
