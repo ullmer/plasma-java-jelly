@@ -2,8 +2,6 @@ package com.oblong.util.probability;
 
 import net.jcip.annotations.Immutable;
 
-import java.util.Random;
-
 /**
  * Created with IntelliJ IDEA.
  * User: karol
@@ -23,7 +21,7 @@ public class IntRange extends Range<Integer> {
 	}
 
 	public IntRange(int minMax) {
-		super(minMax);
+		this(minMax,minMax);
 	}
 
 	/**

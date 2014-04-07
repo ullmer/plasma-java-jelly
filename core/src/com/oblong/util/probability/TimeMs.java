@@ -4,8 +4,6 @@ import com.oblong.util.Util;
 import com.oblong.util.logging.ObLog;
 import net.jcip.annotations.Immutable;
 
-import java.util.Random;
-
 /**
  * Represents a probability distribution of sleep time.
  *
@@ -30,8 +28,8 @@ public class TimeMs extends SkewedIntDistribution {
 		super(chanceOfPickingFromDistribution, range);
 	}
 
-	public TimeMs(int exactValue) {
-		this(SURE_CHANCE, new IntRange(0, exactValue));
+	public TimeMs(int exactConstValue) {
+		this(SURE_CHANCE, new IntRange(exactConstValue, exactConstValue));
 	}
 
 	@Override
