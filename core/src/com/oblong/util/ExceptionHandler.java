@@ -37,7 +37,9 @@ public abstract class ExceptionHandler {
 
 	private static void defaultHandleException(Throwable e, String duringMsg) {
 		if ( DEFAULT_HANDLER_PRINTS ) {
-			logger.error("========= " + createMessage(duringMsg));
+			final String prefix = "========= ";
+			System.err.println(prefix + createMessage(duringMsg));
+			logger.error(prefix + createMessage(duringMsg));
 			if ( e != null ) {
 				e.printStackTrace();
 			}
@@ -66,6 +68,10 @@ public abstract class ExceptionHandler {
 
 	public static void handleError(String message, Object details) {
 		handleException(message + "; details: " + details);
+	}
+
+	public static void debug(String message) {
+		exceptionHandler.handleExceptionImpl(null, message);
 	}
 
 	public static class JustToGetStackTrace extends Exception { /*nothing*/ }
