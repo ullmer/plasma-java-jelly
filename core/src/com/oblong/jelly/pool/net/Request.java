@@ -174,21 +174,21 @@ public enum Request {
 
     abstract Slaw getRetort(Slaw res, int v) throws ProtocolException;
 
-	private void checkRequest(NetConnection conn, Slaw... args)
-			throws PoolException {
-		if (conn == null || !conn.isOpen()) {
-			throw new InOutException("Connection closed");
-		}
-		Set<Request> requests = conn.supportedRequests();
-		if (!requests.contains(this)){
-			throw new InvalidOperationException("Unsupported op " + this.toString()+
-					", supported are "+ requests +" total : "+ requests.size());
-		}
-		if (arity != args.length)
-			throw new ProtocolException(this + " expects " + arity + " args"
-					+ ", but was invoked with arg list "
-					+ Slaw.list(args));
-	}
+    private void checkRequest(NetConnection conn, Slaw... args)
+            throws PoolException {
+        if (conn == null || !conn.isOpen()) {
+            throw new InOutException("Connection closed");
+        }
+        Set<Request> requests = conn.supportedRequests();
+        if (!requests.contains(this)){
+            throw new InvalidOperationException("Unsupported op " + this.toString()+
+                    ", supported are "+ requests +" total : "+ requests.size());
+        }
+        if (arity != args.length)
+            throw new ProtocolException(this + " expects " + arity + " args"
+                    + ", but was invoked with arg list "
+                    + Slaw.list(args));
+    }
 
     private Slaw checkResponse(Slaw res, int v) throws PoolException {
         if (timeouts) return checkTimeoutResponse(res, v);
@@ -196,17 +196,17 @@ public enum Request {
         final Slaw ret = checkRetort(res, v);
         final ServerError err = ServerError.getError(v, ret);
         if (err != ServerError.SPLEND){
-	        if(err == null){
-		        throw new PoolException("ServerError is null ");
-	        }
-	        if(ret==null){
-		        throw new PoolException("Retort Slaw is null ");
-	        }
-	        PoolException poolException = err.asException(res, ret.emitLong());
-	        if(poolException==null){
-		        throw new PoolException("pool exception from err.asException(res, ret.emitLong()) is null");
-	        }
-	        throw poolException;
+            if(err == null){
+                throw new PoolException("ServerError is null ");
+            }
+            if(ret==null){
+                throw new PoolException("Retort Slaw is null ");
+            }
+            PoolException poolException = err.asException(res, ret.emitLong());
+            if(poolException==null){
+                throw new PoolException("pool exception from err.asException(res, ret.emitLong()) is null");
+            }
+            throw poolException;
         }
         return res;
     }

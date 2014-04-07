@@ -38,27 +38,27 @@ public class AsyncHoseTestBase extends PoolServerTestBase {
 
 
 
-	    public Awaiter(PoolAddress pa, long ta) throws PoolException {
-	        poolAddress = pa;
-	        timeout = ta;
+        public Awaiter(PoolAddress pa, long ta) {
+            poolAddress = pa;
+            timeout = ta;
         }
 
-	    protected void connect() {
-		    hose = Pool.participate(poolAddress);
-		    hose.runOut();
-		    protein = null;
-	    }
+        protected void connect() {
+            hose = Pool.participate(poolAddress);
+            //hose.runOut();
+            protein = null;
+        }
 
-	    public Protein getProtein() { return protein; }
+        public Protein getProtein() { return protein; }
 
         public void run() {
             try {
-	            connect();
+                connect();
                 protein = hose.awaitNext(timeout, TimeUnit.MILLISECONDS);
             } catch (PoolException e) {
-                fail(e.getMessage());
+                fail(e.getMessage()+" : Pool exception");
             } catch (TimeoutException e) {
-                fail(e.getMessage());
+                fail(e.getMessage()+" : Timeout");
             } finally {
                 try {
                     hose.withdraw();
@@ -86,13 +86,16 @@ public class AsyncHoseTestBase extends PoolServerTestBase {
     private void waitTest(long timeout)
         throws PoolException, InterruptedException {
         final PoolAddress pa = poolAddress("waitee");
-        Pool.create(pa, null);
+        if(!Pool.exists(pa)){
+            Pool.create(pa, null);
+        }
+
         final Awaiter aw = new Awaiter(pa, timeout);
         final Thread th = new Thread(aw);
         th.start();
-        Thread.yield();
         Hose h = Pool.participate(pa);
         Protein p = h.deposit(protein(nil(), list(int8(1))));
+        Thread.yield();
         th.join();
         h . withdraw ();
         Pool.dispose(pa);
