@@ -36,17 +36,24 @@ public class AsyncHoseTestBase extends PoolServerTestBase {
 
     static class Awaiter implements Runnable {
 
-        public Awaiter(PoolAddress pa, long ta) throws PoolException {
-            hose = Pool.participate(pa);
-            hose.runOut();
-            protein = null;
-            timeout = ta;
+
+
+	    public Awaiter(PoolAddress pa, long ta) throws PoolException {
+	        poolAddress = pa;
+	        timeout = ta;
         }
 
-        public Protein getProtein() { return protein; }
+	    protected void connect() {
+		    hose = Pool.participate(poolAddress);
+		    hose.runOut();
+		    protein = null;
+	    }
+
+	    public Protein getProtein() { return protein; }
 
         public void run() {
             try {
+	            connect();
                 protein = hose.awaitNext(timeout, TimeUnit.MILLISECONDS);
             } catch (PoolException e) {
                 fail(e.getMessage());
@@ -60,8 +67,8 @@ public class AsyncHoseTestBase extends PoolServerTestBase {
                 }
             }
         }
-
-        private final Hose hose;
+	    private final PoolAddress poolAddress;
+        private Hose hose;
         private final long timeout;
         private Protein protein;
     }

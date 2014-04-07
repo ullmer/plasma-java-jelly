@@ -195,8 +195,19 @@ public enum Request {
         if (res == null) throw new ProtocolException("No response");
         final Slaw ret = checkRetort(res, v);
         final ServerError err = ServerError.getError(v, ret);
-        if (err != ServerError.SPLEND)
-            throw err.asException(res, ret.emitLong());
+        if (err != ServerError.SPLEND){
+	        if(err == null){
+		        throw new PoolException("ServerError is null ");
+	        }
+	        if(ret==null){
+		        throw new PoolException("Retort Slaw is null ");
+	        }
+	        PoolException poolException = err.asException(res, ret.emitLong());
+	        if(poolException==null){
+		        throw new PoolException("pool exception from err.asException(res, ret.emitLong()) is null");
+	        }
+	        throw poolException;
+        }
         return res;
     }
 

@@ -49,7 +49,18 @@ public abstract class ObPoolConnector extends Thread {
 				reconnectOrNotify();
 			}
 		}
-		logThreadStopped();
+
+//		logThreadStopped();
+		logger.d("Halting " + this.toString());
+		try {
+			withdrawHose();
+			logger.d("Halted " + this.toString());
+		} catch(NoClassDefFoundError ex){
+			//TODO: maybe remove this catch clause
+			ExceptionHandler.handleException(ex);
+		} catch(Exception e){
+			ExceptionHandler.handleException(e);
+		}
 	}
 
 	protected void operateOnProtein() {
@@ -94,16 +105,7 @@ public abstract class ObPoolConnector extends Thread {
 
 	public void halt() {
 		this.stopMe = true;
-		logger.d("Halting " + this.toString());
-		try {
-			withdrawHose();
-			logger.d("Halted " + this.toString());
-		} catch(NoClassDefFoundError ex){
-			//TODO: maybe remove this catch clause
-			ExceptionHandler.handleException(ex);
-		} catch(Exception e){
-			ExceptionHandler.handleException(e);
-		}
+
 	}
 
 	/****
