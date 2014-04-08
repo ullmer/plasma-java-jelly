@@ -113,7 +113,7 @@ public abstract class AbstractField<T> {
 	}
 
 	protected T getFromRawSlaw(Slaw rawSlaw) {
-		if (rawSlaw == null ) {
+		if (rawSlaw == null || rawSlaw.isNil() ) {
 			if ( isOptional ) {
 				return null; // not calling custom to avoid null-check hassle for subclasses
 			} else {
