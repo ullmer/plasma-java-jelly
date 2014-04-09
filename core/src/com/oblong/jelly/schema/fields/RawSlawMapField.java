@@ -30,7 +30,7 @@ public class RawSlawMapField extends AbstractField<SlawMap> {
     }
 
     @Override
-    public Slaw toSlaw_Custom(SlawMap value) {
+    protected Slaw toSlaw_Custom(SlawMap value) {
         return value;
     }
 

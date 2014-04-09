@@ -51,7 +51,7 @@ public class BoolField extends AbstractField<Boolean> {
 	}
 
 	@Override
-	public Slaw toSlaw_Custom(Boolean value) {
+	protected Slaw toSlaw_Custom(Boolean value) {
 		return Slaw.bool(value);
 	}
 }

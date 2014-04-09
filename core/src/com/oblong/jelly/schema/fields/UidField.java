@@ -27,7 +27,7 @@ public class UidField<T extends HasUid> extends AbstractField<Uid<T>> {
 	}
 
 	@Override
-	public Slaw toSlaw_Custom(Uid<T> value) {
+	protected Slaw toSlaw_Custom(Uid<T> value) {
 		return Slaw.string(value.uid);
 	}
 

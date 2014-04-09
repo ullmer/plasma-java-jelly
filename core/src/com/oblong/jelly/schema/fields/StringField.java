@@ -25,7 +25,7 @@ public class StringField extends AbstractField<String> {
 	}
 
 	@Override
-	public Slaw toSlaw_Custom(String value) {
+	protected Slaw toSlaw_Custom(String value) {
 		return Slaw.string(value);
 	}
 }

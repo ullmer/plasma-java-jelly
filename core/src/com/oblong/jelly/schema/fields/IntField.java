@@ -25,7 +25,7 @@ public class IntField extends AbstractField<Integer> {
 	}
 
 	@Override
-	public Slaw toSlaw_Custom(Integer value) {
+	protected Slaw toSlaw_Custom(Integer value) {
 		return Slaw.int32(value); // not sure if 32 bits
 	}
 }

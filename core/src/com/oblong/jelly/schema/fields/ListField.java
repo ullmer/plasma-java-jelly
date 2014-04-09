@@ -37,7 +37,7 @@ public class ListField<T extends HasToSlaw> extends AbstractField<List<T>> {
 	}
 
 	@Override
-	public Slaw toSlaw_Custom(List<T> value) {
+	protected Slaw toSlaw_Custom(List<T> value) {
 		List<Slaw> retList = new ArrayList<Slaw>();
 		for (T unmarshalledSlaw : value) {
 			retList.add(unmarshalledSlaw.toSlaw());

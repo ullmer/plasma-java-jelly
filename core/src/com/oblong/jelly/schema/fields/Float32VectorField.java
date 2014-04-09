@@ -35,7 +35,7 @@ public class Float32VectorField extends AbstractField<float[]> {
 	}
 
 	@Override
-	public Slaw toSlaw_Custom(float[] value) {
+	protected Slaw toSlaw_Custom(float[] value) {
 		return Slaw.array(value);
 	}
 

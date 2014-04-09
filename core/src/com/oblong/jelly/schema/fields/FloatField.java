@@ -26,7 +26,7 @@ public class FloatField extends AbstractField<Float> {
 	}
 
 	@Override
-	public Slaw toSlaw_Custom(Float value) {
+	protected Slaw toSlaw_Custom(Float value) {
 		return Slaw.float32(value);
 	}
 }

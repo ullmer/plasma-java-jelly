@@ -33,7 +33,7 @@ public class MapField<T extends UnmarshalledSlawMap> extends AbstractField<T> {
 	}
 
 	@Override
-	public SlawMap toSlaw_Custom(T value) {
+	protected SlawMap toSlaw_Custom(T value) {
 		if ( value == null ) {
 			return null;
 		}

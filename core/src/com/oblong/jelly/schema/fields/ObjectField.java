@@ -23,7 +23,7 @@ public class ObjectField<T extends UnmarshalledSlaw> extends AbstractField<T /* 
 	}
 
 	@Override
-	public Slaw toSlaw_Custom(T value) {
+	protected Slaw toSlaw_Custom(T value) {
 		return value.toSlaw();
 	}
 }
