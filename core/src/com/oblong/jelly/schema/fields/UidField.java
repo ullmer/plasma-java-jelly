@@ -38,4 +38,5 @@ public class UidField<T extends HasUid> extends AbstractField<Uid<T>> {
 	public static <T extends HasUid> UidField<T> get(SlawSchema slawSchema, boolean isOptional, String name, Class<T> tClass) {
 		return new UidField<T>(slawSchema, isOptional, name, tClass);
 	}
+
 }

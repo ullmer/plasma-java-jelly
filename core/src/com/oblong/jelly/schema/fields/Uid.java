@@ -61,4 +61,16 @@ public class Uid<T extends HasUid> implements HasToSlaw<SlawString> {
 	public SlawString toSlaw() {
 		return Slaw.string(this.uid);
 	}
+
+//	public <T2 extends T> Uid<T2> upCastTo(T2 hasUid) {
+//		return (Uid<T2>) this;
+//	}
+//
+//	public <T2 extends T> Uid<T2> upCast2() {
+//		return (Uid<T2>) this;
+//	}
+//
+//	public static <T1 extends HasUid, T2 extends HasUid> Uid<T2> upCast(T1 uid, Class<T2> cl) {
+//		return (Uid<T2>) uid;
+//	}
 }

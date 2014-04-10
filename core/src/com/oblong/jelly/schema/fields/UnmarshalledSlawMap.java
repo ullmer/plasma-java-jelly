@@ -5,7 +5,7 @@ import com.oblong.jelly.ISlawMap;
 import com.oblong.jelly.schema.SlawSchema;
 import com.oblong.jelly.schema.UnmarshalledSlaw;
 
-public class UnmarshalledSlawMap extends UnmarshalledSlaw {
+public abstract class UnmarshalledSlawMap extends UnmarshalledSlaw {
 
   // Navjot: put ingests
 
