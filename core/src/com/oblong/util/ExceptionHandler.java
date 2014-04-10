@@ -12,6 +12,7 @@ import com.oblong.util.logging.ObLog;
 public abstract class ExceptionHandler {
 
 	private static final ObLog logger = ObLog.get(ExceptionHandler.class);
+	public static final String NO_INSTALLED_EXCEPTION_HANDLER = "(no installed ExceptionHandler)";
 
 	private static volatile ExceptionHandler exceptionHandler;
 
@@ -43,7 +44,7 @@ public abstract class ExceptionHandler {
 			if ( e != null ) {
 				e.printStackTrace();
 			}
-			logger.error("(no installed ExceptionHandler)");
+			logger.error(NO_INSTALLED_EXCEPTION_HANDLER);
 		}
 		if ( DEFAULT_HANDLER_RETHROWS ) {
 			throw new RuntimeException(createMessage(duringMsg),e);
@@ -71,7 +72,11 @@ public abstract class ExceptionHandler {
 	}
 
 	public static void debug(String message) {
-		exceptionHandler.handleExceptionImpl(null, message);
+		if(exceptionHandler!=null) {
+			exceptionHandler.handleExceptionImpl(null, message);
+		} else {
+			logger.d(NO_INSTALLED_EXCEPTION_HANDLER+" : "+message);
+		}
 	}
 
 	public static class JustToGetStackTrace extends Exception { /*nothing*/ }
