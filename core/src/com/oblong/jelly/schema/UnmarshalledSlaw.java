@@ -1,5 +1,6 @@
 package com.oblong.jelly.schema;
 
+import com.oblong.jelly.communication.OttoEvent;
 import com.oblong.jelly.schema.fields.AbstractField;
 import com.oblong.jelly.slaw.MapSlawToSlaw;
 import com.oblong.jelly.slaw.java.SlawMap;
@@ -10,7 +11,7 @@ import com.oblong.jelly.slaw.java.SlawMap;
  * Date: 9/5/13
  * Time: 3:50 PM
  */
-public abstract class UnmarshalledSlaw implements HasToSlaw {
+public abstract class UnmarshalledSlaw implements HasToSlaw, OttoEvent {
 
 	protected MapSlawToSlaw mapSlawToSlaw = new MapSlawToSlaw();
 
