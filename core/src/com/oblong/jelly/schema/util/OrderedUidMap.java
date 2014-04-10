@@ -7,22 +7,22 @@ import com.oblong.util.OrderedMap;
 /**
  * @author Karol, 2014-04-10
  */
-public class OrderedUidMap <T extends HasUid> {
+public class OrderedUidMap <TUid extends HasUid, TItem extends HasUid> {
 
-	protected OrderedMap<Uid<T>, T> internalMap = new OrderedMap<Uid<T>, T>();
+	protected OrderedMap<Uid<TUid>, TItem> internalMap = new OrderedMap<Uid<TUid>, TItem>();
 
 	public void clear() {
 		internalMap.clear();
 	}
 
-	public void put(T item) {
+	public void put(TItem item) {
 		if ( contains(item) ){
 			throw new IllegalArgumentException("Item is already present. Cannot put it second time: " + item);
 		}
 		internalMap.put(getUidCast(item), item);
 	}
 
-	private boolean contains(T item) {
+	private boolean contains(TItem item) {
 		return internalMap.containsKey(getUidCast(item));
 	}
 
@@ -30,20 +30,20 @@ public class OrderedUidMap <T extends HasUid> {
 		return internalMap.size();
 	}
 
-	public T get(Uid<T> uid) {
+	public TItem get(Uid<TUid> uid) {
 		return internalMap.get(uid);
 	}
 
-	public void remove(T item) {
+	public void remove(TItem item) {
 		internalMap.remove(getUidCast(item));
 	}
 
-	public void remove(Uid<T> uid) {
+	public void remove(Uid<TUid> uid) {
 		internalMap.remove(uid);
 	}
 
-	private Uid<T> getUidCast(T item) {
-		return (Uid<T>) item.getUid();
+	private Uid<TUid> getUidCast(TItem item) {
+		return (Uid<TUid>) item.getUid();
 	}
 
 }
