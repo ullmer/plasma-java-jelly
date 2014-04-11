@@ -4,6 +4,8 @@ import com.oblong.jelly.schema.fields.HasUid;
 import com.oblong.jelly.schema.fields.Uid;
 import com.oblong.util.OrderedMap;
 
+import java.util.Collection;
+
 /**
  * @author Karol, 2014-04-10
  */
@@ -44,6 +46,10 @@ public class OrderedUidMap <TUid extends HasUid, TItem extends HasUid> {
 
 	private Uid<TUid> getUidCast(TItem item) {
 		return (Uid<TUid>) item.getUid();
+	}
+
+	public Collection<TItem> values() {
+		return internalMap.values();
 	}
 
 }
