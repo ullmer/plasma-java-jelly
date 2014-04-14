@@ -50,6 +50,15 @@ public class MemHose implements Hose {
 
     @Override public void withdraw() {
         threadChecker.check();
+        setNotConnected();
+    }
+
+    @Override public void closeConnectionAbruptly() {
+        // exempt from threadChecker - see super method javadoc
+        setNotConnected();
+    }
+
+    private void setNotConnected() {
         connected = false;
     }
 

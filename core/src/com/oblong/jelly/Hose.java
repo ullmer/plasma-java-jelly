@@ -3,11 +3,11 @@
 
 package com.oblong.jelly;
 
+import net.jcip.annotations.NotThreadSafe;
+
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
-import net.jcip.annotations.NotThreadSafe;
 
 /**
  * Interface for bidirectional communication with a pool.
@@ -428,5 +428,16 @@ public interface Hose {
      * its connection to the returned one.
      */
     Hose dupAndClose() throws PoolException;
+
+    /**
+     * NOTE: This is useful only for debugging/testing purposes, for simulating connection going down.
+     *   It is a public method, because it is used by external automatic-testing code.
+     *
+     * Closes socket abrutply, without any prior "withdraw"-style communication.
+     *
+     * Exempt from threadChecker, since it is used for testing and the intent is abrupt disconnection,
+     * without going through "official" channels - simulating network connectivity loss.
+     */
+    void closeConnectionAbruptly();
 
 }

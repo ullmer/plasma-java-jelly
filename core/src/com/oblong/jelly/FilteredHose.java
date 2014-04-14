@@ -231,6 +231,10 @@ public final class FilteredHose implements Hose {
         return new FilteredHose(hose, descrips);
     }
 
+    @Override public void closeConnectionAbruptly() {
+        hose.closeConnectionAbruptly();
+    }
+
     private final Hose hose;
     private final Slaw[] descrips;
 }
