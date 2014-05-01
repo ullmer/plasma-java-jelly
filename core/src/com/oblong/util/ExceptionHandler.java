@@ -73,11 +73,13 @@ public abstract class ExceptionHandler {
 
 	public static void debug(String message) {
 		if(exceptionHandler!=null) {
-			exceptionHandler.handleExceptionImpl(null, message);
+			exceptionHandler.handleDebugMessageImpl(message);
 		} else {
 			logger.d(NO_INSTALLED_EXCEPTION_HANDLER+" : "+message);
 		}
 	}
+
+	protected abstract void handleDebugMessageImpl(String message);
 
 	public static class JustToGetStackTrace extends Exception { /*nothing*/ }
 
