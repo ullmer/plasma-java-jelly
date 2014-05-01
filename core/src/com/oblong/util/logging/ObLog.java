@@ -58,9 +58,14 @@ public class ObLog {
 		if ( loggingObject == null ) {
 			return message;
 		} else {
-			String loggingObjectString = "" + loggingObject;
-			loggingObjectString = loggingObjectString.replace(logger.getName(), "#"); /* too avoid FQCN twice. #@
-					to have a visual pattern */
+			String loggingObjectString;
+			if ( loggingObject instanceof LoggingObject ) {
+				loggingObjectString = ((LoggingObject) loggingObject).toLoggingObjectString();
+			} else {
+				loggingObjectString = "" + loggingObject;
+			}
+			loggingObjectString = loggingObjectString.replace(logger.getName(), "#"); /* To avoid FQCN twice. Also,
+					the resulting "#@" is useful as a visual pattern. */
 			return loggingObjectString + " ==>  " + message;
 		}
 	}

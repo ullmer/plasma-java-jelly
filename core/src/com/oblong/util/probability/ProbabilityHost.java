@@ -18,15 +18,20 @@ public class ProbabilityHost {
 	public static final ProbabilityHost the = new ProbabilityHost();
 
 	private final Random random;
+	private final long randomSeed;
 
 	public ProbabilityHost() {
-		long seed = System.currentTimeMillis();
+		this.randomSeed = System.currentTimeMillis();
 		if(log.i()) log.i("ProbabilityContext Random seed (please save it if you want to re-try same scenario) : "
-				+ seed);
-		this.random = new Random(seed);
+				+ randomSeed);
+		this.random = new Random(randomSeed);
 	}
 
 	public Random getRandom() {
 		return random;
+	}
+
+	public long getRandomSeed() {
+		return this.randomSeed;
 	}
 }

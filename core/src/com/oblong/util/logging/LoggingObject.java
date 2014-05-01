@@ -10,5 +10,7 @@ public interface LoggingObject {
 
 	// TODO: toLoggableString
 
+	public String toLoggingObjectString();
+
 	// TODO: interface LoggedObject
 }
