@@ -12,5 +12,7 @@ public interface LoggingObject {
 
 	public String toLoggingObjectString();
 
+	// TODO: split into static part (pre-calculated once to save CPU cycles) and dynamic part
+
 	// TODO: interface LoggedObject
 }
