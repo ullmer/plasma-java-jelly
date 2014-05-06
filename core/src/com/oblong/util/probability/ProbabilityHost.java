@@ -21,9 +21,10 @@ public class ProbabilityHost {
 	private final long randomSeed;
 
 	public ProbabilityHost() {
-		this.randomSeed = System.currentTimeMillis();
+//		this.randomSeed = System.currentTimeMillis();
+		this.randomSeed = Long.parseLong("145ceace602", 16); // caused null workspace
 		if(log.i()) log.i("ProbabilityContext Random seed (please save it if you want to re-try same scenario) : "
-				+ randomSeed);
+				+ Long.toHexString(randomSeed));
 		this.random = new Random(randomSeed);
 	}
 

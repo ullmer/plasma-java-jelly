@@ -4,6 +4,10 @@ import com.oblong.jelly.Slaw;
 import com.oblong.jelly.schema.HasToSlaw;
 import com.oblong.jelly.slaw.java.SlawString;
 
+import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 /**
  * User: karol
  * Date: 11/18/13
@@ -46,7 +50,7 @@ public class Uid<T extends HasUid> implements HasToSlaw<SlawString> {
 		return this.uid;
 	}
 
-	public boolean safeEquals(Uid uid) {
+	public boolean safeEquals(Uid<T> uid) {
 		return equals(uid);
 	}
 
@@ -73,4 +77,18 @@ public class Uid<T extends HasUid> implements HasToSlaw<SlawString> {
 //	public static <T1 extends HasUid, T2 extends HasUid> Uid<T2> upCast(T1 uid, Class<T2> cl) {
 //		return (Uid<T2>) uid;
 //	}
+
+	/** Useful for debugging */
+	public static Set<String> getUids(Collection<? extends HasUid> items) {
+		Set<String> uids = new LinkedHashSet<String>();
+		for (HasUid item : items) {
+			uids.add(item.getUid().toParsableString());
+//			if ( ! uProt.getWorkspaceUids().contains(workspace.getUid() + "\n")) {
+//				throw new RuntimeException("Workspace uid missing : ")
+//			workspaceUids.append(workspace.getUid());
+//			workspaceUids.append("\n");
+		}
+		return uids;
+	}
+
 }

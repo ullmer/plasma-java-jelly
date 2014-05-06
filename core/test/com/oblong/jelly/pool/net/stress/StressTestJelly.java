@@ -1,17 +1,16 @@
 package com.oblong.jelly.pool.net.stress;
 
-import com.oblong.jelly.*;
+import com.oblong.jelly.BadAddressException;
+import com.oblong.jelly.PoolAddress;
+import com.oblong.jelly.PoolServerAddress;
 import com.oblong.util.Util;
+import com.oblong.util.probability.ProbabilityHost;
 import net.jcip.annotations.GuardedBy;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
 
 import java.util.Random;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 /**
  * This test is designed to "stress-test" multiple parts of Jelly, mainly hoses, in order to verify their reliability.
@@ -46,13 +45,14 @@ public class StressTestJelly {
 
 	final boolean runningViaJUnit;
 
-	final Random random = new Random();
+	final Random random = ProbabilityHost.the.getRandom();
 
 	@GuardedBy("this")
 	private long qtyProteinsReceivedInWholeTest = 0;
 
 
 	public StressTestJelly(boolean runningViaJUnit) {
+		logger.info("Random seed: " + ProbabilityHost.the.getRandomSeed());
 		if ( runningViaJUnit ) {
 			throw new UnsupportedOperationException("Running via JUnit not supported");
 		}
