@@ -3,20 +3,21 @@
 
 package com.oblong.jelly.pool.mem;
 
+import com.oblong.jelly.PoolOptions;
+import com.oblong.jelly.Protein;
+import com.oblong.jelly.Slaw;
+import net.jcip.annotations.ThreadSafe;
+
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import net.jcip.annotations.ThreadSafe;
-
-import com.oblong.jelly.Protein;
-import com.oblong.jelly.Slaw;
-import com.oblong.jelly.PoolOptions;
-import com.oblong.jelly.pool.PoolProtein;
 
 @ThreadSafe
 final public class MemPool {
 
-    static boolean exists(String name) {
+	private long sequentialProteinIndex = 0;
+
+	static boolean exists(String name) {
         return pools.containsKey(name);
     }
 
@@ -61,7 +62,7 @@ final public class MemPool {
         }
     }
 
-    PoolProtein nth(long index) {
+	MemPoolProtein nth(long index) {
         if (index >= 0) {
             synchronized (proteins) {
                 if (index < proteins.size()) return proteins.get((int)index);
@@ -70,8 +71,8 @@ final public class MemPool {
         return null;
     }
 
-    PoolProtein nth(long idx, boolean d, boolean i, long s, long l) {
-        final PoolProtein p = nth(idx);
+	MemPoolProtein nth(long idx, boolean d, boolean i, long s, long l) {
+        final MemPoolProtein p = nth(idx);
         if (p == null) return null;
         byte[] data = null;
         if (s >= 0 && l != 0) {
@@ -81,16 +82,17 @@ final public class MemPool {
                 data[(int)k] = p.datum((int)(s + k));
             }
         }
-        return new PoolProtein(Slaw.protein(d ? p.descrips() : null,
+        return new MemPoolProtein(Slaw.protein(d ? p.descrips() : null,
                                             i ? p.ingests() : null,
                                             data),
                                p.index(),
                                p.timestamp(),
-                               null);
+                               null,
+		                       p.getSequentialProteinIndex());
     }
 
-    PoolProtein next(long index, double timeout) {
-        PoolProtein p = nth(index);
+	MemPoolProtein next(long index, double timeout) {
+		MemPoolProtein p = nth(index);
         if (p == null && timeout != 0) {
             if (timeout < 0) return waitNext(index);
             synchronized (proteins) {
@@ -112,9 +114,9 @@ final public class MemPool {
         return p;
     }
 
-    PoolProtein waitNext(long index) {
+	MemPoolProtein waitNext(long index) {
         synchronized (proteins) {
-            PoolProtein p = nth(index);
+	        MemPoolProtein p = nth(index);
             while (p == null) {
                 try {
                     proteins.wait();
@@ -127,19 +129,19 @@ final public class MemPool {
         }
     }
 
-    PoolProtein find(long index, Slaw[] descs, boolean fwd) {
+	MemPoolProtein find(long index, Slaw[] descs, boolean fwd) {
         final int idx = (int)index;
         return fwd ? findFwd(idx, descs) : findBack(idx, descs);
     }
 
-    PoolProtein deposit(Protein p) {
+	MemPoolProtein deposit(Protein p) {
         return deposit(p, ((double)System.currentTimeMillis()) / 10e3);
     }
 
-    PoolProtein deposit(Protein p, double stamp) {
+	MemPoolProtein deposit(Protein p, double stamp) {
         synchronized (proteins) {
-            final PoolProtein pp =
-                new PoolProtein(p, proteins.size(), stamp, null);
+            final MemPoolProtein pp =
+                new MemPoolProtein(p, proteins.size(), stamp, null, nextSequentialProteinIndex());
             //  If we've hit the size limit, start dropping from the front
             if (proteins.size() >= max_size)
                 proteins.remove(0);
@@ -149,7 +151,11 @@ final public class MemPool {
         }
     }
 
-    private MemPool(String name) {
+	private long nextSequentialProteinIndex() {
+		return sequentialProteinIndex ++;
+	}
+
+	private MemPool(String name) {
         this (name, 1000 * 1000 /* default max pool size.  Arbitrary.*/);
     }
 
@@ -158,23 +164,23 @@ final public class MemPool {
         this.max_size = size;
     }
 
-    private PoolProtein findBack(int index, Slaw[] descrip) {
+    private MemPoolProtein findBack(int index, Slaw[] descrip) {
         synchronized (proteins) {
             if (index >= proteins.size()) index = proteins.size() - 1;
             for (int i = index; i > -1; --i) {
-                final PoolProtein p = proteins.get(i);
+                final MemPoolProtein p = proteins.get(i);
                 if (p.matches(descrip)) return p;
             }
         }
         return null;
     }
 
-    private PoolProtein findFwd(int index, Slaw[] descrip) {
+    private MemPoolProtein findFwd(int index, Slaw[] descrip) {
         synchronized (proteins) {
             if (index < 0) index = 0;
             final int last = proteins.size();
             for (int i = index; i < last; ++i) {
-                final PoolProtein p = proteins.get(i);
+                final MemPoolProtein p = proteins.get(i);
                 if (p.matches(descrip)) return p;
             }
         }
@@ -182,8 +188,8 @@ final public class MemPool {
     }
 
     private final String name;
-    private final ArrayList<PoolProtein> proteins =
-        new ArrayList<PoolProtein>();
+    private final ArrayList<MemPoolProtein> proteins =
+        new ArrayList<MemPoolProtein>();
     private final long max_size;
 
     private static ConcurrentHashMap<String, MemPool> pools =

@@ -2,15 +2,14 @@
 
 package com.oblong.jelly.pool;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.concurrent.TimeUnit;
-
-import net.jcip.annotations.Immutable;
-
 import com.oblong.jelly.Hose;
 import com.oblong.jelly.Protein;
 import com.oblong.jelly.Slaw;
+import net.jcip.annotations.Immutable;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.concurrent.TimeUnit;
 
 /**
  *
@@ -19,7 +18,7 @@ import com.oblong.jelly.Slaw;
  * @author jao
  */
 @Immutable
-public final class PoolProtein extends Protein {
+public class PoolProtein extends Protein {
 
     public PoolProtein(Protein p, long idx, double ts, Hose h) {
         protein = p;
@@ -60,4 +59,5 @@ public final class PoolProtein extends Protein {
     private final long index;
     private final double stamp;
     private final Hose hose;
+
 }

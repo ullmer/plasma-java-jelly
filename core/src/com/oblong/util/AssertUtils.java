@@ -5,7 +5,7 @@ import java.util.Set;
 /**
  * Utilities for runtime assertions.
  *
- * Avoiding autoboxing/unboxing performance hit.
+ * Avoiding autoboxing/unboxing performance hit, by having specialized methods for primitive types.
  *
  * For release, we might make those assertions non-crashing, e.g. by using ExceptionHandler.handleException()
  *
@@ -14,7 +14,9 @@ import java.util.Set;
 public class AssertUtils {
 
 	private static void throwAssertEqualsError(Object val1, Object val2, String message) {
-		throw new RuntimeException("Values should be equal: " + val1 + " === " + val2 + " -- " + message);
+		String errorMessage = "Values should be equal: " + val1 + " === " + val2 + " -- " + message;
+		ExceptionHandler.handleException(errorMessage);
+//		throw new RuntimeException(errorMessage);
 	}
 
 	public static void assertEquals(boolean val1, boolean val2, String message) {
@@ -24,6 +26,12 @@ public class AssertUtils {
 	}
 
 	public static void assertEquals(int val1, int val2, String message) {
+		if ( val1 != val2 ) {
+			throwAssertEqualsError(val1, val2, message);
+		}
+	}
+
+	public static void assertEquals(long val1, long val2, String message) {
 		if ( val1 != val2 ) {
 			throwAssertEqualsError(val1, val2, message);
 		}

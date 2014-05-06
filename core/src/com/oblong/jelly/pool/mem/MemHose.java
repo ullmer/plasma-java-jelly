@@ -5,6 +5,7 @@ package com.oblong.jelly.pool.mem;
 
 import com.oblong.jelly.*;
 import com.oblong.jelly.pool.PoolProtein;
+import com.oblong.util.AssertUtils;
 import com.oblong.util.ThreadChecker;
 
 import java.util.ArrayList;
@@ -14,10 +15,15 @@ import java.util.concurrent.TimeoutException;
 
 public class MemHose implements Hose {
 
-    protected final ThreadChecker threadChecker = new ThreadChecker();
+	private static final long NO_LAST_PROTEIN = -999;
+	protected final ThreadChecker threadChecker = new ThreadChecker();
 
-    /* Ummm... version is an attribute of the TCP pool protocol,
-     * so I'm unclear why we have one here in MemHose. */
+	/** NOTE: might not be zero after connecting - we might need to initialize it to proper value upon joining the
+	 * pool */
+    private long lastObtainedProteinIndex = NO_LAST_PROTEIN;
+
+	/* Ummm... version is an attribute of the TCP pool protocol,
+	 * so I'm unclear why we have one here in MemHose. */
     @Override public int version() {
         threadChecker.check();
         return 3;
@@ -169,17 +175,32 @@ public class MemHose implements Hose {
         final PoolProtein p = await (unit . toMillis (period) / 1000.00);
         if (p == null)
             throw new TimeoutException();
+//        verifyIncomingProteinIndexAndIncrement(p);
         return checkProtein(p);
     }
 
-    @Override public Protein awaitNext() throws PoolException {
+	private void verifyIncomingProteinIndexAndIncrement(PoolProtein p) {
+		if ( lastObtainedProteinIndex == NO_LAST_PROTEIN ) {
+			lastObtainedProteinIndex = p.index();
+		} else {
+			MemPoolProtein memPoolProtein = (MemPoolProtein) p;
+			long sequentialProteinIndex = memPoolProtein.getSequentialProteinIndex();
+			AssertUtils.assertEquals(lastObtainedProteinIndex + 1,
+					sequentialProteinIndex, "lastObtainedProteinIndex + 1, memPoolProtein.getSequentialProteinIndex()");
+	        lastObtainedProteinIndex ++;
+		}
+	}
+
+	@Override public Protein awaitNext() throws PoolException {
         threadChecker.check();
         /* -1 means "wait forever", although it might be nice to have
          * a defined constant for it, like POOL_WAIT_FOREVER which
          * is #defined in libPlasma/c/pool.h.  And actually, Jelly
          * does define constants for WAIT_FOREVER and NO_WAIT, but
          * they are in NetHose, and are private. */
-        return checkProtein (await (-1));
+		PoolProtein p = await(-1);
+//		verifyIncomingProteinIndexAndIncrement(p);
+		return checkProtein (p);
     }
 
     @Override public Protein previous(Slaw... descrips) throws PoolException {
@@ -256,8 +277,11 @@ public class MemHose implements Hose {
         threadChecker.check();
         if (timeout == 0) return getNext();
         PoolProtein p = pool.next(index, timeout);
-        if (p != null) ++index;
-        return p;
+        if (p != null) {
+	        ++index;
+	        verifyIncomingProteinIndexAndIncrement(p);
+        }
+	    return p;
     }
 
     private void checkConnected() throws PoolException {
