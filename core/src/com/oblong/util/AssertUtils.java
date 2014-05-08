@@ -13,8 +13,10 @@ import java.util.Set;
  */
 public class AssertUtils {
 
+	public static final String MESSAGE_PREFIX = " --  Message: ";
+
 	private static void throwAssertEqualsError(Object val1, Object val2, String message) {
-		String errorMessage = "Values should be equal: " + val1 + " === " + val2 + " -- " + message;
+		String errorMessage = "Values should be equal: " + val1 + " === " + val2 + MESSAGE_PREFIX + message;
 		ExceptionHandler.handleException(errorMessage);
 //		throw new RuntimeException(errorMessage);
 	}
@@ -49,12 +51,18 @@ public class AssertUtils {
 
 	public static void assertNotNull(Object value, String message) {
 		if ( value == null ) {
-			throw new RuntimeException("Value must not be " + value + " -- " + message);
+			throw new RuntimeException("Value must not be " + value + MESSAGE_PREFIX + message);
 		}
 	}
 
 	public static void assertEquals(Set<String> expected, Set<String> actual, String msg) {
 		assertObjectsEquals(expected, actual, msg);
+	}
+
+	public static void assertTrue(boolean b, String message) {
+		if ( !b ) {
+			throw new RuntimeException("Value must be true. -- Condition: " + message);
+		}
 	}
 
 }
