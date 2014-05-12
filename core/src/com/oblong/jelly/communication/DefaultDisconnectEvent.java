@@ -27,7 +27,7 @@ public class DefaultDisconnectEvent extends AbstractDisconnectEvent {
 //		/** Is this really disconnect or just kicked out of session? */
 //		PASSPHRASE_BECAME_ENABLED,
 
-		USER_REQUESTED_DISCONNECTING
+		CLIENT_EVICT_RECEIVED, USER_REQUESTED_DISCONNECTING
 	}
 
 
