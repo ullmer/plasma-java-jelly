@@ -2,6 +2,8 @@ package com.oblong.util.probability;
 
 import net.jcip.annotations.Immutable;
 
+import java.util.Random;
+
 /**
  * Created with IntelliJ IDEA.
  * User: karol
@@ -10,6 +12,8 @@ import net.jcip.annotations.Immutable;
  */
 @Immutable
 public class IntRange extends Range<Integer> {
+
+	private static ProbabilityHost probabilityHost = ProbabilityHost.get();
 
 	public IntRange(Integer minInclusive, Integer maxInclusive) {
 		super(minInclusive, maxInclusive);
@@ -28,7 +32,7 @@ public class IntRange extends Range<Integer> {
 	 * NOTE: max value is intentionally *inclusive*, unlike in java.util.Random.nextInt
 	 */
 	@Override public Integer random() {
-		return randomInt(minInclusive, maxInclusive);
+		return probabilityHost.randomIntInclusive(minInclusive, maxInclusive);
 	}
 
 	@Override
@@ -39,15 +43,6 @@ public class IntRange extends Range<Integer> {
 	@Override
 	protected Integer multiply(Integer value, double multiplier) {
 		return Integer.valueOf((int) (maxInclusive * multiplier));
-	}
-
-	public static int randomInt(int minInclusive, int maxInclusive) {
-		int diff = maxInclusive - minInclusive;
-		if ( diff > 0 ) {
-			return minInclusive + ProbabilityHost.the.getRandom().nextInt(diff + 1);
-		} else {
-			return minInclusive;
-		}
 	}
 
 }

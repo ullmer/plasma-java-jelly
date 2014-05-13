@@ -10,8 +10,6 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
 
-import java.util.Random;
-
 /**
  * This test is designed to "stress-test" multiple parts of Jelly, mainly hoses, in order to verify their reliability.
  * It is designed to uncover, among other things, any problems arising from timing-dependency.
@@ -45,14 +43,14 @@ public class StressTestJelly {
 
 	final boolean runningViaJUnit;
 
-	final Random random = ProbabilityHost.the.getRandom();
+	final ProbabilityHost probabilityHost = ProbabilityHost.get();
 
 	@GuardedBy("this")
 	private long qtyProteinsReceivedInWholeTest = 0;
 
 
 	public StressTestJelly(boolean runningViaJUnit) {
-		logger.info("Random seed: " + ProbabilityHost.the.getRandomSeed());
+		logger.info("Random seed: " + probabilityHost.getRandomSeed());
 		if ( runningViaJUnit ) {
 			throw new UnsupportedOperationException("Running via JUnit not supported");
 		}

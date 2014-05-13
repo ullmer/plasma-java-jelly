@@ -18,7 +18,7 @@ public class Chance {
 	private final ProbabilityHost ph;
 
 	public Chance(double chance) {
-		this.ph = ProbabilityHost.the;
+		this.ph = ProbabilityHost.get();
 		if ( chance < 0.0 || chance > 1.0 ) {
 			throw new IllegalArgumentException("Chance not in 0..1 range: " + chance);
 		}
@@ -31,7 +31,7 @@ public class Chance {
 		} else if (chance == 1.0) {
 			return true;
 		} else {
-			return ph.getRandom().nextInt(MULTIPLY_TO_INT) < chance * MULTIPLY_TO_INT;
+			return ph.nextIntExcludingMax(MULTIPLY_TO_INT) < chance * MULTIPLY_TO_INT;
 		}
 
 		// examples:

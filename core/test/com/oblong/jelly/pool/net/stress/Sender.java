@@ -1,12 +1,8 @@
 package com.oblong.jelly.pool.net.stress;
 
-import com.oblong.jelly.*;
+import com.oblong.jelly.Protein;
+import com.oblong.util.probability.ProbabilityHost;
 import org.apache.log4j.Logger;
-
-import java.util.Random;
-
-import static com.oblong.jelly.Slaw.protein;
-import static junit.framework.Assert.fail;
 
 /**
  * Created with IntelliJ IDEA.
@@ -19,7 +15,7 @@ public class Sender extends ConnectionParticipant {
 	private static final Logger logger = Logger.getLogger(Sender.class);
 
 	final StressTestJelly test;
-	final Random random;
+	final ProbabilityHost probabilityHost;
 	final ProteinGenerator proteinGenerator;
 	final Receiver receiver;
 
@@ -29,7 +25,7 @@ public class Sender extends ConnectionParticipant {
 		super(connectionSession);
 
 		this.test = connectionSession.parentTest;
-		this.random = test.random;
+		this.probabilityHost = test.probabilityHost;
 		this.proteinGenerator = connectionSession.proteinGenerator;
 		this.receiver = connectionSession.receiver;
 

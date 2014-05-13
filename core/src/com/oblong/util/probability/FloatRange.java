@@ -1,7 +1,5 @@
 package com.oblong.util.probability;
 
-import java.util.Random;
-
 /**
  * Created with IntelliJ IDEA.
  * User: karol
@@ -20,7 +18,7 @@ public class FloatRange extends Range<Float> {
 
 
 	public Float random() {
-		float rnd = ProbabilityHost.the.getRandom().nextFloat();
+		float rnd = ProbabilityHost.get().nextFloat();
 		float diff = maxInclusive - minInclusive;
 		return minInclusive + rnd * diff;
 

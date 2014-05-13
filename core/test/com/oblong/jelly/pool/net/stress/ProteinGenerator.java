@@ -4,17 +4,13 @@ import com.oblong.jelly.Hose;
 import com.oblong.jelly.Protein;
 import com.oblong.jelly.Slaw;
 import com.oblong.jelly.slaw.java.SlawString;
+import com.oblong.util.probability.ProbabilityHost;
 import org.apache.log4j.Logger;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 import static com.oblong.jelly.Slaw.*;
-import static com.oblong.jelly.Slaw.protein;
-import static com.oblong.jelly.Slaw.string;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Generates proteins to be used for test.
@@ -36,12 +32,12 @@ public class ProteinGenerator {
 
 	final ConnectionSession connectionSession;
 	final StressTestJelly test;
-	final Random random;
+	final ProbabilityHost probabilityHost;
 
 	public ProteinGenerator(ConnectionSession connectionSession) {
 		this.connectionSession = connectionSession;
 		this.test = connectionSession.parentTest;
-		this.random = test.random;
+		this.probabilityHost = test.probabilityHost;
 	}
 
 	public Protein makeProtein(long proteinIndex, String poolName, SlawString descrip,
@@ -63,7 +59,7 @@ public class ProteinGenerator {
 		int randomDataLength = connectionSession.testConfig.qtyRudeDataBytes.random();
 		if (randomDataLength > 0) {
 			final byte[] data = new byte[randomDataLength];
-			random.nextBytes(data);
+			probabilityHost.nextBytes(data);
 
 			return protein(desc, ingests, data);
 		} else {

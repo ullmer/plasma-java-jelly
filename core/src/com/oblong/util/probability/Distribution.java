@@ -1,7 +1,5 @@
 package com.oblong.util.probability;
 
-import java.util.Random;
-
 /**
  * User: karol
  * Date: 10/21/13
@@ -16,7 +14,7 @@ public abstract class Distribution<T extends Number> {
 	}
 
 	protected Distribution() {
-		this(ProbabilityHost.the);
+		this(ProbabilityHost.get());
 	}
 
 	public abstract T random();

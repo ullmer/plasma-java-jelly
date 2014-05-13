@@ -4,8 +4,6 @@ import com.oblong.jelly.*;
 import com.oblong.util.Util;
 import org.apache.log4j.Logger;
 
-import java.util.Random;
-
 
 /**
  * User: karol
@@ -20,8 +18,6 @@ public class ConnectionSession {
 
 	final StressTestJelly parentTest;
 
-	final Random random;
-
 	private final long cycleId;
 
 	final TestConfig testConfig;
@@ -33,7 +29,6 @@ public class ConnectionSession {
 
 	public ConnectionSession(StressTestJelly parentTest, long cycleId) {
 		this.parentTest = parentTest;
-		this.random = parentTest.random;
 		this.cycleId = cycleId;
 		this.proteinGenerator = new ProteinGenerator(this);
 		this.testConfig = parentTest.testConfig;
