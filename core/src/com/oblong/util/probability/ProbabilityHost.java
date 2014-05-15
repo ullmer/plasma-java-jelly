@@ -19,8 +19,9 @@ public class ProbabilityHost {
 
 	private static final ProbabilityHost the = new ProbabilityHost();
 
-	private final long randomSeed = Long.parseLong("145ceace602", 16); // caused null workspace
-//		this.randomSeed = Long.parseLong("145d26a6964", 16); // caused null workspace
+//	private final long randomSeed = Long.parseLong("145ceace602", 16); // caused null workspace
+//	private final long randomSeed = Long.parseLong("145d26a6964", 16); // caused null workspace
+	private final long randomSeed = System.currentTimeMillis();
 
 	/** Using ThreadLocal to prevent threads "snatching" values from each other (forever ruining the sequence) due to race conditions */
 	ThreadLocal<ThreadLocalRandom> randomThreadLocal = new ThreadLocal<ThreadLocalRandom>() {
@@ -43,7 +44,6 @@ public class ProbabilityHost {
 	}
 
 	public ProbabilityHost() {
-//		this.randomSeed = System.currentTimeMillis();
 
 		if(log.i()) log.i("ProbabilityHost Random seed (please save it if you want to re-try same scenario) : "
 				+ Long.toHexString(randomSeed) + " ; Date: " + new Date());
