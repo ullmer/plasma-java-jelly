@@ -58,10 +58,14 @@ public class ProbabilityHost {
 		return the;
 	}
 
-	public synchronized String generateRandomString(int randomStringLen, String namePrefix) {
+	public synchronized String generateRandomString(int randomStringLen, String nonMandatoryPrefix) {
+		if (nonMandatoryPrefix.length()>randomStringLen) {
+			nonMandatoryPrefix = nonMandatoryPrefix.substring(0, randomStringLen);
+		}
+
 		ThreadLocalRandom threadLocalRandom = randomThreadLocal.get();
 		final StringBuilder sb = new StringBuilder(randomStringLen);
-		sb.append(namePrefix);
+		sb.append(nonMandatoryPrefix);
 
 		for (int i=sb.length(); i< randomStringLen; ++i) {
 //			char c = (char) ((randomThreadLocal.get().nextInt() & 0x5F) + 20);
@@ -72,6 +76,11 @@ public class ProbabilityHost {
 		if(log.t()) log.t(threadLocalRandom.getNextIndexPrefix() + " - generateRandomString (" + s.length() + "): " + s);
 		return s;
 	}
+
+	public String generateRandomString(IntRange lengthRange, String nonMandatoryPrefix) {
+		return generateRandomString(lengthRange.random(), nonMandatoryPrefix);
+	}
+
 
 	public synchronized float nextFloat() {
 		ThreadLocalRandom threadLocalRandom = randomThreadLocal.get();
