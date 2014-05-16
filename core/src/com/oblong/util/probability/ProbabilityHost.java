@@ -77,7 +77,7 @@ public class ProbabilityHost {
 		return s;
 	}
 
-	public String generateRandomString(IntRange lengthRange, String nonMandatoryPrefix) {
+	public String generateRandomString(String nonMandatoryPrefix, IntRange lengthRange) {
 		return generateRandomString(lengthRange.random(), nonMandatoryPrefix);
 	}
 
