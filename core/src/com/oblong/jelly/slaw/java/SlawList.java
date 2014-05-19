@@ -3,17 +3,14 @@
 package com.oblong.jelly.slaw.java;
 
 
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.oblong.jelly.NumericIlk;
 import com.oblong.jelly.Slaw;
 import com.oblong.jelly.SlawIlk;
-
+import com.oblong.jelly.schema.HasToSlaw;
 import net.jcip.annotations.Immutable;
+
+import java.math.BigInteger;
+import java.util.*;
 
 @Immutable
 public final class SlawList extends JavaSlaw {
@@ -25,13 +22,13 @@ public final class SlawList extends JavaSlaw {
         return new SlawList(sx);
     }
 
-    static Slaw valueOf(List<? extends Slaw> sx, boolean copy) {
+    static SlawList valueOf(List<? extends Slaw> sx, boolean copy) {
         if (sx.size() == 0) return EMPTY_LIST;
         return new SlawList(sx, copy);
     }
 
-    static Slaw valueOf(List<? extends Slaw> sx) {
-        return valueOf(sx, true);
+    static SlawList valueOf(Collection<? extends HasToSlaw> sx) {
+        return new SlawList(sx);
     }
 
     @Override public SlawIlk ilk() { return SlawIlk.LIST; }
@@ -106,6 +103,15 @@ public final class SlawList extends JavaSlaw {
         elements = copy ? new ArrayList<Slaw>(elems)
                 : (List<Slaw>) elems /* it is final anyway, so we can cast */;
         while (elements.remove(null));
+    }
+
+    SlawList(Collection<? extends HasToSlaw> collection) {
+        elements = new ArrayList<Slaw>(collection.size());
+        for (HasToSlaw s : collection) {
+            if (s != null) {
+                elements.add(s.toSlaw());
+            }
+        }
     }
 
     private SlawList(Slaw... sx) {

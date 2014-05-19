@@ -1,5 +1,6 @@
 package com.oblong.jelly.schema.util;
 
+import com.oblong.jelly.Slaw;
 import com.oblong.jelly.schema.fields.HasUid;
 import com.oblong.jelly.schema.fields.Uid;
 import com.oblong.util.OrderedMap;
@@ -59,4 +60,7 @@ public class OrderedUidMap <TUid extends HasUid, TItem extends HasUid> {
 		return list;
 	}
 
+	public Slaw getUidsSlawList() {
+		return Slaw.list(internalMap.keySet());
+	}
 }

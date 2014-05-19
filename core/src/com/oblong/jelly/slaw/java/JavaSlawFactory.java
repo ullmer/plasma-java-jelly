@@ -2,19 +2,16 @@
 
 package com.oblong.jelly.slaw.java;
 
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
 import com.oblong.jelly.NumericIlk;
 import com.oblong.jelly.Protein;
 import com.oblong.jelly.Slaw;
 import com.oblong.jelly.SlawIlk;
+import com.oblong.jelly.schema.HasToSlaw;
 import com.oblong.jelly.slaw.SlawFactory;
-
 import net.jcip.annotations.Immutable;
+
+import java.math.BigInteger;
+import java.util.*;
 
 @Immutable
 public final class JavaSlawFactory implements SlawFactory {
@@ -130,7 +127,11 @@ public final class JavaSlawFactory implements SlawFactory {
 
     @Override public SlawList list(Slaw... sx) { return SlawList.valueOf(sx); }
 
-    @Override public Slaw list(List<? extends Slaw> sx) {
+    @Override public SlawList list(List<? extends Slaw> sx) {
+        return SlawList.valueOf(sx);
+    }
+
+    @Override public SlawList list(Collection<? extends HasToSlaw> sx) {
         return SlawList.valueOf(sx);
     }
 

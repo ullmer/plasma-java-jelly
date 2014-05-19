@@ -2,14 +2,19 @@
 
 package com.oblong.jelly.slaw;
 
-import java.math.BigInteger;
-import java.util.List;
-import java.util.Map;
-
-import com.oblong.jelly.*;
+import com.oblong.jelly.NumericIlk;
+import com.oblong.jelly.Protein;
+import com.oblong.jelly.Slaw;
+import com.oblong.jelly.SlawIlk;
+import com.oblong.jelly.schema.HasToSlaw;
 import com.oblong.jelly.slaw.java.SlawList;
 import com.oblong.jelly.slaw.java.SlawMap;
 import com.oblong.jelly.slaw.java.SlawString;
+
+import java.math.BigInteger;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created: Mon Apr 26 01:28:28 2010
@@ -43,6 +48,7 @@ public interface SlawFactory {
 
     Slaw list(List<? extends Slaw> s);
     SlawList list(Slaw... s);
+    SlawList list(Collection<? extends HasToSlaw> collection);
 
     SlawMap map(Map<Slaw,Slaw> m);
     Slaw map(Slaw... kvs);

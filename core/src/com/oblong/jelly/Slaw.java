@@ -3,17 +3,6 @@
 
 package com.oblong.jelly;
 
-import java.io.ByteArrayOutputStream;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-
-import static com.oblong.jelly.NumericIlk.*;
-import static com.oblong.jelly.SlawIlk.*;
-
 import com.oblong.jelly.schema.HasToSlaw;
 import com.oblong.jelly.slaw.java.SlawArray;
 import com.oblong.jelly.slaw.java.SlawList;
@@ -21,6 +10,13 @@ import com.oblong.jelly.slaw.java.SlawMap;
 import com.oblong.jelly.slaw.java.SlawString;
 import com.oblong.util.ExceptionHandler;
 import net.jcip.annotations.Immutable;
+
+import java.io.ByteArrayOutputStream;
+import java.math.BigInteger;
+import java.util.*;
+
+import static com.oblong.jelly.NumericIlk.*;
+import static com.oblong.jelly.SlawIlk.*;
 
 /**
  * Slaw instances constitute the components of Proteins and wrap
@@ -700,6 +696,8 @@ public abstract class Slaw implements Iterable<Slaw>, HasToSlaw {
      * returns an empty Slaw list.
      */
     public static Slaw list(List<? extends Slaw> s) { return factory.list(s); }
+
+    public static Slaw list(Collection<? extends HasToSlaw> s) { return factory.list(s); }
 
     /**
      * A factory method constructing a Slaw with ilk {@link SlawIlk#MAP}
