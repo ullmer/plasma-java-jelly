@@ -18,8 +18,10 @@ public class Uid<T extends HasUid> implements HasToSlaw<SlawString> {
 	public final Class<T> targetClass;
 
 	public Uid(Class<T> targetClass, String uid) {
-		if ( uid == null || "".equals(uid) ) {
-			throw new IllegalArgumentException("uid cannot be: [" + uid + " ]");
+		if ( uid == null
+//				|| "".equals(uid)
+				) {
+			throw new IllegalArgumentException("uid cannot be: [" + uid + "]");
 		}
 		this.targetClass = targetClass;
 		this.uid = uid;
