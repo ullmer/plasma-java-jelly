@@ -16,11 +16,13 @@ public class EnumChance<T extends Enum> {
 
 	ProbabilityHost probabilityHost = ProbabilityHost.get();
 
-	private Map<T, Double> mapMemberToWeight = new HashMap<T, Double>();
+	private final Map<T, Double> mapMemberToWeight = new HashMap<T, Double>();
+	private final Chance chanceOfAny;
 
 	protected double weightSum;
 
-	private EnumChance(Class<T> enumClass) {
+	private EnumChance(double chanceOfAny, Class<T> enumClass) {
+		this.chanceOfAny = new Chance(chanceOfAny);
 		setDefaultWeights(enumClass);
 	}
 
@@ -44,8 +46,8 @@ public class EnumChance<T extends Enum> {
 		}
 	}
 
-	public static <T extends Enum> EnumChance<T> create(Class<T> enumClass) {
-		return new EnumChance<T>(enumClass);
+	public static <T extends Enum> EnumChance<T> create(double chanceOfAny, Class<T> enumClass) {
+		return new EnumChance<T>(chanceOfAny, enumClass);
 	}
 
 	public EnumChance<T> setWeight(double weight, T value) {
@@ -68,6 +70,9 @@ public class EnumChance<T extends Enum> {
 	}
 
 	public T pickRandom() {
+		if (!chanceOfAny.randomBool()) {
+			return null;
+		}
 		double pickedVal = probabilityHost.nextDouble(weightSum);
 		double currentMemberMax = 0;
 		for (Map.Entry<T, Double> entry : mapMemberToWeight.entrySet()) {
@@ -80,5 +85,6 @@ public class EnumChance<T extends Enum> {
 		throw new RuntimeException("Internal error: unable to pick enum member - did not find any range that would include the picked " +
 				"val: " + pickedVal + ", for this " + this);
 	}
+
 
 }
