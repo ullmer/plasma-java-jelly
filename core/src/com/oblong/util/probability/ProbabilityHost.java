@@ -1,9 +1,12 @@
 package com.oblong.util.probability;
 
+import com.oblong.jelly.schema.fields.HasUid;
+import com.oblong.jelly.schema.util.OrderedUidMap;
 import com.oblong.util.logging.ObLog;
 
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.Random;
 
 /**
@@ -43,6 +46,17 @@ public class ProbabilityHost {
 		return randomThreadLocal.get().random;
 	}
 
+	public <T extends HasUid> T pickRandomlyFrom(OrderedUidMap<T, T> collection) {
+		int index = randomIntInclusive(0, collection.size() - 1);
+		Iterator<T> iterator = collection.values().iterator();
+		T pickedElement = null;
+		for (int i = 0; i <= index; ++i ) {
+			pickedElement = iterator.next();
+		}
+
+		return pickedElement;
+	}
+
 	public class ThreadLocalRandom {
 
 		final Random random = new Random(randomSeed);
@@ -71,7 +85,7 @@ public class ProbabilityHost {
 		return the;
 	}
 
-	public synchronized String generateRandomString(int randomStringLen, String nonMandatoryPrefix) {
+	public synchronized String generateRandomString(String nonMandatoryPrefix, int randomStringLen) {
 		if (nonMandatoryPrefix.length()>randomStringLen) {
 			nonMandatoryPrefix = nonMandatoryPrefix.substring(0, randomStringLen);
 		}
@@ -80,18 +94,22 @@ public class ProbabilityHost {
 		final StringBuilder sb = new StringBuilder(randomStringLen);
 		sb.append(nonMandatoryPrefix);
 
-		for (int i=sb.length(); i< randomStringLen; ++i) {
+		final String endSuffix = "END";
+
+		for (int i=sb.length(); i< randomStringLen - endSuffix.length(); ++i) {
 //			char c = (char) ((randomThreadLocal.get().nextInt() & 0x5F) + 20);
 			char c = (char) randomIntInclusive(0x20, 0x7E, threadLocalRandom.random);
 			sb.append(c);
 		}
+		sb.append(endSuffix);
 		String s = sb.toString();
+		s = s.substring(0, randomStringLen); // trim to avoid endSuffix causing it longer than desired
 		if(log.t()) log.t(threadLocalRandom.getNextIndexPrefix() + " - generateRandomString (" + s.length() + "): " + s);
 		return s;
 	}
 
 	public String generateRandomString(String nonMandatoryPrefix, IntRange lengthRange) {
-		return generateRandomString(lengthRange.random(), nonMandatoryPrefix);
+		return generateRandomString(nonMandatoryPrefix, lengthRange.random());
 	}
 
 

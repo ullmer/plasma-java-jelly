@@ -87,4 +87,9 @@ public class EnumChance<T extends Enum> {
 	}
 
 
+	public EnumChance clear() {
+		mapMemberToWeight.clear();
+		recalculateWeightSum();
+		return this;
+	}
 }

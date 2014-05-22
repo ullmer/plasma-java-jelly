@@ -27,7 +27,7 @@ public class OrderedUidMap <TUid extends HasUid, TItem extends HasUid> {
 		internalMap.put(getUidCast(item), item);
 	}
 
-	private boolean contains(TItem item) {
+	public boolean contains(TItem item) {
 		return internalMap.containsKey(getUidCast(item));
 	}
 

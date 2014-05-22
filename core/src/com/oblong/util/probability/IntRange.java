@@ -2,8 +2,6 @@ package com.oblong.util.probability;
 
 import net.jcip.annotations.Immutable;
 
-import java.util.Random;
-
 /**
  * Created with IntelliJ IDEA.
  * User: karol
@@ -43,6 +41,10 @@ public class IntRange extends Range<Integer> {
 	@Override
 	protected Integer multiply(Integer value, double multiplier) {
 		return Integer.valueOf((int) (maxInclusive * multiplier));
+	}
+
+	public String generateRandomString(String nonMandatoryPrefix) {
+		return probabilityHost.generateRandomString(nonMandatoryPrefix, this);
 	}
 
 }
