@@ -3,7 +3,6 @@
 
 package com.oblong.jelly.pool.net;
 
-import java.security.GeneralSecurityException;
 import com.oblong.jelly.*;
 import com.oblong.jelly.pool.Configuration;
 import com.oblong.jelly.slaw.SlawExternalizer;
@@ -16,6 +15,7 @@ import com.oblong.util.logging.ObLog;
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
+import java.security.GeneralSecurityException;
 import java.util.EnumSet;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -47,7 +47,7 @@ final class TCPConnection implements NetConnection {
         final Slaw ings = factory.map(OP_KEY, code,
                                       ARGS_KEY, factory.list(args));
         try {
-            return send(factory.protein(null, ings , null));
+            return send(factory.protein(null, ings , null)); // Karol: Weird - putting ings into param called descrips??
         } catch (InOutException e) {
             close();
             throw e;

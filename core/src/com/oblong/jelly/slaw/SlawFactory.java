@@ -35,7 +35,7 @@ public interface SlawFactory {
     Slaw vector(Slaw x, Slaw y);
     Slaw vector(Slaw x, Slaw y, Slaw z);
     Slaw vector(Slaw x, Slaw y, Slaw z, Slaw w);
-    Slaw vector(Slaw... cmps);
+    Slaw vector(Slaw[] cmps);
 
     Slaw multivector(Slaw... cmps);
 

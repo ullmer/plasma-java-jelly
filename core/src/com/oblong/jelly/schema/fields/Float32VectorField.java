@@ -4,6 +4,8 @@ import com.oblong.jelly.Slaw;
 import com.oblong.jelly.schema.SlawSchema;
 import com.oblong.util.ExceptionHandler;
 
+import java.util.Arrays;
+
 /**
  * User: karol
  * Date: 2/3/14
@@ -36,7 +38,14 @@ public class Float32VectorField extends AbstractField<float[]> {
 
 	@Override
 	protected Slaw toSlaw_Custom(float[] value) {
-		return Slaw.array(value);
+		if ( value.length != numDims ) {
+			throw new IllegalArgumentException("Wrong number of dimensions: " + numDims + " vs actual: " + Arrays.toString(value));
+		}
+		return Slaw.vector(value);
+	}
+
+	public int getNumDims() {
+		return numDims;
 	}
 
 }

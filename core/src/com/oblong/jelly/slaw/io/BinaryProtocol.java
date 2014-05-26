@@ -2,14 +2,13 @@
 
 package com.oblong.jelly.slaw.io;
 
+import com.oblong.jelly.NumericIlk;
+import com.oblong.jelly.SlawIlk;
+import net.jcip.annotations.Immutable;
+
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
-
-import net.jcip.annotations.Immutable;
-
-import com.oblong.jelly.NumericIlk;
-import com.oblong.jelly.SlawIlk;
 
 import static com.oblong.jelly.NumericIlk.*;
 import static com.oblong.jelly.SlawIlk.*;
@@ -106,6 +105,7 @@ final class BinaryProtocol {
     }
 
     static long vectorHeading(NumericIlk ni, int d) {
+        // ExceptionHandler.debug("vectorHeading: " + ni + ", " + d);
         assert d > 1 && d < 5;
         return (Long)NUM_HEADING[d - 1].get(ni);
     }

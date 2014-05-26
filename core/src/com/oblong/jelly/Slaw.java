@@ -942,7 +942,13 @@ public abstract class Slaw implements Iterable<Slaw>, HasToSlaw {
     }
 
     public static Slaw vector(float[] value) {
-        return factory.vector();
+	    Slaw[] slaws = new Slaw[value.length];
+	    int i = 0;
+	    for (float f : value) {
+			slaws[i] = Slaw.float32(f);
+			++i;
+	    }
+        return factory.vector(slaws);
     }
 
     /**

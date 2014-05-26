@@ -63,7 +63,7 @@ public final class JavaSlawFactory implements SlawFactory {
         return makeVector(x, y, z, w);
     }
 
-    @Override public Slaw vector(Slaw... cs) {
+    @Override public Slaw vector(Slaw[] cs) {
         if (!SlawIlk.NUMBER_VECTOR.isValidDimension(cs.length))
             throw new IllegalArgumentException("Invalid dimension: "
                                                + cs.length);
