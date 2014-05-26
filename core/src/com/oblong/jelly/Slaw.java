@@ -941,6 +941,10 @@ public abstract class Slaw implements Iterable<Slaw>, HasToSlaw {
         return factory.vector(x, y, z, w);
     }
 
+    public static Slaw vector(float[] value) {
+        return factory.vector();
+    }
+
     /**
      * A factory method constructing a Slaw multivector out of its
      * components. The number of arguments must be 4, 8, 16 or 32 (for

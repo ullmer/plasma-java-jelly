@@ -38,7 +38,7 @@ public class FloatVectorField extends AbstractField<float[]> {
 
 	@Override
 	protected Slaw toSlaw_Custom(float[] value) {
-		return Slaw.array(value);
+		return Slaw.vector(value);
 	}
 
 }
