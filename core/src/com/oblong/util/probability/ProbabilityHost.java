@@ -24,12 +24,12 @@ public class ProbabilityHost {
 
 //	private final long randomSeed = parseSeed("145ceace602"); // caused null workspace
 //	private final long randomSeed = parseSeed("145d26a6964"); // caused null workspace
-	private final long randomSeed = parseSeed("14615d83bbb"); // caused null workspace
+//	private final long randomSeed = parseSeed("14615d83bbb"); // caused null workspace
+	private final long randomSeed = System.currentTimeMillis();
 
 	public static long parseSeed(String s) {
 		return Long.parseLong(s, 16);
 	}
-//	private final long randomSeed = System.currentTimeMillis();
 
 	/** Using ThreadLocal to prevent threads "snatching" values from each other (forever ruining the sequence) due to race conditions */
 	ThreadLocal<ThreadLocalRandom> randomThreadLocal = new ThreadLocal<ThreadLocalRandom>() {
