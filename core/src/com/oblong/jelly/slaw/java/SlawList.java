@@ -14,7 +14,7 @@ import java.util.*;
 
 @Immutable
 public final class SlawList extends JavaSlaw {
-    static final SlawList EMPTY_LIST =
+   public static final SlawList EMPTY_LIST =
         new SlawList(new ArrayList<Slaw>(), false);
 
     static SlawList valueOf(Slaw... sx) {
