@@ -11,8 +11,6 @@ import net.jcip.annotations.Immutable;
 @Immutable
 public class IntRange extends Range<Integer> {
 
-	private static ProbabilityHost probabilityHost = ProbabilityHost.get();
-
 	public IntRange(Integer minInclusive, Integer maxInclusive) {
 		super(minInclusive, maxInclusive);
 	}
@@ -30,7 +28,7 @@ public class IntRange extends Range<Integer> {
 	 * NOTE: max value is intentionally *inclusive*, unlike in java.util.Random.nextInt
 	 */
 	@Override public Integer random() {
-		return probabilityHost.randomIntInclusive(minInclusive, maxInclusive);
+		return getProbabilityHost().randomIntInclusive(minInclusive, maxInclusive);
 	}
 
 	@Override
@@ -43,8 +41,9 @@ public class IntRange extends Range<Integer> {
 		return Integer.valueOf((int) (maxInclusive * multiplier));
 	}
 
-	public String generateRandomString(String nonMandatoryPrefix) {
-		return probabilityHost.generateRandomString(nonMandatoryPrefix, this);
+	public String generateRandomStringOfLength(String nonMandatoryPrefix) {
+		return getProbabilityHost().
+				generateRandomString(nonMandatoryPrefix, this);
 	}
 
 }

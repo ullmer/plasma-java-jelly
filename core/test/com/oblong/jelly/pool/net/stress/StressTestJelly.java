@@ -43,13 +43,15 @@ public class StressTestJelly {
 
 	final boolean runningViaJUnit;
 
-	final ProbabilityHost probabilityHost = ProbabilityHost.get();
+	final ProbabilityHost probabilityHost;
 
 	@GuardedBy("this")
 	private long qtyProteinsReceivedInWholeTest = 0;
 
 
 	public StressTestJelly(boolean runningViaJUnit) {
+		ProbabilityHost.set(new ProbabilityHost(ProbabilityHost.NEW_SEED));
+		probabilityHost = ProbabilityHost.getInstance();
 		logger.info("Random seed: " + probabilityHost.getRandomSeed());
 		if ( runningViaJUnit ) {
 			throw new UnsupportedOperationException("Running via JUnit not supported");

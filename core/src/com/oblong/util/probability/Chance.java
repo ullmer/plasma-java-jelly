@@ -10,15 +10,13 @@ import net.jcip.annotations.Immutable;
  * Time: 2:36 PM
  */
 @Immutable
-public class Chance {
+public class Chance extends ProbabilityParam {
 
 	private static final int MULTIPLY_TO_INT = 100;
 
 	public final double chance;
-	private final ProbabilityHost ph;
 
 	public Chance(double chance) {
-		this.ph = ProbabilityHost.get();
 		if ( chance < 0.0 || chance > 1.0 ) {
 			throw new IllegalArgumentException("Chance not in 0..1 range: " + chance);
 		}
@@ -31,7 +29,7 @@ public class Chance {
 		} else if (chance == 1.0) {
 			return true;
 		} else {
-			return ph.nextIntExcludingMax(MULTIPLY_TO_INT) < chance * MULTIPLY_TO_INT;
+			return getProbabilityHost().nextIntExcludingMax(MULTIPLY_TO_INT) < chance * MULTIPLY_TO_INT;
 		}
 
 		// examples:

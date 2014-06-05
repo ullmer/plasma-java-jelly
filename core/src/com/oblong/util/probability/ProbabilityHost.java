@@ -20,21 +20,23 @@ public class ProbabilityHost {
 
 	protected final ObLog log = ObLog.get(this);
 
-	private static final ProbabilityHost the = new ProbabilityHost();
+	public static final String NEW_SEED = "NEW_SEED";
 
-//	private final long randomSeed = parseSeed("145ceace602"); // caused null workspace
-//	private final long randomSeed = parseSeed("145d26a6964"); // caused null workspace
-//	private final long randomSeed = parseSeed("14615d83bbb"); // caused null workspace
-	private final long randomSeed = System.currentTimeMillis();
+	private static ProbabilityHost theInstance = null;
+
+	private final long randomSeed;
 
 	public static long parseSeed(String s) {
+		if (s.equalsIgnoreCase(NEW_SEED)) {
+			return System.currentTimeMillis();
+		}
 		return Long.parseLong(s, 16);
 	}
 
 	/** Using ThreadLocal to prevent threads "snatching" values from each other (forever ruining the sequence) due to race conditions */
 	ThreadLocal<ThreadLocalRandom> randomThreadLocal = new ThreadLocal<ThreadLocalRandom>() {
 		@Override protected ThreadLocalRandom initialValue() {
-			return new ThreadLocalRandom();
+			return new ThreadLocalRandom(randomSeed);
 		}
 	};
 
@@ -57,9 +59,23 @@ public class ProbabilityHost {
 		return pickedElement;
 	}
 
+	public static void set(ProbabilityHost probabilityHost) {
+		if ( theInstance != null ) {
+			throw new RuntimeException("Can only be set once. Trying to set to " + probabilityHost);
+		}
+		theInstance = probabilityHost;
+	}
+
 	public class ThreadLocalRandom {
 
-		final Random random = new Random(randomSeed);
+		private final long randomSeed;
+
+		ThreadLocalRandom(long randomSeed) {
+			this.randomSeed = randomSeed;
+			random = new Random(this.randomSeed);
+		}
+
+		private final Random random;
 
 		int index = -1;
 
@@ -70,10 +86,10 @@ public class ProbabilityHost {
 
 	}
 
-	public ProbabilityHost() {
-
+	public ProbabilityHost(String randomSeed) {
+		this.randomSeed = parseSeed(randomSeed);
 		if(log.i()) log.i("ProbabilityHost Random seed (please save it if you want to re-try same scenario) : "
-				+ Long.toHexString(randomSeed) + " ; Date: " + new Date());
+				+ Long.toHexString(this.randomSeed) + " ; Date: " + new Date());
 //		this.random = new Random(randomSeed);
 	}
 
@@ -81,8 +97,8 @@ public class ProbabilityHost {
 		return this.randomSeed;
 	}
 
-	public static ProbabilityHost get() {
-		return the;
+	public static ProbabilityHost getInstance() {
+		return theInstance;
 	}
 
 	public synchronized String generateRandomString(String nonMandatoryPrefix, int randomStringLen) {
@@ -104,7 +120,7 @@ public class ProbabilityHost {
 		sb.append(endSuffix);
 		String s = sb.toString();
 		s = s.substring(0, randomStringLen); // trim to avoid endSuffix causing it longer than desired
-		if(log.t()) log.t(threadLocalRandom.getNextIndexPrefix() + " - generateRandomString (" + s.length() + "): " + s);
+		if(log.t()) log.t(threadLocalRandom.getNextIndexPrefix() + " - generateRandomStringOfLength (" + s.length() + "): " + s);
 		return s;
 	}
 

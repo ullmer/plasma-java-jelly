@@ -12,9 +12,7 @@ import java.util.Map;
  *
  * @author Karol, 2014-05-20
  */
-public class EnumChance<T extends Enum> {
-
-	ProbabilityHost probabilityHost = ProbabilityHost.get();
+public class EnumChance<T extends Enum> extends ProbabilityParam {
 
 	private final Map<T, Double> mapMemberToWeight = new HashMap<T, Double>();
 	private final Chance chanceOfAny;
@@ -73,7 +71,7 @@ public class EnumChance<T extends Enum> {
 		if (!chanceOfAny.randomBool()) {
 			return null;
 		}
-		double pickedVal = probabilityHost.nextDouble(weightSum);
+		double pickedVal = getProbabilityHost().nextDouble(weightSum);
 		double currentMemberMax = 0;
 		for (Map.Entry<T, Double> entry : mapMemberToWeight.entrySet()) {
 			currentMemberMax += entry.getValue();

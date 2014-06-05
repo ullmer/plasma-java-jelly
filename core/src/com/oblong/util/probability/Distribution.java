@@ -5,17 +5,7 @@ package com.oblong.util.probability;
  * Date: 10/21/13
  * Time: 5:01 PM
  */
-public abstract class Distribution<T extends Number> {
-
-	protected final ProbabilityHost ph;
-
-	protected Distribution(ProbabilityHost ph) {
-		this.ph = ph;
-	}
-
-	protected Distribution() {
-		this(ProbabilityHost.get());
-	}
+public abstract class Distribution<T extends Number> extends ProbabilityParam {
 
 	public abstract T random();
 
