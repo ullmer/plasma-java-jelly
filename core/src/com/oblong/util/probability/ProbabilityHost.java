@@ -89,8 +89,12 @@ public class ProbabilityHost {
 	public ProbabilityHost(String randomSeed) {
 		this.randomSeed = parseSeed(randomSeed);
 		if(log.i()) log.i("ProbabilityHost Random seed (please save it if you want to re-try same scenario) : "
-				+ Long.toHexString(this.randomSeed) + " ; Date: " + new Date());
+				+ getRandomSeedString() + " ; Date: " + new Date());
 //		this.random = new Random(randomSeed);
+	}
+
+	public String getRandomSeedString() {
+		return Long.toHexString(this.randomSeed);
 	}
 
 	public long getRandomSeed() {
