@@ -18,6 +18,7 @@ public class DefaultDisconnectEvent extends AbstractDisconnectEvent {
 	public static enum DisconnectReason implements ErrorCause {
 		SERVER_RESTART,
 		HEARTBEAT_TIMEOUT,
+		JOIN_TIMEOUT,
 		CONNECTION_LOST,
 		UNRECOGNIZED_MEZZ_STATE,
 //		PERMISSION_DENIED,
