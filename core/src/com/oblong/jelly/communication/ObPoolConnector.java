@@ -138,7 +138,8 @@ public abstract class ObPoolConnector extends Thread {
 			try {
 				Thread.sleep(sleepMs);
 			} catch (InterruptedException e) {
-				e.printStackTrace();
+				//e.printStackTrace();
+				if(D) logger.d(e, "thread interrupted");
 				Thread.currentThread().interrupt();
 			}
 		}
