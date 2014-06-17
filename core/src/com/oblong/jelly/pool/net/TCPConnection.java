@@ -109,7 +109,6 @@ final class TCPConnection implements NetConnection {
             final int code = c.code();
             final int bn = code / 8;
             if (bn < data.length && (data[bn] & (1<<(code % 8))) != 0){
-                if(log.d()) log.d("adding "+c);
                 result.add(c);
             }
         }
