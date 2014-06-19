@@ -52,7 +52,7 @@ public class Uid<T extends HasUid> implements HasToSlaw<SlawString> {
 		return this.uid;
 	}
 
-	public boolean safeEquals(Uid<T> uid) {
+	public boolean safeEquals(Uid<? extends T> uid) {
 		return equals(uid);
 	}
 
