@@ -43,8 +43,8 @@ public class OrderedUidMap <TUid extends HasUid, TItem extends HasUid> {
 		internalMap.remove(getUidCast(item));
 	}
 
-	public void remove(Uid<TUid> uid) {
-		internalMap.remove(uid);
+	public TItem remove(Uid<TUid> uid) {
+		return internalMap.remove(uid);
 	}
 
 	private Uid<TUid> getUidCast(TItem item) {
