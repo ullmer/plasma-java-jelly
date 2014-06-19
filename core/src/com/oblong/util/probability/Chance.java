@@ -29,7 +29,7 @@ public class Chance extends ProbabilityParam {
 		} else if (chance == 1.0) {
 			return true;
 		} else {
-			return getProbabilityHost().nextIntExcludingMax(MULTIPLY_TO_INT) < chance * MULTIPLY_TO_INT;
+			return getProbabilityHost().randomIntExcludingMax(MULTIPLY_TO_INT) < chance * MULTIPLY_TO_INT;
 		}
 
 		// examples:

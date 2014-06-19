@@ -146,7 +146,7 @@ public class ProbabilityHost {
 		if(log.t()) log.t(threadLocalRandom.getNextIndexPrefix() + " - nextBytes (" + data.length + "): " + Arrays.toString(data));
 	}
 
-	public synchronized int nextIntExcludingMax(int maxExclusive) {
+	public synchronized int randomIntExcludingMax(int maxExclusive) {
 		ThreadLocalRandom threadLocalRandom = randomThreadLocal.get();
 		int val = threadLocalRandom.random.nextInt(maxExclusive);
 		if(log.t()) log.t(threadLocalRandom.getNextIndexPrefix() + " - nextIntExcludingMax (" + maxExclusive + "): " + val);
