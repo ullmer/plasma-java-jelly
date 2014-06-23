@@ -14,6 +14,8 @@ public class Chance extends ProbabilityParam {
 
 	private static final int MULTIPLY_TO_INT = 100;
 
+	public static final Chance SURE_CHANCE = new Chance(1.0);
+
 	public final double chance;
 
 	public Chance(double chance) {
