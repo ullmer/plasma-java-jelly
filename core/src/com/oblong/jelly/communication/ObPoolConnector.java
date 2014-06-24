@@ -33,6 +33,15 @@ public abstract class ObPoolConnector extends Thread {
 	protected boolean TRY_RECONNECT = false;
 	private final HoseFactory hoseFactory;
 
+	/**
+	 *
+	 * @param addr
+	 * @param pool
+	 * @param lis
+	 * @param hoseFactory
+	 * @param countDownOnPoolConnected The latch will be used to notify another thread about the successful connection (ej. for mezzanine).
+	 *                                    Latch can be null and in that case it will be ignored.
+	 */
 	protected ObPoolConnector(PoolServerAddress addr, String pool, ObPoolCommunicationEventHandler lis, HoseFactory hoseFactory,
 	                          CountDownLatch countDownOnPoolConnected) {
 		this.countDownOnPoolConnected = countDownOnPoolConnected;
