@@ -1,6 +1,7 @@
 package com.oblong.jelly.communication;
 
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 import com.oblong.jelly.*;
 import com.oblong.util.ExceptionHandler;
@@ -14,8 +15,8 @@ public class ObPoolSender extends ObPoolConnector {
 
 
 	public ObPoolSender(PoolServerAddress pools, String pool, ObPoolCommunicationEventHandler lis, int sleepSecs,
-			List<Protein> proteinQueue, HoseFactory hoseFactory) {
-		super(pools, pool, lis, hoseFactory);
+	                    List<Protein> proteinQueue, HoseFactory hoseFactory, CountDownLatch countDownOnPoolConnected) {
+		super(pools, pool, lis, hoseFactory, countDownOnPoolConnected);
 		this.sleepMs = sleepSecs;
 		this.proteinQueue = proteinQueue;
 

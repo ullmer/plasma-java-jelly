@@ -13,7 +13,7 @@ public interface ObPoolCommunicationEventHandler {
 	void onProteinReceived(Protein p);
 
 	/** sender thread connected */
-	void onConnected();
+	void onPoolConnected();
 	
 	void onErrorConnecting(UnableToConnectEvent unableToConnectEvent);
 

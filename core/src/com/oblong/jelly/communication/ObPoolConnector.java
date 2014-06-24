@@ -6,6 +6,8 @@ import com.oblong.jelly.pool.net.Request;
 import com.oblong.util.ExceptionHandler;
 import com.oblong.util.logging.ObLog;
 
+import java.util.concurrent.CountDownLatch;
+
 public abstract class ObPoolConnector extends Thread {
 
 //	private static final String TAG = "ObPoolConnector";
@@ -17,6 +19,7 @@ public abstract class ObPoolConnector extends Thread {
 	 * According to javadoc this field should be ignored if the pool already exists
 	 */
 	public static final PoolOptions DEFAULT_POOL_OPTIONS = PoolOptions.MEDIUM;
+	private final CountDownLatch countDownOnPoolConnected;
 
 	// These must be accessible in subclasses.
 	protected volatile boolean stopMe = false;
@@ -30,7 +33,9 @@ public abstract class ObPoolConnector extends Thread {
 	protected boolean TRY_RECONNECT = false;
 	private final HoseFactory hoseFactory;
 
-	protected ObPoolConnector(PoolServerAddress addr, String pool, ObPoolCommunicationEventHandler lis, HoseFactory hoseFactory) {
+	protected ObPoolConnector(PoolServerAddress addr, String pool, ObPoolCommunicationEventHandler lis, HoseFactory hoseFactory,
+	                          CountDownLatch countDownOnPoolConnected) {
+		this.countDownOnPoolConnected = countDownOnPoolConnected;
 //		super();
 		setName(getClass().getSimpleName()+"/"+hashCode());
 		this.obPool = pool;
@@ -183,9 +188,17 @@ public abstract class ObPoolConnector extends Thread {
 		}
 		
 		if (hose != null) {
-			if(D) logger.d(" Connection successful to " + this.toString());
+			onSuccessfulConnection();
 		} else {
 			if(D) logger.d(" Unable to connect to pool " + obPool);
+		}
+	}
+
+	private void onSuccessfulConnection() {
+		if(D) logger.d(" Connection successful to " + this.toString());
+		listener.onPoolConnected();
+		if(countDownOnPoolConnected != null){
+			countDownOnPoolConnected.countDown();
 		}
 	}
 
