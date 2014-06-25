@@ -2,8 +2,6 @@ package com.oblong.util;
 
 import org.apache.log4j.Logger;
 
-import java.util.Random;
-
 /**
  * User: karol
  * Date: 10/22/13
@@ -47,4 +45,8 @@ public class Util {
 		return propertyValue;
 	}
 
+	public static float interpolate(float start, float end, float interpolatedTime) {
+		float delta = end - start;
+		return start + interpolatedTime * delta;
+	}
 }
