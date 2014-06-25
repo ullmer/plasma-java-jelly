@@ -65,4 +65,8 @@ public class AssertUtils {
 		}
 	}
 
+	public static void assertSameClass(Object o1, Object o2) {
+		assertObjectsEquals(o1.getClass(), o2.getClass(), "must be the same class");
+	}
+
 }
