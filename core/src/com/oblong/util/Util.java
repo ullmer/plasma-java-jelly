@@ -49,4 +49,17 @@ public class Util {
 		float delta = end - start;
 		return start + interpolatedTime * delta;
 	}
+
+	public static String getSimplifiedToString(Object o) {
+		if ( o == null ) {
+			return "{null}";
+		}
+//		return o.getClass().getSimpleName() + "#" + identityHashCodeString(o);
+		return identityHashCodeString(o);
+	}
+
+	public static String identityHashCodeString(Object o) {
+		int identityHashCode = System.identityHashCode(o);
+		return "@$" + Integer.toHexString(identityHashCode);
+	}
 }
