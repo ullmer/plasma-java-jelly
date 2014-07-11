@@ -60,6 +60,6 @@ public class Util {
 
 	public static String identityHashCodeString(Object o) {
 		int identityHashCode = System.identityHashCode(o);
-		return "@$" + Integer.toHexString(identityHashCode);
+		return "$@" + Integer.toHexString(identityHashCode);
 	}
 }

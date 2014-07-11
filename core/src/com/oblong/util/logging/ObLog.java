@@ -130,4 +130,9 @@ public class ObLog {
 	public void d(CharSequence message, Throwable t) { logger.debug(addExtraInfo(message), t); };
 	public void t(CharSequence message, Throwable t) { logger.trace(addExtraInfo(message), t); };
 
+	public static boolean d(ObLog log) {
+		if(log==null) return false;
+		return log.d();
+	}
+
 }

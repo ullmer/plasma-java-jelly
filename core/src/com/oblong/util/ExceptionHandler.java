@@ -14,7 +14,19 @@ public abstract class ExceptionHandler {
 	private static final ObLog logger = ObLog.get(ExceptionHandler.class);
 	public static final String NO_INSTALLED_EXCEPTION_HANDLER = "(no installed ExceptionHandler)";
 
-	private static volatile ExceptionHandler exceptionHandler;
+	private static volatile ExceptionHandler exceptionHandler = new ExceptionHandler() {
+		@Override public void handleExceptionImpl(Throwable e, String syntheticMsg) {
+			System.err.println("ExceptionHandler: exception: " + e + ", " + syntheticMsg);
+		}
+
+		@Override protected void handleDebugMessageImpl(String message, JustToGetStackTrace tr) {
+			System.err.println("ExceptionHandler: debug: " + tr + ", " + message);
+		}
+
+		@Override protected void logStackTraceImpl(String msg, JustToGetStackTrace stackTrace) {
+			System.err.print("ExceptionHandler: stack trace: " + stackTrace + ", " + msg);
+		}
+	};
 
 	private static boolean DEFAULT_HANDLER_PRINTS = false;
 	private static boolean DEFAULT_HANDLER_RETHROWS = false;
@@ -37,18 +49,6 @@ public abstract class ExceptionHandler {
 	}
 
 	private static void defaultHandleException(Throwable e, String duringMsg) {
-		if ( DEFAULT_HANDLER_PRINTS ) {
-			final String prefix = "========= ";
-			System.err.println(prefix + createMessage(duringMsg));
-			logger.error(prefix + createMessage(duringMsg));
-			if ( e != null ) {
-				e.printStackTrace();
-			}
-			logger.error(NO_INSTALLED_EXCEPTION_HANDLER);
-		}
-		if ( DEFAULT_HANDLER_RETHROWS ) {
-			throw new RuntimeException(createMessage(duringMsg),e);
-		}
 	}
 
 	public abstract void handleExceptionImpl(Throwable e, String syntheticMsg) ;
