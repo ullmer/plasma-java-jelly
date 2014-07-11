@@ -33,4 +33,11 @@ public class ThreadChecker {
 				"allowedThread=" + allowedThread +
 				'}';
 	}
+
+	/** Introduced to prevent NullPointerException in cases where superclass constructor calls overriden methods which use threadChecker */
+	public static void check(ThreadChecker threadChecker) {
+		if (threadChecker != null) {
+			threadChecker.check();
+		}
+	}
 }
