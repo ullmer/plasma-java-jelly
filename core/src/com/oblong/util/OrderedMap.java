@@ -62,4 +62,9 @@ public class OrderedMap <K,V> {
 		return internalMap.isEmpty();
 	}
 
+	@Override public String toString() {
+		return "OrderedMap{size " + size() + " :: " +
+				internalMap +
+				'}';
+	}
 }

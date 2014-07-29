@@ -48,7 +48,10 @@ public class ProbabilityHost {
 		return randomThreadLocal.get().random;
 	}
 
-	public <T extends HasUid> T pickRandomlyFrom(OrderedUidMap<T, T> collection) {
+	public <T extends HasUid> T pickRandomlyFrom(OrderedUidMap<?, T> collection) {
+		if ( collection.isEmpty() ) {
+			return null;
+		}
 		int index = randomIntInclusive(0, collection.size() - 1);
 		Iterator<T> iterator = collection.values().iterator();
 		T pickedElement = null;
@@ -128,8 +131,8 @@ public class ProbabilityHost {
 		return s;
 	}
 
-	public String generateRandomString(String nonMandatoryPrefix, IntRange lengthRange) {
-		return generateRandomString(nonMandatoryPrefix, lengthRange.random());
+	public String generateRandomString(String nonMandatoryPrefix, Distribution<Integer> lengthDistribution) {
+		return generateRandomString(nonMandatoryPrefix, lengthDistribution.random());
 	}
 
 

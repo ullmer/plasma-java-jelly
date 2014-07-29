@@ -62,4 +62,8 @@ public class Util {
 		int identityHashCode = System.identityHashCode(o);
 		return "$@" + Integer.toHexString(identityHashCode);
 	}
+
+	public static void ignoreUnused(Object liveStreams) {
+		// do nothing
+	}
 }

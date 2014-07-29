@@ -63,4 +63,13 @@ public class OrderedUidMap <TUid extends HasUid, TItem extends HasUid> {
 	public Slaw getUidsSlawList() {
 		return Slaw.list(internalMap.keySet());
 	}
+
+	public boolean isEmpty() {
+		return internalMap.isEmpty();
+	}
+
+	@Override public String toString() {
+		return "OrderedUidMap{" + internalMap +
+				'}';
+	}
 }

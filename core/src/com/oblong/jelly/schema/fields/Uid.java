@@ -30,11 +30,20 @@ public class Uid<T extends HasUid> implements HasToSlaw<SlawString> {
 	@Override
 	public boolean equals(Object o) {
 		if (o instanceof Uid) {
-			Uid o1 = (Uid) o;
-			return this.uid.equals(o1.uid);
+			Uid otherUid = (Uid) o;
+			Class otherTargetClass = otherUid.targetClass;
+			if ( ! otherTargetClass.equals(this.targetClass) ) {
+				throw new RuntimeException("Probably bug, trying to compare this with another uid with different target class: " +
+						otherUid.toDebugString());
+			}
+			return this.uid.equals(otherUid.uid);
 		} else {
 			throw new RuntimeException("Probably bug, trying to compare this with object of other type: " + o);
 		}
+	}
+
+	public String toDebugString() {
+		return "Uid{" + uid + "::" + targetClass.getName() + "}";
 	}
 
 	@Override
