@@ -156,6 +156,16 @@ public class ProbabilityHost {
 		return val;
 	}
 
+	public synchronized float randomFloatInclusive(float minInclusive, float maxInclusive) {
+		ThreadLocalRandom threadLocalRandom = randomThreadLocal.get();
+		float floatFrom0To1 = threadLocalRandom.random.nextFloat();
+		float diff = maxInclusive - minInclusive;
+		float ret = minInclusive + floatFrom0To1 * diff;
+		if(log.t()) log.t(threadLocalRandom.getNextIndexPrefix() + " - randomFloatInclusive (" +
+				minInclusive + "," + maxInclusive + "): " + ret);
+		return ret;
+	}
+
 	public synchronized int randomIntInclusive(int minInclusive, int maxInclusive) {
 		ThreadLocalRandom threadLocalRandom = randomThreadLocal.get();
 		int val = randomIntInclusive(minInclusive, maxInclusive, threadLocalRandom.random);

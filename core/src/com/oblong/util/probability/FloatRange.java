@@ -18,11 +18,8 @@ public class FloatRange extends Range<Float> {
 
 
 	public Float random() {
-		float rnd = getProbabilityHost().nextFloat();
-		float diff = maxInclusive - minInclusive;
-		return minInclusive + rnd * diff;
-
-		// actually this will never reach maxInclusive, but this should not be a problem in our case
+		float ret = getProbabilityHost().randomFloatInclusive(minInclusive, maxInclusive);
+		return ret;
 	}
 
 	@Override
