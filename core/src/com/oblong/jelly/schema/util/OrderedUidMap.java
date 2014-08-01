@@ -7,7 +7,7 @@ import com.oblong.util.OrderedMap;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.Set;
 
 /**
  * @author Karol, 2014-04-10
@@ -16,9 +16,9 @@ public class OrderedUidMap <TUid extends HasUid, TItem extends HasUid> {
 
 	protected OrderedMap<Uid<TUid>, TItem> internalMap = new OrderedMap<Uid<TUid>, TItem>();
 
-	public void clear() {
-		internalMap.clear();
-	}
+//	public void clear() {
+//		internalMap.clear();
+//	}
 
 	public void put(TItem item) {
 		if ( contains(item) ){
@@ -35,7 +35,7 @@ public class OrderedUidMap <TUid extends HasUid, TItem extends HasUid> {
 		return internalMap.size();
 	}
 
-	public TItem get(Uid<TUid> uid) {
+	public TItem getByUid(Uid<TUid> uid) {
 		return internalMap.get(uid);
 	}
 
@@ -55,7 +55,7 @@ public class OrderedUidMap <TUid extends HasUid, TItem extends HasUid> {
 		return internalMap.values();
 	}
 
-	public List<TItem> toList() {
+	public ArrayList<TItem> toList() {
 		ArrayList<TItem> list = new ArrayList<TItem>(internalMap.values());
 		return list;
 	}
@@ -68,8 +68,13 @@ public class OrderedUidMap <TUid extends HasUid, TItem extends HasUid> {
 		return internalMap.isEmpty();
 	}
 
+	protected Set<TItem> createAllItemsSet() {
+		return internalMap.createSet();
+	}
+
 	@Override public String toString() {
 		return "OrderedUidMap{" + internalMap +
 				'}';
 	}
+
 }

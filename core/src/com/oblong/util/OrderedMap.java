@@ -1,9 +1,6 @@
 package com.oblong.util;
 
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Ordered map, with type safety increased over Java's library Map (Object params changed to either K or V).
@@ -67,4 +64,10 @@ public class OrderedMap <K,V> {
 				internalMap +
 				'}';
 	}
+
+	/** protected, as it should be used carefully because of its performance implications */
+	public Set<V> createSet() {
+		return new HashSet<V> ( internalMap.values() );
+	}
+
 }
