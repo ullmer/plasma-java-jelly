@@ -1,10 +1,12 @@
 package com.oblong.jelly.communication;
 
+import com.oblong.jelly.PoolException;
+import com.oblong.jelly.PoolServerAddress;
+import com.oblong.jelly.Protein;
+import com.oblong.util.ExceptionHandler;
+
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
-
-import com.oblong.jelly.*;
-import com.oblong.util.ExceptionHandler;
 
 public class ObPoolSender extends ObPoolConnector {
 
@@ -23,8 +25,12 @@ public class ObPoolSender extends ObPoolConnector {
 	}
 
 	protected void handleProtein() {
-		Protein protein = getNext();
-		if(protein != null){
+		Protein protein;
+		/**
+		 * Get all proteins available,
+		 * then sleep
+		 */
+		while( (protein = getNext()) != null){
 			sendProtein(protein);
 		}
 
