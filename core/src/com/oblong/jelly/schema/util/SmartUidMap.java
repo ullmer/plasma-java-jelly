@@ -38,6 +38,7 @@ public abstract class SmartUidMap <TUid extends HasUid, TExistingItem extends Up
 		// Remove items, which are no longer existing:
 		for (TExistingItem itemToRemove : notYetProvenToStillExist) {
 			remove(itemToRemove);
+			onPostDeleteExistingItem(itemToRemove);
 		}
 	}
 
@@ -62,9 +63,9 @@ public abstract class SmartUidMap <TUid extends HasUid, TExistingItem extends Up
 		throw new UnsupportedOperationException("Unsupported createItemYetUnknown, for uid: " + uid);
 	}
 
-//	protected void onPostDeleteExistingItem(TItem existingItemToBeDeleted) {
-//		// default: do nothing
-//	}
+	protected void onPostDeleteExistingItem(TExistingItem deletedItem) {
+		// default: do nothing
+	}
 //
 //	protected void onPostAddExistingItem(TItem existingItemToBeDeleted) {
 //		// default: do nothing
