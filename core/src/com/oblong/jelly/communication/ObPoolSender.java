@@ -10,7 +10,6 @@ import java.util.concurrent.CountDownLatch;
 
 public class ObPoolSender extends ObPoolConnector {
 
-	private static final String TAG = "ObPoolSender";
 	public static final boolean D = true;
 
 	protected final List<Protein> proteinQueue;
