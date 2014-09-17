@@ -28,9 +28,11 @@ public class Chance extends ProbabilityParam {
 	public boolean randomBool() {
 		if ( chance == 0 ) {
 			return false; // a bit of speedup
-		} else if (chance == 1.0) {
-			return true;
+//		} else if (chance == 1.0) {
+//			return true;
 		} else {
+			/* picking from distribution even if chance == 1.0, to not disturb the random sequence if switching to e.g. a slower TimeMs,
+				to observe the same event sequence in slow motion */
 			return getProbabilityHost().randomIntExcludingMax(MULTIPLY_TO_INT) < chance * MULTIPLY_TO_INT;
 		}
 
