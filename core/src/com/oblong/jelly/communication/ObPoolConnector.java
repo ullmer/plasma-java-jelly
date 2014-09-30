@@ -54,7 +54,7 @@ public abstract class ObPoolConnector extends Thread {
 		this.listener = lis;
 	}
 
-	public void run() {
+	@Override public void run() {
 		connect();
 		while (!stopMe) {
 			if (isHoseOkay(hose)) {
@@ -118,8 +118,16 @@ public abstract class ObPoolConnector extends Thread {
 	}
 
 	public void halt() {
-		this.stopMe = true;
+		setStopMeAndInterrupt();
+	}
 
+	private void setStopMeAndInterrupt() {
+		setStopMe();
+		interrupt(); // java.lang.Thread's method
+	}
+
+	protected void setStopMe() {
+		this.stopMe = true;
 	}
 
 	/****
@@ -232,7 +240,7 @@ public abstract class ObPoolConnector extends Thread {
 	 * after setting stop me to true
 	 * ***/
 	protected void notifyConnectionLost(String reason) {
-		stopMe = true;
+		setStopMeAndInterrupt();
 		listener.onConnectionLost(reason);
 	}
 
