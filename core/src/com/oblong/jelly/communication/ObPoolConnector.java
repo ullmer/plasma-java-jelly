@@ -46,7 +46,7 @@ public abstract class ObPoolConnector extends Thread {
 	                          CountDownLatch countDownOnPoolConnected) {
 		this.countDownOnPoolConnected = countDownOnPoolConnected;
 //		super();
-		setName(getClass().getSimpleName()+"/"+hashCode());
+		setName(getClass().getSimpleName()+"/"+hashCode()+"__"+pool);
 		this.obPool = pool;
 		this.obPoolsAddr = addr;
 		this.hoseFactory = hoseFactory;
