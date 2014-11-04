@@ -22,4 +22,6 @@ public abstract class UnmarshalledProtein extends UnmarshalledSlawMap implements
   }
 
   public abstract SlawString getMainDescrip();
+
+
 }
