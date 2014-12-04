@@ -1,0 +1,19 @@
+apply plugin: 'java'
+sourceSets {
+    main.java.srcDirs = ['core/src']
+}
+
+dependencies {
+    compile fileTree(dir: 'lib', include: ['*.jar'])
+}
+
+
+compileJava {
+    sourceCompatibility = 1.7
+    targetCompatibility = 1.7
+}
+
+//java {
+//    targetCompatibility 1.7
+//}
+
