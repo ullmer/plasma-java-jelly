@@ -5,8 +5,8 @@ sourceSets {
 
 dependencies {
     compile fileTree(dir: 'lib', include: ['*.jar'])
-    compile 'net.jcip:jcip-annotations:1.0'
-    compile 'org.yaml:snakeyaml:1.7'
+//    compile 'net.jcip:jcip-annotations:1.0'
+//    compile 'org.yaml:snakeyaml:1.7'
 }
 
 

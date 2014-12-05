@@ -35,7 +35,7 @@ public abstract class UnmarshalledSlawMap extends UnmarshalledSlaw {
 	}
 
 	protected void addFieldsToMap(MapSlawToSlaw mapSlawToSlaw) {
-		// DO NOTHING. Empty method to allow immediate subclass to call super() in generated code
+		// DO NOTHING. Empty method to allow immediate subclass to call super() in generated code, for consistency
 	}
 
 }
