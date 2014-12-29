@@ -9,6 +9,8 @@ import java.util.List;
  *
  * Candidates for names: descriptor, metadata, contents, fields, structure, !!schema!!
  *
+ * --> ClassDef, as param of Fields
+ *
  *  TODO: consider making a relationship between MapField and SlawSchema
  *
  * Created with IntelliJ IDEA.
