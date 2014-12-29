@@ -14,7 +14,7 @@ import com.oblong.jelly.NumericIlk;
 import com.oblong.jelly.Slaw;
 import com.oblong.jelly.SlawIlk;
 
-import com.oblong.jelly.schema.fields.AbstractField;
+//import com.oblong.jelly.schema.fields.AbstractField;
 import net.jcip.annotations.Immutable;
 
 @Immutable
@@ -100,10 +100,10 @@ public final class SlawMap extends JavaSlaw implements ISlawMap {
 
     private final SlawList conses;
 
-	@Override
-	public <Type> Type get(AbstractField<Type> field) {
-		return field.getFrom(this);
-	}
+//	@Override
+//	public <Type> Type get(AbstractField<Type> field) {
+//		return field.getFrom(this);
+//	}
 
 	@Override
 	public Map<Slaw, Slaw> emitContainedMap() {

@@ -11,7 +11,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import com.oblong.jelly.schema.fields.AbstractField;
 import com.oblong.jelly.slaw.java.SlawMap;
 import net.jcip.annotations.Immutable;
 
@@ -270,10 +269,10 @@ public abstract class Protein extends Slaw implements ISlawMap {
         return a == null ? b == null : a.equals(b);
     }
 
-	@Override
-    public <Type> Type get(AbstractField<Type> field) {
-        return field.getFrom((SlawMap) this.ingests());
-    }
+//	@Override
+//    public <Type> Type get(AbstractField<Type> field) {
+//        return field.getFrom((SlawMap) this.ingests());
+//    }
 
 	@Override
 	public Map<Slaw, Slaw> emitContainedMap() {

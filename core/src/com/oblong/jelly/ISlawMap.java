@@ -1,6 +1,6 @@
 package com.oblong.jelly;
 
-import com.oblong.jelly.schema.fields.AbstractField;
+//import com.oblong.jelly.schema.fields.AbstractField;
 
 import java.util.Map;
 
@@ -12,7 +12,7 @@ import java.util.Map;
 */
 public interface ISlawMap {
 
-	<Type> Type get(AbstractField<Type> field);
+//	<Type> Type get(AbstractField<Type> field);
 
 	Map<Slaw,Slaw> emitContainedMap();
 
