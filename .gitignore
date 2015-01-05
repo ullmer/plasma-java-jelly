@@ -22,3 +22,5 @@ core/Binaries
 
 .DS_Store
 
+/build
+
