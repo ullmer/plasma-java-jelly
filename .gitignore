@@ -24,4 +24,6 @@ core/Binaries
 
 /build
 
+/*.iml
+/.idea
 
