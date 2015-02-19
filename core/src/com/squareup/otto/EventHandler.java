@@ -77,7 +77,7 @@ class EventHandler {
       if ( targetDereferenced == null ) {
         return; // TODO: remove relevant entry from map
       }
-      if(log.d()) log.d("handleEvent: dispatching event " + event + " to " + targetDereferenced);
+      if(log.d()) log.d("handleEvent: dispatching event " + toCompactString(event) + " to " + toCompactString(targetDereferenced));
       method.invoke(targetDereferenced, new Object[] {event});
     } catch (IllegalAccessException e) {
       throw new AssertionError(e);
@@ -89,7 +89,11 @@ class EventHandler {
     }
   }
 
-  @Override public String toString() {
+	private String toCompactString(Object targetDereferenced) {
+		return targetDereferenced.getClass().getSimpleName(); // to avoid calling expensive/voluminous toString
+	}
+
+	@Override public String toString() {
     return "[EventHandler " + method + "]";
   }
 
