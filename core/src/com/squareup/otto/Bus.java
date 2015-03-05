@@ -106,7 +106,7 @@ public class Bus {
   private final String identifier;
 
   /** Thread enforcer for register, unregister, and posting events. */
-  private final ThreadEnforcer enforcer;
+  private final ThreadEnforcer threadEnforcer;
 
   /** Used to find handler methods in register and unregister. */
   private final HandlerFinder handlerFinder;
@@ -143,31 +143,31 @@ public class Bus {
   /**
    * Creates a new Bus named "default" with the given {@code enforcer} for actions.
    *
-   * @param enforcer Thread enforcer for register, unregister, and post actions.
+   * @param threadEnforcer Thread enforcer for register, unregister, and post actions.
    */
-  public Bus(ThreadEnforcer enforcer) {
-    this(enforcer, DEFAULT_IDENTIFIER);
+  public Bus(ThreadEnforcer threadEnforcer) {
+    this(threadEnforcer, DEFAULT_IDENTIFIER);
   }
 
   /**
    * Creates a new Bus with the given {@code enforcer} for actions and the given {@code identifier}.
    *
-   * @param enforcer Thread enforcer for register, unregister, and post actions.
+   * @param threadEnforcer Thread enforcer for register, unregister, and post actions.
    * @param identifier A brief name for this bus, for debugging purposes.  Should be a valid Java identifier.
    */
-  public Bus(ThreadEnforcer enforcer, String identifier) {
-    this(enforcer, identifier, HandlerFinder.ANNOTATED);
+  public Bus(ThreadEnforcer threadEnforcer, String identifier) {
+    this(threadEnforcer, identifier, HandlerFinder.ANNOTATED);
   }
 
   /**
    * Test constructor which allows replacing the default {@code HandlerFinder}.
    *
-   * @param enforcer Thread enforcer for register, unregister, and post actions.
+   * @param threadEnforcer Thread enforcer for register, unregister, and post actions.
    * @param identifier A brief name for this bus, for debugging purposes.  Should be a valid Java identifier.
    * @param handlerFinder Used to discover event handlers and producers when registering/unregistering an object.
    */
-  Bus(ThreadEnforcer enforcer, String identifier, HandlerFinder handlerFinder) {
-    this.enforcer =  enforcer;
+  Bus(ThreadEnforcer threadEnforcer, String identifier, HandlerFinder handlerFinder) {
+    this.threadEnforcer = threadEnforcer;
     this.identifier = identifier;
     this.handlerFinder = handlerFinder;
   }
@@ -188,7 +188,10 @@ public class Bus {
    * @param subscriber object whose handler methods should be registered.
    */
   public void registerSubscriber(OttoSubscriber subscriber) {
-    enforcer.enforce(this);
+	if ( subscriber == null ) {
+	  ExceptionHandler.handleException("registerSubscriber: subscriber is null: " + subscriber);
+	}
+    threadEnforcer.enforce(this);
 
     Map<Class<?>, Set<EventHandler>> foundHandlersMap = handlerFinder.findAllSubscribers(subscriber);
     for (Class<?> type : foundHandlersMap.keySet()) {
@@ -223,9 +226,48 @@ public class Bus {
     }
   }
 
+  /**
+   * Unregisters all producer and handler methods on a registered {@code object}.
+   *
+   * @param object object whose producer and handler methods should be unregistered.
+   * @param allowNoOp if true, exception will not be thrown if the object was not registered at the time of the call
+   * @throws IllegalArgumentException if the object was not previously registered.
+   */
+  public void unregisterSubscriber(OttoSubscriber object, boolean allowNoOp) {
+	if ( object == null ) {
+	  ExceptionHandler.handleException("unregisterSubscriber: subscriber is null: " + object);
+	}
+	threadEnforcer.enforce(this);
+
+    Map<Class<?>, Set<EventHandler>> handlersInListener = handlerFinder.findAllSubscribers(object);
+    for (Map.Entry<Class<?>, Set<EventHandler>> entry : handlersInListener.entrySet()) {
+      Set<EventHandler> currentHandlers = getHandlersForEventType(entry.getKey());
+      Collection<EventHandler> eventMethodsInListener = entry.getValue();
+
+      if (currentHandlers == null || !currentHandlers.removeAll(eventMethodsInListener)) {
+        if ( !allowNoOp ) {
+	        String msg = "Missing event handler for an annotated method. Is " + object.getClass()
+			        + " registered?";
+	        ExceptionHandler.handleException(msg);
+//	        throw new IllegalArgumentException( msg);
+        }
+      }
+    }
+  }
+
+  /**
+   * Calls unregisterSubscriber(object, false);
+   */
+  public void unregisterSubscriber(OttoSubscriber object) {
+    unregisterSubscriber(object, false);
+  }
+
+
   /** Note: this has been carved out from register(OttoSubscriber/OttoRegistree/Object) but we don't use it, thus it was not tested */
   public void registerProducer(OttoProducer producerObj) {
-    enforcer.enforce(this);
+	ExceptionHandler.handleException("Note: this has been carved out from register(OttoSubscriber/OttoRegistree/Object)" +
+					"but we have not used it, thus it was not tested");
+    threadEnforcer.enforce(this);
 
     Map<Class<?>, EventProducer> foundProducers = handlerFinder.findAllProducers(producerObj);
     for (Class<?> type : foundProducers.keySet()) {
@@ -244,6 +286,30 @@ public class Bus {
       }
     }
   }
+
+  /** Note: this has been carved out from unregister(OttoSubscriber/OttoRegistree/Object) but we don't use it, thus it was not tested */
+  public void unregisterProducer(OttoProducer producerObj, boolean allowNoOp) {
+	ExceptionHandler.handleException("Note: this has been carved out from register(OttoSubscriber/OttoRegistree/Object)" +
+					"but we have not used it, thus it was not tested");
+    threadEnforcer.enforce(this);
+
+    Map<Class<?>, EventProducer> producersInListener = handlerFinder.findAllProducers(producerObj);
+    for (Map.Entry<Class<?>, EventProducer> entry : producersInListener.entrySet()) {
+      final Class<?> key = entry.getKey();
+      EventProducer producer = getProducerForEventType(key);
+      EventProducer value = entry.getValue();
+
+      if (value == null || !value.equals(producer)) {
+        if ( !allowNoOp ) {
+          throw new IllegalArgumentException(
+              "Missing event producer for an annotated method. Is " + producerObj.getClass()
+                  + " registered?");
+        }
+      }
+      producersByType.remove(key);
+    }
+  }
+
 
   private void dispatchProducerResultToHandler(EventHandler handler, EventProducer producer) {
     OttoEvent event = null;
@@ -265,62 +331,6 @@ public class Bus {
   }
 
   /**
-   * Unregisters all producer and handler methods on a registered {@code object}.
-   *
-   * @param object object whose producer and handler methods should be unregistered.
-   * @param allowNoOp if true, exception will not be thrown if the object was not registered at the time of the call
-   * @throws IllegalArgumentException if the object was not previously registered.
-   */
-  public void unregisterSubscriber(OttoSubscriber object, boolean allowNoOp) {
-    enforcer.enforce(this);
-
-
-
-    Map<Class<?>, Set<EventHandler>> handlersInListener = handlerFinder.findAllSubscribers(object);
-    for (Map.Entry<Class<?>, Set<EventHandler>> entry : handlersInListener.entrySet()) {
-      Set<EventHandler> currentHandlers = getHandlersForEventType(entry.getKey());
-      Collection<EventHandler> eventMethodsInListener = entry.getValue();
-
-      if (currentHandlers == null || !currentHandlers.removeAll(eventMethodsInListener)) {
-        if ( !allowNoOp ) {
-	        String msg = "Missing event handler for an annotated method. Is " + object.getClass()
-			        + " registered?";
-	        ExceptionHandler.handleException(msg);
-//	        throw new IllegalArgumentException( msg);
-        }
-      }
-    }
-  }
-
-  /** Note: this has been carved out from unregister(OttoSubscriber/OttoRegistree/Object) but we don't use it, thus it was not tested */
-  public void unregisterProducer(OttoProducer producerObj, boolean allowNoOp) {
-    enforcer.enforce(this);
-    Map<Class<?>, EventProducer> producersInListener = handlerFinder.findAllProducers(producerObj);
-    for (Map.Entry<Class<?>, EventProducer> entry : producersInListener.entrySet()) {
-      final Class<?> key = entry.getKey();
-      EventProducer producer = getProducerForEventType(key);
-      EventProducer value = entry.getValue();
-
-      if (value == null || !value.equals(producer)) {
-        if ( !allowNoOp ) {
-          throw new IllegalArgumentException(
-              "Missing event producer for an annotated method. Is " + producerObj.getClass()
-                  + " registered?");
-        }
-      }
-      producersByType.remove(key);
-    }
-  }
-
-  /**
-   * Calls unregisterSubscriber(object, false);
-   */
-  public void unregisterSubscriber(OttoSubscriber object) {
-    unregisterSubscriber(object, false);
-  }
-
-
-  /**
    * Posts an event to all registered handlers.  This method will return successfully after the event has been posted to
    * all handlers, and regardless of any exceptions thrown by handlers.
    *
@@ -330,7 +340,7 @@ public class Bus {
    * @param event event to post.
    */
   public void post(OttoEvent event) {
-    enforcer.enforce(this);
+    threadEnforcer.enforce(this);
     if(log.d()) log.d("Will post event", event);
     Set<Class<?>> dispatchTypes = flattenHierarchy(event.getClass());
 
