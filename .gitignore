@@ -24,6 +24,9 @@ core/Binaries
 
 /build
 
+<<<<<<< HEAD
 /*.iml
 /.idea
 
+=======
+>>>>>>> 1b45e8e715d77c0007c3452c3807720f7377abc2
