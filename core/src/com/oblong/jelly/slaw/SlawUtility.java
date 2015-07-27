@@ -3,12 +3,6 @@ package com.oblong.jelly.slaw;
 import com.oblong.jelly.Slaw;
 import com.oblong.jelly.slaw.java.*;
 
-/**
- * Created with IntelliJ IDEA.
- * User: valeria
- * Date: 10/2/13
- * Time: 1:26 PM
- */
 public class SlawUtility {
 	public static Slaw arrayCons(String s, byte[] e) {
 		return Slaw.cons(Slaw.string(s), Slaw.array(e, false));
@@ -41,9 +35,9 @@ public class SlawUtility {
 		return SlawList.list(slaws);
 	}
 
-	public String[] fromSlawStringList(SlawList slawStringList) {
+	public static String[] fromSlawStringList(SlawList slawStringList) {
 		if (slawStringList == null) {
-			return null;
+			return new String[0];
 		}
 		String[] strings = new String[slawStringList.count()];
 
