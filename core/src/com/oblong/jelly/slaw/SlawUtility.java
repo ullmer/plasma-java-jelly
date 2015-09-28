@@ -3,6 +3,9 @@ package com.oblong.jelly.slaw;
 import com.oblong.jelly.Slaw;
 import com.oblong.jelly.slaw.java.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SlawUtility {
 	public static Slaw arrayCons(String s, byte[] e) {
 		return Slaw.cons(Slaw.string(s), Slaw.array(e, false));
@@ -48,5 +51,15 @@ public class SlawUtility {
 		}
 
 		return strings;
+	}
+
+	public static Slaw slawListOfStrings(List<String> stringList) {
+		if (stringList == null)
+			return Slaw.nil();
+		List<Slaw> slawList = new ArrayList<>();
+		for (String s : stringList) {
+			slawList.add(Slaw.string(s));
+		}
+		return Slaw.list(slawList);
 	}
 }
