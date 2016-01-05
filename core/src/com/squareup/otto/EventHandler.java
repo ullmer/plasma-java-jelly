@@ -17,7 +17,6 @@
 
 package com.squareup.otto;
 
-import com.oblong.jelly.communication.OttoEvent;
 import com.oblong.util.logging.ObLog;
 
 import java.lang.ref.Reference;
@@ -71,7 +70,7 @@ class EventHandler {
    * @throws java.lang.reflect.InvocationTargetException  if the wrapped method throws any {@link Throwable} that is not
    *     an {@link Error} ({@code Error}s are propagated as-is).
    */
-  public void handleEvent(OttoEvent event) throws InvocationTargetException {
+  public void handleEvent(BusEvent event) throws InvocationTargetException {
     try {
       OttoSubscriber targetDereferenced = target.get();
       if ( targetDereferenced == null ) {

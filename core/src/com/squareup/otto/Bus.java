@@ -17,7 +17,6 @@
 
 package com.squareup.otto;
 
-import com.oblong.jelly.communication.OttoEvent;
 import com.oblong.util.ExceptionHandler;
 import com.oblong.util.logging.ObLog;
 
@@ -54,7 +53,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * </ol>
  *
  * <h2>Posting Events</h2>
- * To post an event, simply provide the event object to the {@link #post(com.oblong.jelly.communication.OttoEvent)} method.  The Bus instance will
+ * To post an event, simply provide the event object to the {@link #post(BusEvent)} method.  The Bus instance will
  * determine the type of event and route it to all registered listeners.
  *
  * <p>Events are routed based on their type &mdash; an event will be delivered to any handler for any type to which the
@@ -312,7 +311,7 @@ public class Bus {
 
 
   private void dispatchProducerResultToHandler(EventHandler handler, EventProducer producer) {
-    OttoEvent event = null;
+    BusEvent event = null;
     try {
       event = producer.produceEvent();
     } catch (InvocationTargetException e) {
@@ -339,7 +338,7 @@ public class Bus {
    *
    * @param event event to post.
    */
-  public void post(OttoEvent event) {
+  public void post(BusEvent event) {
     threadEnforcer.enforce(this);
     if(log.d()) log.d("Will post event", event);
     Set<Class<?>> dispatchTypes = flattenHierarchy(event.getClass());
@@ -368,7 +367,7 @@ public class Bus {
    * Queue the {@code event} for dispatch during {@link #dispatchQueuedEvents()}. Events are queued in-order of
    * occurrence so they can be dispatched in the same order.
    */
-  protected void enqueueEvent(OttoEvent event, EventHandler handler) {
+  protected void enqueueEvent(BusEvent event, EventHandler handler) {
     eventsToDispatch.get().offer(new EventWithHandler(event, handler));
   }
 
@@ -405,7 +404,7 @@ public class Bus {
    * @param event event to dispatch.
    * @param wrapper wrapper that will call the handler.
    */
-  protected void dispatch(OttoEvent event, EventHandler wrapper) {
+  protected void dispatch(BusEvent event, EventHandler wrapper) {
     try {
       wrapper.handleEvent(event);
     } catch (InvocationTargetException e) {
@@ -476,10 +475,10 @@ public class Bus {
 
   /** Simple struct representing an event and its handler. */
   static class EventWithHandler {
-    final OttoEvent event;
+    final BusEvent event;
     final EventHandler handler;
 
-    public EventWithHandler(OttoEvent event, EventHandler handler) {
+    public EventWithHandler(BusEvent event, EventHandler handler) {
       this.event = event;
       this.handler = handler;
     }

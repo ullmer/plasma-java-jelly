@@ -16,8 +16,6 @@
 
 package com.squareup.otto;
 
-import com.oblong.jelly.communication.OttoEvent;
-
 /**
  * Wraps an event that was posted, but which had no subscribers and thus could not be delivered.
  *
@@ -26,10 +24,10 @@ import com.oblong.jelly.communication.OttoEvent;
  *
  * @author Cliff Biffle
  */
-public class UnhandledEvent implements OttoEvent {
+public class UnhandledEvent implements BusEvent {
 
   public final Bus source;
-  public final OttoEvent event;
+  public final BusEvent event;
 
   /**
    * Creates a new DeadEvent.
@@ -37,7 +35,7 @@ public class UnhandledEvent implements OttoEvent {
    * @param source object broadcasting the DeadEvent (generally the {@link com.squareup.otto.Bus}).
    * @param event the event that could not be delivered.
    */
-  public UnhandledEvent(Bus source, OttoEvent event) {
+  public UnhandledEvent(Bus source, BusEvent event) {
     this.source = source;
     this.event = event;
   }

@@ -17,8 +17,6 @@
 
 package com.squareup.otto;
 
-import com.oblong.jelly.communication.OttoEvent;
-
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
@@ -42,7 +40,7 @@ final class AnnotatedHandlerFinder {
   /** Cache event bus subscriber methods for each class. */
   private static final Map<Class<?>, Map<Class<?>, Set<Method>>> SUBSCRIBERS_CACHE =
       new HashMap<Class<?>, Map<Class<?>, Set<Method>>>();
-  private static final Class<OttoEvent> EVENT_BASE_CLASS = OttoEvent.class;
+  private static final Class<BusEvent> EVENT_BASE_CLASS = BusEvent.class;
 
   /**
    * Load all methods annotated with {@link com.squareup.otto.Produce} or {@link com.squareup.otto.Subscribe} into their respective caches for the

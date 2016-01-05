@@ -16,8 +16,6 @@
 
 package com.squareup.otto;
 
-import com.oblong.jelly.communication.OttoEvent;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -62,9 +60,9 @@ class EventProducer {
    * @throws java.lang.reflect.InvocationTargetException  if the wrapped method throws any {@link Throwable} that is not
    *     an {@link Error} ({@code Error}s are propagated as-is).
    */
-  public OttoEvent produceEvent() throws InvocationTargetException {
+  public BusEvent produceEvent() throws InvocationTargetException {
     try {
-      return (OttoEvent) method.invoke(target);
+      return (BusEvent) method.invoke(target);
     } catch (IllegalAccessException e) {
       throw new AssertionError(e);
     } catch (InvocationTargetException e) {
