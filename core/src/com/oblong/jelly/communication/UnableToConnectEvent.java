@@ -24,4 +24,11 @@ public class UnableToConnectEvent extends ConnectionErrorEvent {
 	public UnableToConnectEvent(Reason reason) {
 		this.reason = reason;
 	}
+
+	@Override
+	public boolean equals(Object other) {
+		if (other instanceof UnableToConnectEvent)
+			return ((UnableToConnectEvent)other).reason == this.reason;
+		return false;
+	}
 }
