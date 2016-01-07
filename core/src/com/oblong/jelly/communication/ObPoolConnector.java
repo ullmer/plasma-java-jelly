@@ -7,10 +7,10 @@ import com.oblong.util.ExceptionHandler;
 import com.oblong.util.logging.ObLog;
 
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.*;
 
 public abstract class ObPoolConnector extends Thread {
 
-//	private static final String TAG = "ObPoolConnector";
 	private static final boolean  D = true;
 
 	private final ObLog logger = ObLog.get(this);
@@ -19,19 +19,23 @@ public abstract class ObPoolConnector extends Thread {
 	 * According to javadoc this field should be ignored if the pool already exists
 	 */
 	public static final PoolOptions DEFAULT_POOL_OPTIONS = PoolOptions.MEDIUM;
+	private static final ThreadGroup THREAD_GROUP = new ThreadGroup("ObPoolConnectors");
 	private final CountDownLatch countDownOnPoolConnected;
 
-	// These must be accessible in subclasses.
-	protected volatile boolean stopMe = false;
-	protected Hose hose;
+	private volatile boolean running = true;
+	private Hose hose;
 
-	protected int sleepMs = 5;
-	
-	protected String obPool;
+	private String obPool;
 	private PoolServerAddress obPoolsAddr;
 	protected ObPoolCommunicationEventHandler listener;
 	protected boolean TRY_RECONNECT = false;
 	private final HoseFactory hoseFactory;
+
+	/**
+	 * @param hose to do work with.
+	 * @return true if the connector should be stopped.
+	 */
+	protected abstract boolean doWork(Hose hose);
 
 	/**
 	 *
@@ -44,21 +48,23 @@ public abstract class ObPoolConnector extends Thread {
 	 */
 	protected ObPoolConnector(PoolServerAddress addr, String pool, ObPoolCommunicationEventHandler lis, HoseFactory hoseFactory,
 	                          CountDownLatch countDownOnPoolConnected) {
+		super(THREAD_GROUP, pool);
 		this.countDownOnPoolConnected = countDownOnPoolConnected;
 //		super();
 		setName(getClass().getSimpleName()+"/"+hashCode()+"__"+pool);
 		this.obPool = pool;
 		this.obPoolsAddr = addr;
 		this.hoseFactory = hoseFactory;
-		this.stopMe = false;
 		this.listener = lis;
 	}
 
 	@Override public void run() {
 		connect();
-		while (!stopMe) {
-			if (isHoseOkay(hose)) {
-				operateOnProtein();
+		while (running) {
+			if (hose.isConnected()) {
+				if (doWork(hose)) {
+					running = false;
+				}
 			} else {
 				reconnectOrNotify();
 			}
@@ -77,21 +83,12 @@ public abstract class ObPoolConnector extends Thread {
 		}
 	}
 
-	protected void operateOnProtein() {
-		handleProtein();
-		maybeSleep();
-	}
-
 	protected void reconnectOrNotify() {
 		if(TRY_RECONNECT){
 			reconnect();
 		} else {
 			notifyConnectionLost(getReasonForHoseError());
 		}
-	}
-
-	protected void logThreadStopped() {
-		logger.d(this.toString() + " stopped ");
 	}
 
 	public String getReasonForHoseError() {
@@ -117,23 +114,16 @@ public abstract class ObPoolConnector extends Thread {
 		}
 	}
 
-	public void halt() {
-		setStopMeAndInterrupt();
+	public void stopConnector() {
+		if (running) {
+			running = false;
+		}
+		interrupt();
 	}
 
-	private void setStopMeAndInterrupt() {
-		setStopMe();
-		interrupt(); // java.lang.Thread's method
+	public boolean isRunning() {
+		return running;
 	}
-
-	protected void setStopMe() {
-		this.stopMe = true;
-	}
-
-	/****
-	 * for sending proteins
-	 */
-	protected abstract void handleProtein();
 
 	// -- private --
 
@@ -155,34 +145,6 @@ public abstract class ObPoolConnector extends Thread {
 		}
 	}
 
-	protected void maybeSleep() {
-		if (sleepMs > 0) {
-			try {
-				Thread.sleep(sleepMs);
-			} catch (InterruptedException e) {
-				//e.printStackTrace();
-				if(D) logger.d(e, "thread interrupted");
-				Thread.currentThread().interrupt();
-			}
-		}
-	}
-
-	protected boolean isHoseOkay(Hose h) {
-		if (h == null) {
-			if(D) logger.d(" Hose is null from thread " + this.toString());
-			return false;
-		} else if (!h.isConnected()) {
-			logger.d(" Hose was disconnected from thread  " + this.toString());
-			return false;
-		} else {
-			return true;
-		}
-	}
-	
-	public boolean isConnectedHose(){
-		return isHoseOkay(hose);
-	}
-	
 	protected void connect() {
 		if(D) logger.d(" Connecting to pool " + "/" + obPool);
 		try {
@@ -240,7 +202,7 @@ public abstract class ObPoolConnector extends Thread {
 	 * after setting stop me to true
 	 * ***/
 	protected void notifyConnectionLost(String reason) {
-		setStopMeAndInterrupt();
+		stopConnector();
 		listener.onConnectionLost(reason);
 	}
 
