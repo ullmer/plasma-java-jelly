@@ -1,10 +1,13 @@
 package com.oblong.jelly.slaw;
 
 import com.oblong.jelly.Slaw;
+import com.oblong.jelly.schema.HasToSlaw;
 import com.oblong.jelly.slaw.java.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class SlawUtility {
 	public static Slaw arrayCons(String s, byte[] e) {
@@ -61,5 +64,14 @@ public class SlawUtility {
 			slawList.add(Slaw.string(s));
 		}
 		return Slaw.list(slawList);
+	}
+
+	public static Slaw mapToSlaw(Map<String, ? extends HasToSlaw<Slaw>> map) {
+		Map<Slaw, Slaw> mapOfSlawSlaw = new HashMap<Slaw, Slaw>();
+		for (String key : map.keySet()) {
+			HasToSlaw<Slaw> value = map.get(key);
+			mapOfSlawSlaw.put(Slaw.string(key), value.toSlaw());
+		}
+		return Slaw.map(mapOfSlawSlaw);
 	}
 }
