@@ -136,9 +136,6 @@
     <unjar src="${lib.dir}/log4j-1.2.17-reduced.jar"
            dest="${build.3rdparty.dir}"
            overwrite="true" />
-    <unjar src="${lib.dir}/guice-3.0-no_aop.jar"
-           dest="${build.3rdparty.dir}"
-           overwrite="true" />
     <unjar src="${lib.dir}/jsr305-1.3.9.jar"
            dest="${build.3rdparty.dir}"
            overwrite="true" />
