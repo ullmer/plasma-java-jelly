@@ -15,7 +15,8 @@ dependencies {
     compile project(':jamodel')
 
     compile 'org.yaml:snakeyaml:1.7'
-    compile 'junit:junit:4.11'
     compile 'net.jcip:jcip-annotations:1.0'
-    compile 'org.hamcrest:hamcrest-core:1.1'
+
+    testCompile 'junit:junit:4.11'
+    testCompile 'org.hamcrest:hamcrest-core:1.1'
 }
