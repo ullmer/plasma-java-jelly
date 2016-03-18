@@ -49,8 +49,7 @@ public class ObPoolSender extends ObPoolConnector {
 			stopConnector();
 			retProt = null;
 		}
-		if(log.d()) log.d("getNext: from outgoingProteinsQueue.take(): just descrips(to avoid performance hit): " +
-				((retProt == null)?null:retProt.descrips()));
+		//if(log.d()) log.d("getNext: from outgoingProteinsQueue.take(): just descrips(to avoid performance hit): " + ((retProt == null)?null:retProt.descrips()));
 		// refrain from logging the whole protein, because it could contain e.g. big image file contents (e.g. bug 12655)
 		return retProt;
 	}
