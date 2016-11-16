@@ -2,7 +2,7 @@ package com.oblong.jelly.pool.net.stress;
 
 import com.oblong.jelly.*;
 import com.oblong.util.Util;
-import org.apache.log4j.Logger;
+import org.slf4j.*;
 
 
 /**
@@ -12,7 +12,7 @@ import org.apache.log4j.Logger;
  */
 public class ConnectionSession {
 
-	private static final Logger logger = Logger.getLogger(ConnectionSession.class);
+	private static final Logger logger = LoggerFactory.getLogger(ConnectionSession.class);
 
 	public static final PoolOptions POOL_OPTIONS = PoolOptions.MEDIUM;
 
