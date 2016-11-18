@@ -6,9 +6,10 @@ import com.oblong.jelly.PoolServerAddress;
 import com.oblong.util.Util;
 import com.oblong.util.probability.ProbabilityHost;
 import net.jcip.annotations.GuardedBy;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.log4j.xml.DOMConfigurator;
+
+import org.apache.log4j.xml.*;
+import org.slf4j.*;
+import org.slf4j.event.*;
 
 /**
  * This test is designed to "stress-test" multiple parts of Jelly, mainly hoses, in order to verify their reliability.
@@ -31,7 +32,7 @@ import org.apache.log4j.xml.DOMConfigurator;
  */
 public class StressTestJelly {
 
-	private static final Logger logger = Logger.getLogger(StressTestJelly.class);
+	private static final Logger logger = LoggerFactory.getLogger(StressTestJelly.class);
 
 	final TestConfig testConfig = TestConfig.CONFIG;
 
@@ -128,17 +129,10 @@ public class StressTestJelly {
 	public synchronized void incrementQtyReceivedProteins() {
 		qtyProteinsReceivedInWholeTest++;
 
-		Level level;
 		if ( qtyProteinsReceivedInWholeTest % 1000 == 0 ) {
-			level = Level.INFO;
+			logger.info("qtyProteinsReceivedInWholeTest: " + qtyProteinsReceivedInWholeTest);
 		} else {
-			level = Level.DEBUG;
-		}
-
-		if ( logger.isEnabledFor(level) ) {
-			logger.log(level, "qtyProteinsReceivedInWholeTest: " + qtyProteinsReceivedInWholeTest);
+			logger.debug("qtyProteinsReceivedInWholeTest: " + qtyProteinsReceivedInWholeTest);
 		}
 	}
-
-
 }

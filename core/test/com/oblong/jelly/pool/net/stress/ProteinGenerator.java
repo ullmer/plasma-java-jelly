@@ -5,7 +5,7 @@ import com.oblong.jelly.Protein;
 import com.oblong.jelly.Slaw;
 import com.oblong.jelly.slaw.java.SlawString;
 import com.oblong.util.probability.ProbabilityHost;
-import org.apache.log4j.Logger;
+import org.slf4j.*;
 
 import java.util.List;
 import java.util.Map;
@@ -22,7 +22,7 @@ import static com.oblong.jelly.Slaw.*;
  */
 public class ProteinGenerator {
 
-	private static Logger logger = Logger.getLogger(ProteinGenerator.class);
+	private static Logger logger = LoggerFactory.getLogger(ProteinGenerator.class);
 
 	public static final String DEFAULT_DESCRIPTS = "protein_number";
 	public static final String ARGUMENT_FOR_PROTEIN_MAP = "foo";

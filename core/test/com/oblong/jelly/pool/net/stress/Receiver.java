@@ -5,7 +5,7 @@ import com.oblong.jelly.PoolException;
 import com.oblong.jelly.Protein;
 import com.oblong.util.Util;
 import net.jcip.annotations.GuardedBy;
-import org.apache.log4j.Logger;
+import org.slf4j.*;
 
 import java.util.concurrent.TimeoutException;
 
@@ -19,7 +19,7 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
  */
 public class Receiver extends ConnectionParticipant {
 
-	private static final Logger logger = Logger.getLogger(Receiver.class);
+	private static final Logger logger = LoggerFactory.getLogger(Receiver.class);
 
 	@GuardedBy("this")
 	private boolean finishedReceiving = false;
@@ -104,7 +104,7 @@ public class Receiver extends ConnectionParticipant {
 				withdrawHose();
 				//stopped
 			} catch (Throwable throwable ) {
-				logger.fatal("Receiver - uncaught throwable; connection cycleId: " +
+				logger.error("Receiver - uncaught throwable; connection cycleId: " +
 						parentConnectionSession.getCycleId(),
 						throwable);
 			} finally {

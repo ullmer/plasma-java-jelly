@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import com.oblong.util.ExceptionHandler;
-import org.apache.log4j.Logger;
+import org.slf4j.*;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,7 +27,7 @@ public class HoseTests {
 
 //    public static final String TAG = "HoseTests";
     public static final PoolOptions POOL_OPTIONS = PoolOptions.MEDIUM;
-	private static final Logger logger = Logger.getLogger(HoseTests.class);
+	private static final Logger logger = LoggerFactory.getLogger(HoseTests.class);
 
 
     public static class Tests<Dummy> {

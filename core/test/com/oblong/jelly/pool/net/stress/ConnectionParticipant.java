@@ -2,7 +2,7 @@ package com.oblong.jelly.pool.net.stress;
 
 import com.oblong.jelly.Hose;
 import com.oblong.util.ExceptionHandler;
-import org.apache.log4j.Logger;
+import org.slf4j.*;
 
 /**
  * User: karol
@@ -11,7 +11,7 @@ import org.apache.log4j.Logger;
  */
 public class ConnectionParticipant {
 
-	private static final Logger logger = Logger.getLogger(ConnectionParticipant.class);
+	private static final Logger logger = LoggerFactory.getLogger(ConnectionParticipant.class);
 
 	protected final ConnectionSession parentConnectionSession;
 	protected final ProteinGenerator proteinGenerator;

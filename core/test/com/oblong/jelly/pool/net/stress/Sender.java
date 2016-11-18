@@ -2,7 +2,7 @@ package com.oblong.jelly.pool.net.stress;
 
 import com.oblong.jelly.Protein;
 import com.oblong.util.probability.ProbabilityHost;
-import org.apache.log4j.Logger;
+import org.slf4j.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -12,7 +12,7 @@ import org.apache.log4j.Logger;
  */
 public class Sender extends ConnectionParticipant {
 
-	private static final Logger logger = Logger.getLogger(Sender.class);
+	private static final Logger logger = LoggerFactory.getLogger(Sender.class);
 
 	final StressTestJelly test;
 	final ProbabilityHost probabilityHost;
