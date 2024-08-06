@@ -35,8 +35,8 @@
   <property name="compile.encoding" value=""/>
   <property name="compile.deprecation" value="true"/>
   <property name="compile.optimize" value="true"/>
-  <property name="compile.source" value="1.6"/>
-  <property name="compile.target" value="1.6"/>
+  <property name="compile.source" value="1.8"/>
+  <property name="compile.target" value="1.8"/>
 
   <property name="test.server" value="tcp://localhost"/>
   <property name="test.halt" value="yes"/>
