@@ -23,13 +23,15 @@ public class ObLog {
 	 */
 	protected final Logger logger;
 
+	/*
 	protected ObLog(Class<?> aClass) {
 		this(getLoggerForClass(aClass), null);
-	}
+	}*/
 
+	/* // BAU, 2024-08-06: yielding compile error, perhaps at intersection between log4j and Java8/21 evolution
 	private static Logger getLoggerForClass(Class<?> aClass) {
 		return Logger.getLogger(aClass);
-	}
+	}*/
 
 	protected ObLog(Logger logger, Object loggingObject) {
 		this.logger = logger;
