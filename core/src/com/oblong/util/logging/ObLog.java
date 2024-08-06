@@ -38,11 +38,12 @@ public class ObLog {
 		this.loggingObject = loggingObject;
 	}
 
+	/*
 	public static ObLog get(Class<?> aClass) {
 		return new ObLog(aClass);
-	}
+	}*/
 
-	public static ObLog get(Object o) {
+  //	public static ObLog get(Object o) {
 //		loggingObject = o;
 //		String loggerName;
 //		if (o instanceof LoggingObject) {
@@ -52,12 +53,13 @@ public class ObLog {
 //			loggerName = o.toString();
 //		}
 		// later we might also show the address of the object to allow distinguishing of object instances
-		return new ObLog(getLoggerForClass(o.getClass()), o);
+  //		return new ObLog(getLoggerForClass(o.getClass()), o);
 
 
 //		return new ObLog(Logger.getLogger("_"), o); /* not the real logger, since we don't want to repeat the whole package
 //				name and class name in log text */
-	}
+  //	}
+
 
 	private CharSequence addExtraInfo(CharSequence message) {
 		if ( loggingObject == null ) {
