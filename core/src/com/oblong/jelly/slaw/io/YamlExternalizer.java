@@ -5,7 +5,8 @@ package com.oblong.jelly.slaw.io;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import org.yaml.snakeyaml.util.Base64Coder;
+import java.util.Base64;
+//import org.yaml.snakeyaml.util.Base64Coder; //deprecated
 
 import com.oblong.jelly.Slaw;
 import com.oblong.jelly.NumericIlk;
@@ -15,6 +16,13 @@ import com.oblong.jelly.Protein;
 import static com.oblong.jelly.SlawIlk.*;
 
 import com.oblong.jelly.slaw.SlawExternalizer;
+
+public class Base64Mapper { 
+  public String encode(String inputStr) {
+    String encodedString = Base64.getEncoder().encodeToString(inputStr.getBytes());
+    return encodedString;
+  }
+}
 
 public final class YamlExternalizer implements SlawExternalizer {
 
@@ -160,7 +168,9 @@ public final class YamlExternalizer implements SlawExternalizer {
                 write(os, "\n" + pr + YamlTags.DATA_KEY
                           + ": !!binary |-\n" + pr + "    ");
                 write(os, pr);
-                for (char c : Base64Coder.encode(p.copyData()))
+
+		Base64Mapper b64m;
+                for (char c : b64m.encode(p.copyData()))
                     os.write((byte)c);
             }
         }
