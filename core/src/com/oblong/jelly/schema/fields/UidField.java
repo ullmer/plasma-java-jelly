@@ -1,9 +1,7 @@
 package com.oblong.jelly.schema.fields;
 
 import com.oblong.jelly.Slaw;
-import com.oblong.jelly.schema.HasUid;
 import com.oblong.jelly.schema.SlawSchema;
-import com.oblong.jelly.schema.Uid;
 
 /**
  * User: karol
@@ -33,7 +31,7 @@ public class UidField<T extends HasUid> extends AbstractField<Uid<T>> {
 		return Slaw.string(value.uid);
 	}
 
-//	public static <T extends com.oblong.jelly.schema.HasUid> UidField<T> get(Class<T> tClass, String name) {
+//	public static <T extends HasUid> UidField<T> get(Class<T> tClass, String name) {
 //		return get(null, false, name, tClass);
 //	}
 
