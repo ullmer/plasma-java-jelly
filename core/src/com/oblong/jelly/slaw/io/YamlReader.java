@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.Base64;
 
 import com.oblong.util.ExceptionHandler;
 import net.jcip.annotations.NotThreadSafe;
@@ -18,7 +19,7 @@ import org.yaml.snakeyaml.nodes.NodeTuple;
 import org.yaml.snakeyaml.nodes.ScalarNode;
 import org.yaml.snakeyaml.nodes.SequenceNode;
 import org.yaml.snakeyaml.reader.UnicodeReader;
-import org.yaml.snakeyaml.util.Base64Coder;
+//import org.yaml.snakeyaml.util.Base64Coder;
 
 import com.oblong.jelly.NumericIlk;
 import com.oblong.jelly.Slaw;
@@ -28,6 +29,13 @@ import com.oblong.jelly.slaw.SlawFactory;
 
 @NotThreadSafe
 final class YamlReader implements SlawReader {
+
+    private class Base64Mapper {
+      public String decode(String inputStr) {
+	String decodedString = Base64.getDencoder().decodeToString(inputStr);
+	return decodedString;
+      }
+    }
 
     public YamlReader(UnicodeReader reader, SlawFactory f) {
         Iterable<Node> it = new Yaml().composeAll(reader);
@@ -157,8 +165,11 @@ final class YamlReader implements SlawReader {
         if (s == null) return null;
         byte[] data = null;
         final Slaw ds = s.find(DATK);
+        Base64Mapper b64m;
+
         if (ds != null && ds.isString())
-            data = Base64Coder.decode(ds.emitString().toCharArray());
+            data = b64m.decode(ds.emitString().toCharArray());
+
         return factory.protein(s.find(DESK), s.find(INGK), data);
     }
 
