@@ -17,7 +17,7 @@ import static com.oblong.jelly.SlawIlk.*;
 
 import com.oblong.jelly.slaw.SlawExternalizer;
 
-public class Base64Mapper { 
+static class Base64Mapper { 
   public String encode(String inputStr) {
     String encodedString = Base64.getEncoder().encodeToString(inputStr.getBytes());
     return encodedString;
