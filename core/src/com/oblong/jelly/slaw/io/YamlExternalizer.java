@@ -17,15 +17,15 @@ import static com.oblong.jelly.SlawIlk.*;
 
 import com.oblong.jelly.slaw.SlawExternalizer;
 
-static class Base64Mapper { 
-  public String encode(String inputStr) {
-    String encodedString = Base64.getEncoder().encodeToString(inputStr.getBytes());
-    return encodedString;
-  }
-}
 
 public final class YamlExternalizer implements SlawExternalizer {
 
+    private class Base64Mapper { 
+      public String encode(String inputStr) {
+        String encodedString = Base64.getEncoder().encodeToString(inputStr.getBytes());
+        return encodedString;
+      }
+    }
     public static SlawExternalizer rawExternalizer() {
         return new YamlExternalizer(new YamlOptions(true, false));
     }
