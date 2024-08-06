@@ -3,9 +3,9 @@ package com.oblong.util.logging;
 //import org.apache.log4j.Level;
 //import org.apache.log4j.Logger;
 //import org.apache.log4j.Priority;
-import org.apache.log4j.logging.Level;
-import org.apache.log4j.logging.Logger;
-import org.apache.log4j.logging.Priority;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.Priority;
 
 /**
  * User: karol
