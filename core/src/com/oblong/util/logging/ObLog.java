@@ -5,7 +5,7 @@ package com.oblong.util.logging;
 //import org.apache.log4j.Priority;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.Priority;
+import org.apache.logging.log4j.LogManager;
 
 /**
  * User: karol
@@ -75,11 +75,14 @@ public class ObLog {
 
 	public void assertLog(boolean assertion, String msg) { logger.assertLog(assertion, msg); }
 
-	public boolean isEnabledFor(Priority level) { return logger.isEnabledFor(level); }
+	//public boolean isEnabledFor(Priority level) { return logger.isEnabledFor(level); }
+	public boolean isEnabledFor(Level level) { return logger.isEnabledFor(level); }
 
-	public void log(Priority priority, Object message, Throwable t) { logger.log(priority, message, t); }
+	//public void log(Priority priority, Object message, Throwable t) { logger.log(priority, message, t); }
+	public void log(Level priority, Object message, Throwable t) { logger.log(priority, message, t); }
 
-	public void log(Priority priority, Object message) { logger.log(priority, message); }
+	//public void log(Priority priority, Object message) { logger.log(priority, message); }
+	public void log(Level priority, Object message) { logger.log(priority, message); }
 
 //	public void log(String callerFQCN, Priority level, Object message, Throwable t) {
 //		logger.log(callerFQCN, level, message, t);
