@@ -88,7 +88,7 @@ public class ObLog {
 
 	//public void log(Priority priority, Object message, Throwable t) { logger.log(priority, message, t); }
 	//public void log(Level priority, Object message, Throwable t) { logger.log(priority, message, t); }
-	public void log(Level priority, Object message, Throwable t) { System.out.println("ObLog log 1: (further dev required)");
+	public void log(Level priority, Object message, Throwable t) { System.out.println("ObLog log 1: (further dev required)");}
 
 	//public void log(Priority priority, Object message) { logger.log(priority, message); }
 	//public void log(Level priority, Object message) { logger.log(priority, message); }
@@ -160,12 +160,19 @@ public class ObLog {
 	public void d(Throwable t, CharSequence message) { System.out.println("ObLog d2 (further dev required)");}
 	public void t(Throwable t, CharSequence message) { System.out.println("ObLog t2 (further dev required)");}
 
-	public void f(CharSequence message, Throwable t) { logger.fatal(addExtraInfo(message), t); };
-	public void e(CharSequence message, Throwable t) { logger.error(addExtraInfo(message), t); };
-	public void w(CharSequence message, Throwable t) { logger.warn (addExtraInfo(message), t); };
-	public void i(CharSequence message, Throwable t) { logger.info (addExtraInfo(message), t); };
-	public void d(CharSequence message, Throwable t) { logger.debug(addExtraInfo(message), t); };
-	public void t(CharSequence message, Throwable t) { logger.trace(addExtraInfo(message), t); };
+	//public void f(CharSequence message, Throwable t) { logger.fatal(addExtraInfo(message), t); };
+	//public void e(CharSequence message, Throwable t) { logger.error(addExtraInfo(message), t); };
+	//public void w(CharSequence message, Throwable t) { logger.warn (addExtraInfo(message), t); };
+	//public void i(CharSequence message, Throwable t) { logger.info (addExtraInfo(message), t); };
+	//public void d(CharSequence message, Throwable t) { logger.debug(addExtraInfo(message), t); };
+	//public void t(CharSequence message, Throwable t) { logger.trace(addExtraInfo(message), t); };
+
+	public void f(CharSequence message, Throwable t) { System.out.println("ObLog f3 (further dev required)");}
+	public void e(CharSequence message, Throwable t) { System.out.println("ObLog e3 (further dev required)");}
+	public void w(CharSequence message, Throwable t) { System.out.println("ObLog w3 (further dev required)");}
+	public void i(CharSequence message, Throwable t) { System.out.println("ObLog i3 (further dev required)");}
+	public void d(CharSequence message, Throwable t) { System.out.println("ObLog d3 (further dev required)");}
+	public void t(CharSequence message, Throwable t) { System.out.println("ObLog t3 (further dev required)");}
 
 	public static boolean d(ObLog log) {
 		if(log==null) return false;
