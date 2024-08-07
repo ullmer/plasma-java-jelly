@@ -2,7 +2,7 @@ package com.oblong.jelly.schema.fields;
 
 import com.oblong.jelly.Slaw;
 import com.oblong.jelly.schema.SlawSchema;
-import com.oblong.util.logging.ObLog;
+//import com.oblong.util.logging.ObLog;
 
 /**
  * Created with IntelliJ IDEA.
@@ -12,7 +12,7 @@ import com.oblong.util.logging.ObLog;
  */
 public class StringField extends AbstractField<String> {
 
-	private final ObLog log = ObLog.get(StringField.class);
+	//private final ObLog log = ObLog.get(StringField.class);
 
 	public StringField(String name) {
 		this(null, false, name);
@@ -27,7 +27,8 @@ public class StringField extends AbstractField<String> {
 		try {
 			return slaw.emitString();
 		} catch (UnsupportedOperationException e) {
-			log.w("Coercing slaw to string: " + slaw);
+			//log.w("Coercing slaw to string: " + slaw);
+			System.out.println("Coercing slaw to string: " + slaw);
 			return "" + slaw.emitBigInteger();
 
 			/* Quickish workaround for "error-code" : !i64 -90025, in:
