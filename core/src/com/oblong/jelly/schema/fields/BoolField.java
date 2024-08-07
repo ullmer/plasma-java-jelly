@@ -3,7 +3,7 @@ package com.oblong.jelly.schema.fields;
 import com.oblong.jelly.Slaw;
 import com.oblong.jelly.schema.SlawSchema;
 import com.oblong.util.ExceptionHandler;
-import com.oblong.util.logging.ObLog;
+//import com.oblong.util.logging.ObLog;
 
 /**
  * Created with IntelliJ IDEA.
@@ -14,7 +14,7 @@ import com.oblong.util.logging.ObLog;
  */
 public class BoolField extends AbstractField<Boolean> {
 
-	private final ObLog log = ObLog.get(this);
+	//private final ObLog log = ObLog.get(this);
 
 	public BoolField(String name) {
 		super(name);
@@ -33,10 +33,12 @@ public class BoolField extends AbstractField<Boolean> {
 				String str = slaw.emitString();
 				ExceptionHandler.handleException("Expected bool but got string. Will try to parse: " + str);
 				/*--*/ if ( "true".equals(str) ) {
-					logBoolFromStringWarning(str);
+					//logBoolFromStringWarning(str);
+					System.out.println("BoolField fromSlaw_Custom/T:" + str);
 					return true;
 				} else if ( "false".equals(str) ) {
-					logBoolFromStringWarning(str);
+					//logBoolFromStringWarning(str);
+					System.out.println("BoolField fromSlaw_Custom/T:" + str);
 					return false;
 				}
 			}
@@ -47,7 +49,8 @@ public class BoolField extends AbstractField<Boolean> {
 	}
 
 	private void logBoolFromStringWarning(String str) {
-		log.e("Bool from string '"+str+"', for field " + toString() + " - will work, but is discouraged.");
+		//log.e("Bool from string '"+str+"', for field " + toString() + " - will work, but is discouraged.");
+		System.out.println("Bool from string '"+str+"', for field " + toString() + " - will work, but is discouraged.");
 	}
 
 	@Override
