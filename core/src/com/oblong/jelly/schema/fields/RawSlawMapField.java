@@ -3,7 +3,7 @@ package com.oblong.jelly.schema.fields;
 import com.oblong.jelly.Slaw;
 import com.oblong.jelly.schema.SlawSchema;
 import com.oblong.jelly.slaw.java.SlawMap;
-import com.oblong.util.logging.ObLog;
+//import com.oblong.util.logging.ObLog;
 
 /**
  * Created with IntelliJ IDEA.
@@ -14,7 +14,7 @@ import com.oblong.util.logging.ObLog;
  */
 public class RawSlawMapField extends AbstractField<SlawMap> {
 
-    private final ObLog log = ObLog.get(this);
+    //private final ObLog log = ObLog.get(this);
 
     public RawSlawMapField(String name) {
         super(name);
