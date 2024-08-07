@@ -1,15 +1,42 @@
-
-/* (c)  oblong industries */
+// Brygg Ullmer: reduction to approximation of JShrake helloWorld example from Animist discord #plasma 
+/// Await a protein from a pool.
+// Begun August 7, 2024
+//
+import com.oblong.jelly.Slaw;
+import com.oblong.jelly.Protein;
+import com.oblong.jelly.Hose;
+import com.oblong.jelly.Pool;
+import com.oblong.jelly.PoolException;
 
 import static com.oblong.jelly.Slaw.*;
 import static com.oblong.jelly.Protein.*;
 
 public class PAwaitHelloWorld2 {
 
-  public PAwaitHelloWorld2() {System.out.println("pahw2 constructor");}
+   static String pnstr = "tcp://localhost/hello";
 
-  public static void main(String[] args) {
-    System.out.println("p-await hello, world 2");
+   public PAwaitHelloWorld2() {System.out.println("pahw2 constructor");}
+
+   public static void main(String[] args) {
+     System.out.println("p-await hello, world 2");
+     Hose h = null;
+
+     try {
+       h = Pool.participate(pnstr);
+       Slaw descrips = Slaw.list(Slaw.string("hello"));
+       Slaw ingests  = Slaw.map(Slaw.string("name"), Slaw.string("world"));
+       Protein p = Slaw.protein(descrips, ingests);
+       h.deposit(p);
+     //} catch (Exception e) { 
+     } catch (PoolException e) {
+       System.out.println("Pool exception:" + e);
+       System.exit(-1);
+     } finally {
+       if (h != null) h.withdraw();
+    }
+    System.out.println("p-deposit hello, world 3 ends");
+  } 
+}
   }
 }
 
@@ -97,3 +124,6 @@ int main (int argc, char **argv)
 
   return EXIT_SUCCESS;
 }*/
+
+
+/// end ///
