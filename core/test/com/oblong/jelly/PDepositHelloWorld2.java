@@ -4,6 +4,9 @@
 
 import com.oblong.jelly.Slaw;
 import com.oblong.jelly.Protein;
+import com.oblong.jelly.Hose;
+import com.oblong.jelly.Pool;
+import com.oblong.jelly.PoolException;
 
 //#include "pool_cmd.h"
 //#include "libLoam/c/ob-sys.h"
@@ -13,10 +16,9 @@ import com.oblong.jelly.Protein;
 
 public class PDepositHelloWorld2 {
 
-  String dstr  = "hello";
-  String istr  = "name:world";
-  String pnstr = "tcp://localhost/hello";
-  Hose   h     = null;
+  static String d1str = "name", d2str = "hello";
+  static String istr  = "world";
+  static String pnstr = "tcp://localhost/hello";
 
   public PDepositHelloWorld2() {System.out.println("pdhw2 constructor");}
 
@@ -45,22 +47,24 @@ public class PDepositHelloWorld2 {
 
   ///////////////// main ///////////////// 
 
-  public static void main(String[] args) {
-    System.out.println("p-deposit hello, world 2 begins");
+   public static void main(String[] args) {
+     System.out.println("p-deposit hello, world 2 begins");
 
-    try {
-      h = Pool.participate(pnstr);
-      Slaw descrips = Slaw.map(Slaw.string("name"), Slaw.string("hello"));
-      Slaw ingests  = Slaw.string(world);
-      Protein p(descrips, ingests);
-      h.deposit(p)
-    } catch (PoolException e) {
-      System.out.println("Pool exception!");
-      System.exit(-1);
-    } finally {
-      if (h != null) h.withdraw();
-  }
-  System.out.println("p-deposit hello, world 2 ends");
+     Hose h = null;
+
+     try {
+       h = Pool.participate(pnstr);
+       Slaw descrips = Slaw.map(Slaw.string(d1str), Slaw.string(d2str));
+       Slaw ingests  = Slaw.string(istr);
+       Protein p = Slaw.protein(descrips, ingests);
+       h.deposit(p);
+     } catch (PoolException e) {
+       System.out.println("Pool exception!");
+       System.exit(-1);
+     } finally {
+       if (h != null) h.withdraw();
+    }
+    System.out.println("p-deposit hello, world 2 ends");
+  } 
 }
-
 /// end ///
