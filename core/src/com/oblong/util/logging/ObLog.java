@@ -33,6 +33,8 @@ public class ObLog {
 		return Logger.getLogger(aClass);
 	}*/
 
+	protected ObLog() {loggingObject=null;} // workaround temporary deactivation
+
 	//protected ObLog(Logger logger, Object loggingObject) {
 	//	this.logger = logger;
 	//	this.loggingObject = loggingObject;
