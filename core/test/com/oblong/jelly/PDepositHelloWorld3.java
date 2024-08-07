@@ -8,12 +8,6 @@ import com.oblong.jelly.Hose;
 import com.oblong.jelly.Pool;
 import com.oblong.jelly.PoolException;
 
-//#include "pool_cmd.h"
-//#include "libLoam/c/ob-sys.h"
-//#include "libLoam/c/ob-vers.h"
-//#include "libPlasma/c/protein.h"
-//#include "libPlasma/c/slaw.h"
-
 public class PDepositHelloWorld3 {
   static String pnstr = "tcp://localhost/hello";
 
@@ -32,8 +26,7 @@ public class PDepositHelloWorld3 {
        Slaw ingests  = Slaw.map(Slaw.string("name"), Slaw.string("world"));
        Protein p = Slaw.protein(descrips, ingests);
        h.deposit(p);
-     //} catch (PoolException e) {
-     } catch (Exception e) {
+     } catch (Exception e) { //} catch (PoolException e) {
        System.out.println("Pool exception!");
        System.exit(-1);
      } finally {
