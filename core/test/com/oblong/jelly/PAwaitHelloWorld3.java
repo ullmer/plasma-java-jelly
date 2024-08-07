@@ -6,18 +6,19 @@
 import java.util.Map; 
 import java.util.HashMap; 
 
+import java.lang.Thread;
+
 import com.oblong.jelly.Slaw;
 import com.oblong.jelly.Protein;
 import com.oblong.jelly.Hose;
 import com.oblong.jelly.Pool;
 import com.oblong.jelly.PoolException;
 
-import static com.oblong.jelly.Slaw.*;
-import static com.oblong.jelly.Protein.*;
-
 public class PAwaitHelloWorld2 {
 
    static String pnstr = "tcp://localhost/hello";
+   //int betweenPollSleepDurationMs = 20;
+   int betweenPollSleepDurationMs = 500;
 
    public PAwaitHelloWorld2() {System.out.println("pahw2 constructor");}
 
@@ -28,7 +29,17 @@ public class PAwaitHelloWorld2 {
      try {
        h = Pool.participate(pnstr);
        while (true) {
-         Protein p = h.awaitNext();
+         Protein p;
+	 boolean awaitingProtein = true;
+
+	 while (awaitingProtein) {
+	   try { p = h.awaitNext();
+		 awaitingProtein = false;
+	   } catch (PoolException e) {
+  	     System.err.print('.');  System.err.flush();
+             Thread.sleep(betweenPollSleepDurationMs); // probably should confirm exception type
+	   }
+	 }
 
 	 Slaw d = p.descrips();
          Slaw i = p.ingests();
