@@ -1,9 +1,22 @@
 
 /* (c)  oblong industries */
 
+import static com.oblong.jelly.Slaw.*;
+import static com.oblong.jelly.Protein.*;
+
+public class PAwaitHelloWorld2 {
+
+  public PAwaitHelloWorld2() {System.out.println("pahw2 constructor");}
+
+  public static void main(String[] args) {
+    System.out.println("p-await hello, world 2");
+  }
+}
+
 ///
 /// Loop forever reading proteins from a pool with pool_await_next().
-///
+
+/*///
 #include "pool_cmd.h"
 #include "libLoam/c/ob-sys.h"
 #include "libLoam/c/ob-vers.h"
@@ -83,4 +96,4 @@ int main (int argc, char **argv)
   pool_cmd_free_options (&cmd);
 
   return EXIT_SUCCESS;
-}
+}*?*?*?*?
