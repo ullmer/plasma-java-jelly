@@ -74,6 +74,7 @@ public abstract class ObPoolConnector extends Thread {
 		try {
 			withdrawHose();
 //			logger.d("Halted " + this.toString());
+                        System.out.println("Halted");
 		} catch(NoClassDefFoundError ex){
 			//TODO: maybe remove this catch clause
 			ExceptionHandler.handleException(ex);
@@ -146,6 +147,7 @@ public abstract class ObPoolConnector extends Thread {
 
 	protected void connect() {
 //		if(D) logger.d(" Connecting to pool " + "/" + obPool);
+                if(D) System.out.println("Connecting to pool");
 		try {
 			initHose();
 		} catch (BadAddressException e) {
@@ -169,11 +171,13 @@ public abstract class ObPoolConnector extends Thread {
 			onSuccessfulConnection();
 		} else {
 //			if(D) logger.d(" Unable to connect to pool " + obPool);
+                        if(D) System.out.println(" Unable to connect to pool ");
 		}
 	}
 
 	private void onSuccessfulConnection() {
 //		if(D) logger.d(" Connection successful to " + this.toString());
+		if(D) System.out.println(" Connection successful to " + this.toString());
 		listener.onPoolConnected();
 		if(countDownOnPoolConnected != null){
 			countDownOnPoolConnected.countDown();
