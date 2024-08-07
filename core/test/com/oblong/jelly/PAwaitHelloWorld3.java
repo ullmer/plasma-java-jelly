@@ -18,7 +18,7 @@ public class PAwaitHelloWorld3 {
 
    static String pnstr = "tcp://localhost/hello";
    //static int betweenPollSleepDurationMs = 20;
-   static int betweenPollSleepDurationMs = 500;
+   static int betweenPollSleepDurationMs = 500; // slow for debugging
 
    public PAwaitHelloWorld3() {System.out.println("pahw2 constructor");}
 
@@ -29,13 +29,13 @@ public class PAwaitHelloWorld3 {
      try {
        h = Pool.participate(pnstr);
        while (true) {
-         Protein p=null;
+         Protein p=null; 
 	 boolean awaitingProtein = true;
 
 	 while (awaitingProtein) {
-	   try { p = h.next();
-		 awaitingProtein = false;
+	   try { p = h.next(); awaitingProtein = false;
 	   } catch (PoolException pe) {
+
   	     System.err.print('.');  System.err.flush();
 	     try {Thread.sleep(betweenPollSleepDurationMs); // probably should confirm exception type
 	     } catch (Exception e) {}                       // ditto
