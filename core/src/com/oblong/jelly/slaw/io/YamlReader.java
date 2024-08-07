@@ -32,8 +32,11 @@ final class YamlReader implements SlawReader {
 
     private class Base64Mapper {
       public String decode(String inputStr) {
-	String decodedString = Base64.getDencoder().decodeToString(inputStr);
-	return decodedString;
+
+	//String decodedString = Base64.getDencoder().decodeToString(inputStr);
+	//return decodedString;
+	System.out.println("YamlReader Base64Mapper: further porting required");
+        return "";
       }
     }
 
