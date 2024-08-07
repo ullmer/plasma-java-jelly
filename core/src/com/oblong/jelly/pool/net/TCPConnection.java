@@ -120,7 +120,7 @@ final class TCPConnection implements NetConnection {
         try {
             address = srv.address();
 	        //if(log.d()) log.d("Server :  "+ srv.toString());
-	        if(log.d()) System.out.println("Server :  "+ srv.toString());
+		System.out.println("Server :  "+ srv.toString());
             socket = new Socket(address.host(), address.port());
             rawInput = socket . getInputStream ();
             input = new BufferedInputStream (socket.getInputStream());
@@ -232,7 +232,8 @@ final class TCPConnection implements NetConnection {
         final int tcpVersion = is.read();
         final int slawVersion = is.read();
         //if(log.d()) log.d("tcp Version "+tcpVersion+", slaw Version "+slawVersion);
-        if(log.d()) System.out.println("tcp Version "+tcpVersion+", slaw Version "+slawVersion);
+
+	System.out.println("tcp Version "+tcpVersion+", slaw Version "+slawVersion);
         checkVersion(MIN_SLAW_VERSION, MAX_SLAW_VERSION, slawVersion, "slaw");
         checkVersion(MIN_TCP_VERSION, MAX_TCP_VERSION, tcpVersion, "tcp");
         return tcpVersion;
