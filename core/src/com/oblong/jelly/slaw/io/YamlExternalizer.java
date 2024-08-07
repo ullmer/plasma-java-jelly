@@ -170,8 +170,9 @@ public final class YamlExternalizer implements SlawExternalizer {
                 write(os, pr);
 
 		Base64Mapper b64m;
-                for (char c : b64m.encode(p.copyData()))
-                    os.write((byte)c);
+		System.out.println("YamlExternalizer externProtein: further porting required");
+                //for (char c : b64m.encode(p.copyData()))
+                //    os.write((byte)c);
             }
         }
     }
