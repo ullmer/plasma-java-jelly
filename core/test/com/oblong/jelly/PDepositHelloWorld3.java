@@ -26,8 +26,9 @@ public class PDepositHelloWorld3 {
        Slaw ingests  = Slaw.map(Slaw.string("name"), Slaw.string("world"));
        Protein p = Slaw.protein(descrips, ingests);
        h.deposit(p);
-     } catch (Exception e) { //} catch (PoolException e) {
-       System.out.println("Pool exception!");
+     //} catch (Exception e) { 
+     } catch (PoolException e) {
+       System.out.println("Pool exception:" + e);
        System.exit(-1);
      } finally {
        if (h != null) h.withdraw();
