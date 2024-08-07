@@ -37,46 +37,7 @@ public class PAwaitHelloWorld2 {
     System.out.println("p-deposit hello, world 3 ends");
   } 
 }
-  }
-}
 
-///
-/// Loop forever reading proteins from a pool with pool_await_next().
-
-/*///
-#include "pool_cmd.h"
-#include "libLoam/c/ob-sys.h"
-#include "libLoam/c/ob-vers.h"
-#include "libLoam/c/ob-log.h"
-#include "libPlasma/c/slaw.h"
-#include "libPlasma/c/slaw-io.h"
-#include "libPlasma/c/protein.h"
-
-static void usage (void)
-{
-  ob_banner (stderr);
-  fprintf (stderr, "Usage: p-await <pool name>\n");
-  exit (EXIT_FAILURE);
-}
-
-int main (int argc, char **argv)
-{
-  OB_CHECK_ABI ();
-
-  ob_retort pret;
-  protein p;
-  pool_timestamp ts;
-  pool_cmd_info cmd;
-
-  memset(&cmd, 0, sizeof(cmd));
-
-  const char *pnstr = "tcp://localhost/hello";
-  cmd.pool_name     = pnstr;
-
-  //if (pool_cmd_get_poolname (&cmd, argc, argv, optind))
-  //  usage ();
-
-  pool_cmd_open_pool (&cmd);
 
   while (1)
     {
