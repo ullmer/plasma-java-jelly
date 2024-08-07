@@ -1,12 +1,10 @@
-/* (c)  oblong industries */
-
 // Brygg Ullmer: reduction to approximation of JShrake helloWorld example from Animist discord #plasma 
-
-///
 /// Deposit a protein into a pool.
-///
+
+import static com.oblong.jelly.Slaw.*;
+import static com.oblong.jelly.Protein.*;
+
 #include "pool_cmd.h"
-#include "libLoam/c/ob-log.h"
 #include "libLoam/c/ob-sys.h"
 #include "libLoam/c/ob-vers.h"
 #include "libPlasma/c/protein.h"
