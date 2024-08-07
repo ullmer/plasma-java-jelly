@@ -128,7 +128,8 @@ public class ProbabilityHost {
 		sb.append(endSuffix);
 		String s = sb.toString();
 		s = s.substring(0, randomStringLen); // trim to avoid endSuffix causing it longer than desired
-		if(log.t()) log.t(threadLocalRandom.getNextIndexPrefix() + " - generateRandomStringOfLength (" + s.length() + "): " + s);
+		//if(log.t()) log.t(threadLocalRandom.getNextIndexPrefix() + " - generateRandomStringOfLength (" + s.length() + "): " + s);
+		System.out.println("ProbabilityHost generateRandomString ... (further dev required"); 
 		return s;
 	}
 
@@ -140,20 +141,23 @@ public class ProbabilityHost {
 	public synchronized float nextFloat() {
 		ThreadLocalRandom threadLocalRandom = randomThreadLocal.get();
 		float val = threadLocalRandom.random.nextFloat();
-		if(log.t()) log.t(threadLocalRandom.getNextIndexPrefix() + " - nextFloat: " + val);
+		//if(log.t()) log.t(threadLocalRandom.getNextIndexPrefix() + " - nextFloat: " + val);
+		System.out.println("ProbabilityHost nextFloat (further dev required)");
 		return val;
 	}
 
 	public synchronized void nextBytes(byte[] data) {
 		ThreadLocalRandom threadLocalRandom = randomThreadLocal.get();
 		threadLocalRandom.random.nextBytes(data);
-		if(log.t()) log.t(threadLocalRandom.getNextIndexPrefix() + " - nextBytes (" + data.length + "): " + Arrays.toString(data));
+		//if(log.t()) log.t(threadLocalRandom.getNextIndexPrefix() + " - nextBytes (" + data.length + "): " + Arrays.toString(data));
+		System.out.println("ProbabilityHost nextBytes (further dev required)");
 	}
 
 	public synchronized int randomIntExcludingMax(int maxExclusive) {
 		ThreadLocalRandom threadLocalRandom = randomThreadLocal.get();
 		int val = threadLocalRandom.random.nextInt(maxExclusive);
-		if(log.t()) log.t(threadLocalRandom.getNextIndexPrefix() + " - nextIntExcludingMax (" + maxExclusive + "): " + val);
+		//if(log.t()) log.t(threadLocalRandom.getNextIndexPrefix() + " - nextIntExcludingMax (" + maxExclusive + "): " + val);
+		System.out.println("ProbabilityHost randomIntExcludingMax (further dev required)");
 		return val;
 	}
 
@@ -162,16 +166,18 @@ public class ProbabilityHost {
 		float floatFrom0To1 = threadLocalRandom.random.nextFloat();
 		float diff = maxInclusive - minInclusive;
 		float ret = minInclusive + floatFrom0To1 * diff;
-		if(log.t()) log.t(threadLocalRandom.getNextIndexPrefix() + " - randomFloatInclusive (" +
-				minInclusive + "," + maxInclusive + "): " + ret);
+		//if(log.t()) log.t(threadLocalRandom.getNextIndexPrefix() + " - randomFloatInclusive (" +
+		//		minInclusive + "," + maxInclusive + "): " + ret);
+		System.out.println("ProbabilityHost randomFloatInclusive (further dev required)");
 		return ret;
 	}
 
 	public synchronized int randomIntInclusive(int minInclusive, int maxInclusive) {
 		ThreadLocalRandom threadLocalRandom = randomThreadLocal.get();
 		int val = randomIntInclusive(minInclusive, maxInclusive, threadLocalRandom.random);
-		if(log.t()) log.t(threadLocalRandom.getNextIndexPrefix() + " - randomIntInclusive (" +
-				minInclusive + "," + maxInclusive + "): " + val);
+		//if(log.t()) log.t(threadLocalRandom.getNextIndexPrefix() + " - randomIntInclusive (" +
+		//		minInclusive + "," + maxInclusive + "): " + val);
+		System.out.println("ProbabilityHost randomIntInclusive (further dev required)");
 		return val;
 	}
 
