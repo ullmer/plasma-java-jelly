@@ -9,7 +9,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class Util {
 
-	private static Logger logger = Logger.getLogger(Util.class);
+	//private static Logger logger = Logger.getLogger(Util.class);
 
 
 	/** An idiom for circumventing Java's annoying (at least for prototyping) checked exceptions mandatoriness. */
@@ -40,7 +40,8 @@ public class Util {
 			throw new RuntimeException("Mandatory system property " + propertyName + " not set." +
 					" To set it, use e.g.: -D" + propertyName + "=" + exampleValue);
 		} else {
-			logger.info("System property " + propertyName + ": " + propertyValue);
+			//logger.info("System property " + propertyName + ": " + propertyValue);
+			System.out.println("System property " + propertyName + ": " + propertyValue);
 		}
 		return propertyValue;
 	}
