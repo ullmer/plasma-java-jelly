@@ -38,11 +38,21 @@ public class PAwaitHelloWorld2 {
 	 }
 
 	 if (i.isMap()) {
-           String str2 = i.car().emitString();
-	   String str3 = i.cdr().emitString();
+           Map<Slaw,Slaw> imap = i.emitMap();
 
-	   System.out.println("STR2:" + str2);
-	   System.out.println("STR2:" + str3);
+	   for (Map.Entry<Slaw,Slaw> entry : m.entrySet()) {
+              Slaw key   = entry.getKey();
+	      Slaw value = entry.getValue();
+
+	      if (key.isString() and value.isString()) {
+                String str2 = key.emitString();
+                String str3 = value.emitString();
+	
+	        System.out.println("STR2:" + str2);
+    	        System.out.println("STR2:" + str3);
+	     } else {
+               System.err.println("Message received; ingests is a map, but entry does not map strings to strings");
+	     }
 	 } else {
            System.err.println("Message received; ingests is not a map");
 	 }
