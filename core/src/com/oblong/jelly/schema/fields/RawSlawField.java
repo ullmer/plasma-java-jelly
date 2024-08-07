@@ -2,7 +2,7 @@ package com.oblong.jelly.schema.fields;
 
 import com.oblong.jelly.Slaw;
 import com.oblong.jelly.schema.SlawSchema;
-import com.oblong.util.logging.ObLog;
+//import com.oblong.util.logging.ObLog;
 
 /**
  * Created with IntelliJ IDEA.
@@ -13,7 +13,7 @@ import com.oblong.util.logging.ObLog;
  */
 public class RawSlawField extends AbstractField<Slaw> {
 
-    private final ObLog log = ObLog.get(this);
+    //private final ObLog log = ObLog.get(this);
 
     public RawSlawField(String name) {
         super(name);
