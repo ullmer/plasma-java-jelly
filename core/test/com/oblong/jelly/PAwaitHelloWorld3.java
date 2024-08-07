@@ -14,13 +14,13 @@ import com.oblong.jelly.Hose;
 import com.oblong.jelly.Pool;
 import com.oblong.jelly.PoolException;
 
-public class PAwaitHelloWorld2 {
+public class PAwaitHelloWorld3 {
 
    static String pnstr = "tcp://localhost/hello";
-   //int betweenPollSleepDurationMs = 20;
-   int betweenPollSleepDurationMs = 500;
+   //static int betweenPollSleepDurationMs = 20;
+   static int betweenPollSleepDurationMs = 500;
 
-   public PAwaitHelloWorld2() {System.out.println("pahw2 constructor");}
+   public PAwaitHelloWorld3() {System.out.println("pahw2 constructor");}
 
    public static void main(String[] args) {
      System.out.println("p-await hello, world 2");
@@ -35,14 +35,23 @@ public class PAwaitHelloWorld2 {
 	 while (awaitingProtein) {
 	   try { p = h.awaitNext();
 		 awaitingProtein = false;
-	   } catch (PoolException e) {
+	   } catch (PoolException pe) {
   	     System.err.print('.');  System.err.flush();
-             Thread.sleep(betweenPollSleepDurationMs); // probably should confirm exception type
+	     try {Thread.sleep(betweenPollSleepDurationMs); // probably should confirm exception type
+	     } catch (Exception e) {}                       // ditto
 	   }
 	 }
 
-	 Slaw d = p.descrips();
-         Slaw i = p.ingests();
+	 Slaw d, i;
+
+	 if (p != null) {
+	   d = p.descrips();
+           i = p.ingests();
+	 } else { System.err.println("Null protein noted; no idea why"); continue; }
+
+	 if (d == null || i == null) {
+           System.err.println("protein descrips or ingests is null; ignoring"); continue;
+	 } 
 
 	 if (d.isList()) {
            //String str1 = d.nth(0).emitString();
