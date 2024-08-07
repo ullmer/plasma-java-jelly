@@ -8,7 +8,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
+//import java.util.logging.Logger;
 
 import com.oblong.jelly.PoolException;
 import com.oblong.jelly.PoolServer;
@@ -25,7 +25,7 @@ import com.oblong.util.logging.ObLog;
  */
 public final class TCPProxy implements Runnable {
 
-	private static final ObLog log = ObLog.get(TCPProxy.class);
+	//private static final ObLog log = ObLog.get(TCPProxy.class);
 
     public TCPProxy(NetConnectionFactory factory,
                     PoolServerAddress address,
@@ -46,8 +46,8 @@ public final class TCPProxy implements Runnable {
                 launchHandler(socket.accept(), factory.get(server));
             } catch (Exception e) {
                 if (!socket.isClosed())
-                    log.e("Exception launching handler: "
-                               + e.getMessage());
+		    System.out.println("Exception launching handler: " + e.getMessage());	
+                    //log.e("Exception launching handler: " + e.getMessage());
             }
         }
         closeHandlers();
@@ -68,7 +68,8 @@ public final class TCPProxy implements Runnable {
         try {
             socket.close();
         } catch (IOException e) {
-            log.w("Exception closing socket: " + e.getMessage());
+           System.out.println("Exception closing socket");
+            //log.w("Exception closing socket: " + e.getMessage());
         }
     }
 
