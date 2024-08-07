@@ -43,7 +43,7 @@ public class PAwaitHelloWorld2 {
 	 if (i.isMap()) {
            Map<Slaw,Slaw> imap = i.emitMap();
 
-	   for (Map.Entry<Slaw,Slaw> entry : m.entrySet()) {
+	   for (Map.Entry<Slaw,Slaw> entry : imap.entrySet()) {
               Slaw key   = entry.getKey();
 	      Slaw value = entry.getValue();
 
