@@ -2,7 +2,7 @@ package com.oblong.util.probability;
 
 import com.oblong.jelly.schema.fields.HasUid;
 import com.oblong.jelly.schema.util.OrderedUidMap;
-import com.oblong.util.logging.ObLog;
+//import com.oblong.util.logging.ObLog;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -18,7 +18,7 @@ import java.util.Random;
  */
 public class ProbabilityHost {
 
-	protected final ObLog log = ObLog.get(this);
+	//protected final ObLog log = ObLog.get(this);
 
 	public static final String NEW_SEED = "NEW_SEED";
 
@@ -91,8 +91,9 @@ public class ProbabilityHost {
 
 	public ProbabilityHost(String randomSeed) {
 		this.randomSeed = parseSeed(randomSeed);
-		if(log.i()) log.i("ProbabilityHost Random seed (please save it if you want to re-try same scenario) : "
-				+ getRandomSeedString() + " ; Date: " + new Date());
+		//if(log.i()) log.i("ProbabilityHost Random seed (please save it if you want to re-try same scenario) : "
+		//		+ getRandomSeedString() + " ; Date: " + new Date());
+		System.out.println("ProbabilityHost Random seed (please save it if you want to re-try same scenario)");
 //		this.random = new Random(randomSeed);
 	}
 
