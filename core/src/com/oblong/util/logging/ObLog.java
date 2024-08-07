@@ -1,6 +1,6 @@
 package com.oblong.util.logging;
 
-import org.apache.log4j.Level;
+//import org.apache.log4j.Level;
 //import org.apache.log4j.Logger;
 //import org.apache.log4j.Priority;
 //import org.apache.logging.log4j.Level;
@@ -71,8 +71,8 @@ public class ObLog {
 			} else {
 				loggingObjectString = "" + loggingObject;
 			}
-			loggingObjectString = loggingObjectString.replace(logger.getName(), "#"); /* To avoid FQCN twice. Also,
-					the resulting "#@" is useful as a visual pattern. */
+			//loggingObjectString = loggingObjectString.replace(logger.getName(), "#"); /* To avoid FQCN twice. Also,
+			//		the resulting "#@" is useful as a visual pattern. */
 			return loggingObjectString + " ==>  " + message;
 		}
 	}
@@ -84,15 +84,15 @@ public class ObLog {
 
 	//public boolean isEnabledFor(Priority level) { return logger.isEnabledFor(level); }
 	//public boolean isEnabledFor(Level level) { return logger.isEnabledFor(level); }
-	public boolean isEnabledFor(Level level) { return true;}  // punting for moment
+	//public boolean isEnabledFor(Level level) { return true;}  // punting for moment
 
 	//public void log(Priority priority, Object message, Throwable t) { logger.log(priority, message, t); }
 	//public void log(Level priority, Object message, Throwable t) { logger.log(priority, message, t); }
-	public void log(Level priority, Object message, Throwable t) { System.out.println("ObLog log 1: (further dev required)");}
+	//public void log(Level priority, Object message, Throwable t) { System.out.println("ObLog log 1: (further dev required)");}
 
 	//public void log(Priority priority, Object message) { logger.log(priority, message); }
 	//public void log(Level priority, Object message) { logger.log(priority, message); }
-	public void log(Level priority, Object message) { System.out.println("ObLog log 2 (further dev required)");}
+	//public void log(Level priority, Object message) { System.out.println("ObLog log 2 (further dev required)");}
 
 //	public void log(String callerFQCN, Priority level, Object message, Throwable t) {
 //		logger.log(callerFQCN, level, message, t);
