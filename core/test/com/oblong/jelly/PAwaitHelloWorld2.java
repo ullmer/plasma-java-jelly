@@ -1,5 +1,6 @@
 // Brygg Ullmer: reduction to approximation of JShrake helloWorld example from Animist discord #plasma 
-/// Await a protein from a pool.
+/// Synchronously await a protein from a pool (with blocking awaitNext call).  
+///  Sister variant PAwaitHelloWorld3 will hopefully demonstrate async version.
 // Begun August 7, 2024
 
 import java.util.Map; 
