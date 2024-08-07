@@ -4,6 +4,15 @@
 import static com.oblong.jelly.Slaw.*;
 import static com.oblong.jelly.Protein.*;
 
+public class PDepositHelloWorld2 {
+
+  public PDepositHelloWorld2() {System.out.println("pdhw2 constructor");}
+
+  public static void main(String[] args) {
+    System.out.println("p-deposit hello, world 2");
+  }
+}
+/*
 #include "pool_cmd.h"
 #include "libLoam/c/ob-sys.h"
 #include "libLoam/c/ob-vers.h"
@@ -94,5 +103,5 @@ int main (int argc, char **argv)
 
   return EXIT_SUCCESS;
 }
-
+*/
 /// end ///

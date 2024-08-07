@@ -96,4 +96,4 @@ int main (int argc, char **argv)
   pool_cmd_free_options (&cmd);
 
   return EXIT_SUCCESS;
-}*?*?*?*?
+}*/
