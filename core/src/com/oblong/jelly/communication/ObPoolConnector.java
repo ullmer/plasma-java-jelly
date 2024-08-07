@@ -182,7 +182,8 @@ public abstract class ObPoolConnector extends Thread {
 
 	private void logAndNotify(Exception e, UnableToConnectEvent.Reason reason) {
 		//logger.error("connection error, reason : "+reason.name(), e);
-		System.out.println("connection error, reason: " + String(reason.name));
+		//System.out.println("connection error, reason: " + String(reason.name));
+		System.out.println("connection error, reason (update string)");
 		listener.onErrorConnecting(new UnableToConnectEvent(reason));
 	}
 

@@ -2,13 +2,13 @@ package com.oblong.jelly.communication;
 
 import com.oblong.jelly.*;
 import com.oblong.util.*;
-import com.oblong.util.logging.*;
+//import com.oblong.util.logging.*;
 
 import java.util.concurrent.*;
 
 public class ObPoolReceiver extends ObPoolConnector {
 
-	private final ObLog log = ObLog.get(this);
+	//private final ObLog log = ObLog.get(this);
 
 	public ObPoolReceiver(PoolServerAddress serverAddress, String pool, ObPoolCommunicationEventHandler lis, HoseFactory hoseFactory,
 	               CountDownLatch countDownOnPoolConnected) {
@@ -41,7 +41,8 @@ public class ObPoolReceiver extends ObPoolConnector {
 		/**
 		 * When in demo mode, stack trace does no get logged but we need it now that we have bug 12132 and 11785
 		 */
-		log.e(e1, logMessage);
+		//log.e(e1, logMessage);
+		System.out.println("ObPoolReceiver logHandleNotify: " + logMessage + tagMessage);
 		ExceptionHandler.handleException(e1, tagMessage);
 		notifyConnectionLost(logMessage);
 	}

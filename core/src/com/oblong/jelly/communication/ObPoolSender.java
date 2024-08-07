@@ -2,14 +2,14 @@ package com.oblong.jelly.communication;
 
 import com.oblong.jelly.*;
 import com.oblong.util.ExceptionHandler;
-import com.oblong.util.logging.ObLog;
+//import com.oblong.util.logging.ObLog;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class ObPoolSender extends ObPoolConnector {
-	protected final ObLog log = ObLog.get(this);
+	//protected final ObLog log = ObLog.get(this);
 
 	private final BlockingQueue<Protein> outgoingProteinsQueue = new LinkedBlockingQueue();
 
@@ -45,7 +45,7 @@ public class ObPoolSender extends ObPoolConnector {
 		try {
 			retProt = outgoingProteinsQueue.take();
 		} catch (InterruptedException e) {
-			if(log.d()) log.d("Got interrupted: " + e);
+			//if(log.d()) log.d("Got interrupted: " + e);
 			stopConnector();
 			retProt = null;
 		}
