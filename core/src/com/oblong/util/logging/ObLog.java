@@ -84,7 +84,7 @@ public class ObLog {
 
 	//public boolean isEnabledFor(Priority level) { return logger.isEnabledFor(level); }
 	//public boolean isEnabledFor(Level level) { return logger.isEnabledFor(level); }
-	public boolean isEnabledFor(Level level) { return True;}  // punting for moment
+	public boolean isEnabledFor(Level level) { return true;}  // punting for moment
 
 	//public void log(Priority priority, Object message, Throwable t) { logger.log(priority, message, t); }
 	//public void log(Level priority, Object message, Throwable t) { logger.log(priority, message, t); }
@@ -112,10 +112,10 @@ public class ObLog {
 	//public boolean d() { return logger.isDebugEnabled(); }
 	//public boolean t() { return logger.isTraceEnabled(); }
 
-	public boolean w() { return True; } //punting
-	public boolean i() { return True; }
-	public boolean d() { return True; }
-	public boolean t() { return True; }
+	public boolean w() { return true; } //punting
+	public boolean i() { return true; }
+	public boolean d() { return true; }
+	public boolean t() { return true; }
 
 	//public void f(CharSequence message) { logger.fatal(addExtraInfo(message)); }
 	//public void e(CharSequence message) { logger.error(addExtraInfo(message)); }
@@ -167,7 +167,7 @@ public class ObLog {
 	//public void d(CharSequence message, Throwable t) { logger.debug(addExtraInfo(message), t); };
 	//public void t(CharSequence message, Throwable t) { logger.trace(addExtraInfo(message), t); };
 
-	public void f(CharSequence message, Throwable t) { System.out.println("ObLog f3 (further dev required)");}
+	//public void f(CharSequence message, Throwable t) { System.out.println("ObLog f3 (further dev required)");}
 	public void e(CharSequence message, Throwable t) { System.out.println("ObLog e3 (further dev required)");}
 	public void w(CharSequence message, Throwable t) { System.out.println("ObLog w3 (further dev required)");}
 	public void i(CharSequence message, Throwable t) { System.out.println("ObLog i3 (further dev required)");}
