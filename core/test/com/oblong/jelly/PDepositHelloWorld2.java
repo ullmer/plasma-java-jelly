@@ -1,22 +1,23 @@
 // Brygg Ullmer: reduction to approximation of JShrake helloWorld example from Animist discord #plasma 
 /// Deposit a protein into a pool.
 
-import static com.oblong.jelly.Slaw.*;
-import static com.oblong.jelly.Protein.*;
+import com.oblong.jelly.Slaw;
+import com.oblong.jelly.Protein;
 
 public class PDepositHelloWorld2 {
 
   public PDepositHelloWorld2() {System.out.println("pdhw2 constructor");}
 
-  static slaw extract_slaw (String arg) {
+  private Slaw extract_slaw (String arg) {
     //char *colon = strchr (arg, ':');
     int    colIdx   = arg.indexOf(':');
-    if (colIdx == -1) { //System.stderr.println("error: ingest '%s' needs a colon to separate key and value\n", arg);
-        fail("error: ingest '%s' needs a colon to separate key and value\n" + arg);
+    if (colIdx == -1) { 
+        System.err.println("error: ingest needs a colon to separate key and value:" + arg);
+        System.exit(-1);
     }
 
     String valStr = arg.substring(colIdx);
-    String.keyStr = arg.substring(0, colIdx-1);
+    String keyStr = arg.substring(0, colIdx-1);
 
     Slaw key, value, pair;
 
@@ -40,7 +41,7 @@ public class PDepositHelloWorld2 {
 #include "libPlasma/c/protein.h"
 #include "libPlasma/c/slaw.h"
 */
-
+/*
 int main (int argc, char **argv)
 { OB_CHECK_ABI ();
 
