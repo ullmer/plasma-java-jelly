@@ -46,11 +46,11 @@ public class PAwaitHelloWorld2 {
 	 } else {
            System.err.println("Message received; ingests is not a map");
 	 }
-
-	 p.free()
+       }
      } catch (PoolException e) {
        System.out.println("Pool exception:" + e);
        System.exit(-1);
+
      } finally {
        if (h != null) h.withdraw();
     }
