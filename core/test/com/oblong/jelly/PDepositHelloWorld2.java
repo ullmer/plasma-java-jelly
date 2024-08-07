@@ -8,35 +8,23 @@ public class PDepositHelloWorld2 {
 
   public PDepositHelloWorld2() {System.out.println("pdhw2 constructor");}
 
-  public static void main(String[] args) {
-    System.out.println("p-deposit hello, world 2");
-  }
-}
-/*
-#include "pool_cmd.h"
-#include "libLoam/c/ob-sys.h"
-#include "libLoam/c/ob-vers.h"
-#include "libPlasma/c/protein.h"
-#include "libPlasma/c/slaw.h"
+  static slaw extract_slaw (char *arg) {
+    char *colon = strchr (arg, ':');
+    slaw key, value, pair;
 
-static slaw extract_slaw (char *arg)
-{
-  char *colon = strchr (arg, ':');
-  slaw key, value, pair;
+    if (colon == NULL)
+      { fprintf (stderr, "error: ingest '%s' needs a colon to separate key and value\n", arg);
+        exit (EXIT_FAILURE);
+      }
 
-  if (colon == NULL)
-    { fprintf (stderr, "error: ingest '%s' needs a colon to separate key and value\n", arg);
-      exit (EXIT_FAILURE);
-    }
+    char *keystr = (char *) malloc (colon - arg + 1);
+    strncpy (keystr, arg, colon - arg);
+    keystr[colon - arg] = '\0';
+    key = slaw_string (keystr);
+    free (keystr);
 
-  char *keystr = (char *) malloc (colon - arg + 1);
-  strncpy (keystr, arg, colon - arg);
-  keystr[colon - arg] = '\0';
-  key = slaw_string (keystr);
-  free (keystr);
-
-  do
-    { char *endptr;
+    do { 
+      char *endptr;
       int64 int_val = strtol (colon + 1, &endptr, 10);
       if (*endptr == '\0')
         { value = slaw_int64 (int_val);
@@ -48,12 +36,24 @@ static slaw extract_slaw (char *arg)
           break;
         }
       value = slaw_string (colon + 1);
-    }
-  while (0);
+    } while (0);
 
-  pair = slaw_cons_ff (key, value);
-  return pair;
+    pair = slaw_cons_ff (key, value);
+    return pair;
+  }
+
+  public static void main(String[] args) {
+    System.out.println("p-deposit hello, world 2");
+  }
 }
+
+/*
+#include "pool_cmd.h"
+#include "libLoam/c/ob-sys.h"
+#include "libLoam/c/ob-vers.h"
+#include "libPlasma/c/protein.h"
+#include "libPlasma/c/slaw.h"
+*/
 
 int main (int argc, char **argv)
 { OB_CHECK_ABI ();
