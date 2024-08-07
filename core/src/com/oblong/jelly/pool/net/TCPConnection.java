@@ -10,7 +10,7 @@ import com.oblong.jelly.slaw.SlawFactory;
 import com.oblong.jelly.slaw.SlawInternalizer;
 import com.oblong.jelly.util.ByteReader;
 import com.oblong.util.ExceptionHandler;
-import com.oblong.util.logging.ObLog;
+//import com.oblong.util.logging.ObLog;
 
 import java.io.*;
 import java.net.Socket;
@@ -24,7 +24,7 @@ import static com.oblong.jelly.pool.net.Request.*;
 
 final class TCPConnection implements NetConnection {
 
-    private static final ObLog log = ObLog.get(TCPConnection.class);
+    //private static final ObLog log = ObLog.get(TCPConnection.class);
 
     @Override public PoolServerAddress address() { return address; }
     @Override public int version() { return version; }
@@ -59,7 +59,8 @@ final class TCPConnection implements NetConnection {
             socket.close();
         } catch (IOException e) {
 //            final Logger log = Logger.getLogger(getClass().getName());
-            log.w("Error closing socket (ignored): " + e.getMessage());
+            //log.w("Error closing socket (ignored): " + e.getMessage());
+            System.out.println("Error closing socket (ignored): " + e.getMessage());
         }
     }
 
@@ -118,7 +119,8 @@ final class TCPConnection implements NetConnection {
 	private TCPConnection(PoolServer srv) throws PoolException {
         try {
             address = srv.address();
-	        if(log.d()) log.d("Server :  "+ srv.toString());
+	        //if(log.d()) log.d("Server :  "+ srv.toString());
+	        if(log.d()) System.out.println("Server :  "+ srv.toString());
             socket = new Socket(address.host(), address.port());
             rawInput = socket . getInputStream ();
             input = new BufferedInputStream (socket.getInputStream());
@@ -229,7 +231,8 @@ final class TCPConnection implements NetConnection {
         throws PoolException, IOException {
         final int tcpVersion = is.read();
         final int slawVersion = is.read();
-        if(log.d()) log.d("tcp Version "+tcpVersion+", slaw Version "+slawVersion);
+        //if(log.d()) log.d("tcp Version "+tcpVersion+", slaw Version "+slawVersion);
+        if(log.d()) System.out.println("tcp Version "+tcpVersion+", slaw Version "+slawVersion);
         checkVersion(MIN_SLAW_VERSION, MAX_SLAW_VERSION, slawVersion, "slaw");
         checkVersion(MIN_TCP_VERSION, MAX_TCP_VERSION, tcpVersion, "tcp");
         return tcpVersion;
