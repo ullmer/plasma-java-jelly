@@ -60,6 +60,7 @@ public final class DNSOutgoing extends DNSMessage
             }
         }
 
+	/* // throwing a compile error; punting initially
         void writeBytes(byte data[])
         {
             if (data != null)
@@ -67,6 +68,7 @@ public final class DNSOutgoing extends DNSMessage
                 writeBytes(data, 0, data.length);
             }
         }
+	*/
 
         void writeBytes(byte data[], int off, int len)
         {
