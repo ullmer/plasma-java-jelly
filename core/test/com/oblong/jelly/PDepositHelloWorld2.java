@@ -8,37 +8,23 @@ public class PDepositHelloWorld2 {
 
   public PDepositHelloWorld2() {System.out.println("pdhw2 constructor");}
 
-  static slaw extract_slaw (char *arg) {
-    char *colon = strchr (arg, ':');
-    slaw key, value, pair;
+  static slaw extract_slaw (String arg) {
+    //char *colon = strchr (arg, ':');
+    int    colIdx   = arg.indexOf(':');
+    if (colIdx == -1) { //System.stderr.println("error: ingest '%s' needs a colon to separate key and value\n", arg);
+        fail("error: ingest '%s' needs a colon to separate key and value\n" + arg);
+    }
 
-    if (colon == NULL)
-      { fprintf (stderr, "error: ingest '%s' needs a colon to separate key and value\n", arg);
-        exit (EXIT_FAILURE);
-      }
+    String valStr = arg.substring(colIdx);
+    String.keyStr = arg.substring(0, colIdx-1);
 
-    char *keystr = (char *) malloc (colon - arg + 1);
-    strncpy (keystr, arg, colon - arg);
-    keystr[colon - arg] = '\0';
-    key = slaw_string (keystr);
-    free (keystr);
+    Slaw key, value, pair;
 
-    do { 
-      char *endptr;
-      int64 int_val = strtol (colon + 1, &endptr, 10);
-      if (*endptr == '\0')
-        { value = slaw_int64 (int_val);
-          break;
-        }
-      float64 float_val = strtod (colon + 1, &endptr);
-      if (*endptr == '\0')
-        { value = slaw_float64 (float_val);
-          break;
-        }
-      value = slaw_string (colon + 1);
-    } while (0);
+    key   = Slaw.string(keyStr);
+    value = Slaw.string(valStr); //C-based p-deposit can also handle int64 and float64; later
 
-    pair = slaw_cons_ff (key, value);
+    //pair = slaw_cons_ff (key, value);
+    pair = Slaw.cons(key, value); // Map<Slaw,Slaw> m = c.emitMap();
     return pair;
   }
 
