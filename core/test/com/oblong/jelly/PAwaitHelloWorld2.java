@@ -12,9 +12,6 @@ import com.oblong.jelly.Hose;
 import com.oblong.jelly.Pool;
 import com.oblong.jelly.PoolException;
 
-import static com.oblong.jelly.Slaw.*;
-import static com.oblong.jelly.Protein.*;
-
 public class PAwaitHelloWorld2 {
 
    static String pnstr = "tcp://localhost/hello";
