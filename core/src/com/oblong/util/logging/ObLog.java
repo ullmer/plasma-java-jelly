@@ -1,8 +1,8 @@
 package com.oblong.util.logging;
 
 import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.log4j.Priority;
+//import org.apache.log4j.Logger;
+//import org.apache.log4j.Priority;
 //import org.apache.logging.log4j.Level;
 //import org.apache.logging.log4j.Logger;
 //import org.apache.logging.log4j.LogManager;
@@ -21,7 +21,7 @@ public class ObLog {
 	 * Using composition instead of inheritance because of the complexity of creating a subclass
 	 * of org.apache.log4j.Logger, due to e.g. interactions with LoggerRepository and static factory methods.
 	 */
-	protected final Logger logger;
+	//protected final Logger logger;
 
 	/*
 	protected ObLog(Class<?> aClass) {
@@ -33,10 +33,10 @@ public class ObLog {
 		return Logger.getLogger(aClass);
 	}*/
 
-	protected ObLog(Logger logger, Object loggingObject) {
-		this.logger = logger;
-		this.loggingObject = loggingObject;
-	}
+	//protected ObLog(Logger logger, Object loggingObject) {
+	//	this.logger = logger;
+	//	this.loggingObject = loggingObject;
+	//}
 
 	/*
 	public static ObLog get(Class<?> aClass) {
