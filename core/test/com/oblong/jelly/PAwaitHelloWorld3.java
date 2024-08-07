@@ -33,7 +33,7 @@ public class PAwaitHelloWorld3 {
 	 boolean awaitingProtein = true;
 
 	 while (awaitingProtein) {
-	   try { p = h.awaitNext();
+	   try { p = h.next();
 		 awaitingProtein = false;
 	   } catch (PoolException pe) {
   	     System.err.print('.');  System.err.flush();
