@@ -1,6 +1,6 @@
 package com.oblong.util;
 
-import com.oblong.util.logging.ObLog;
+//import com.oblong.util.logging.ObLog;
 
 /**
  * Created with IntelliJ IDEA.
@@ -11,7 +11,7 @@ import com.oblong.util.logging.ObLog;
  */
 public abstract class ExceptionHandler {
 
-	private static final ObLog logger = ObLog.get(ExceptionHandler.class);
+	//private static final ObLog logger = ObLog.get(ExceptionHandler.class);
 	public static final String NO_INSTALLED_EXCEPTION_HANDLER = "(no installed ExceptionHandler)";
 
 	private static volatile ExceptionHandler exceptionHandler = new ExceptionHandler() {
@@ -75,7 +75,8 @@ public abstract class ExceptionHandler {
 		if(exceptionHandler!=null) {
 			exceptionHandler.handleDebugMessageImpl(message, new JustToGetStackTrace());
 		} else {
-			logger.d(NO_INSTALLED_EXCEPTION_HANDLER+" : "+message);
+			//logger.d(NO_INSTALLED_EXCEPTION_HANDLER+" : "+message);
+			System.out.println("ExceptionHandler debug: "+message);
 		}
 	}
 
