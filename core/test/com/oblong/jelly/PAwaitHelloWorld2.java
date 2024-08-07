@@ -24,7 +24,7 @@ public class PAwaitHelloWorld2 {
      try {
        h = Pool.participate(pnstr);
        while (true) {
-         Protein p = h.next();
+         Protein p = h.awaitNext();
 
 	 Slaw d = p.descrips();
          Slaw i = p.ingests();
