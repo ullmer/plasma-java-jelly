@@ -1,7 +1,10 @@
 // Brygg Ullmer: reduction to approximation of JShrake helloWorld example from Animist discord #plasma 
 /// Await a protein from a pool.
 // Begun August 7, 2024
-//
+
+import java.util.Map; 
+import java.util.HashMap; 
+
 import com.oblong.jelly.Slaw;
 import com.oblong.jelly.Protein;
 import com.oblong.jelly.Hose;
@@ -44,7 +47,7 @@ public class PAwaitHelloWorld2 {
               Slaw key   = entry.getKey();
 	      Slaw value = entry.getValue();
 
-	      if (key.isString() and value.isString()) {
+	      if (key.isString() && value.isString()) {
                 String str2 = key.emitString();
                 String str3 = value.emitString();
 	
@@ -53,6 +56,7 @@ public class PAwaitHelloWorld2 {
 	     } else {
                System.err.println("Message received; ingests is a map, but entry does not map strings to strings");
 	     }
+	   }
 	 } else {
            System.err.println("Message received; ingests is not a map");
 	 }
