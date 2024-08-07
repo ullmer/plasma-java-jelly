@@ -18,7 +18,7 @@
 package com.squareup.otto;
 
 import com.oblong.jelly.communication.OttoEvent;
-import com.oblong.util.logging.ObLog;
+//import com.oblong.util.logging.ObLog;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -37,7 +37,7 @@ import java.lang.reflect.Method;
  * @author Cliff Biffle
  */
 class EventHandler {
-	protected final ObLog log = ObLog.get(this);
+	//protected final ObLog log = ObLog.get(this);
 
   /** Object sporting the handler method. */
   private final Reference<OttoSubscriber> target;
@@ -77,7 +77,8 @@ class EventHandler {
       if ( targetDereferenced == null ) {
         return; // TODO: remove relevant entry from map
       }
-      if(log.d()) log.d("handleEvent: dispatching event " + event + " to " + targetDereferenced);
+      //if(log.d()) log.d("handleEvent: dispatching event " + event + " to " + targetDereferenced);
+      System.out.println("EventHandler: handleEvent");
       method.invoke(targetDereferenced, new Object[] {event});
     } catch (IllegalAccessException e) {
       throw new AssertionError(e);
