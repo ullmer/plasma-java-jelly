@@ -29,7 +29,7 @@ public class PAwaitHelloWorld3 {
      try {
        h = Pool.participate(pnstr);
        while (true) {
-         Protein p;
+         Protein p=null;
 	 boolean awaitingProtein = true;
 
 	 while (awaitingProtein) {
@@ -42,7 +42,7 @@ public class PAwaitHelloWorld3 {
 	   }
 	 }
 
-	 Slaw d, i;
+	 Slaw d=null, i=null;
 
 	 if (p != null) {
 	   d = p.descrips();
