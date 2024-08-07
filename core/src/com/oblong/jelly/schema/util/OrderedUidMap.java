@@ -48,7 +48,16 @@ public class OrderedUidMap <TUid extends HasUid, TItem extends HasUid> {
 	}
 
 	private Uid<TUid> getUidCast(TItem item) {
-		return (Uid<TUid>) item.getUid();
+            /*
+		//return (Uid<TUid>) item.getUid();
+		Uid<?> uid = item.getUid(); // BAU: next four lines suggested by copilot in response to java21 error
+		if (uid instanceof Uid<?>) { return (Uid<TUid>) uid; 
+		} else { // Handle the case where the cast is not safe
+  		  throw new ClassCastException("Cannot cast to Uid<TUid>");
+		}
+            */
+            //neither original nor copilot suggestion compiling.  Punting for the moment		
+	    throw new ClassCastException("Cannot cast to Uid<TUid>");
 	}
 
 	public Collection<TItem> values() {
