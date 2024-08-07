@@ -7,7 +7,7 @@ import com.oblong.jelly.*;
 import com.oblong.jelly.pool.PoolProtein;
 import com.oblong.jelly.slaw.SlawFactory;
 import com.oblong.util.ThreadChecker;
-import com.oblong.util.logging.ObLog;
+//import com.oblong.util.logging.ObLog;
 import net.jcip.annotations.NotThreadSafe;
 
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ public final class NetHose implements Hose {
 
     protected final ThreadChecker threadChecker = new ThreadChecker(Thread.currentThread());
 
-    private static final ObLog log = ObLog.get(NetHose.class);
+    //private static final ObLog log = ObLog.get(NetHose.class);
 
     @Override public int version() {
         threadChecker.check();
@@ -58,7 +58,8 @@ public final class NetHose implements Hose {
         try {
             if (isConnected()) Request.WITHDRAW.sendAndClose(connection);
         } catch (PoolException e) {
-            log.i("Error withdrawing Hose '" + name() + "':\n\t" + e);
+            //log.i("Error withdrawing Hose '" + name() + "':\n\t" + e);
+            System.out.println("Error withdrawing Hose '" + name()); 
         }
     }
 
