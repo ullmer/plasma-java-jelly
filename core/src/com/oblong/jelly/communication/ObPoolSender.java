@@ -11,8 +11,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class ObPoolSender extends ObPoolConnector {
 	//protected final ObLog log = ObLog.get(this);
 
-	private final BlockingQueue<Protein> outgoingProteinsQueue = new LinkedBlockingQueue();
-
+	//private final BlockingQueue<Protein> outgoingProteinsQueue = new LinkedBlockingQueue();
+	private final BlockingQueue<Protein> outgoingProteinsQueue = new LinkedBlockingQueue<Protein>();
 
 	public ObPoolSender(PoolServerAddress pools,
 	                    String pool,
