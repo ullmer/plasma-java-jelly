@@ -171,7 +171,8 @@ final class YamlReader implements SlawReader {
         Base64Mapper b64m;
 
         if (ds != null && ds.isString())
-            data = b64m.decode(ds.emitString().toCharArray());
+            //data = b64m.decode(ds.emitString().toCharArray());
+           System.out.println("YamlReader parseProtein: further porting required")
 
         return factory.protein(s.find(DESK), s.find(INGK), data);
     }
