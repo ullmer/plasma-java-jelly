@@ -18,9 +18,9 @@ public class MemHose implements Hose {
 	private static final long NO_LAST_PROTEIN = -999;
 	protected final ThreadChecker threadChecker = new ThreadChecker();
 
-        public bool isThreadCheckerEngaged() {return threadChecker.isThreadCheckerEngaged();} // BAU
-        public void engageThreadChecker()    {threadChecker.engageThreadChecker();}           // BAU
-        public void disengageThreadChecker() {threadChecker.disengageThreadChecker();}        // BAU
+        public boolean isThreadCheckerEngaged() {return threadChecker.isThreadCheckerEngaged();} // BAU
+        public void    engageThreadChecker()    {threadChecker.engageThreadChecker();}           // BAU
+        public void    disengageThreadChecker() {threadChecker.disengageThreadChecker();}        // BAU
 
 	/** NOTE: might not be zero after connecting - we might need to initialize it to proper value upon joining the
 	 * pool */
