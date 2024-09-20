@@ -20,9 +20,9 @@ public final class NetHose implements Hose {
 
     protected final ThreadChecker threadChecker = new ThreadChecker(Thread.currentThread());
 
-    public bool isThreadCheckerEngaged() {return threadChecker.isThreadCheckerEngaged();} //BAU
-    public void engageThreadChecker()    {threadChecker.engageThreadChecker();}           //BAU
-    public void disengageThreadChecker() {threadChecker.disengageThreadChecker();}        //BAU
+    public boolean isThreadCheckerEngaged() {return threadChecker.isThreadCheckerEngaged();} //BAU
+    public void    engageThreadChecker()    {threadChecker.engageThreadChecker();}           //BAU
+    public void    disengageThreadChecker() {threadChecker.disengageThreadChecker();}        //BAU
 
     //private static final ObLog log = ObLog.get(NetHose.class);
 
