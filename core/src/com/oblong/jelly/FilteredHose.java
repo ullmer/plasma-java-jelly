@@ -32,9 +32,9 @@ public final class FilteredHose implements Hose {
         this.descrips = descrips;
     }
 
-    public bool isThreadCheckerEngaged() {return False;} //BAU
-    public void engageThreadChecker()    {System.out.println("FilteredHose engageThreadChecker called; ignoring");}
-    public void disengageThreadChecker() {System.out.println("FilteredHose disengageThreadChecker called; ignoring");}
+    public boolean isThreadCheckerEngaged() {return False;} //BAU
+    public void    engageThreadChecker()    {System.out.println("FilteredHose engageThreadChecker called; ignoring");}
+    public void    disengageThreadChecker() {System.out.println("FilteredHose disengageThreadChecker called; ignoring");}
 
     @Override public int version() { return hose.version(); }
 
