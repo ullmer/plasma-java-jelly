@@ -9,10 +9,10 @@ public class ThreadChecker {
 
 	private final Thread allowedThread;
 
-        protected bool threadCheckerEngaged = true;                             //BAU
-        public    bool isThreadCheckerEngaged() {return threadCheckerEngaged;}  //BAU
-        public    void engageThreadChecker()    {threadCheckerEngaged = true;}  //BAU
-        public    void disengageThreadChecker() {threadCheckerEngaged = false;} //BAU
+        protected boolean threadCheckerEngaged = true;                             //BAU
+        public    boolean isThreadCheckerEngaged() {return threadCheckerEngaged;}  //BAU
+        public    void    engageThreadChecker()    {threadCheckerEngaged = true;}  //BAU
+        public    void    disengageThreadChecker() {threadCheckerEngaged = false;} //BAU
 
 	public ThreadChecker(Thread allowedThread) {
 		this.allowedThread = allowedThread;
