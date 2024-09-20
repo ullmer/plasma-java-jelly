@@ -9,6 +9,11 @@ public class ThreadChecker {
 
 	private final Thread allowedThread;
 
+        protected bool threadCheckerEngaged = true;                             //BAU
+        public    bool isThreadCheckerEngaged() {return threadCheckerEngaged;}  //BAU
+        public    void engageThreadChecker()    {threadCheckerEngaged = true;}  //BAU
+        public    void disengageThreadChecker() {threadCheckerEngaged = false;} //BAU
+
 	public ThreadChecker(Thread allowedThread) {
 		this.allowedThread = allowedThread;
 
@@ -19,6 +24,7 @@ public class ThreadChecker {
 	}
 
 	public void check() {
+           if (!isThreadCheckerEngaged()) {return;} //BAU
 		// TODO: disable for release to avoid performance penalty
 		Thread currentThread = Thread.currentThread();
 		if(/*!DebugAndTestSettings.DEMO_MODE &&*/ allowedThread != currentThread) {
