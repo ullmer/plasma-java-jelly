@@ -440,4 +440,8 @@ public interface Hose {
      */
     void closeConnectionAbruptly();
 
+    boolean isThreadCheckerEngaged(); //BAU
+    void    engageThreadChecker();    //BAU
+    void    disengageThreadChecker(); //BAU
+
 }
