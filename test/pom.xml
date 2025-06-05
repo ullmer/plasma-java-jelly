@@ -1,0 +1,25 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" ...>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.example</groupId>
+  <artifactId>raftplasma</artifactId>
+  <version>1.0-SNAPSHOT</version>
+
+  <dependencies>
+    <!-- MicroRaft -->
+    <dependency>
+      <groupId>com.hazelcast</groupId>
+      <artifactId>microraft</artifactId>
+      <version>0.4</version>
+    </dependency>
+
+    <!-- Plasma Java Jelly (you may need to install locally if not in Maven Central) -->
+    <dependency>
+      <groupId>com.oblong</groupId>
+      <artifactId>plasma-java-jelly</artifactId>
+      <version>1.0-SNAPSHOT</version>
+      <scope>system</scope>
+      <systemPath>${project.basedir}/lib/plasma-java-jelly.jar</systemPath>
+    </dependency>
+  </dependencies>
+</project>
+
