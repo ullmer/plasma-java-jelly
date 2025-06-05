@@ -2,7 +2,7 @@
 package com.example.raftplasma;
 
 import com.oblong.jelly.Pool;
-import com.hazelcast.microraft.RaftNode;
+import io.microraft.microraft.RaftNode;
 import java.io.*;
 
 public class PlasmaRaftReceiver implements Runnable {

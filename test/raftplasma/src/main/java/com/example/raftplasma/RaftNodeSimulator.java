@@ -1,8 +1,8 @@
 
 package com.example.raftplasma;
 
-import com.hazelcast.microraft.RaftNode;
-import com.hazelcast.microraft.RaftNodeBuilder;
+import io.microraft.RaftNode;
+import io.microraft.RaftNodeBuilder;
 import com.oblong.jelly.Pool;
 import com.oblong.jelly.Hose;
 import java.util.*;

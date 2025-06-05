@@ -1,7 +1,7 @@
 
 package com.example.raftplasma;
 
-import com.hazelcast.microraft.Transport;
+import io.microraft.Transport;
 import com.oblong.jelly.Pool;
 import com.oblong.jelly.Hose;
 import java.io.*;
