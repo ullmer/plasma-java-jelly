@@ -13,7 +13,7 @@
       <artifactId>microraft</artifactId>
       <version>0.9-SNAPSHOT</version>
       <scope>system</scope>
-      <systemPath>${project.basedir}/lib/microraft-0.9-SNAPSHOT.jar</systemPath>
+      <systemPath>${project.basedir}/lib/microraft-0.9-SNAPSHOT.jar</systemPath>
     </dependency>
 
     <!-- Plasma Java Jelly (you may need to install locally if not in Maven Central) -->
